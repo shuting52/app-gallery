@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>包豪斯 BAUHAUS · UI 套装</title>
+<style>
+:root{
+  --red:#e30613; --yellow:#ffcc00; --blue:#0066b3;
+  --black:#141414; --white:#ffffff; --paper:#f5f2e9; --grey:#8a877e;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{
+  font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,-apple-system,sans-serif;
+  background:var(--paper);
+  background-image:linear-gradient(rgba(20,20,20,.055) 1px,transparent 1px),linear-gradient(90deg,rgba(20,20,20,.055) 1px,transparent 1px);
+  background-size:28px 28px;
+  color:var(--black);max-width:480px;margin:0 auto;padding-bottom:112px;
+}
+/* ---------- 顶栏三原色 ---------- */
+.topline{display:flex;height:10px}
+.topline i{flex:1}
+.topline i:nth-child(1){background:var(--red)}
+.topline i:nth-child(2){background:var(--yellow)}
+.topline i:nth-child(3){background:var(--blue)}
+/* ---------- 头图 ---------- */
+.hero{padding:24px 20px 18px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.kicker{display:inline-block;background:var(--black);color:#fff;font-size:12px;font-weight:700;padding:5px 12px;letter-spacing:3px}
+.hero h1{font-size:50px;font-weight:900;letter-spacing:8px;line-height:1.15;margin:12px 0 2px}
+.latin{font-size:14px;font-weight:800;letter-spacing:9px}
+.hero p{font-size:13px;color:#4c4a44;margin-top:10px;line-height:1.7}
+.hero-geo{position:relative;width:132px;height:152px;flex:none}
+.g-circle{position:absolute;top:4px;left:8px;width:76px;height:76px;border-radius:50%;background:var(--red)}
+.g-tri{position:absolute;bottom:6px;left:30px;width:88px;height:78px;background:var(--yellow);clip-path:polygon(50% 0,100% 100%,0 100%)}
+.g-sq{position:absolute;top:56px;left:64px;width:58px;height:58px;background:var(--blue)}
+.g-ring{position:absolute;top:26px;left:34px;width:78px;height:78px;border:7px solid var(--black);border-radius:50%}
+/* ---------- Tab ---------- */
+.tab{display:none}
+.tab.active{display:block;animation:tin .18s ease-out}
+@keyframes tin{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.tab-head{margin:2px 18px 14px;display:flex;align-items:center;gap:10px}
+.tab-head h2{font-size:22px;font-weight:900;letter-spacing:3px}
+.tab-head .en{font-size:11px;font-weight:800;letter-spacing:4px;color:var(--grey)}
+/* ---------- 卡片 ---------- */
+.card{background:var(--white);border:2px solid var(--black);margin:0 16px 16px;padding:18px;position:relative}
+.num{position:absolute;top:-2px;right:-2px;background:var(--black);color:#fff;font-size:11px;font-weight:800;padding:5px 9px;letter-spacing:1px}
+.card h3{font-size:16px;font-weight:800;margin-bottom:4px;display:flex;align-items:center;gap:9px;letter-spacing:1px;padding-right:44px}
+.card .desc{font-size:12px;color:#6d6a61;margin-bottom:14px;line-height:1.6}
+.mk{width:14px;height:14px;display:inline-block;flex:none}
+.mk.c{border-radius:50%}
+.mk.t{clip-path:polygon(50% 0,100% 100%,0 100%)}
+.mk.r{background:var(--red)}.mk.y{background:var(--yellow)}.mk.b{background:var(--blue)}.mk.k{background:var(--black)}
+/* ---------- 按钮 ---------- */
+.btn{border:2px solid var(--black);font-weight:800;font-size:15px;padding:12px 22px;cursor:pointer;background:var(--white);color:var(--black);font-family:inherit;letter-spacing:2px;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.btn:active{transform:translate(2px,2px)}
+.btn-circle{border-radius:999px;background:var(--red);color:#fff}
+.btn-square{background:var(--yellow)}
+.btn-square.blue{background:var(--blue);color:#fff}
+.btn-tri{background:var(--blue);color:#fff;border:none;clip-path:polygon(50% 0,100% 100%,0 100%);padding:26px 30px 16px;font-size:14px}
+.btn-tri.red{background:var(--red)}
+.btn-black{background:var(--black);color:#fff}
+.btn-white{background:var(--white)}
+.btn-line-r{background:#fff;color:var(--red);border-color:var(--red)}
+.btn-line-y{background:#fff;color:#a07d00;border-color:var(--yellow)}
+.btn-line-b{background:#fff;color:var(--blue);border-color:var(--blue)}
+.btn[disabled]{opacity:.35;cursor:not-allowed}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.spin{width:16px;height:16px;background:#fff;flex:none;display:none}
+.is-loading .spin{display:block;animation:sp .7s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+/* ---------- 表单 ---------- */
+.opt{display:flex;align-items:center;gap:12px;padding:11px 2px;cursor:pointer;font-size:15px;font-weight:600}
+.opt input{position:absolute;opacity:0;pointer-events:none}
+.opt .r{width:24px;height:24px;border:3px solid var(--black);border-radius:50%;position:relative;flex:none;background:#fff}
+.opt input:checked+.r::after{content:"";position:absolute;inset:3px;border-radius:50%}
+.opt input:checked+.r.rr::after{background:var(--red)}
+.opt input:checked+.r.yr::after{background:var(--yellow)}
+.opt input:checked+.r.br::after{background:var(--blue)}
+.opt .c{width:24px;height:24px;border:3px solid var(--black);position:relative;flex:none;background:#fff}
+.opt input:checked+.c::after{content:"";position:absolute;inset:3px}
+.opt input:checked+.c.rc::after{background:var(--red)}
+.opt input:checked+.c.yc::after{background:var(--yellow)}
+.opt input:checked+.c.bc::after{background:var(--blue)}
+.opt input:checked+.c.kc::after{background:var(--black)}
+.opt small{margin-left:auto;color:var(--grey);font-weight:400;font-size:12px}
+/* 开关：必须 position:relative + 固定宽高 */
+.switch{position:relative;width:58px;height:34px;display:inline-block;flex:none;cursor:pointer}
+.switch input{position:absolute;opacity:0;pointer-events:none}
+.switch .track{position:absolute;inset:0;background:#d9d5c9;border:2px solid var(--black);border-radius:999px;transition:background .2s}
+.switch .knob{position:absolute;top:5px;left:5px;width:24px;height:24px;background:#fff;border:2px solid var(--black);border-radius:50%;transition:left .2s}
+.switch input:checked~.knob{left:29px}
+.sw-red input:checked~.track{background:var(--red)}
+.sw-yellow input:checked~.track{background:var(--yellow)}
+.sw-blue input:checked~.track{background:var(--blue)}
+.swrow{display:flex;align-items:center;justify-content:space-between;padding:11px 2px;font-size:15px;font-weight:600}
+.field{border:3px solid var(--black);padding:12px 14px;font-size:15px;width:100%;font-family:inherit;background:#fff;color:var(--black)}
+.field:focus{outline:none;border-color:var(--blue);box-shadow:4px 4px 0 var(--yellow)}
+.field::placeholder{color:#a3a099}
+.flabel{font-size:13px;font-weight:800;letter-spacing:2px;margin-bottom:8px;display:block}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:10px;background:linear-gradient(90deg,var(--red),var(--yellow),var(--blue));border:2px solid var(--black);margin:14px 0 6px}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:26px;height:26px;background:var(--black);border:3px solid #fff;outline:2px solid var(--black);cursor:pointer}
+input[type=range]::-moz-range-thumb{width:22px;height:22px;background:var(--black);border:3px solid #fff;outline:2px solid var(--black);cursor:pointer;border-radius:0}
+.range-meta{display:flex;justify-content:space-between;font-size:12px;color:var(--grey);font-weight:700}
+.range-val{font-size:26px;font-weight:900;letter-spacing:1px}
+.range-val em{font-style:normal;font-size:14px;color:var(--grey)}
+.stepper{display:flex;align-items:center;gap:0;border:3px solid var(--black);width:max-content}
+.stepper button{width:52px;height:52px;border:none;background:var(--black);color:#fff;font-size:24px;font-weight:900;cursor:pointer;font-family:inherit}
+.stepper button:active{background:#333}
+.stepper .step-num{min-width:96px;text-align:center;font-size:22px;font-weight:900}
+/* ---------- 展示 ---------- */
+.poster{position:relative;height:200px;border:3px solid var(--black);background:#fbf9f3;overflow:hidden;margin-bottom:12px}
+.pshape{position:absolute;transition:background .25s}
+.poster .pt{position:absolute;left:16px;bottom:14px;z-index:2}
+.poster .pt b{font-size:30px;font-weight:900;letter-spacing:4px;display:block}
+.poster .pt span{font-size:12px;font-weight:700;letter-spacing:2px;color:#4c4a44}
+.poster .pen{position:absolute;right:14px;top:12px;font-size:10px;font-weight:800;letter-spacing:3px;z-index:2}
+.segbar{display:flex;gap:5px;margin:10px 0}
+.segbar i{height:20px;flex:1;background:#e7e2d4;border:2px solid var(--black)}
+.segbar i.or{background:var(--red)}.segbar i.oy{background:var(--yellow)}.segbar i.ob{background:var(--blue)}
+.prog-meta{display:flex;justify-content:space-between;font-size:13px;font-weight:700}
+.prog-meta b{font-size:18px;font-weight:900}
+.bars{display:flex;align-items:flex-end;gap:10px;height:150px;padding-top:8px}
+.bar{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;height:100%;justify-content:flex-end}
+.bar i{width:100%;border:2px solid var(--black);display:block}
+.bar span{font-size:11px;color:var(--grey);font-weight:700}
+.donut-wrap{display:flex;align-items:center;gap:18px}
+.legend{flex:1;display:flex;flex-direction:column;gap:10px;font-size:14px;font-weight:600}
+.legend .li{display:flex;align-items:center;gap:10px}
+.legend .li b{margin-left:auto;font-weight:900}
+.navgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.navcell{border:2px solid var(--black);background:#fff;padding:14px 4px;display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer;font-size:13px;font-weight:700}
+.navcell:active{transform:translate(2px,2px);background:#f2eee1}
+.nicon{width:30px;height:30px;display:block}
+.days{display:flex;gap:8px;margin:6px 0 12px}
+.day{flex:1;aspect-ratio:1;border:2px solid var(--black);border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;cursor:pointer;color:#4c4a44}
+.day.on{background:var(--red);color:#fff}
+.day small{font-size:10px}
+.punch-meta{display:flex;justify-content:space-between;font-size:13px;font-weight:700;color:#4c4a44}
+.punch-meta b{color:var(--black);font-size:16px;font-weight:900}
+/* ---------- 反馈 ---------- */
+.toast{position:fixed;left:50%;transform:translateX(-50%) translateY(16px);bottom:106px;background:var(--black);color:#fff;padding:13px 18px;display:flex;gap:11px;align-items:center;opacity:0;pointer-events:none;transition:opacity .22s,transform .22s;z-index:80;max-width:86%;font-size:14px;font-weight:700;letter-spacing:1px}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.ti{width:14px;height:14px;flex:none;display:block}
+.ti.c{border-radius:50%}
+.ti.t{clip-path:polygon(50% 0,100% 100%,0 100%)}
+.ti.r{background:var(--red)}.ti.y{background:var(--yellow)}.ti.b{background:var(--blue)}
+.toast-static{background:var(--black);color:#fff;padding:13px 18px;display:flex;gap:11px;align-items:center;font-size:14px;font-weight:700;margin-bottom:12px}
+.dlg{position:fixed;inset:0;background:rgba(20,20,20,.5);display:none;align-items:center;justify-content:center;z-index:90;padding:26px}
+.dlg.open{display:flex;animation:tin .18s ease-out}
+.dlg-card{background:#fff;border:3px solid var(--black);width:100%;max-width:340px}
+.dlg-layers{display:flex;height:12px}
+.dlg-layers i{flex:1}
+.dlg-layers i:nth-child(1){background:var(--red)}
+.dlg-layers i:nth-child(2){background:var(--yellow)}
+.dlg-layers i:nth-child(3){background:var(--blue)}
+.dlg-body{padding:20px}
+.dlg-body h4{font-size:18px;font-weight:900;letter-spacing:2px;margin-bottom:8px}
+.dlg-body p{font-size:13px;color:#4c4a44;line-height:1.7;margin-bottom:18px}
+.dlg-btns{display:flex;gap:10px}
+.dlg-btns .btn{flex:1;padding:11px 0;font-size:14px}
+.loader-row{display:flex;gap:14px;align-items:center;margin-bottom:14px;min-height:40px}
+.lshape{width:30px;height:30px;flex:none}
+.lshape.c{border-radius:50%;background:var(--red)}
+.lshape.s{background:var(--yellow)}
+.lshape.t{background:var(--blue);clip-path:polygon(50% 0,100% 100%,0 100%)}
+#loaderBox.run .lshape{animation:lp .45s ease-in-out infinite alternate}
+#loaderBox.run .lshape.s{animation-delay:.12s}
+#loaderBox.run .lshape.t{animation-delay:.24s}
+@keyframes lp{from{transform:translateY(0)}to{transform:translateY(-14px)}}
+.empty{display:flex;flex-direction:column;align-items:center;padding:10px 0 4px;text-align:center}
+.empty-shapes{position:relative;width:150px;height:96px;margin-bottom:12px}
+.empty-shapes .e1{position:absolute;left:8px;top:8px;width:56px;height:56px;border:5px solid var(--red);border-radius:50%}
+.empty-shapes .e2{position:absolute;left:58px;top:22px;width:48px;height:48px;border:5px solid var(--blue)}
+.empty-shapes .e3{position:absolute;left:96px;top:2px;width:0;height:0;border-left:26px solid transparent;border-right:26px solid transparent;border-bottom:44px solid var(--yellow)}
+.empty p{font-size:14px;font-weight:700;margin-bottom:4px;letter-spacing:1px}
+.empty small{font-size:12px;color:var(--grey);margin-bottom:14px}
+.badgerow{display:flex;align-items:center;gap:12px;padding:10px 2px;font-size:14px;font-weight:600;border-bottom:2px solid #ece7d8}
+.badgerow:last-child{border-bottom:none}
+.badge{min-width:30px;height:30px;padding:0 8px;display:inline-flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;color:#fff;flex:none}
+.badge.c{border-radius:50%;background:var(--red)}
+.badge.s{background:var(--yellow);color:var(--black)}
+.badge.t{background:var(--blue);clip-path:polygon(50% 0,100% 100%,0 100%);padding-top:8px;min-width:34px;height:34px}
+.badge.k{background:var(--black);border-radius:999px}
+.badgerow small{margin-left:auto;color:var(--grey);font-size:12px}
+.result{border:2px solid var(--black);display:flex;margin-bottom:10px;background:#fff}
+.result:last-child{margin-bottom:0}
+.result .ric{width:56px;flex:none;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:900;color:#fff}
+.result .ric.ok{background:var(--blue)}
+.result .ric.no{background:var(--red)}
+.result .rtx{padding:12px 14px;flex:1}
+.result .rtx b{font-size:14px;font-weight:800;display:block;margin-bottom:3px}
+.result .rtx span{font-size:12px;color:#6d6a61}
+/* ---------- 底部 Tab 栏 ---------- */
+.tabbar{position:fixed;left:50%;transform:translateX(-50%);bottom:16px;width:min(404px,calc(100% - 32px));background:var(--black);border-radius:999px;display:flex;padding:6px;z-index:70}
+.tabbar .pill{position:absolute;top:6px;bottom:6px;border-radius:999px;background:var(--yellow);transition:left .25s ease,width .25s ease;z-index:0}
+.tabbar button{flex:1;background:none;border:none;color:#fff;font-size:14px;font-weight:800;padding:12px 0;position:relative;z-index:1;cursor:pointer;font-family:inherit;letter-spacing:2px}
+.tabbar button.active{color:var(--black)}
+/* ---------- 总览小组件 ---------- */
+.swatches{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.swatch{cursor:pointer;border:2px solid var(--black)}
+.swatch i{display:block;height:58px}
+.swatch div{padding:6px 4px;font-size:10px;font-weight:800;text-align:center;letter-spacing:.5px;background:#fff}
+.swatch div span{display:block;color:var(--grey);font-weight:600;margin-top:2px}
+.swatch:active{transform:translateY(2px)}
+.type-h1{font-size:32px;font-weight:900;letter-spacing:4px;border-bottom:3px solid var(--black);padding-bottom:8px;margin-bottom:10px}
+.type-h2{font-size:20px;font-weight:800;letter-spacing:2px;margin-bottom:8px}
+.type-h2 em{font-style:normal;color:var(--red)}
+.type-body{font-size:14px;line-height:1.8;color:#4c4a44;margin-bottom:10px}
+.type-latin{font-size:13px;font-weight:800;letter-spacing:6px}
+.grid12{position:relative;height:118px;border:2px solid var(--black);display:flex;background:#fff}
+.grid12 u{flex:1;border-right:1px solid #d9d4c4;text-decoration:none}
+.grid12 u:last-child{border-right:none}
+.gbar{position:absolute;height:22px;border:2px solid var(--black)}
+.krow{display:flex;align-items:center;gap:14px;padding:11px 2px;border-bottom:2px solid #ece7d8;font-size:14px;font-weight:700}
+.krow:last-child{border-bottom:none}
+.krow .ks{width:34px;height:34px;flex:none}
+.krow small{margin-left:auto;color:var(--grey);font-size:12px;font-weight:600}
+.frule{display:flex;gap:12px;align-items:flex-start;padding:10px 2px}
+.frule .mk{width:18px;height:18px;margin-top:2px}
+.frule b{font-size:15px;font-weight:800;display:block;letter-spacing:1px}
+.frule span{font-size:12px;color:#6d6a61;line-height:1.6}
+.intro-geo{position:relative;height:120px;border:2px solid var(--black);background:#fbf9f3;margin-bottom:14px;overflow:hidden}
+.intro-geo .a{position:absolute;left:18px;top:22px;width:64px;height:64px;border-radius:50%;background:var(--red)}
+.intro-geo .b{position:absolute;left:74px;top:44px;width:0;height:0;border-left:38px solid transparent;border-right:38px solid transparent;border-bottom:64px solid var(--yellow)}
+.intro-geo .c{position:absolute;left:132px;top:26px;width:58px;height:58px;background:var(--blue)}
+.intro-geo .d{position:absolute;left:0;right:0;bottom:16px;height:6px;background:var(--black)}
+.intro-geo .e{position:absolute;right:16px;top:14px;font-size:10px;font-weight:800;letter-spacing:3px}
+</style>
+</head>
+<body>
+<div class="topline"><i></i><i></i><i></i></div>
+
+<header class="hero">
+  <div>
+    <span class="kicker">K10 · UI 套装</span>
+    <h1>包豪斯</h1>
+    <div class="latin">BAUHAUS</div>
+    <p>红黄蓝三原色 × 圆方三角<br>形式服务功能 — 为「懒得找了」而作</p>
+  </div>
+  <div class="hero-geo">
+    <div class="g-circle"></div><div class="g-tri"></div><div class="g-sq"></div><div class="g-ring"></div>
+  </div>
+</header>
+
+<!-- ============ TAB 0 总览 ============ -->
+<section class="tab" id="tab0">
+  <div class="tab-head"><i class="mk c r"></i><h2>总览</h2><span class="en">OVERVIEW</span></div>
+
+  <div class="card"><span class="num">01</span>
+    <h3><i class="mk c r"></i>风格介绍</h3>
+    <div class="desc">包豪斯 1919 · 几何构成 × 三原色 × 网格秩序</div>
+    <div class="intro-geo">
+      <div class="a"></div><div class="b"></div><div class="c"></div><div class="d"></div>
+      <div class="e">FORM<br>FOLLOWS<br>FUNCTION</div>
+    </div>
+    <div class="type-body" style="margin:0">圆、方、三角是最纯粹的形，红、黄、蓝是最纯粹的色。本套装把「懒得找了」的去水印解析、站点导航、工时打卡装进严格的几何网格：没有装饰，只有功能。</div>
+  </div>
+
+  <div class="card"><span class="num">02</span>
+    <h3><i class="mk s y"></i>三原色色板</h3>
+    <div class="desc">点击色块复制色值</div>
+    <div class="swatches">
+      <div class="swatch" data-hex="#E30613"><i style="background:#e30613"></i><div>包豪斯红<span>#E30613</span></div></div>
+      <div class="swatch" data-hex="#FFCC00"><i style="background:#ffcc00"></i><div>包豪斯黄<span>#FFCC00</span></div></div>
+      <div class="swatch" data-hex="#0066B3"><i style="background:#0066b3"></i><div>包豪斯蓝<span>#0066B3</span></div></div>
+      <div class="swatch" data-hex="#141414"><i style="background:#141414"></i><div>构成黑<span>#141414</span></div></div>
+      <div class="swatch" data-hex="#FFFFFF"><i style="background:#fff"></i><div>纸面白<span>#FFFFFF</span></div></div>
+    </div>
+  </div>
+
+  <div class="card"><span class="num">03</span>
+    <h3><i class="mk t b"></i>字体排印</h3>
+    <div class="desc">粗黑 × 大字距 × 严格层级</div>
+    <div class="type-h1">去水印解析</div>
+    <div class="type-h2">站点导航 <em>·</em> 工时打卡</div>
+    <div class="type-body">粘贴链接，一键去除水印。支持抖音、快手、小红书等 9 大站点，视频、图集、音频、文案一次拿下。</div>
+    <div class="type-latin">BAUHAUS 1919 — DESSAU</div>
+  </div>
+
+  <div class="card"><span class="num">04</span>
+    <h3><i class="mk c k"></i>十二栏网格</h3>
+    <div class="desc">一切元素都落在网格线上</div>
+    <div class="grid12">
+      <u></u><u></u><u></u><u></u><u></u><u></u><u></u><u></u><u></u><u></u><u></u><u></u>
+      <div class="gbar" style="left:0;width:33.3%;top:14px;background:#e30613"></div>
+      <div class="gbar" style="left:33.3%;width:33.3%;top:48px;background:#ffcc00"></div>
+      <div class="gbar" style="left:66.6%;width:33.4%;top:82px;background:#0066b3"></div>
+    </div>
+  </div>
+
+  <div class="card"><span class="num">05</span>
+    <h3><i class="mk s r"></i>形状 × 色彩</h3>
+    <div class="desc">康定斯基的对应法则：黄=三角 · 红=方 · 蓝=圆</div>
+    <div class="krow"><i class="ks mk t y"></i>黄 · 三角 · 活跃<small>提醒 / 警示</small></div>
+    <div class="krow"><i class="ks mk s r"></i>红 · 方块 · 力量<small>主要动作</small></div>
+    <div class="krow"><i class="ks mk c b"></i>蓝 · 圆形 · 和谐<small>信息 / 成功</small></div>
+  </div>
+
+  <div class="card"><span class="num">06</span>
+    <h3><i class="mk t y"></i>构成法则</h3>
+    <div class="desc">三条铁律，贯穿全部 30 个组件</div>
+    <div class="frule"><i class="mk c r"></i><div><b>形式服务功能</b><span>每个形状都有用处：圆是单选，方是复选，三角是警示。</span></div></div>
+    <div class="frule"><i class="mk s y"></i><div><b>网格至上</b><span>间距取 8 的倍数，对齐先于美化，秩序即美感。</span></div></div>
+    <div class="frule"><i class="mk t b"></i><div><b>直线分割</b><span>用黑线划分信息层级，拒绝模糊的阴影与渐变。</span></div></div>
+  </div>
+</section>
+
+<!-- ============ TAB 1 按钮 ============ -->
+<section class="tab" id="tab1">
+  <div class="tab-head"><i class="mk s r"></i><h2>按钮</h2><span class="en">BUTTONS</span></div>
+
+  <div class="card"><span class="num">07</span>
+    <h3><i class="mk c r"></i>圆形按钮</h3>
+    <div class="desc">蓝=圆=和谐 —— 首选的信息类动作</div>
+    <div class="btn-row">
+      <button class="btn btn-circle" data-toast="开始解析视频链接…|b|c">开始解析</button>
+      <button class="btn btn-circle" style="background:var(--blue)" data-toast="已加入下载队列|b|c">下载</button>
+    </div>
+  </div>
+
+  <div class="card"><span class="num">08</span>
+    <h3><i class="mk s y"></i>方形按钮</h3>
+    <div class="desc">红=方=力量 —— 最主要的操作用实心方块</div>
+    <div class="btn-row">
+      <button class="btn btn-square" data-toast="打开站点导航|y|s">站点导航</button>
+      <button class="btn btn-square blue" data-toast="打开工时打卡|b|s">工时打卡</button>
+    </div>
+  </div>
+
+  <div class="card"><span class="num">09</span>
+    <h3><i class="mk t b"></i>三角形按钮</h3>
+    <div class="desc">黄=三角=警示 —— 需要留意的动作</div>
+    <div class="btn-row">
+      <button class="btn btn-tri" data-toast="正在去除水印…|b|t">去水印</button>
+      <button class="btn btn-tri red" data-toast="该操作不可撤销|y|t" style="font-size:12px">清空</button>
+    </div>
+  </div>
+
+  <div class="card"><span class="num">10</span>
+    <h3><i class="mk c k"></i>黑白按钮</h3>
+    <div class="desc">最高对比，用于确认与取消</div>
+    <div class="btn-row">
+      <button class="btn btn-black" data-toast="已确认删除|y|s">确认删除</button>
+      <button class="btn btn-white" data-toast="已取消|b|c">取消</button>
+    </div>
+  </div>
+
+  <div class="card"><span class="num">11</span>
+    <h3><i class="mk s b"></i>描边按钮</h3>
+    <div class="desc">次要操作，用三原色描边区分</div>
+    <div class="btn-row">
+      <button class="btn btn-line-r" data-toast="查看解析历史|r|c">历史记录</button>
+      <button class="btn btn-line-y" data-toast="已设为稍后提醒|y|s">稍后提醒</button>
+      <button class="btn btn-line-b" data-toast="规则说明：先粘贴再解析|b|t">使用规则</button>
+    </div>
+  </div>
+
+  <div class="card"><span class="num">12</span>
+    <h3><i class="mk t y"></i>状态按钮</h3>
+    <div class="desc">禁用态与加载态</div>
+    <div class="btn-row">
+      <button class="btn btn-black" disabled>暂不可用</button>
+      <button class="btn btn-circle" id="loadBtn"><span class="spin"></span><span class="txt">开始解析</span></button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TAB 2 表单 ============ -->
+<section class="tab" id="tab2">
+  <div class="tab-head"><i class="mk t y"></i><h2>表单</h2><span class="en">FORMS</span></div>
+
+  <div class="card"><span class="num">13</span>
+    <h3><i class="mk c b"></i>单选 · 圆</h3>
+    <div class="desc">圆=单选 —— 默认解析画质</div>
+    <label class="opt"><input type="radio" name="q" checked><span class="r rr"></span>原画<small>文件较大</small></label>
+    <label class="opt"><input type="radio" name="q"><span class="r yr"></span>高清<small>推荐</small></label>
+    <label class="opt"><input type="radio" name="q"><span class="r br"></span>标清<small>省流量</small></label>
+  </div>
+
+  <div class="card"><span class="num">14</span>
+    <h3><i class="mk s r"></i>复选 · 方</h3>
+    <div class="desc">方=复选 —— 要下载的内容</div>
+    <label class="opt"><input type="checkbox" checked><span class="c rc"></span>无水印视频<small>MP4</small></label>
+    <label class="opt"><input type="checkbox" checked><span class="c yc"></span>视频封面<small>JPG</small></label>
+    <label class="opt"><input type="checkbox"><span class="c bc"></span>文案<small>TXT</small></label>
+    <label class="opt"><input type="checkbox"><span class="c kc"></span>背景音频<small>MP3</small></label>
+  </div>
+
+  <div class="card"><span class="num">15</span>
+    <h3><i class="mk c y"></i>三原色开关</h3>
+    <div class="desc">拨动试试 —— 每个开关一种原色</div>
+    <div class="swrow"><span>粘贴自动解析</span><label class="switch sw-red"><input type="checkbox" checked><span class="track"></span><span class="knob"></span></label></div>
+    <div class="swrow"><span>下载完成提醒</span><label class="switch sw-yellow"><input type="checkbox" checked><span class="track"></span><span class="knob"></span></label></div>
+    <div class="swrow"><span>仅 WiFi 下下载</span><label class="switch sw-blue"><input type="checkbox"><span class="track"></span><span class="knob"></span></label></div>
+  </div>
+
+  <div class="card"><span class="num">16</span>
+    <h3><i class="mk t r"></i>几何输入框</h3>
+    <div class="desc">3px 黑框，聚焦时蓝框 + 黄影</div>
+    <label class="flabel" for="linkInput">视频链接</label>
+    <input class="field" id="linkInput" placeholder="粘贴抖音 / 快手 / 小红书链接…">
+    <div style="margin-top:12px"><button class="btn btn-black" id="parseGo" style="width:100%">一键解析</button></div>
+  </div>
+
+  <div class="card"><span class="num">17</span>
+    <h3><i class="mk s b"></i>三原色滑块</h3>
+    <div class="desc">同时解析任务数</div>
+    <div class="range-val"><span id="rangeVal">3 个</span></div>
+    <input type="range" id="range" min="1" max="5" value="3" step="1">
+    <div class="range-meta"><span>1</span><span>3</span><span>5</span></div>
+  </div>
+
+  <div class="card"><span class="num">18</span>
+    <h3><i class="mk c r"></i>步进器</h3>
+    <div class="desc">每日目标工时（工时打卡）</div>
+    <div class="stepper">
+      <button id="stepMinus">−</button><div class="step-num" id="stepNum">8h</div><button id="stepPlus">＋</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TAB 3 展示 ============ -->
+<section class="tab" id="tab3">
+  <div class="tab-head"><i class="mk c b"></i><h2>展示</h2><span class="en">DISPLAY</span></div>
+
+  <div class="card"><span class="num">19</span>
+    <h3><i class="mk t y"></i>几何构成海报</h3>
+    <div class="desc">包豪斯式宣传卡 —— 点「换个构图」重组色块</div>
+    <div class="poster" id="poster">
+      <div id="posterShapes">
+        <div class="pshape r" style="left:18px;top:20px;width:70px;height:70px;border-radius:50%;background:#e30613"></div>
+        <div class="pshape y" style="left:78px;top:52px;width:0;height:0;border-left:42px solid transparent;border-right:42px solid transparent;border-bottom:70px solid #ffcc00"></div>
+        <div class="pshape b" style="right:20px;top:30px;width:62px;height:62px;background:#0066b3"></div>
+        <div class="pshape k" style="left:0;right:0;bottom:8px;height:8px;background:#141414"></div>
+      </div>
+      <div class="pen">BAUHAUS<br>2026</div>
+      <div class="pt"><b>懒得找了</b><span>去水印 · 导航 · 打卡</span></div>
+    </div>
+    <button class="btn btn-line-b" id="posterBtn">换个构图</button>
+  </div>
+
+  <div class="card"><span class="num">20</span>
+    <h3><i class="mk s y"></i>分段进度条</h3>
+    <div class="desc">三原色块拼接 —— 正在解析 3 个任务</div>
+    <div class="prog-meta"><span>解析中…</span><b>67%</b></div>
+    <div class="segbar">
+      <i class="or"></i><i class="oy"></i><i class="ob"></i><i class="or"></i><i class="oy"></i><i class="ob"></i><i class="or"></i><i class="oy"></i><i></i><i></i><i></i><i></i>
+    </div>
+    <div class="prog-meta" style="color:var(--grey);font-size:12px"><span>8 / 12 段</span><span>约剩 20 秒</span></div>
+  </div>
+
+  <div class="card"><span class="num">21</span>
+    <h3><i class="mk c r"></i>几何条形图</h3>
+    <div class="desc">本周解析量（条）</div>
+    <div class="bars">
+      <div class="bar"><i style="height:38%;background:#e30613"></i><span>一</span></div>
+      <div class="bar"><i style="height:62%;background:#ffcc00"></i><span>二</span></div>
+      <div class="bar"><i style="height:30%;background:#0066b3"></i><span>三</span></div>
+      <div class="bar"><i style="height:80%;background:#e30613"></i><span>四</span></div>
+      <div class="bar"><i style="height:55%;background:#ffcc00"></i><span>五</span></div>
+      <div class="bar"><i style="height:92%;background:#0066b3"></i><span>六</span></div>
+      <div class="bar"><i style="height:70%;background:#e30613"></i><span>日</span></div>
+    </div>
+  </div>
+
+  <div class="card"><span class="num">22</span>
+    <h3><i class="mk t b"></i>三原色环形图</h3>
+    <div class="desc">解析内容占比（共 128 条）</div>
+    <div class="donut-wrap">
+      <svg width="140" height="140" viewBox="0 0 140 140">
+        <circle cx="70" cy="70" r="54" fill="none" stroke="#e7e2d4" stroke-width="22"/>
+        <circle cx="70" cy="70" r="54" fill="none" stroke="#e30613" stroke-width="22" stroke-dasharray="186.6 339.3" stroke-dashoffset="0" transform="rotate(-90 70 70)"/>
+        <circle cx="70" cy="70" r="54" fill="none" stroke="#ffcc00" stroke-width="22" stroke-dasharray="101.8 339.3" stroke-dashoffset="-186.6" transform="rotate(-90 70 70)"/>
+        <circle cx="70" cy="70" r="54" fill="none" stroke="#0066b3" stroke-width="22" stroke-dasharray="50.9 339.3" stroke-dashoffset="-288.4" transform="rotate(-90 70 70)"/>
+        <text x="70" y="66" text-anchor="middle" font-size="22" font-weight="900" fill="#141414">128</text>
+        <text x="70" y="86" text-anchor="middle" font-size="11" font-weight="700" fill="#8a877e">总条数</text>
+      </svg>
+      <div class="legend">
+        <div class="li"><i class="mk c r"></i>无水印视频<b>55%</b></div>
+        <div class="li"><i class="mk s y"></i>图集封面<b>30%</b></div>
+        <div class="li"><i class="mk t b"></i>音频文案<b>15%</b></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card"><span class="num">23</span>
+    <h3><i class="mk s r"></i>站点导航宫格</h3>
+    <div class="desc">点任意站点试试</div>
+    <div class="navgrid">
+      <div class="navcell" data-name="抖音"><i class="nicon mk c r"></i>抖音</div>
+      <div class="navcell" data-name="快手"><i class="nicon mk s y"></i>快手</div>
+      <div class="navcell" data-name="小红书"><i class="nicon mk t b"></i>小红书</div>
+      <div class="navcell" data-name="哔哩哔哩"><i class="nicon mk s b"></i>哔哩哔哩</div>
+      <div class="navcell" data-name="微博"><i class="nicon mk c y"></i>微博</div>
+      <div class="navcell" data-name="西瓜视频"><i class="nicon mk t r"></i>西瓜视频</div>
+      <div class="navcell" data-name="好看视频"><i class="nicon mk c b"></i>好看视频</div>
+      <div class="navcell" data-name="皮皮虾"><i class="nicon mk s r"></i>皮皮虾</div>
+      <div class="navcell" data-name="全民K歌"><i class="nicon mk t y"></i>全民K歌</div>
+    </div>
+  </div>
+
+  <div class="card"><span class="num">24</span>
+    <h3><i class="mk c y"></i>工时打卡周视图</h3>
+    <div class="desc">点圆点可补打卡 / 取消</div>
+    <div class="days">
+      <div class="day on">一</div><div class="day on">二</div><div class="day on">三</div><div class="day on">四</div><div class="day on">五</div><div class="day">六</div><div class="day">日</div>
+    </div>
+    <div class="punch-meta"><span>本周已打卡 <b>5</b> 天</span><span>本月累计 <b>96h</b></span></div>
+  </div>
+</section>
+
+<!-- ============ TAB 4 反馈 ============ -->
+<section class="tab" id="tab4">
+  <div class="tab-head"><i class="mk s y"></i><h2>反馈</h2><span class="en">FEEDBACK</span></div>
+
+  <div class="card"><span class="num">25</span>
+    <h3><i class="mk c r"></i>几何 Toast</h3>
+    <div class="desc">黑条 + 三原色几何图标</div>
+    <div class="toast-static"><i class="ti c b"></i><span>链接解析成功，已加入下载</span></div>
+    <button class="btn btn-black" id="toastDemo">弹出提示</button>
+  </div>
+
+  <div class="card"><span class="num">26</span>
+    <h3><i class="mk t b"></i>三层对话框</h3>
+    <div class="desc">顶部红 / 黄 / 蓝三层结构线</div>
+    <button class="btn btn-line-r" id="dlgOpen">打开对话框</button>
+  </div>
+
+  <div class="card"><span class="num">27</span>
+    <h3><i class="mk s y"></i>几何加载</h3>
+    <div class="desc">圆方三角轮流跳动 —— 点演示看效果</div>
+    <div class="loader-row" id="loaderBox">
+      <div class="lshape c"></div><div class="lshape s"></div><div class="lshape t"></div>
+      <span style="font-size:13px;font-weight:700;color:var(--grey)">解析引擎运行中…</span>
+    </div>
+    <button class="btn btn-square" id="loaderDemo">演示加载</button>
+  </div>
+
+  <div class="card"><span class="num">28</span>
+    <h3><i class="mk c b"></i>空状态</h3>
+    <div class="desc">暂无数据时的几何构成</div>
+    <div class="empty">
+      <div class="empty-shapes"><div class="e1"></div><div class="e2"></div><div class="e3"></div></div>
+      <p>暂无解析记录</p>
+      <small>粘贴一条视频链接，开始第一次解析</small>
+      <button class="btn btn-circle" data-toast="去粘贴第一条链接吧|b|c">去解析</button>
+    </div>
+  </div>
+
+  <div class="card"><span class="num">29</span>
+    <h3><i class="mk t y"></i>几何徽章</h3>
+    <div class="desc">数字徽章也服从形状语义</div>
+    <div class="badgerow"><span class="badge c">99+</span>消息通知<small>圆=信息</small></div>
+    <div class="badgerow"><span class="badge s">3</span>待下载任务<small>方=动作</small></div>
+    <div class="badgerow"><span class="badge t">!</span>新站点上线<small>三角=提醒</small></div>
+    <div class="badgerow"><span class="badge k">5</span>连续打卡天数<small>黑=成就</small></div>
+  </div>
+
+  <div class="card"><span class="num">30</span>
+    <h3><i class="mk s r"></i>结果卡</h3>
+    <div class="desc">解析成功 / 失败的反馈条</div>
+    <div class="result">
+      <div class="ric ok">✓</div>
+      <div class="rtx"><b>解析成功</b><span>无水印视频 + 封面 + 文案，共 3 个文件</span></div>
+    </div>
+    <div class="result">
+      <div class="ric no">×</div>
+      <div class="rtx"><b>解析失败</b><span>链接已失效或站点暂不支持，请重试</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- 底部悬浮 Tab 栏 -->
+<nav class="tabbar"><span class="pill"></span><button data-i="0">总览</button><button data-i="1">按钮</button><button data-i="2">表单</button><button data-i="3">展示</button><button data-i="4">反馈</button></nav>
+
+<!-- Toast -->
+<div class="toast" id="toast"><i id="toastIcon" class="ti c b"></i><span id="toastMsg"></span></div>
+
+<!-- 对话框 -->
+<div class="dlg" id="dlg">
+  <div class="dlg-card">
+    <div class="dlg-layers"><i></i><i></i><i></i></div>
+    <div class="dlg-body">
+      <h4>清空解析记录？</h4>
+      <p>将删除全部 128 条解析记录与下载文件，此操作不可恢复。</p>
+      <div class="dlg-btns">
+        <button class="btn btn-white" id="dlgCancel">取消</button>
+        <button class="btn btn-black" id="dlgOk">确认清空</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var params=new URLSearchParams(location.search);
+  var start=parseInt(params.get('tab')||'0',10);
+  if(isNaN(start)||start<0||start>4)start=0;
+  var tabs=Array.prototype.slice.call(document.querySelectorAll('.tab'));
+  var btns=Array.prototype.slice.call(document.querySelectorAll('.tabbar button'));
+  var pill=document.querySelector('.tabbar .pill');
+  var cur=start;
+  function movePill(){
+    var b=btns[cur];
+    if(!b)return;
+    pill.style.left=b.offsetLeft+'px';
+    pill.style.width=b.offsetWidth+'px';
+  }
+  function go(n,record){
+    cur=n;
+    tabs.forEach(function(t,i){t.classList.toggle('active',i===n)});
+    btns.forEach(function(b,i){b.classList.toggle('active',i===n)});
+    movePill();
+    window.scrollTo(0,0);
+    if(record!==false){history.replaceState(null,'','?tab='+n)}
+  }
+  btns.forEach(function(b,i){b.addEventListener('click',function(){go(i)})});
+  window.addEventListener('resize',movePill);
+  go(start,false);
+  setTimeout(movePill,60);
+
+  var toastEl=document.getElementById('toast'),
+      toastIcon=document.getElementById('toastIcon'),
+      toastMsg=document.getElementById('toastMsg'),
+      toastTimer=null;
+  function toast(msg,color,shape){
+    toastMsg.textContent=msg;
+    toastIcon.className='ti '+(shape||'c')+' '+(color||'b');
+    toastEl.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer=setTimeout(function(){toastEl.classList.remove('show')},2200);
+  }
+
+  document.querySelectorAll('.swatch').forEach(function(s){
+    s.addEventListener('click',function(){
+      var hex=s.getAttribute('data-hex');
+      function done(){toast('已复制 '+hex,'y','s')}
+      if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(hex).then(done,done)}
+      else{done()}
+    });
+  });
+
+  document.querySelectorAll('[data-toast]').forEach(function(b){
+    b.addEventListener('click',function(){
+      var d=b.getAttribute('data-toast').split('|');
+      toast(d[0],d[1]||'b',d[2]||'c');
+    });
+  });
+
+  var loadBtn=document.getElementById('loadBtn');
+  loadBtn.addEventListener('click',function(){
+    loadBtn.disabled=true;
+    loadBtn.querySelector('.txt').textContent='解析中…';
+    loadBtn.classList.add('is-loading');
+    setTimeout(function(){
+      loadBtn.disabled=false;
+      loadBtn.querySelector('.txt').textContent='开始解析';
+      loadBtn.classList.remove('is-loading');
+      toast('解析完成，已加入下载','b','c');
+    },1600);
+  });
+
+  var dlg=document.getElementById('dlg');
+  document.getElementById('dlgOpen').addEventListener('click',function(){dlg.classList.add('open')});
+  document.getElementById('dlgCancel').addEventListener('click',function(){dlg.classList.remove('open')});
+  document.getElementById('dlgOk').addEventListener('click',function(){dlg.classList.remove('open');toast('已清空全部解析记录','r','t')});
+  dlg.addEventListener('click',function(e){if(e.target===dlg)dlg.classList.remove('open')});
+
+  document.getElementById('toastDemo').addEventListener('click',function(){toast('链接解析成功','b','c')});
+
+  var loaderBox=document.getElementById('loaderBox');
+  document.getElementById('loaderDemo').addEventListener('click',function(){
+    loaderBox.classList.add('run');
+    setTimeout(function(){loaderBox.classList.remove('run');toast('加载完成','y','s')},2000);
+  });
+
+  var combos=[['r','y','b'],['b','r','y'],['y','b','r']],ci=0;
+  var pshapes=document.getElementById('posterShapes').children;
+  var pbg={r:'#e30613',y:'#ffcc00',b:'#0066b3'};
+  document.getElementById('posterBtn').addEventListener('click',function(){
+    ci=(ci+1)%combos.length;
+    for(var i=0;i<3;i++){
+      var el=pshapes[i],c=combos[ci][i];
+      el.className='pshape '+c;
+      if(el.style.borderBottom){el.style.borderBottom='70px solid '+pbg[c]}
+      else{el.style.background=pbg[c]}
+    }
+    toast('已重组几何构成','y','t');
+  });
+
+  var range=document.getElementById('range'),rangeVal=document.getElementById('rangeVal');
+  range.addEventListener('input',function(){rangeVal.textContent=range.value+' 个'});
+
+  var stepVal=8,stepNum=document.getElementById('stepNum');
+  document.getElementById('stepMinus').addEventListener('click',function(){if(stepVal>1){stepVal--;stepNum.textContent=stepVal+'h'}});
+  document.getElementById('stepPlus').addEventListener('click',function(){if(stepVal<24){stepVal++;stepNum.textContent=stepVal+'h'}});
+
+  document.querySelectorAll('.day').forEach(function(d){
+    d.addEventListener('click',function(){d.classList.toggle('on')});
+  });
+
+  document.querySelectorAll('.navcell').forEach(function(c){
+    c.addEventListener('click',function(){toast('打开「'+c.getAttribute('data-name')+'」','b','s')});
+  });
+
+  document.getElementById('parseGo').addEventListener('click',function(){
+    var v=document.getElementById('linkInput').value.trim();
+    if(!v){toast('请先粘贴视频链接','r','t');return}
+    toast('开始解析…','y','c');
+    setTimeout(function(){toast('解析成功，共 3 个文件','b','c')},1400);
+  });
+})();
+</script>
+</body>
+</html>
