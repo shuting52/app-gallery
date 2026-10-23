@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>材质设计 Material Design · UI 组件库</title>
+<style>
+/* ============ Material Design tokens ============ */
+:root{
+  --primary:#3F51B5; --primary-dark:#303F9F; --primary-light:#C5CAE9;
+  --primary-50:#E8EAF6; --accent:#FF4081; --accent-dark:#F50057;
+  --bg:#FAFAFA; --card:#FFFFFF;
+  --text:rgba(0,0,0,.87); --text-2:rgba(0,0,0,.54); --text-3:rgba(0,0,0,.38);
+  --divider:rgba(0,0,0,.12);
+  --dp1:0 1px 3px rgba(0,0,0,.12),0 1px 2px rgba(0,0,0,.24);
+  --dp2:0 3px 6px rgba(0,0,0,.16),0 3px 6px rgba(0,0,0,.23);
+  --dp3:0 6px 12px rgba(0,0,0,.18),0 4px 8px rgba(0,0,0,.20);
+  --dp4:0 10px 20px rgba(0,0,0,.19),0 6px 6px rgba(0,0,0,.23);
+  --dp6:0 14px 28px rgba(0,0,0,.25),0 10px 10px rgba(0,0,0,.22);
+  --dp8:0 16px 32px rgba(0,0,0,.26),0 12px 12px rgba(0,0,0,.22);
+  --dp12:0 24px 48px rgba(0,0,0,.28),0 16px 16px rgba(0,0,0,.24);
+  --dp24:0 40px 80px rgba(0,0,0,.32),0 24px 24px rgba(0,0,0,.26);
+  --ease:cubic-bezier(.4,0,.2,1);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC",sans-serif;
+  background:var(--bg); color:var(--text); font-size:14px; line-height:1.5;
+  touch-action:manipulation; min-height:100vh;
+}
+button{font-family:inherit;touch-action:manipulation}
+/* ============ App bar ============ */
+.appbar{
+  position:sticky;top:0;z-index:40;background:var(--primary);color:#fff;
+  box-shadow:var(--dp4); padding:14px 20px 16px;
+}
+.appbar h1{font-size:20px;font-weight:500;letter-spacing:.5px}
+.appbar p{font-size:12px;opacity:.75;margin-top:2px;letter-spacing:1px}
+/* ============ Layout ============ */
+main{padding:16px 16px 120px;max-width:560px;margin:0 auto}
+.tabpage{display:none}
+.tabpage.active{display:block}
+/* ============ Paper card ============ */
+.card{
+  background:var(--card);border-radius:6px;box-shadow:var(--dp2);
+  padding:18px 16px;margin-bottom:16px;
+}
+.card>h3{font-size:15px;font-weight:500;margin-bottom:4px;display:flex;align-items:baseline;gap:8px}
+.card>h3 .en{font-size:11px;color:var(--text-3);font-weight:400;letter-spacing:.5px}
+.card>.sub{font-size:12px;color:var(--text-2);margin-bottom:14px}
+.demo{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.demo.col{flex-direction:column;align-items:stretch}
+/* ============ Ripple ============ */
+.ripple-host{position:relative;overflow:hidden}
+.ripple{
+  position:absolute;border-radius:50%;pointer-events:none;
+  background:var(--rip,rgba(0,0,0,.16));
+  transform:scale(0);animation:ripAnim .55s ease-out forwards;
+}
+@keyframes ripAnim{to{transform:scale(1);opacity:0}}
+/* ============ Buttons ============ */
+.mbtn{
+  border:0;cursor:pointer;font-size:14px;font-weight:500;letter-spacing:1.5px;
+  padding:10px 18px;border-radius:4px;text-transform:uppercase;
+  transition:box-shadow .2s var(--ease),background .2s;
+  --rip:rgba(255,255,255,.45);
+}
+.mbtn.raised{background:var(--primary);color:#fff;box-shadow:var(--dp2)}
+.mbtn.raised:active{box-shadow:var(--dp8)}
+.mbtn.raised.pink{background:var(--accent)}
+.mbtn.raised:disabled{background:rgba(0,0,0,.12);color:var(--text-3);box-shadow:none;cursor:default}
+.mbtn.flat{background:transparent;color:var(--primary);--rip:rgba(63,81,181,.22);box-shadow:none}
+.mbtn.flat:active{background:rgba(63,81,181,.08)}
+.mbtn.flat.pink{color:var(--accent);--rip:rgba(255,64,129,.22)}
+.mbtn.flat.pink:active{background:rgba(255,64,129,.08)}
+.mbtn.block{width:100%;padding:13px}
+/* icon button */
+.iconbtn{
+  width:44px;height:44px;border-radius:50%;border:0;background:transparent;color:var(--text-2);
+  font-size:20px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;
+  --rip:rgba(63,81,181,.22);transition:background .2s;
+}
+.iconbtn:active{background:rgba(0,0,0,.08)}
+.iconbtn.colored{color:var(--primary)}
+/* ============ Switch (position:relative + fixed w/h) ============ */
+.mswitch{position:relative;width:52px;height:32px;flex:none;cursor:pointer;display:inline-block}
+.mswitch input{position:absolute;inset:0;width:100%;height:100%;opacity:0;margin:0;cursor:pointer;z-index:2}
+.mswitch .track{position:absolute;left:4px;right:4px;top:9px;height:14px;border-radius:7px;background:rgba(0,0,0,.26);transition:background .2s var(--ease)}
+.mswitch .thumb{position:absolute;top:6px;left:6px;width:20px;height:20px;border-radius:50%;background:#FAFAFA;box-shadow:0 2px 4px rgba(0,0,0,.35);transition:left .2s var(--ease),background .2s}
+.mswitch input:checked~.track{background:rgba(63,81,181,.5)}
+.mswitch input:checked~.thumb{left:26px;background:var(--primary)}
+.mswitch input:disabled~.thumb{background:#BDBDBD}
+.mswitch input:disabled~.track{background:rgba(0,0,0,.12)}
+.switchrow{display:flex;align-items:center;justify-content:space-between;width:100%;padding:10px 0;border-bottom:1px solid var(--divider)}
+.switchrow:last-child{border-bottom:0}
+.switchrow .t{font-size:14px}
+.switchrow .d{font-size:12px;color:var(--text-2)}
+/* ============ Segmented ============ */
+.seg{display:flex;border:1px solid var(--divider);border-radius:4px;overflow:hidden;width:100%}
+.seg button{flex:1;border:0;background:#fff;padding:10px 0;font-size:13px;color:var(--text-2);cursor:pointer;--rip:rgba(63,81,181,.2)}
+.seg button+button{border-left:1px solid var(--divider)}
+.seg button.on{background:var(--primary);color:#fff;font-weight:500}
+/* ============ Text fields ============ */
+.field{position:relative;display:block;margin-bottom:16px}
+.field:last-child{margin-bottom:0}
+.field input,.field select,.field textarea{
+  width:100%;font-size:15px;font-family:inherit;color:var(--text);background:transparent;outline:none;
+}
+/* outlined */
+.field.outlined input,.field.outlined textarea{
+  border:1px solid rgba(0,0,0,.38);border-radius:4px;padding:18px 12px 8px;transition:border-color .2s,box-shadow .2s;
+}
+.field.outlined .flabel{
+  position:absolute;left:12px;top:15px;font-size:15px;color:var(--text-2);pointer-events:none;
+  transition:all .18s var(--ease);background:#fff;padding:0 4px;
+}
+.field.outlined input:focus,.field.outlined textarea:focus{border-color:var(--primary);box-shadow:0 0 0 1px var(--primary)}
+.field.outlined input:focus~.flabel,.field.outlined input:not(:placeholder-shown)~.flabel,
+.field.outlined textarea:focus~.flabel,.field.outlined textarea:not(:placeholder-shown)~.flabel{
+  top:-8px;font-size:12px;color:var(--primary);
+}
+.field .hint{font-size:11px;color:var(--text-3);margin-top:4px;display:flex;justify-content:space-between}
+/* filled underline */
+.field.filled{background:#F5F5F5;border-radius:4px 4px 0 0;border-bottom:2px solid rgba(0,0,0,.42);transition:border-color .2s}
+.field.filled:focus-within{border-bottom-color:var(--primary)}
+.field.filled input{border:0;padding:22px 12px 8px;background:transparent}
+.field.filled .flabel{position:absolute;left:12px;top:16px;font-size:15px;color:var(--text-2);pointer-events:none;transition:all .18s var(--ease)}
+.field.filled input:focus~.flabel,.field.filled input:not(:placeholder-shown)~.flabel{top:6px;font-size:12px;color:var(--primary)}
+/* select */
+.field.selectwrap select{
+  appearance:none;-webkit-appearance:none;border:1px solid rgba(0,0,0,.38);border-radius:4px;
+  padding:13px 36px 13px 12px;background:#fff;cursor:pointer;
+}
+.field.selectwrap::after{
+  content:"";position:absolute;right:14px;top:50%;width:8px;height:8px;pointer-events:none;
+  border-right:2px solid var(--text-2);border-bottom:2px solid var(--text-2);transform:translateY(-70%) rotate(45deg);
+}
+/* ============ Checkbox / Radio ============ */
+.checkrow{display:flex;align-items:center;gap:12px;padding:9px 0;cursor:pointer;width:100%}
+.mcheck{position:relative;width:22px;height:22px;flex:none;display:inline-block}
+.mcheck input{position:absolute;inset:0;opacity:0;margin:0;cursor:pointer;z-index:2}
+.mcheck .box{position:absolute;inset:2px;border:2px solid rgba(0,0,0,.54);border-radius:2px;transition:all .15s}
+.mcheck .box::after{content:"";position:absolute;left:4.5px;top:1px;width:4px;height:8px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg) scale(0);transition:transform .15s}
+.mcheck input:checked+.box{background:var(--primary);border-color:var(--primary)}
+.mcheck input:checked+.box::after{transform:rotate(45deg) scale(1)}
+.mradio{position:relative;width:22px;height:22px;flex:none;display:inline-block}
+.mradio input{position:absolute;inset:0;opacity:0;margin:0;cursor:pointer;z-index:2}
+.mradio .dot{position:absolute;inset:2px;border:2px solid rgba(0,0,0,.54);border-radius:50%;transition:border-color .15s}
+.mradio .dot::after{content:"";position:absolute;inset:3px;border-radius:50%;background:var(--primary);transform:scale(0);transition:transform .15s}
+.mradio input:checked+.dot{border-color:var(--primary)}
+.mradio input:checked+.dot::after{transform:scale(1)}
+.checkrow .t{font-size:14px}
+/* ============ Slider ============ */
+.sliderwrap{width:100%;padding:6px 0}
+.sliderwrap .lab{display:flex;justify-content:space-between;font-size:13px;margin-bottom:2px}
+.sliderwrap .lab b{color:var(--primary);font-weight:500}
+input[type=range].mslider{
+  -webkit-appearance:none;appearance:none;width:100%;height:28px;background:transparent;cursor:pointer;--rip:transparent;
+}
+input[type=range].mslider::-webkit-slider-runnable-track{height:4px;border-radius:2px;background:linear-gradient(to right,var(--primary) var(--fill,50%),rgba(0,0,0,.15) var(--fill,50%))}
+input[type=range].mslider::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--primary);margin-top:-7px;box-shadow:var(--dp1)}
+input[type=range].mslider::-moz-range-track{height:4px;border-radius:2px;background:rgba(0,0,0,.15)}
+input[type=range].mslider::-moz-range-progress{height:4px;border-radius:2px;background:var(--primary)}
+input[type=range].mslider::-moz-range-thumb{width:18px;height:18px;border:0;border-radius:50%;background:var(--primary);box-shadow:var(--dp1)}
+</style>
+</head>
+<body>
+<style>
+/* ============ 总览：色板 ============ */
+.swatches{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:100%}
+.swatch{border-radius:4px;overflow:hidden;box-shadow:var(--dp1);cursor:pointer;border:0;padding:0;background:#fff;text-align:left;font-family:inherit}
+.swatch .c{height:56px}
+.swatch .n{padding:7px 9px;font-size:11px;color:var(--text-2);line-height:1.4}
+.swatch .n b{display:block;font-size:12px;color:var(--text);font-weight:500}
+/* ============ 总览：海拔 ============ */
+.elevs{display:grid;grid-template-columns:1fr 1fr;gap:16px;width:100%}
+.elev{background:#fff;border-radius:4px;height:88px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
+.elev b{font-size:14px;font-weight:500}
+.elev span{font-size:11px;color:var(--text-3)}
+.elev.dp1{box-shadow:var(--dp1)} .elev.dp6{box-shadow:var(--dp6)}
+.elev.dp12{box-shadow:var(--dp12)} .elev.dp24{box-shadow:var(--dp24)}
+/* ============ 总览：排版 ============ */
+.type-row{padding:8px 0;border-bottom:1px solid var(--divider);width:100%}
+.type-row:last-child{border-bottom:0}
+.type-row .tag{font-size:10px;color:var(--accent);letter-spacing:1px;margin-bottom:2px}
+/* ============ 总览：形状 ============ */
+.shapes{display:flex;gap:14px;align-items:flex-end;width:100%;justify-content:space-around}
+.shape{display:flex;flex-direction:column;align-items:center;gap:8px;font-size:11px;color:var(--text-2)}
+.shape .s{background:var(--primary-50);border:2px solid var(--primary)}
+/* ============ 展示：记录列表 ============ */
+.plist{width:100%}
+.prow{display:flex;align-items:center;gap:12px;padding:12px 4px;border-bottom:1px solid var(--divider);--rip:rgba(63,81,181,.14)}
+.prow:last-child{border-bottom:0}
+.pavatar{width:40px;height:40px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;color:#fff;font-size:16px;font-weight:500}
+.prow .info{flex:1;min-width:0}
+.prow .info b{display:block;font-size:14px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.prow .info span{font-size:12px;color:var(--text-2)}
+.status{font-size:11px;padding:3px 10px;border-radius:10px;flex:none;letter-spacing:.5px}
+.status.ok{background:#E8F5E9;color:#2E7D32}
+.status.run{background:var(--primary-50);color:var(--primary)}
+.status.fail{background:#FCE4EC;color:var(--accent-dark)}
+/* ============ 展示：线性进度 ============ */
+.lp{width:100%;margin-bottom:14px}
+.lp:last-child{margin-bottom:0}
+.lp .lab{display:flex;justify-content:space-between;font-size:12px;color:var(--text-2);margin-bottom:6px}
+.lptrack{height:6px;border-radius:3px;background:rgba(63,81,181,.18);overflow:hidden;position:relative}
+.lpbar{height:100%;border-radius:3px;background:var(--primary);transition:width .4s var(--ease)}
+.lpbar.ind{position:absolute;width:40%;animation:lpInd 1.4s infinite var(--ease)}
+@keyframes lpInd{0%{left:-40%}100%{left:100%}}
+.lpbar.buf{background:rgba(63,81,181,.35)}
+.lpbar.buf2{position:absolute;background:var(--primary)}
+/* ============ 展示：芯片 ============ */
+.chips{display:flex;flex-wrap:wrap;gap:10px;width:100%}
+.chip{
+  border:1px solid var(--divider);background:#F5F5F5;border-radius:16px;padding:7px 14px;
+  font-size:13px;color:var(--text-2);cursor:pointer;position:relative;--rip:rgba(63,81,181,.2);
+}
+.chip.on{background:var(--primary);border-color:var(--primary);color:#fff;box-shadow:var(--dp1)}
+.chip .bdg{
+  position:absolute;top:-8px;right:-6px;min-width:20px;height:20px;border-radius:10px;
+  background:var(--accent);color:#fff;font-size:11px;display:flex;align-items:center;justify-content:center;
+  padding:0 5px;box-shadow:var(--dp1);
+}
+/* ============ 展示：数据表 ============ */
+.mtable{width:100%;border-collapse:collapse;font-size:13px}
+.mtable th{text-align:left;font-weight:500;color:var(--text-2);font-size:12px;padding:10px 8px;border-bottom:1px solid var(--divider)}
+.mtable td{padding:11px 8px;border-bottom:1px solid var(--divider)}
+.mtable tr:last-child td{border-bottom:0}
+.mtable tbody tr:active{background:rgba(63,81,181,.06)}
+.mtable td.num,.mtable th.num{text-align:right;font-variant-numeric:tabular-nums}
+/* ============ 展示：站点列表 ============ */
+.slist{width:100%}
+.srow{display:flex;align-items:center;gap:14px;padding:12px 6px;border-bottom:1px solid var(--divider);cursor:pointer;--rip:rgba(63,81,181,.14)}
+.srow:last-child{border-bottom:0}
+.sicon{width:42px;height:42px;border-radius:8px;flex:none;display:flex;align-items:center;justify-content:center;font-size:20px;color:#fff;box-shadow:var(--dp1)}
+.srow .info{flex:1;min-width:0}
+.srow .info b{display:block;font-size:14px;font-weight:500}
+.srow .info span{font-size:12px;color:var(--text-2)}
+.srow .chev{color:var(--text-3);font-size:18px}
+/* ============ 反馈：snackbar ============ */
+.snackbar{
+  position:fixed;left:16px;right:16px;bottom:100px;z-index:90;
+  background:#323232;color:#fff;border-radius:4px;box-shadow:var(--dp6);
+  padding:14px 8px 14px 18px;display:flex;align-items:center;gap:8px;
+  transform:translateY(24px);opacity:0;pointer-events:none;transition:all .25s var(--ease);
+  font-size:14px;
+}
+.snackbar.show{transform:none;opacity:1;pointer-events:auto}
+.snackbar .msg{flex:1}
+.snackbar button{border:0;background:transparent;color:var(--accent);font-size:13px;font-weight:500;letter-spacing:1px;padding:8px 10px;cursor:pointer;--rip:rgba(255,64,129,.25)}
+/* ============ 反馈：dialog ============ */
+.scrim{
+  position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:100;display:flex;align-items:center;justify-content:center;
+  padding:32px;opacity:0;pointer-events:none;transition:opacity .2s;
+}
+.scrim.show{opacity:1;pointer-events:auto}
+.dialog{background:#fff;border-radius:6px;box-shadow:var(--dp24);padding:22px 20px 12px;max-width:340px;width:100%;transform:scale(.92);transition:transform .2s var(--ease)}
+.scrim.show .dialog{transform:none}
+.dialog h3{font-size:17px;font-weight:500;margin-bottom:10px}
+.dialog p{font-size:14px;color:var(--text-2);margin-bottom:8px}
+.dlg-actions{display:flex;justify-content:flex-end;gap:4px;margin-top:8px}
+/* ============ 反馈：圆形进度 ============ */
+.ringwrap{display:flex;gap:24px;align-items:center;width:100%;justify-content:space-around}
+.ringitem{display:flex;flex-direction:column;align-items:center;gap:8px;font-size:12px;color:var(--text-2)}
+.ring{transform:rotate(-90deg)}
+.ring .bgc{stroke:rgba(63,81,181,.18)}
+.ring .fgc{stroke:var(--primary);stroke-linecap:round;transition:stroke-dashoffset .5s var(--ease)}
+.spinner{width:44px;height:44px;border-radius:50%;border:4px solid rgba(63,81,181,.18);border-top-color:var(--primary);animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+/* ============ 反馈：横幅 ============ */
+.banner{
+  display:flex;gap:12px;align-items:flex-start;width:100%;
+  background:var(--primary-50);border-radius:4px;padding:14px;
+}
+.banner .bic{width:36px;height:36px;border-radius:50%;background:var(--primary);color:#fff;flex:none;display:flex;align-items:center;justify-content:center;font-size:18px;box-shadow:var(--dp1)}
+.banner .bt{flex:1;font-size:13px}
+.banner .bt b{display:block;font-size:14px;margin-bottom:2px}
+.banner .bacts{display:flex;gap:4px;justify-content:flex-end;margin-top:6px}
+/* ============ 反馈：骨架屏 ============ */
+.skel{width:100%}
+.sk{border-radius:4px;background:linear-gradient(90deg,#EEEEEE 25%,#F7F7F7 50%,#EEEEEE 75%);background-size:200% 100%;animation:shimmer 1.3s infinite linear;margin-bottom:10px}
+@keyframes shimmer{to{background-position:-200% 0}}
+.skrow{display:flex;gap:12px;align-items:center;margin-bottom:14px}
+.skrow .c{flex:1}
+/* ============ FAB 演示台 ============ */
+.stage{position:relative;width:100%;height:210px;border:1px dashed rgba(63,81,181,.4);border-radius:6px;overflow:hidden;background:#FDFDFD}
+.stage .slist-scroll{height:100%;overflow-y:auto;padding:8px 70px 8px 8px}
+.stage .srow{padding:9px 6px}
+.stagefab{
+  position:absolute;right:14px;bottom:14px;width:52px;height:52px;border-radius:50%;border:0;
+  background:var(--accent);color:#fff;font-size:22px;cursor:pointer;box-shadow:var(--dp6);z-index:5;
+  display:flex;align-items:center;justify-content:center;--rip:rgba(255,255,255,.45);
+  transition:transform .2s var(--ease);
+}
+.stagefab:active{transform:scale(.92)}
+.stage .minifabs{position:absolute;right:19px;bottom:78px;display:flex;flex-direction:column;gap:10px;z-index:5}
+.minifab{
+  width:42px;height:42px;border-radius:50%;border:0;background:#fff;color:var(--primary);font-size:18px;
+  cursor:pointer;box-shadow:var(--dp4);display:flex;align-items:center;justify-content:center;
+  transform:scale(0);transition:transform .22s var(--ease);--rip:rgba(63,81,181,.2);
+}
+.stage.open .minifab{transform:scale(1)}
+.stage.open .minifab:nth-child(2){transition-delay:.05s}
+.stage.open .minifab:nth-child(3){transition-delay:.1s}
+/* ============ 全局 FAB ============ */
+.gfab{
+  position:fixed;right:18px;bottom:104px;width:58px;height:58px;border-radius:50%;border:0;z-index:60;
+  background:var(--accent);color:#fff;font-size:26px;cursor:pointer;box-shadow:var(--dp6);
+  display:flex;align-items:center;justify-content:center;--rip:rgba(255,255,255,.45);
+  transition:transform .25s var(--ease),background .2s;
+}
+.gfab:active{transform:scale(.9)}
+.gfab.open{transform:rotate(45deg)}
+.gfabmenu{position:fixed;right:25px;bottom:176px;z-index:60;display:flex;flex-direction:column;gap:14px;align-items:flex-end}
+.gfitem{display:flex;align-items:center;gap:10px;transform:scale(0);transition:transform .22s var(--ease)}
+.gfabwrap.open .gfitem{transform:scale(1)}
+.gfabwrap.open .gfitem:nth-child(2){transition-delay:.05s}
+.gfabwrap.open .gfitem:nth-child(3){transition-delay:.1s}
+.gflabel{background:#fff;border-radius:4px;box-shadow:var(--dp2);font-size:12px;padding:6px 10px;color:var(--text)}
+.gfmini{
+  width:44px;height:44px;border-radius:50%;border:0;background:#fff;color:var(--primary);font-size:19px;
+  cursor:pointer;box-shadow:var(--dp4);display:flex;align-items:center;justify-content:center;--rip:rgba(63,81,181,.2);
+}
+/* ============ 底部 Tab 栏 ============ */
+.tabbar{
+  position:fixed;left:16px;right:16px;bottom:14px;height:66px;z-index:70;
+  background:#fff;border-radius:33px;box-shadow:var(--dp6);display:flex;padding:6px;
+}
+.tabbar .pill{
+  position:absolute;top:6px;bottom:6px;border-radius:27px;background:rgba(63,81,181,.13);
+  transition:left .28s var(--ease),width .28s var(--ease);pointer-events:none;
+}
+.tbtn{
+  flex:1;border:0;background:transparent;cursor:pointer;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:3px;color:var(--text-3);font-size:11px;z-index:1;
+  border-radius:27px;transition:color .2s;--rip:rgba(63,81,181,.2);
+}
+.tbtn .ic{font-size:19px;line-height:1}
+.tbtn.on{color:var(--primary);font-weight:500}
+</style>
+</head>
+<body>
+
+<header class="appbar">
+  <h1>材质设计</h1>
+  <p>MATERIAL DESIGN · UI 组件库</p>
+</header>
+
+<main>
+<!-- ================= Tab 0 总览 ================= -->
+<div class="tabpage" id="tab0">
+  <section class="card">
+    <h3>风格介绍 <span class="en">About</span></h3>
+    <div class="sub">Google 2014 年发布的设计语言：纸张与墨水的隐喻</div>
+    <div style="font-size:13px;color:var(--text-2);line-height:1.8">
+      Material 把界面看作<strong style="color:var(--text)">层层叠叠的纸张</strong>：每一层都有真实的投影（海拔 dp），
+      点击时泛起<strong style="color:var(--text)">涟漪</strong>回应触摸。
+      主色 <b style="color:var(--primary)">靛蓝 #3F51B5</b> 承载品牌，
+      <b style="color:var(--accent)">粉色 #FF4081</b> 只用在最关键的操作上。
+    </div>
+  </section>
+
+  <section class="card">
+    <h3>Material 色板 <span class="en">Palette · 点击复制</span></h3>
+    <div class="sub">500 主色 / 700 深色 / A200 强调色</div>
+    <div class="swatches">
+      <button class="swatch ripple-host" data-hex="#3F51B5"><span class="c" style="background:#3F51B5"></span><span class="n"><b>靛蓝 500</b>#3F51B5</span></button>
+      <button class="swatch ripple-host" data-hex="#303F9F"><span class="c" style="background:#303F9F"></span><span class="n"><b>靛蓝 700</b>#303F9F</span></button>
+      <button class="swatch ripple-host" data-hex="#C5CAE9"><span class="c" style="background:#C5CAE9"></span><span class="n"><b>靛蓝 100</b>#C5CAE9</span></button>
+      <button class="swatch ripple-host" data-hex="#FF4081"><span class="c" style="background:#FF4081"></span><span class="n"><b>粉 A200</b>#FF4081</span></button>
+      <button class="swatch ripple-host" data-hex="#FAFAFA"><span class="c" style="background:#FAFAFA;border-bottom:1px solid var(--divider)"></span><span class="n"><b>灰 50 背景</b>#FAFAFA</span></button>
+      <button class="swatch ripple-host" data-hex="#212121"><span class="c" style="background:#212121"></span><span class="n"><b>灰 900 文字</b>#212121</span></button>
+    </div>
+  </section>
+
+  <section class="card">
+    <h3>海拔层级 <span class="en">Elevation</span></h3>
+    <div class="sub">Z 轴越高，投影越大越柔 —— 全部多层 shadow</div>
+    <div class="elevs">
+      <div class="elev dp1"><b>dp 1</b><span>开关 / 分段</span></div>
+      <div class="elev dp6"><b>dp 6</b><span>悬浮按钮</span></div>
+      <div class="elev dp12"><b>dp 12</b><span>底部弹窗</span></div>
+      <div class="elev dp24"><b>dp 24</b><span>对话框</span></div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h3>涟漪反馈 <span class="en">Ripple</span></h3>
+    <div class="sub">点哪里，波纹就从哪里扩散开</div>
+    <div class="demo">
+      <button class="mbtn raised ripple-host">开始解析</button>
+      <button class="mbtn flat ripple-host">查看记录</button>
+      <button class="iconbtn ripple-host colored">⬇</button>
+    </div>
+  </section>
+
+  <section class="card">
+    <h3>字体排版 <span class="en">Typography</span></h3>
+    <div class="sub">字阶分明，信息有主次</div>
+    <div class="type-row"><div class="tag">DISPLAY</div><div style="font-size:28px;font-weight:400">今日已解析 128 条</div></div>
+    <div class="type-row"><div class="tag">HEADLINE</div><div style="font-size:20px;font-weight:500">去水印解析</div></div>
+    <div class="type-row"><div class="tag">TITLE</div><div style="font-size:16px;font-weight:500">站点导航</div></div>
+    <div class="type-row"><div class="tag">BODY</div><div style="font-size:14px;color:var(--text-2)">粘贴视频链接，自动识别平台并解析无水印视频。</div></div>
+    <div class="type-row"><div class="tag">CAPTION</div><div style="font-size:12px;color:var(--text-3)">上次同步 12:40 · 共 6 个站点</div></div>
+  </section>
+
+  <section class="card">
+    <h3>形状系统 <span class="en">Shape</span></h3>
+    <div class="sub">小圆角是 Material 的签名</div>
+    <div class="shapes">
+      <div class="shape"><span class="s" style="width:64px;height:36px;border-radius:4px"></span>按钮 4px</div>
+      <div class="shape"><span class="s" style="width:64px;height:48px;border-radius:8px"></span>卡片 8px</div>
+      <div class="shape"><span class="s" style="width:72px;height:32px;border-radius:16px"></span>芯片 16px</div>
+      <div class="shape"><span class="s" style="width:48px;height:48px;border-radius:50%;background:var(--accent);border-color:var(--accent-dark)"></span>FAB 圆形</div>
+    </div>
+  </section>
+</div>
+
+<!-- ================= Tab 1 按钮 ================= -->
+<div class="tabpage" id="tab1">
+  <section class="card">
+    <h3>凸起按钮 <span class="en">Raised · 涟漪</span></h3>
+    <div class="sub">主要操作用投影把它托起来</div>
+    <div class="demo">
+      <button class="mbtn raised ripple-host" data-snack="开始解析视频">开始解析</button>
+      <button class="mbtn raised pink ripple-host" data-snack="已加入下载队列">下载原片</button>
+      <button class="mbtn raised ripple-host" disabled>解析中…</button>
+    </div>
+  </section>
+
+  <section class="card">
+    <h3>扁平按钮 <span class="en">Flat</span></h3>
+    <div class="sub">次要操作，不抢视觉</div>
+    <div class="demo">
+      <button class="mbtn flat ripple-host" data-snack="链接已复制到剪贴板">复制链接</button>
+      <button class="mbtn flat ripple-host" data-snack="已打开历史记录">历史记录</button>
+      <button class="mbtn flat pink ripple-host" data-snack="已取消本次解析">取消</button>
+    </div>
+  </section>
+
+  <section class="card">
+    <h3>悬浮按钮 <span class="en">FAB · 点我展开</span></h3>
+    <div class="sub">最重要的动作，永远悬浮在右下角</div>
+    <div class="stage" id="stageFab">
+      <div class="slist-scroll">
+        <div class="srow ripple-host" style="border:0"><div class="sicon" style="background:#3F51B5">▶</div><div class="info"><b>抖音</b><span>douyin.com · 已收录</span></div></div>
+        <div class="srow ripple-host" style="border:0"><div class="sicon" style="background:#FF4081">▶</div><div class="info"><b>快手</b><span>kuaishou.com · 已收录</span></div></div>
+        <div class="srow ripple-host" style="border:0"><div class="sicon" style="background:#303F9F">▶</div><div class="info"><b>哔哩哔哩</b><span>bilibili.com · 已收录</span></div></div>
+        <div class="srow ripple-host" style="border:0"><div class="sicon" style="background:#F50057">▶</div><div class="info"><b>小红书</b><span>xiaohongshu.com · 已收录</span></div></div>
+      </div>
+      <div class="minifabs">
+        <button class="minifab ripple-host" data-snack="打开去水印解析">⬇</button>
+        <button class="minifab ripple-host" data-snack="打开工时打卡">⏱</button>
+        <button class="minifab ripple-host" data-snack="打开站点导航">🧭</button>
+      </div>
+      <button class="stagefab ripple-host" id="stageFabBtn" aria-label="展开">＋</button>
+    </div>
+  </section>
+
+  <section class="card">
+    <h3>图标按钮 <span class="en">Icon button</span></h3>
+    <div class="sub">圆形涟漪，工具栏标配</div>
+    <div class="demo">
+      <button class="iconbtn ripple-host colored" data-snack="刷新列表">⟳</button>
+      <button class="iconbtn ripple-host" data-snack="编辑备注">✎</button>
+      <button class="iconbtn ripple-host" data-snack="分享给好友">⤴</button>
+      <button class="iconbtn ripple-host" data-snack="已删除该记录">🗑</button>
+      <button class="iconbtn ripple-host" data-snack="已加入收藏">★</button>
+    </div>
+  </section>
+
+  <section class="card">
+    <h3>开关 <span class="en">Switch</span></h3>
+    <div class="sub">拨动即生效，靛蓝表示开启</div>
+    <div class="demo col" style="gap:0">
+      <div class="switchrow"><div><div class="t">粘贴自动解析</div><div class="d">复制链接后自动开始</div></div><label class="mswitch"><input type="checkbox" checked data-snack-on="自动解析已开启" data-snack-off="自动解析已关闭"><span class="track"></span><span class="thumb"></span></label></div>
+      <div class="switchrow"><div><div class="t">打卡提醒</div><div class="d">每天 18:00 提醒打卡</div></div><label class="mswitch"><input type="checkbox" data-snack-on="打卡提醒已开启" data-snack-off="打卡提醒已关闭"><span class="track"></span><span class="thumb"></span></label></div>
+      <div class="switchrow"><div><div class="t">省流模式</div><div class="d">仅 WiFi 下载原片</div></div><label class="mswitch"><input type="checkbox" disabled><span class="track"></span><span class="thumb"></span></label></div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h3>分段按钮 <span class="en">Segmented</span></h3>
+    <div class="sub">一组互斥选项，选中项高亮</div>
+    <div class="seg" id="segDemo">
+      <button class="ripple-host on">今天</button>
+      <button class="ripple-host">本周</button>
+      <button class="ripple-host">本月</button>
+    </div>
+    <div style="font-size:12px;color:var(--text-2);margin-top:10px" id="segTip">当前：今天 · 解析 12 条</div>
+  </section>
+</div>
+
+<!-- ================= Tab 2 表单 ================= -->
+<div class="tabpage" id="tab2">
+  <section class="card">
+    <h3>浮动标签输入框 <span class="en">Outlined · 经典</span></h3>
+    <div class="sub">聚焦时标签上浮变靛蓝，Material 标志性交互</div>
+    <label class="field outlined">
+      <input placeholder=" " id="linkInput">
+      <span class="flabel">粘贴视频链接</span>
+      <span class="hint"><span>支持抖音 / 快手 / B站 / 小红书</span></span>
+    </label>
+    <label class="field outlined">
+      <input placeholder=" ">
+      <span class="flabel">备注（选填）</span>
+    </label>
+    <div class="demo"><button class="mbtn raised ripple-host" id="parseBtn">解析</button></div>
+  </section>
+
+  <section class="card">
+    <h3>下划线输入框 <span class="en">Filled</span></h3>
+    <div class="sub">灰底 + 底部 2px 指示线</div>
+    <label class="field filled">
+      <input placeholder=" " id="searchInput">
+      <span class="flabel">搜索站点</span>
+    </label>
+    <div style="font-size:12px;color:var(--text-2)" id="searchTip">输入关键词过滤下方站点列表</div>
+  </section>
+
+  <section class="card">
+    <h3>复选框 / 单选框 <span class="en">Checkbox · Radio</span></h3>
+    <div class="sub">选中态统一靛蓝</div>
+    <div class="demo col" style="gap:0">
+      <label class="checkrow ripple-host"><span class="mcheck"><input type="checkbox" checked><span class="box"></span></span><span class="t">保存原画质</span></label>
+      <label class="checkrow ripple-host"><span class="mcheck"><input type="checkbox"><span class="box"></span></span><span class="t">同时提取文案</span></label>
+      <div style="height:8px"></div>
+      <label class="checkrow ripple-host"><span class="mradio"><input type="radio" name="q" checked><span class="dot"></span></span><span class="t">原画</span></label>
+      <label class="checkrow ripple-host"><span class="mradio"><input type="radio" name="q"><span class="dot"></span></span><span class="t">高清</span></label>
+      <label class="checkrow ripple-host"><span class="mradio"><input type="radio" name="q"><span class="dot"></span></span><span class="t">流畅</span></label>
+    </div>
+  </section>
+
+  <section class="card">
+    <h3>滑杆 <span class="en">Slider</span></h3>
+    <div class="sub">拖动圆点，数值实时更新</div>
+    <div class="sliderwrap">
+      <div class="lab"><span>同时解析线程数</span><b id="thVal">4</b></div>
+      <input type="range" class="mslider" min="1" max="8" value="4" id="thSlider">
+    </div>
+    <div class="sliderwrap">
+      <div class="lab"><span>下载画质压缩比</span><b id="qVal">80%</b></div>
+      <input type="range" class="mslider" min="10" max="100" value="80" id="qSlider">
+    </div>
+  </section>
+
+  <section class="card">
+    <h3>选择器 <span class="en">Select</span></h3>
+    <div class="sub">原生下拉，Material 描边样式</div>
+    <label class="field selectwrap">
+      <select id="siteSelect">
+        <option>抖音</option><option>快手</option><option>哔哩哔哩</option><option>小红书</option><option>西瓜视频</option>
+      </select>
+    </label>
+    <div class="demo"><button class="mbtn flat ripple-host" id="siteGo">前往该站点</button></div>
+  </section>
+
+  <section class="card">
+    <h3>文本域 <span class="en">Textarea · 字数统计</span></h3>
+    <div class="sub">多行输入，右下角计数</div>
+    <label class="field outlined">
+      <textarea placeholder=" " rows="3" maxlength="140" id="noteArea"></textarea>
+      <span class="flabel">打卡备注</span>
+      <span class="hint"><span>记录今天的工作内容</span><span><b id="noteCount" style="color:var(--primary)">0</b>/140</span></span>
+    </label>
+  </section>
+</div>
+
+<!-- ================= Tab 3 展示 ================= -->
+<div class="tabpage" id="tab3">
+  <section class="card">
+    <h3>解析记录 <span class="en">纸张卡片列表</span></h3>
+    <div class="sub">每条记录都是一张小纸片</div>
+    <div class="plist">
+      <div class="prow ripple-host"><div class="pavatar" style="background:#3F51B5">抖</div><div class="info"><b>街头vlog · 无水印 1080P</b><span>今天 12:32 · 24.6MB</span></div><span class="status ok">成功</span></div>
+      <div class="prow ripple-host"><div class="pavatar" style="background:#FF4081">快</div><div class="info"><b>美食探店合集</b><span>今天 11:05 · 解析中 62%</span></div><span class="status run">解析中</span></div>
+      <div class="prow ripple-host"><div class="pavatar" style="background:#303F9F">哔</div><div class="info"><b>数码开箱 · 图集 9 张</b><span>昨天 21:48 · 链接失效</span></div><span class="status fail">失败</span></div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h3>线性进度条 <span class="en">Linear progress</span></h3>
+    <div class="sub">靛蓝轨道，确定 / 不确定两种形态</div>
+    <div class="lp"><div class="lab"><span>视频下载中</span><span id="lpVal">65%</span></div><div class="lptrack"><div class="lpbar" id="lpBar" style="width:65%"></div></div></div>
+    <div class="lp"><div class="lab"><span>正在连接解析服务器…</span></div><div class="lptrack"><div class="lpbar ind"></div></div></div>
+    <div class="lp"><div class="lab"><span>缓冲播放</span><span>已缓冲 80%</span></div><div class="lptrack"><div class="lpbar buf" style="position:absolute;width:80%"></div><div class="lpbar buf2" style="position:absolute;width:45%"></div></div></div>
+    <div class="demo"><button class="mbtn flat ripple-host" id="lpBtn">模拟下载推进</button></div>
+  </section>
+
+  <section class="card">
+    <h3>芯片 / 徽章 <span class="en">Chips · Badge</span></h3>
+    <div class="sub">点击筛选，徽章显示数量</div>
+    <div class="chips" id="chipGroup">
+      <button class="chip ripple-host on">全部<span class="bdg">128</span></button>
+      <button class="chip ripple-host">视频<span class="bdg">96</span></button>
+      <button class="chip ripple-host">图集<span class="bdg">21</span></button>
+      <button class="chip ripple-host">音频<span class="bdg">11</span></button>
+    </div>
+  </section>
+
+  <section class="card">
+    <h3>数据表 <span class="en">本周工时统计</span></h3>
+    <div class="sub">斑马线 + 右对齐数字</div>
+    <table class="mtable">
+      <thead><tr><th>日期</th><th>班次</th><th class="num">时长</th><th class="num">工时费</th></tr></thead>
+      <tbody>
+        <tr><td>10-21 周二</td><td>白班</td><td class="num">8.0h</td><td class="num">¥200</td></tr>
+        <tr><td>10-22 周三</td><td>白班</td><td class="num">9.5h</td><td class="num">¥238</td></tr>
+        <tr><td>10-23 周四</td><td>夜班</td><td class="num">7.0h</td><td class="num">¥210</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="card">
+    <h3>站点导航 <span class="en">List</span></h3>
+    <div class="sub">图标 + 双行文字 + 箭头</div>
+    <div class="slist" id="siteList">
+      <div class="srow ripple-host" data-site="抖音"><div class="sicon" style="background:#3F51B5">抖</div><div class="info"><b>抖音</b><span>短视频 · 去水印解析</span></div><span class="chev">›</span></div>
+      <div class="srow ripple-host" data-site="快手"><div class="sicon" style="background:#FF4081">快</div><div class="info"><b>快手</b><span>短视频 · 去水印解析</span></div><span class="chev">›</span></div>
+      <div class="srow ripple-host" data-site="哔哩哔哩"><div class="sicon" style="background:#303F9F">哔</div><div class="info"><b>哔哩哔哩</b><span>视频 · 封面提取</span></div><span class="chev">›</span></div>
+      <div class="srow ripple-host" data-site="小红书"><div class="sicon" style="background:#F50057">书</div><div class="info"><b>小红书</b><span>图文 · 图集下载</span></div><span class="chev">›</span></div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h3>FAB 联动 <span class="en">回到顶部</span></h3>
+    <div class="sub">悬浮按钮直接操控下方内容</div>
+    <div class="stage" id="topStage">
+      <div class="slist-scroll" id="topList">
+        <div class="srow" style="border:0"><div class="sicon" style="background:#3F51B5">1</div><div class="info"><b>第 1 条快捷入口</b><span>去水印解析</span></div></div>
+        <div class="srow" style="border:0"><div class="sicon" style="background:#5C6BC0">2</div><div class="info"><b>第 2 条快捷入口</b><span>站点导航</span></div></div>
+        <div class="srow" style="border:0"><div class="sicon" style="background:#7986CB">3</div><div class="info"><b>第 3 条快捷入口</b><span>工时打卡</span></div></div>
+        <div class="srow" style="border:0"><div class="sicon" style="background:#9FA8DA">4</div><div class="info"><b>第 4 条快捷入口</b><span>下载管理</span></div></div>
+        <div class="srow" style="border:0"><div class="sicon" style="background:#303F9F">5</div><div class="info"><b>第 5 条快捷入口</b><span>历史记录</span></div></div>
+        <div class="srow" style="border:0"><div class="sicon" style="background:#FF4081">6</div><div class="info"><b>第 6 条快捷入口</b><span>设置</span></div></div>
+      </div>
+      <button class="stagefab ripple-host" id="toTopBtn" aria-label="回到顶部">↑</button>
+    </div>
+  </section>
+</div>
+
+<!-- ================= Tab 4 反馈 ================= -->
+<div class="tabpage" id="tab4">
+  <section class="card">
+    <h3>Snackbar <span class="en">底部黑色横条</span></h3>
+    <div class="sub">轻量反馈，可带一个操作按钮</div>
+    <div class="demo">
+      <button class="mbtn raised ripple-host" id="snackBtn">显示提示</button>
+      <button class="mbtn flat ripple-host" id="snackActBtn">带撤销操作</button>
+    </div>
+  </section>
+
+  <section class="card">
+    <h3>对话框 <span class="en">Dialog · dp24</span></h3>
+    <div class="sub">最高海拔，打断式确认</div>
+    <div class="demo">
+      <button class="mbtn raised pink ripple-host" id="dlgBtn">删除记录</button>
+    </div>
+  </section>
+
+  <section class="card">
+    <h3>涟漪确认按钮 <span class="en">确认打卡</span></h3>
+    <div class="sub">整块按钮都是涟漪热区</div>
+    <button class="mbtn raised block ripple-host" id="clockBtn" style="font-size:16px;padding:15px">确 认 打 卡 · 10-23 白班</button>
+  </section>
+
+  <section class="card">
+    <h3>圆形进度 <span class="en">Circular progress</span></h3>
+    <div class="sub">确定环形 / 不确定旋转</div>
+    <div class="ringwrap">
+      <div class="ringitem">
+        <svg class="ring" width="64" height="64" viewBox="0 0 64 64">
+          <circle class="bgc" cx="32" cy="32" r="26" fill="none" stroke-width="6"/>
+          <circle class="fgc" id="ringFg" cx="32" cy="32" r="26" fill="none" stroke-width="6"
+            stroke-dasharray="163.4" stroke-dashoffset="57.2"/>
+        </svg>
+        <span id="ringVal">65%</span>
+      </div>
+      <div class="ringitem"><div class="spinner"></div><span>上传中…</span></div>
+    </div>
+    <div class="demo" style="margin-top:14px"><button class="mbtn flat ripple-host" id="ringBtn">模拟上传推进</button></div>
+  </section>
+
+  <section class="card">
+    <h3>提示横幅 <span class="en">Banner</span></h3>
+    <div class="sub">页面内嵌的重要通知</div>
+    <div class="banner" id="banner">
+      <div class="bic">!</div>
+      <div class="bt"><b>存储空间不足</b>下载目录剩余 320MB，原片可能下载失败。
+        <div class="bacts">
+          <button class="mbtn flat ripple-host" id="bannerLater" style="padding:8px 12px">稍后</button>
+          <button class="mbtn flat ripple-host" id="bannerClean" style="padding:8px 12px">去清理</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h3>骨架屏 <span class="en">Skeleton</span></h3>
+    <div class="sub">内容加载中的占位形态</div>
+    <div class="skel" id="skelBox">
+      <div class="skrow"><div class="sk" style="width:44px;height:44px;border-radius:50%;margin:0"></div><div class="c"><div class="sk" style="height:14px;width:70%"></div><div class="sk" style="height:12px;width:45%;margin:0"></div></div></div>
+      <div class="sk" style="height:14px;width:90%"></div>
+      <div class="sk" style="height:14px;width:75%"></div>
+      <div class="sk" style="height:14px;width:82%;margin:0"></div>
+    </div>
+    <div class="plist" id="skelDone" style="display:none">
+      <div class="prow"><div class="pavatar" style="background:#3F51B5">抖</div><div class="info"><b>加载完成 · 街头vlog</b><span>今天 12:32 · 24.6MB</span></div><span class="status ok">成功</span></div>
+    </div>
+    <div class="demo" style="margin-top:12px"><button class="mbtn flat ripple-host" id="skelBtn">重新加载</button></div>
+  </section>
+</div>
+</main>
+
+<!-- 全局 FAB -->
+<div class="gfabwrap" id="gfabWrap">
+  <div class="gfabmenu">
+    <div class="gfitem"><span class="gflabel">去水印</span><button class="gfmini ripple-host" data-snack="打开去水印解析">⬇</button></div>
+    <div class="gfitem"><span class="gflabel">打卡</span><button class="gfmini ripple-host" data-snack="打开工时打卡">⏱</button></div>
+    <div class="gfitem"><span class="gflabel">导航</span><button class="gfmini ripple-host" data-snack="打开站点导航">🧭</button></div>
+  </div>
+  <button class="gfab ripple-host" id="gfab" aria-label="快捷操作">＋</button>
+</div>
+
+<!-- Snackbar -->
+<div class="snackbar" id="snackbar"><span class="msg" id="snackMsg"></span><button id="snackAct" style="display:none"></button></div>
+
+<!-- Dialog -->
+<div class="scrim" id="scrim">
+  <div class="dialog" role="dialog" aria-modal="true">
+    <h3>删除这条记录？</h3>
+    <p>「数码开箱 · 图集 9 张」将从解析记录中移除，本地文件不受影响。</p>
+    <div class="dlg-actions">
+      <button class="mbtn flat ripple-host" id="dlgCancel">取消</button>
+      <button class="mbtn flat pink ripple-host" id="dlgOk">删除</button>
+    </div>
+  </div>
+</div>
+
+<!-- 底部 Tab 栏 -->
+<nav class="tabbar" id="tabbar">
+  <span class="pill" id="pill"></span>
+  <button class="tbtn ripple-host" data-tab="0"><span class="ic">▤</span>总览</button>
+  <button class="tbtn ripple-host" data-tab="1"><span class="ic">◉</span>按钮</button>
+  <button class="tbtn ripple-host" data-tab="2"><span class="ic">✎</span>表单</button>
+  <button class="tbtn ripple-host" data-tab="3"><span class="ic">▦</span>展示</button>
+  <button class="tbtn ripple-host" data-tab="4"><span class="ic">💬</span>反馈</button>
+</nav>
+
+<script>
+/* ---------- 涟漪：点击处创建，动画结束后移除节点 ---------- */
+document.addEventListener('pointerdown',function(e){
+  var h=e.target.closest('.ripple-host');
+  if(!h||h.disabled)return;
+  var r=h.getBoundingClientRect();
+  var d=Math.max(r.width,r.height)*2.4;
+  var s=document.createElement('span');
+  s.className='ripple';
+  s.style.width=s.style.height=d+'px';
+  s.style.left=(e.clientX-r.left-d/2)+'px';
+  s.style.top=(e.clientY-r.top-d/2)+'px';
+  h.appendChild(s);
+  var dead=false;
+  var kill=function(){if(dead)return;dead=true;s.remove();};
+  s.addEventListener('animationend',kill);
+  setTimeout(kill,900); /* 兜底：动画事件未触发也必移除 */
+},true);
+
+/* ---------- Snackbar ---------- */
+var snackEl=document.getElementById('snackbar'),
+    snackMsg=document.getElementById('snackMsg'),
+    snackAct=document.getElementById('snackAct'),
+    snackTimer=null;
+function snack(msg,actLabel,actFn){
+  snackMsg.textContent=msg;
+  if(actLabel){snackAct.style.display='';snackAct.textContent=actLabel;snackAct.onclick=function(){hideSnack();actFn&&actFn();};}
+  else{snackAct.style.display='none';snackAct.onclick=null;}
+  snackEl.classList.add('show');
+  clearTimeout(snackTimer);
+  snackTimer=setTimeout(hideSnack,3000);
+}
+function hideSnack(){snackEl.classList.remove('show');}
+document.querySelectorAll('[data-snack]').forEach(function(el){
+  el.addEventListener('click',function(){snack(el.getAttribute('data-snack'));});
+});
+
+/* ---------- Tab 切换 + 深链 + 滑动 pill ---------- */
+var pages=[0,1,2,3,4].map(function(i){return document.getElementById('tab'+i);});
+var tbtns=Array.prototype.slice.call(document.querySelectorAll('.tbtn'));
+var pill=document.getElementById('pill'),bar=document.getElementById('tabbar'),cur=-1;
+function movePill(){
+  var b=tbtns[cur];if(!b)return;
+  pill.style.left=b.offsetLeft+'px';
+  pill.style.width=b.offsetWidth+'px';
+}
+function switchTab(i,push){
+  i=Math.max(0,Math.min(4,i|0));
+  if(i===cur){movePill();return;}
+  cur=i;
+  pages.forEach(function(p,k){p.classList.toggle('active',k===i);});
+  tbtns.forEach(function(b,k){b.classList.toggle('on',k===i);});
+  requestAnimationFrame(function(){requestAnimationFrame(movePill);});
+  var url='?tab='+i;
+  if(push===false){try{history.replaceState(null,'',url);}catch(e){}}
+  else{try{history.replaceState(null,'',url);}catch(e){}}
+  window.scrollTo(0,0);
+}
+tbtns.forEach(function(b){b.addEventListener('click',function(){switchTab(+b.dataset.tab);});});
+window.addEventListener('resize',movePill);
+(function init(){
+  var t=0;
+  try{t=+new URLSearchParams(location.search).get('tab')||0;}catch(e){}
+  switchTab(t,false);
+})();
+
+/* ---------- 色板复制 ---------- */
+document.querySelectorAll('.swatch').forEach(function(sw){
+  sw.addEventListener('click',function(){
+    var hex=sw.getAttribute('data-hex');
+    function done(){snack('已复制 '+hex);}
+    if(navigator.clipboard&&navigator.clipboard.writeText){
+      navigator.clipboard.writeText(hex).then(done,done);
+    }else{done();}
+  });
+});
+
+/* ---------- 开关 ---------- */
+document.querySelectorAll('.mswitch input').forEach(function(inp){
+  inp.addEventListener('change',function(){
+    var m=inp.checked?inp.getAttribute('data-snack-on'):inp.getAttribute('data-snack-off');
+    if(m)snack(m);
+  });
+});
+
+/* ---------- 分段按钮 ---------- */
+var segBtns=document.querySelectorAll('#segDemo button'),
+    segTip=document.getElementById('segTip'),
+    segData={'今天':'今天 · 解析 12 条','本周':'本周 · 解析 86 条','本月':'本月 · 解析 342 条'};
+segBtns.forEach(function(b){
+  b.addEventListener('click',function(){
+    segBtns.forEach(function(x){x.classList.remove('on');});
+    b.classList.add('on');
+    segTip.textContent='当前：'+segData[b.textContent.trim()];
+  });
+});
+
+/* ---------- 表单 ---------- */
+document.getElementById('parseBtn').addEventListener('click',function(){
+  var v=document.getElementById('linkInput').value.trim();
+  snack(v?'链接已提交，开始解析…':'请先粘贴视频链接');
+});
+document.getElementById('searchInput').addEventListener('input',function(e){
+  var v=e.target.value.trim();
+  document.getElementById('searchTip').textContent=v?('正在搜索「'+v+'」…'):'输入关键词过滤下方站点列表';
+});
+function paintRange(el){
+  var p=(el.value-el.min)/(el.max-el.min)*100;
+  el.style.setProperty('--fill',p+'%');
+}
+[['thSlider','thVal',function(v){return v;}],
+ ['qSlider','qVal',function(v){return v+'%';}]].forEach(function(cfg){
+  var s=document.getElementById(cfg[0]),o=document.getElementById(cfg[1]);
+  var upd=function(){o.textContent=cfg[2](s.value);paintRange(s);};
+  s.addEventListener('input',upd);upd();
+});
+document.getElementById('siteGo').addEventListener('click',function(){
+  snack('前往站点：'+document.getElementById('siteSelect').value);
+});
+document.getElementById('noteArea').addEventListener('input',function(e){
+  document.getElementById('noteCount').textContent=e.target.value.length;
+});
+
+/* ---------- 展示 ---------- */
+var lpP=65;
+document.getElementById('lpBtn').addEventListener('click',function(){
+  lpP=lpP>=100?5:lpP+15;
+  document.getElementById('lpBar').style.width=lpP+'%';
+  document.getElementById('lpVal').textContent=lpP+'%';
+  if(lpP>=100)snack('下载完成，已保存到相册');
+});
+document.querySelectorAll('#chipGroup .chip').forEach(function(c){
+  c.addEventListener('click',function(){
+    document.querySelectorAll('#chipGroup .chip').forEach(function(x){x.classList.remove('on');});
+    c.classList.add('on');
+    snack('筛选：'+c.textContent.replace(/\d+$/,'').trim());
+  });
+});
+document.querySelectorAll('#siteList .srow').forEach(function(r){
+  r.addEventListener('click',function(){snack('打开站点：'+r.getAttribute('data-site'));});
+});
+document.getElementById('toTopBtn').addEventListener('click',function(){
+  document.getElementById('topList').scrollTo({top:0,behavior:'smooth'});
+  snack('已回到顶部');
+});
+
+/* ---------- 演示台 FAB 展开 ---------- */
+var stageFab=document.getElementById('stageFab'),stageFabBtn=document.getElementById('stageFabBtn');
+stageFabBtn.addEventListener('click',function(e){
+  e.stopPropagation();
+  stageFab.classList.toggle('open');
+  stageFabBtn.textContent=stageFab.classList.contains('open')?'×':'＋';
+});
+
+/* ---------- 全局 FAB ---------- */
+var gfabWrap=document.getElementById('gfabWrap'),gfab=document.getElementById('gfab');
+gfab.addEventListener('click',function(){
+  var open=gfabWrap.classList.toggle('open');
+  gfab.classList.toggle('open',open);
+});
+
+/* ---------- 反馈 ---------- */
+document.getElementById('snackBtn').addEventListener('click',function(){snack('解析完成，无水印视频已就绪');});
+document.getElementById('snackActBtn').addEventListener('click',function(){
+  snack('已删除 1 条记录','撤销',function(){snack('已恢复该记录');});
+});
+var scrim=document.getElementById('scrim');
+document.getElementById('dlgBtn').addEventListener('click',function(){scrim.classList.add('show');});
+document.getElementById('dlgCancel').addEventListener('click',function(){scrim.classList.remove('show');});
+document.getElementById('dlgOk').addEventListener('click',function(){scrim.classList.remove('show');snack('记录已删除');});
+scrim.addEventListener('click',function(e){if(e.target===scrim)scrim.classList.remove('show');});
+document.getElementById('clockBtn').addEventListener('click',function(){
+  var d=new Date(),p=function(n){return (n<10?'0':'')+n;};
+  snack('打卡成功 '+p(d.getMonth()+1)+'-'+p(d.getDate())+' '+p(d.getHours())+':'+p(d.getMinutes()));
+});
+var ringP=65;
+document.getElementById('ringBtn').addEventListener('click',function(){
+  ringP=ringP>=100?10:ringP+15;
+  var C=163.4;
+  document.getElementById('ringFg').style.strokeDashoffset=(C*(1-ringP/100)).toFixed(1);
+  document.getElementById('ringVal').textContent=ringP+'%';
+  if(ringP>=100)snack('上传完成');
+});
+document.getElementById('bannerLater').addEventListener('click',function(){
+  document.getElementById('banner').style.display='none';snack('已稍后提醒');
+});
+document.getElementById('bannerClean').addEventListener('click',function(){
+  document.getElementById('banner').style.display='none';snack('开始清理缓存…');
+});
+var skelLoading=false;
+document.getElementById('skelBtn').addEventListener('click',function(){
+  if(skelLoading)return;skelLoading=true;
+  document.getElementById('skelBox').style.display='';
+  document.getElementById('skelDone').style.display='none';
+  setTimeout(function(){
+    document.getElementById('skelBox').style.display='none';
+    document.getElementById('skelDone').style.display='';
+    skelLoading=false;snack('加载完成');
+  },1600);
+});
+</script>
+</body>
+</html>
