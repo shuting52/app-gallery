@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>粗野主义 Brutalism · UI套装</title>
+<style>
+/* ============ 粗野主义 BRUTALISM ============
+   token：原始 / 结构外露 / 等宽字体 / 零装饰 / 纯功能
+   无圆角 / 2px裸露边框 / 黑白灰+警示色 / 默认控件感 */
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono","PingFang SC","Hiragino Sans GB","Microsoft YaHei",monospace;
+  --ink:#000; --paper:#fff; --gray:#888; --line:#000; --alert:#d00; --mark:#ff0;
+}
+html{-webkit-text-size-adjust:100%}
+body{font-family:var(--mono);background:var(--paper);color:var(--ink);font-size:14px;line-height:1.6;padding-bottom:84px}
+/* ---------- 页眉 ---------- */
+header.top{border-bottom:3px solid var(--ink);padding:18px 16px 14px}
+header.top .kicker{font-size:11px;letter-spacing:2px;color:var(--gray)}
+header.top h1{font-size:22px;font-weight:700;line-height:1.3;margin:4px 0 6px}
+header.top .sub{font-size:12px;color:#333}
+header.top .meta{margin-top:8px;font-size:11px;border-top:1px solid var(--ink);padding-top:8px;display:flex;justify-content:space-between;color:#333}
+/* ---------- Tab 页 ---------- */
+.tabpage{display:none;padding:16px 16px 8px}
+.tabpage.active{display:block}
+.sec-label{font-size:11px;letter-spacing:2px;color:var(--gray);margin:2px 0 10px;border-bottom:1px solid var(--ink);padding-bottom:6px}
+/* ---------- 卡片 ---------- */
+.card{border:2px solid var(--ink);margin-bottom:16px;background:var(--paper)}
+.card > .card-h{border-bottom:2px solid var(--ink);padding:8px 12px;font-size:13px;font-weight:700;display:flex;justify-content:space-between;align-items:center;background:#f5f5f5}
+.card > .card-h .no{font-size:11px;color:var(--gray);font-weight:400}
+.card > .card-b{padding:14px 12px}
+/* ---------- 通用元素 ---------- */
+pre.raw{font-family:var(--mono);font-size:12px;white-space:pre-wrap;border:1px solid var(--ink);padding:10px;background:#fafafa}
+hr{border:none;border-top:2px solid var(--ink);margin:12px 0}
+hr.dash{border-top:2px dashed var(--ink)}
+hr.thick{border-top:5px solid var(--ink)}
+hr.dbl{border-top:4px double var(--ink)}
+a{color:var(--ink);text-decoration:underline;text-underline-offset:3px}
+a:visited{color:#444}
+button{font-family:var(--mono)}
+/* 裸边框按钮 */
+.btn{border:2px solid var(--ink);background:var(--paper);color:var(--ink);padding:8px 16px;font-size:13px;cursor:pointer;border-radius:0}
+.btn:active{background:var(--ink);color:var(--paper)}
+.btn.solid{background:var(--ink);color:var(--paper)}
+.btn.solid:active{background:#fff;color:#000}
+.btn.danger{border-color:var(--alert);color:var(--alert)}
+.btn.danger:active{background:var(--alert);color:#fff}
+.btn[disabled]{border:2px dashed var(--gray);color:var(--gray);cursor:not-allowed;background:#f5f5f5}
+.btn[disabled]:active{background:#f5f5f5;color:var(--gray)}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+/* 方括号按钮 */
+.brack{border:none;background:none;font-size:13px;cursor:pointer;padding:8px 4px;color:var(--ink)}
+.brack:hover{background:var(--ink);color:var(--paper)}
+.brack .b{color:var(--gray)}
+.brack:hover .b{color:var(--paper)}
+/* 裸表格 */
+table.raw{width:100%;border-collapse:collapse;font-size:12px}
+table.raw th,table.raw td{border:1px solid var(--ink);padding:6px 8px;text-align:left}
+table.raw thead th{background:#eee}
+table.raw th.sortable{cursor:pointer;user-select:none}
+/* 表单原生控件：保持浏览器默认外观，仅统一字体与间距 */
+input,select,textarea{font-family:var(--mono);font-size:13px}
+input[type=text],input[type=url],input[type=number]{border:2px solid var(--ink);padding:7px 8px;width:100%;border-radius:0;background:#fff}
+textarea{border:2px solid var(--ink);width:100%;padding:8px;border-radius:0;background:#fff;resize:vertical;min-height:90px}
+select{border:2px solid var(--ink);padding:6px;border-radius:0;background:#fff}
+label.f{display:block;margin:10px 0 4px;font-size:12px;font-weight:700}
+.hint{font-size:11px;color:var(--gray);margin-top:4px}
+.err{font-size:12px;color:var(--alert);margin-top:4px;font-weight:700}
+.ok{font-size:12px;color:#0a0;margin-top:4px;font-weight:700}
+fieldset{border:2px solid var(--ink);padding:12px;margin:0}
+legend{padding:0 8px;font-size:13px;font-weight:700}
+.check-row{display:flex;align-items:center;gap:8px;margin:8px 0;font-size:13px}
+.check-row input{width:16px;height:16px;accent-color:#000}
+/* 粗野开关：方形，无圆角 */
+.switch{position:relative;width:64px;height:28px;display:inline-block;flex:none}
+.switch input{position:absolute;opacity:0;width:100%;height:100%;margin:0;cursor:pointer;z-index:2}
+.switch .track{position:absolute;inset:0;border:2px solid var(--ink);background:#fff}
+.switch .track .knob{position:absolute;top:2px;left:2px;width:20px;height:20px;background:#000}
+.switch input:checked + .track .knob{left:38px}
+.switch input:checked + .track{background:#e8e8e8}
+.switch-row{display:flex;align-items:center;gap:12px;margin:10px 0;font-size:13px}
+.switch-state{font-weight:700;min-width:36px}
+/* 日志流 */
+.log{background:#000;color:#0f0;font-size:11px;padding:10px;height:150px;overflow-y:auto;white-space:pre-wrap}
+.log .t{color:#888}
+/* ASCII 进度条 */
+.ascii{font-size:14px;letter-spacing:1px;margin:8px 0;word-break:break-all}
+.pct{font-size:12px;color:var(--gray)}
+/* 状态行 */
+.status{font-size:12px;padding:6px 0;border-bottom:1px dashed var(--gray)}
+.status:last-child{border-bottom:none}
+.tag{display:inline-block;font-size:11px;font-weight:700;padding:1px 6px;border:2px solid var(--ink);margin:2px 4px 2px 0}
+.tag.red{border-color:var(--alert);color:var(--alert)}
+.tag.inv{background:var(--ink);color:#fff}
+.tag.hl{background:var(--mark)}
+/* 分页 */
+.pager{display:flex;gap:6px;flex-wrap:wrap}
+.pager button{border:2px solid var(--ink);background:#fff;min-width:34px;height:34px;font-size:13px;cursor:pointer}
+.pager button.cur{background:#000;color:#fff}
+/* 提示条 */
+.alertbar{border:2px solid var(--ink);padding:10px 12px;font-size:12px;margin-bottom:10px;display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.alertbar .x{border:none;background:none;font-size:14px;cursor:pointer;font-weight:700;flex:none}
+.alertbar.info{border-left:8px solid var(--ink)}
+.alertbar.okk{border-left:8px solid #0a0}
+.alertbar.warn{border-left:8px solid #da0;background:#fffbe6}
+.alertbar.errb{border-left:8px solid var(--alert);background:#fff0f0}
+/* 对话框 */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;z-index:90}
+.overlay.show{display:block}
+.dialog{position:fixed;left:50%;top:38%;transform:translate(-50%,-50%);width:min(340px,86vw);background:#fff;border:3px solid #000;z-index:95;display:none}
+.dialog.show{display:block}
+.dialog .dh{border-bottom:3px solid #000;padding:8px 12px;font-weight:700;font-size:13px;display:flex;justify-content:space-between}
+.dialog .db{padding:14px 12px;font-size:13px}
+.dialog .df{border-top:2px solid #000;padding:10px 12px;display:flex;justify-content:flex-end;gap:10px}
+/* toast */
+.toast{position:fixed;left:12px;bottom:84px;background:#000;color:#fff;font-size:12px;padding:10px 14px;z-index:96;display:none;max-width:70vw}
+.toast.show{display:block}
+/* 网格骨架 */
+.skel{border:2px dashed var(--gray);padding:8px;margin-bottom:8px;font-size:11px;color:#333}
+.skel b{color:#000}
+/* 色板 */
+.swatches{display:flex;gap:0;flex-wrap:wrap;border:2px solid #000}
+.sw{flex:1;min-width:70px;height:64px;display:flex;align-items:flex-end;justify-content:center;padding-bottom:4px;font-size:10px;border-right:2px solid #000}
+.sw:last-child{border-right:none}
+/* 底部 Tab 栏：粗野矩形 */
+#tabbar{position:fixed;left:0;right:0;bottom:0;z-index:80;background:#fff;border-top:3px solid #000;display:flex;height:64px}
+#tabbar button{flex:1;border:none;background:none;font-family:var(--mono);font-size:13px;font-weight:700;color:#000;cursor:pointer;position:relative;z-index:2;border-right:1px solid #000}
+#tabbar button:last-child{border-right:none}
+#tabbar button.active{color:#fff}
+#pill{position:absolute;top:0;bottom:0;left:0;width:0;background:#000;z-index:1;transition:left .18s ease,width .18s ease}
+#tabbar .safe{position:absolute;bottom:0;left:0;right:0;height:env(safe-area-inset-bottom,0px);background:#fff}
+.out{font-size:12px;margin-top:10px;border-top:1px dashed var(--gray);padding-top:8px;min-height:20px}
+.out:empty{display:none}
+.kv{font-size:12px;margin:4px 0}
+.kv b{display:inline-block;min-width:88px}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="kicker">STYLE-KIT / K12</div>
+  <h1>粗野主义<br>BRUTALISM</h1>
+  <div class="sub">原始 · 结构外露 · 等宽字体 · 零装饰 · 纯功能</div>
+  <div class="meta"><span>30 COMPONENTS</span><span>5 TABS</span><span>0 RADIUS</span></div>
+</header>
+
+<!-- ================= TAB 0 总览 ================= -->
+<section class="tabpage" id="page0">
+  <div class="sec-label">00 / 总览 OVERVIEW</div>
+
+  <div class="card"><div class="card-h">风格说明 <span class="no">01</span></div><div class="card-b">
+    <pre class="raw">粗野主义 = 把结构直接摆出来。
+- 字体：等宽，全部。
+- 圆角：0。阴影：无。渐变：无。
+- 边框：2px 纯黑，裸露。
+- 颜色：黑 / 白 / 灰 + 警示红。
+- 控件：像浏览器默认的那样诚实。
+- 装饰：零。功能：全部。</pre>
+  </div></div>
+
+  <div class="card"><div class="card-h">系统字体 <span class="no">02</span></div><div class="card-b">
+    <div class="kv"><b>FONT-STACK</b></div>
+    <pre class="raw" style="font-size:11px">ui-monospace, SFMono-Regular, Menlo,
+Consolas, "Liberation Mono",
+"PingFang SC", "Microsoft YaHei",
+monospace</pre>
+    <div style="margin-top:10px;font-size:20px">懒得找了 · 去水印解析</div>
+    <div style="margin-top:6px;font-size:14px">站点导航 / 工时打卡 / 0123456789</div>
+    <div style="margin-top:6px;font-size:11px;color:#555">ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz</div>
+  </div></div>
+
+  <div class="card"><div class="card-h">裸表格 <span class="no">03</span></div><div class="card-b">
+    <table class="raw">
+      <thead><tr><th>站点</th><th>状态</th><th>今日解析</th></tr></thead>
+      <tbody>
+        <tr><td>短视频A</td><td>正常</td><td>128</td></tr>
+        <tr><td>短视频B</td><td>限流</td><td>37</td></tr>
+        <tr><td>图集站C</td><td>正常</td><td>214</td></tr>
+      </tbody>
+    </table>
+  </div></div>
+
+  <div class="card"><div class="card-h">结构骨架 <span class="no">04</span></div><div class="card-b">
+    <div class="skel"><b>[HEADER]</b> 标题栏 / 3px 底边</div>
+    <div class="skel"><b>[MAIN]</b> 内容区 / 卡片 2px 边框</div>
+    <div class="skel"><b>[HR]</b> 分隔线 / 裸露，无装饰</div>
+    <div class="skel" style="margin-bottom:0"><b>[TABBAR]</b> 底部导航 / 顶部 3px 黑线</div>
+  </div></div>
+
+  <div class="card"><div class="card-h">色板 <span class="no">05</span></div><div class="card-b">
+    <div class="swatches">
+      <div class="sw" style="background:#000;color:#fff">#000</div>
+      <div class="sw" style="background:#fff">#fff</div>
+      <div class="sw" style="background:#888;color:#fff">#888</div>
+      <div class="sw" style="background:#eee">#eee</div>
+      <div class="sw" style="background:#d00;color:#fff">#d00</div>
+      <div class="sw" style="background:#ff0">#ff0</div>
+    </div>
+    <div class="hint">黑白灰为主，红=警示，黄=高亮标记。仅此而已。</div>
+  </div></div>
+
+  <div class="card"><div class="card-h">分隔线 <span class="no">06</span></div><div class="card-b">
+    <hr><hr class="dash"><hr class="dbl"><hr class="thick" style="margin-bottom:0">
+  </div></div>
+</section>
+
+<!-- ================= TAB 1 按钮 ================= -->
+<section class="tabpage" id="page1">
+  <div class="sec-label">01 / 按钮 BUTTONS</div>
+
+  <div class="card"><div class="card-h">原生按钮 <span class="no">07</span></div><div class="card-b">
+    <div class="btn-row">
+      <button>确定</button>
+      <input type="submit" value="提交">
+      <input type="reset" value="重置">
+    </div>
+    <div class="hint">未加任何样式：浏览器默认即风格。</div>
+  </div></div>
+
+  <div class="card"><div class="card-h">裸边框按钮 <span class="no">08</span></div><div class="card-b">
+    <div class="btn-row">
+      <button class="btn" onclick="say('out-b2','已开始解析')">开始解析</button>
+      <button class="btn solid" onclick="say('out-b2','已暂停任务')">暂停</button>
+      <button class="btn" onclick="say('out-b2','历史已清空')">清空历史</button>
+    </div>
+    <div class="out" id="out-b2"></div>
+    <div class="hint">2px 黑边 / 按下反白。无圆角，无阴影。</div>
+  </div></div>
+
+  <div class="card"><div class="card-h">[方括号]式按钮 <span class="no">09</span></div><div class="card-b">
+    <div class="btn-row">
+      <button class="brack" onclick="say('out-b3','打卡：上班 09:00')"><span class="b">[</span> 上班打卡 <span class="b">]</span></button>
+      <button class="brack" onclick="say('out-b3','打卡：下班 18:30')"><span class="b">[</span> 下班打卡 <span class="b">]</span></button>
+      <button class="brack" onclick="say('out-b3','已导出本月工时 CSV')"><span class="b">[</span> 导出工时 <span class="b">]</span></button>
+    </div>
+    <div class="out" id="out-b3"></div>
+  </div></div>
+
+  <div class="card"><div class="card-h">纯文本链接按钮 <span class="no">10</span></div><div class="card-b">
+    <div class="btn-row">
+      <a href="#" onclick="return nav(2)">去解析</a>
+      <a href="#" onclick="return nav(3)">看数据</a>
+      <a href="#" onclick="return nav(4)">反馈区</a>
+    </div>
+    <div class="hint">下划线即按钮。点击可跳转对应 Tab。</div>
+  </div></div>
+
+  <div class="card"><div class="card-h">危险按钮 <span class="no">11</span></div><div class="card-b">
+    <div class="btn-row">
+      <button class="btn danger" id="delbtn" onclick="armDelete()">删除全部记录</button>
+    </div>
+    <div class="out" id="out-b5"></div>
+    <div class="hint">红=不可逆。点一次进入待确认态。</div>
+  </div></div>
+
+  <div class="card"><div class="card-h">禁用态 <span class="no">12</span></div><div class="card-b">
+    <div class="btn-row">
+      <button class="btn" disabled>解析中…</button>
+      <button disabled>原生禁用</button>
+    </div>
+    <div class="hint">虚线灰边 = 不可用。诚实表达状态。</div>
+  </div></div>
+</section>
+
+<!-- ================= TAB 2 表单 ================= -->
+<section class="tabpage" id="page2">
+  <div class="sec-label">02 / 表单 FORMS</div>
+
+  <div class="card"><div class="card-h">原生控件 <span class="no">13</span></div><div class="card-b">
+    <div class="check-row"><input type="checkbox" id="c1" checked><label for="c1">粘贴自动解析</label></div>
+    <div class="check-row"><input type="checkbox" id="c2"><label for="c2">仅 Wi-Fi 下载</label></div>
+    <div class="check-row"><input type="radio" name="q" id="r1" checked><label for="r1">标清</label></div>
+    <div class="check-row"><input type="radio" name="q" id="r2"><label for="r2">高清</label></div>
+    <div class="check-row"><label for="s1">站点：</label>
+      <select id="s1"><option>短视频A</option><option>短视频B</option><option>图集站C</option></select>
+    </div>
+    <div class="hint">checkbox / radio / select 保持系统默认渲染。</div>
+  </div></div>
+
+  <div class="card"><div class="card-h">裸露 fieldset 表单 <span class="no">14</span></div><div class="card-b">
+    <fieldset>
+      <legend>新建解析任务</legend>
+      <label class="f" for="f-link">视频链接</label>
+      <input type="url" id="f-link" placeholder="https://…">
+      <label class="f" for="f-name">备注</label>
+      <input type="text" id="f-name" placeholder="可选">
+      <div style="margin-top:12px"><button class="btn solid" onclick="submitTask()">提交任务</button></div>
+    </fieldset>
+    <div class="out" id="out-f2"></div>
+  </div></div>
+
+  <div class="card"><div class="card-h">等宽文本域 <span class="no">15</span></div><div class="card-b">
+    <label class="f" for="ta">批量链接（一行一个）</label>
+    <textarea id="ta" oninput="countChars()" placeholder="https://…&#10;https://…"></textarea>
+    <div class="hint" id="ta-count">0 行 / 0 字</div>
+  </div></div>
+
+  <div class="card"><div class="card-h">搜索行 <span class="no">16</span></div><div class="card-b">
+    <div style="display:flex;gap:8px">
+      <input type="text" id="q" placeholder="输入站点关键词" style="flex:1">
+      <button class="btn" onclick="doSearch()">GO</button>
+    </div>
+    <div class="out" id="out-f4"></div>
+  </div></div>
+
+  <div class="card"><div class="card-h">方形开关 <span class="no">17</span></div><div class="card-b">
+    <div class="switch-row">
+      <span class="switch"><input type="checkbox" id="sw1" checked onchange="swState('sw1','st1')"><span class="track"><span class="knob"></span></span></span>
+      <span>自动解析剪贴板</span><span class="switch-state" id="st1">ON</span>
+    </div>
+    <div class="switch-row">
+      <span class="switch"><input type="checkbox" id="sw2" onchange="swState('sw2','st2')"><span class="track"><span class="knob"></span></span></span>
+      <span>完成后震动提醒</span><span class="switch-state" id="st2">OFF</span>
+    </div>
+    <div class="hint">方形滑块，无过渡装饰之外的多余动画。</div>
+  </div></div>
+
+  <div class="card"><div class="card-h">校验提示 <span class="no">18</span></div><div class="card-b">
+    <label class="f" for="vlink">链接校验</label>
+    <input type="text" id="vlink" placeholder="粘贴链接后点校验">
+    <div style="margin-top:10px"><button class="btn" onclick="validate()">校验</button></div>
+    <div id="out-f6"></div>
+  </div></div>
+</section>
+
+<!-- ================= TAB 3 展示 ================= -->
+<section class="tabpage" id="page3">
+  <div class="sec-label">03 / 展示 DISPLAY</div>
+
+  <div class="card"><div class="card-h">纯文本日志流 <span class="no">19</span></div><div class="card-b">
+    <div class="log" id="logbox">10:01:02 引擎启动 OK
+10:01:03 队列载入 3 任务
+10:01:05 站点A 握手成功</div>
+    <div style="margin-top:10px"><button class="btn" onclick="addLog()">追加一行</button></div>
+  </div></div>
+
+  <div class="card"><div class="card-h">裸露数据表 <span class="no">20</span></div><div class="card-b">
+    <table class="raw" id="dtable">
+      <thead><tr>
+        <th class="sortable" data-k="0" onclick="sortT(0)">站点 [⇅]</th>
+        <th class="sortable" data-k="1" onclick="sortT(1)">解析数 [⇅]</th>
+        <th class="sortable" data-k="2" onclick="sortT(2)">成功率 [⇅]</th>
+      </tr></thead>
+      <tbody>
+        <tr><td>短视频A</td><td>128</td><td>98%</td></tr>
+        <tr><td>短视频B</td><td>37</td><td>81%</td></tr>
+        <tr><td>图集站C</td><td>214</td><td>99%</td></tr>
+        <tr><td>音频站D</td><td>56</td><td>93%</td></tr>
+      </tbody>
+    </table>
+    <div class="hint">点击表头排序。边框即全部装饰。</div>
+  </div></div>
+
+  <div class="card"><div class="card-h">ASCII 进度条 <span class="no">21</span></div><div class="card-b">
+    <div class="ascii" id="ascii">[##########----------]</div>
+    <div class="pct" id="pct">50% · 下载中</div>
+    <div class="btn-row" style="margin-top:10px">
+      <button class="brack" onclick="setBar(0)"><span class="b">[</span>0<span class="b">]</span></button>
+      <button class="brack" onclick="setBar(25)"><span class="b">[</span>25<span class="b">]</span></button>
+      <button class="brack" onclick="setBar(50)"><span class="b">[</span>50<span class="b">]</span></button>
+      <button class="brack" onclick="setBar(75)"><span class="b">[</span>75<span class="b">]</span></button>
+      <button class="brack" onclick="setBar(100)"><span class="b">[</span>100<span class="b">]</span></button>
+    </div>
+  </div></div>
+
+  <div class="card"><div class="card-h">系统状态行 <span class="no">22</span></div><div class="card-b">
+    <div class="status"><span class="tag inv">OK</span>解析引擎 · 运行中 · v1.7.51</div>
+    <div class="status"><span class="tag hl">WARN</span>站点B 限流 · 3 任务排队</div>
+    <div class="status"><span class="tag">IDLE</span>工时打卡 · 今日未打卡</div>
+    <div class="status"><span class="tag red">ERR</span>站点D 握手失败 · 已重试 2 次</div>
+  </div></div>
+
+  <div class="card"><div class="card-h">分页器 <span class="no">23</span></div><div class="card-b">
+    <div class="pager" id="pager">
+      <button class="cur" onclick="goPage(1,this)">1</button>
+      <button onclick="goPage(2,this)">2</button>
+      <button onclick="goPage(3,this)">3</button>
+      <button onclick="goPage(4,this)">4</button>
+      <button onclick="goPage(5,this)">5</button>
+    </div>
+    <div class="out" id="out-d5">当前第 1 页 · 共 48 条记录</div>
+  </div></div>
+
+  <div class="card"><div class="card-h">徽章 <span class="no">24</span></div><div class="card-b">
+    <span class="tag inv">NEW</span><span class="tag hl">HOT</span><span class="tag red">限流</span><span class="tag">免费</span><span class="tag">v1.7.51</span>
+    <div class="hint">方框 + 文字 = 徽章。不需要别的。</div>
+  </div></div>
+</section>
+
+<!-- ================= TAB 4 反馈 ================= -->
+<section class="tabpage" id="page4">
+  <div class="sec-label">04 / 反馈 FEEDBACK</div>
+
+  <div class="card"><div class="card-h">alert 式提示条 <span class="no">25</span></div><div class="card-b">
+    <div id="alerts">
+      <div class="alertbar info"><span>[i] 解析完成：3 个视频已入库。</span><button class="x" onclick="this.parentNode.remove()">×</button></div>
+      <div class="alertbar okk"><span>[√] 工时已同步：今日 8.5h。</span><button class="x" onclick="this.parentNode.remove()">×</button></div>
+      <div class="alertbar warn"><span>[!] 站点B 限流，任务已排队。</span><button class="x" onclick="this.parentNode.remove()">×</button></div>
+      <div class="alertbar errb"><span>[×] 链接无效：无法识别该地址。</span><button class="x" onclick="this.parentNode.remove()">×</button></div>
+    </div>
+    <button class="btn" onclick="restoreAlerts()">全部恢复</button>
+  </div></div>
+
+  <div class="card"><div class="card-h">裸对话框 <span class="no">26</span></div><div class="card-b">
+    <button class="btn solid" onclick="openDlg()">打开对话框</button>
+    <div class="out" id="out-r2"></div>
+  </div></div>
+
+  <div class="card"><div class="card-h">纯文本确认 <span class="no">27</span></div><div class="card-b">
+    <div style="font-size:13px">确定清空全部解析历史？ <button class="brack" onclick="yn(true)"><span class="b">[</span>Y<span class="b">]</span></button> <button class="brack" onclick="yn(false)"><span class="b">[</span>N<span class="b">]</span></button></div>
+    <div class="out" id="out-r3"></div>
+  </div></div>
+
+  <div class="card"><div class="card-h">通知 toast <span class="no">28</span></div><div class="card-b">
+    <button class="btn" onclick="fireToast()">触发通知</button>
+    <div class="hint">左下角黑块弹出，2.5 秒后消失。</div>
+  </div></div>
+
+  <div class="card"><div class="card-h">加载模拟 <span class="no">29</span></div><div class="card-b">
+    <div class="ascii" id="loadbar">[--------------------]</div>
+    <div class="pct" id="loadpct">待命</div>
+    <div style="margin-top:10px"><button class="btn" id="loadbtn" onclick="runLoad()">开始加载</button></div>
+  </div></div>
+
+  <div class="card"><div class="card-h">空状态 <span class="no">30</span></div><div class="card-b" style="text-align:center;padding:26px 12px">
+    <div style="font-size:15px;font-weight:700">[ 空 ]</div>
+    <div style="font-size:12px;color:#555;margin:8px 0 14px">暂无工时记录<br>先打一次卡再回来</div>
+    <button class="btn" onclick="say('out-r6','已跳转：工时打卡（演示）')">[ 去打卡 ]</button>
+    <div class="out" id="out-r6"></div>
+  </div></div>
+</section>
+
+<!-- 对话框 / toast -->
+<div class="overlay" id="ovl" onclick="closeDlg()"></div>
+<div class="dialog" id="dlg" role="dialog">
+  <div class="dh"><span>确认操作</span><button class="x brack" style="padding:0 4px" onclick="closeDlg()">×</button></div>
+  <div class="db">删除所选 3 条解析记录？<br>此操作不可恢复。</div>
+  <div class="df"><button class="btn" onclick="closeDlg()">取消</button><button class="btn solid" onclick="dlgOk()">确认删除</button></div>
+</div>
+<div class="toast" id="toast">[√] 解析完成：3 条已入库</div>
+
+<!-- 底部 Tab 栏 -->
+<nav id="tabbar">
+  <div id="pill"></div>
+  <button data-i="0" onclick="go(0)">总览</button>
+  <button data-i="1" onclick="go(1)">按钮</button>
+  <button data-i="2" onclick="go(2)">表单</button>
+  <button data-i="3" onclick="go(3)">展示</button>
+  <button data-i="4" onclick="go(4)">反馈</button>
+</nav>
+
+<script>
+var cur=0;
+var tabBtns=[].slice.call(document.querySelectorAll('#tabbar button'));
+var pill=document.getElementById('pill');
+function go(n){
+  cur=n;
+  for(var i=0;i<5;i++){
+    document.getElementById('page'+i).classList.toggle('active',i===n);
+    tabBtns[i].classList.toggle('active',i===n);
+  }
+  movePill();
+  try{history.replaceState(null,'','?tab='+n);}catch(e){}
+  window.scrollTo(0,0);
+}
+function movePill(){
+  var b=tabBtns[cur];
+  pill.style.left=b.offsetLeft+'px';
+  pill.style.width=b.offsetWidth+'px';
+}
+function nav(n){go(n);return false;}
+function say(id,msg){var el=document.getElementById(id);el.textContent='> '+msg;}
+/* init from deep link */
+(function(){
+  var m=/[?&]tab=([0-4])/.exec(location.search);
+  go(m?parseInt(m[1],10):0);
+})();
+window.addEventListener('resize',movePill);
+window.addEventListener('load',movePill);
+setTimeout(movePill,300);
+
+/* ---- 表单 ---- */
+function submitTask(){
+  var l=document.getElementById('f-link').value.trim();
+  var n=document.getElementById('f-name').value.trim();
+  say('out-f2', l?('任务已提交：'+l+(n?'（'+n+'）':'')) : '错误：链接不能为空');
+}
+function countChars(){
+  var v=document.getElementById('ta').value;
+  var lines=v?v.split('\n').length:0;
+  document.getElementById('ta-count').textContent=lines+' 行 / '+v.length+' 字';
+}
+function doSearch(){
+  var q=document.getElementById('q').value.trim();
+  say('out-f4', q?('搜索「'+q+'」：命中 2 个站点') : '请输入关键词');
+}
+function swState(id,sid){
+  document.getElementById(sid).textContent=document.getElementById(id).checked?'ON':'OFF';
+}
+function validate(){
+  var v=document.getElementById('vlink').value.trim();
+  var el=document.getElementById('out-f6');
+  if(!v){el.innerHTML='<div class="err">[×] 链接不能为空</div>';}
+  else if(!/^https?:\/\//.test(v)){el.innerHTML='<div class="err">[×] 格式错误：需以 http(s):// 开头</div>';}
+  else{el.innerHTML='<div class="ok">[√] 链接有效，可以解析</div>';}
+}
+/* ---- 展示 ---- */
+var logN=4;
+function addLog(){
+  var box=document.getElementById('logbox');
+  var d=new Date();
+  var t=('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2)+':'+('0'+d.getSeconds()).slice(-2);
+  var msgs=['站点C 解析成功 1 条','队列 -1，剩余 '+(logN%5),'站点B 重试成功','缓存清理 12MB','心跳正常'];
+  box.textContent+='\n'+t+' '+msgs[logN%msgs.length];
+  logN++;
+  box.scrollTop=box.scrollHeight;
+}
+var sortDir={};
+function sortT(k){
+  var tb=document.querySelector('#dtable tbody');
+  var rows=[].slice.call(tb.rows);
+  var dir=sortDir[k]==='asc'?'desc':'asc';
+  sortDir[k]=dir;
+  rows.sort(function(a,b){
+    var x=a.cells[k].textContent.replace('%',''),y=b.cells[k].textContent.replace('%','');
+    var nx=parseFloat(x),ny=parseFloat(y);
+    var c=(!isNaN(nx)&&!isNaN(ny))?(nx-ny):(x<y?-1:x>y?1:0);
+    return dir==='asc'?c:-c;
+  });
+  rows.forEach(function(r){tb.appendChild(r);});
+}
+function setBar(p){
+  var n=Math.round(p/100*20),s='';
+  for(var i=0;i<20;i++)s+=i<n?'#':'-';
+  document.getElementById('ascii').textContent='['+s+']';
+  document.getElementById('pct').textContent=p+'% · '+(p===100?'下载完成':p===0?'待命':'下载中');
+}
+function goPage(n,btn){
+  var bs=document.querySelectorAll('#pager button');
+  for(var i=0;i<bs.length;i++)bs[i].classList.remove('cur');
+  btn.classList.add('cur');
+  say('out-d5','当前第 '+n+' 页 · 共 48 条记录');
+}
+/* ---- 反馈 ---- */
+var alertsHTML=document.getElementById('alerts').innerHTML;
+function restoreAlerts(){document.getElementById('alerts').innerHTML=alertsHTML;}
+function openDlg(){document.getElementById('ovl').classList.add('show');document.getElementById('dlg').classList.add('show');}
+function closeDlg(){document.getElementById('ovl').classList.remove('show');document.getElementById('dlg').classList.remove('show');}
+function dlgOk(){closeDlg();say('out-r2','> 已删除 3 条记录');}
+var delArmed=false;
+function armDelete(){
+  var b=document.getElementById('delbtn');
+  if(!delArmed){delArmed=true;b.textContent='再次点击确认删除';say('out-b5','待确认：再次点击执行删除');}
+  else{delArmed=false;b.textContent='删除全部记录';say('out-b5','> 已删除全部记录（演示）');}
+}
+function yn(yes){say('out-r3', yes?'> 已清空解析历史（演示）':'> 已取消');}
+var toastTimer=null;
+function fireToast(){
+  var t=document.getElementById('toast');
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(function(){t.classList.remove('show');},2500);
+}
+var loadTimer=null;
+function runLoad(){
+  var p=0,btn=document.getElementById('loadbtn');
+  btn.disabled=true;
+  clearInterval(loadTimer);
+  loadTimer=setInterval(function(){
+    p+=10;
+    var n=Math.round(p/100*20),s='';
+    for(var i=0;i<20;i++)s+=i<n?'#':'-';
+    document.getElementById('loadbar').textContent='['+s+']';
+    document.getElementById('loadpct').textContent=p+'% · 加载中';
+    if(p>=100){clearInterval(loadTimer);document.getElementById('loadpct').textContent='100% · 加载完成';btn.disabled=false;btn.textContent='重新加载';}
+  },200);
+}
+</script>
+</body>
+</html>
