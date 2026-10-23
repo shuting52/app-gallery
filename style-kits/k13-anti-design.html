@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>反设计 ANTI-DESIGN · UI 组件库</title>
+<style>
+:root{
+  --pink:#ff2fb3; --green:#39ff14; --yellow:#ffe600; --purple:#7b2ff7;
+  --ink:#141414; --red:#ff2b2b; --paper:#f5f2ea;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{
+  background:#0e0e10;color:#fff;
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC",sans-serif;
+  font-size:15px;line-height:1.55;padding-bottom:132px;overflow-x:hidden;
+}
+.fun{font-family:"Comic Sans MS","Chalkboard SE","Segoe Print","Bradley Hand","Marker Felt","Comic Neue",cursive}
+.wavy{text-decoration:underline wavy var(--green) 2px;text-underline-offset:4px}
+button{font-family:inherit}
+
+/* ===== 顶部跑马灯 ===== */
+.mq{overflow:hidden;background:var(--yellow);color:#000;border-bottom:4px solid #000;position:relative;z-index:5}
+.mq-track{display:inline-block;white-space:nowrap;font-weight:900;padding:9px 0;font-size:15px;animation:mqmove 16s linear infinite}
+.mq-track b{color:var(--purple)}
+.mq-track .st{color:var(--pink)}
+@keyframes mqmove{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* ===== 页眉 ===== */
+.hero{padding:26px 18px 6px;position:relative}
+.hero h1{font-size:29px;font-weight:900;transform:rotate(-2deg);display:inline-block;background:#000;padding:8px 16px;border:3px solid var(--pink);box-shadow:5px 5px 0 var(--pink);line-height:1.3}
+.hero h1 .p{color:var(--pink)} .hero h1 .g{color:var(--green)} .hero h1 .y{color:var(--yellow)}
+.hero .sub{margin-top:14px;transform:rotate(1deg);display:inline-block;background:var(--purple);padding:5px 12px;font-size:13px;font-weight:700;border:2px solid #000}
+
+/* ===== Tab 面板 ===== */
+.panel{display:none;padding:4px 0 10px}
+.panel.active{display:block}
+.panel-tag{display:inline-block;margin:12px 16px 0;font-size:13px;font-weight:900;background:var(--green);color:#000;padding:5px 14px;transform:rotate(-1.5deg);border:2px solid #000;box-shadow:3px 3px 0 #000}
+
+/* ===== 卡片：破网格 ===== */
+.cards .card{background:var(--paper);color:var(--ink);border:3px solid #000;border-radius:8px;
+  padding:16px 14px;margin:22px 16px;position:relative;box-shadow:7px 7px 0 rgba(0,0,0,.55)}
+.cards .card:nth-child(1){transform:rotate(1.3deg)}
+.cards .card:nth-child(2){transform:rotate(-1.8deg);margin-left:28px;margin-right:8px}
+.cards .card:nth-child(3){transform:rotate(2.2deg);background:#151517;color:#fff;border-color:var(--green)}
+.cards .card:nth-child(4){transform:rotate(-1.2deg);margin-left:8px;margin-right:28px}
+.cards .card:nth-child(5){transform:rotate(1.8deg);background:#fff}
+.cards .card:nth-child(6){transform:rotate(-2.4deg);background:#1c1032;color:#fff;border-color:var(--purple)}
+.card h3{font-size:17px;margin-bottom:4px;line-height:1.4}
+.card h3 .no{display:inline-block;background:#000;color:var(--yellow);font-size:12px;padding:2px 9px;border-radius:99px;margin-right:7px;transform:rotate(-5deg);vertical-align:2px}
+.cards .card:nth-child(3) h3 .no{background:var(--pink);color:#000}
+.cards .card:nth-child(6) h3 .no{background:var(--yellow);color:#000}
+.card .desc{font-size:13px;opacity:.72;margin-bottom:4px}
+.demo{border-top:2px dashed #8a8a8a;padding-top:14px;margin-top:10px}
+.result{margin-top:10px;font-size:14px;font-weight:700;min-height:22px}
+
+/* ===== 胶带条 ===== */
+.tape{position:relative}
+.tape::before{content:"";position:absolute;top:-14px;left:50%;width:96px;height:26px;
+  transform:translateX(-50%) rotate(-5deg);background:rgba(255,230,0,.62);
+  border-left:2px dashed rgba(0,0,0,.18);border-right:2px dashed rgba(0,0,0,.18);
+  box-shadow:0 2px 4px rgba(0,0,0,.25);clip-path:polygon(3% 0,97% 6%,100% 94%,0 100%);z-index:2}
+.tape.pk::before{background:rgba(255,47,179,.55);transform:translateX(-50%) rotate(4deg)}
+.tape.gr::before{background:rgba(57,255,20,.5);transform:translateX(-50%) rotate(-3deg)}
+
+/* ===== 撕纸分隔线 ===== */
+.torn{height:22px;margin:12px 0;background:var(--c,#ff2fb3);
+  clip-path:polygon(0 45%,2% 15%,4% 55%,6% 25%,8% 60%,10% 20%,12% 55%,14% 30%,16% 65%,18% 25%,20% 55%,22% 15%,24% 60%,26% 30%,28% 55%,30% 20%,32% 60%,34% 25%,36% 55%,38% 15%,40% 60%,42% 30%,44% 55%,46% 20%,48% 60%,50% 25%,52% 55%,54% 15%,56% 60%,58% 30%,60% 55%,62% 20%,64% 60%,66% 25%,68% 55%,70% 15%,72% 60%,74% 30%,76% 55%,78% 20%,80% 60%,82% 25%,84% 55%,86% 15%,88% 60%,90% 30%,92% 55%,94% 20%,96% 60%,98% 25%,100% 50%,100% 100%,0 100%)}
+
+/* ===== 按钮 ===== */
+.btn{display:inline-block;border:3px solid #000;background:#fff;color:#000;font-weight:900;
+  font-size:15px;padding:10px 18px;border-radius:6px;cursor:pointer;user-select:none;
+  -webkit-tap-highlight-color:transparent;line-height:1.3}
+.btn:active{transform:translate(3px,3px)!important;box-shadow:0 0 0 #000!important}
+.btn-row{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.tilt-a{transform:rotate(-2.5deg);background:var(--yellow);box-shadow:4px 4px 0 #000}
+.tilt-b{transform:rotate(2deg);background:var(--pink);color:#fff;box-shadow:4px 4px 0 #000}
+.tilt-c{transform:rotate(-1.5deg);background:var(--green);box-shadow:4px 4px 0 #000}
+.torn-btn{background:var(--purple);color:#fff;border:0;border-radius:0;padding:15px 30px;font-size:16px;
+  clip-path:polygon(0 20%,4% 6%,9% 17%,14% 4%,20% 15%,26% 5%,32% 16%,38% 6%,44% 17%,50% 5%,56% 16%,62% 6%,68% 17%,74% 5%,80% 16%,86% 6%,92% 15%,97% 5%,100% 17%,100% 82%,96% 95%,90% 85%,84% 96%,78% 86%,72% 95%,66% 85%,60% 96%,54% 86%,48% 95%,42% 85%,36% 96%,30% 86%,24% 95%,18% 86%,12% 95%,6% 85%,0 94%)}
+.torn-btn.yl{background:var(--yellow);color:#000}
+.neon{background:#000;color:var(--green);border:3px solid var(--green);transform:rotate(1.5deg);
+  box-shadow:0 0 14px var(--green),inset 0 0 10px rgba(57,255,20,.35)}
+.neon.pk{color:var(--pink);border-color:var(--pink);transform:rotate(-1.5deg);
+  box-shadow:0 0 14px var(--pink),inset 0 0 10px rgba(255,47,179,.35)}
+.dshadow{background:#fff;box-shadow:6px 6px 0 var(--pink),12px 12px 0 var(--purple);transform:rotate(-1deg);margin:0 12px 14px 0}
+.sticker{background:var(--pink);color:#fff;border:3px solid #fff;outline:3px solid #000;
+  border-radius:16px;transform:rotate(2deg);box-shadow:3px 3px 0 #000}
+.sticker.yl{background:var(--yellow);color:#000;transform:rotate(-2.5deg)}
+.shaky{background:#000;color:#fff;border:3px solid var(--green)}
+.shaky:hover,.shaky:focus-visible{animation:shk .35s linear}
+@keyframes shk{0%{transform:rotate(0)}25%{transform:rotate(2.5deg) translateX(2px)}50%{transform:rotate(-2.5deg) translateX(-2px)}75%{transform:rotate(1.5deg)}100%{transform:rotate(0)}}
+.btn.big{padding:15px 30px;font-size:19px}
+.btn.small{padding:6px 12px;font-size:12px;font-weight:700}
+
+/* ===== 表单 ===== */
+.field{margin-bottom:12px}
+.field>label{display:block;font-weight:800;font-size:14px;margin-bottom:7px}
+.tilt-input{width:100%;border:3px solid #000;border-radius:6px;padding:11px 12px;font-size:15px;
+  background:#fff;transform:rotate(-1.4deg);box-shadow:4px 4px 0 var(--purple);font-family:inherit;color:#111}
+.tilt-input:focus{outline:3px solid var(--green);outline-offset:2px}
+.chk{display:flex;align-items:center;gap:11px;margin:11px 0;cursor:pointer;font-weight:700;position:relative}
+.chk input{position:absolute;opacity:0;pointer-events:none}
+.box{width:28px;height:28px;flex:none;border:3px solid #000;background:#fff;transform:rotate(-5deg);position:relative;border-radius:7px}
+.chk input:checked+.box{background:var(--yellow)}
+.chk input:checked+.box::after{content:"✓";position:absolute;left:3px;top:-7px;font-size:27px;font-weight:900;color:var(--pink);transform:rotate(-10deg)}
+.chk input:focus-visible+.box{outline:3px solid var(--green);outline-offset:2px}
+.rdo{display:flex;align-items:center;gap:11px;margin:11px 0;cursor:pointer;font-weight:700;position:relative}
+.rdo input{position:absolute;opacity:0;pointer-events:none}
+.dot{width:28px;height:28px;flex:none;border:3px solid #000;background:#fff;position:relative;
+  border-radius:48% 52% 55% 45%/52% 46% 54% 48%}
+.rdo input:checked+.dot::after{content:"";position:absolute;left:5px;top:5px;width:12px;height:12px;
+  background:var(--purple);border-radius:50% 40% 55% 45%}
+.rdo input:focus-visible+.dot{outline:3px solid var(--green);outline-offset:2px}
+/* 错位开关：必须 relative + 固定宽高 */
+.switch{position:relative;width:62px;height:34px;display:inline-block;flex:none}
+.switch input{position:absolute;inset:0;opacity:0;margin:0;cursor:pointer;z-index:2}
+.sw-t{position:absolute;inset:0;background:#b9b9b9;border:3px solid #000;border-radius:999px;transform:rotate(-2deg);transition:background .25s}
+.sw-k{position:absolute;top:-4px;left:4px;width:31px;height:31px;background:#fff;border:3px solid #000;border-radius:50%;
+  transition:left .25s cubic-bezier(.6,-.2,.3,1.4);z-index:1}
+.switch input:checked~.sw-t{background:var(--green)}
+.switch input:checked~.sw-k{left:23px;background:var(--yellow);transform:rotate(24deg)}
+.switch input:focus-visible~.sw-t{outline:3px solid var(--pink);outline-offset:2px}
+.swline{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:12px 0}
+.swline .t{font-weight:800;font-size:14px}
+.sw-state{display:inline-block;min-width:34px;text-align:center;font-weight:900;font-size:13px;
+  background:#000;color:var(--green);padding:2px 8px;border-radius:99px;transform:rotate(3deg)}
+.setrow{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 4px;border-bottom:2px dashed #8a8a8a}
+.setrow:nth-child(odd){transform:rotate(.6deg)}
+.setrow:nth-child(even){transform:rotate(-.6deg)}
+.setrow .t{font-weight:800;font-size:14px}
+.setrow .s{font-size:12px;opacity:.7}
+.chip{display:inline-block;background:var(--yellow);color:#111;border:2px solid #000;padding:7px 13px;
+  font-weight:800;font-size:13px;margin:6px 8px 6px 0;cursor:pointer;transform:rotate(-1.5deg);position:relative}
+.chip:nth-child(even){transform:rotate(1.8deg);background:#fff}
+.chip.on{background:var(--pink);color:#fff;box-shadow:3px 3px 0 #000}
+
+/* ===== 展示 ===== */
+.notif{background:#fff;border:3px solid #000;border-radius:8px;padding:12px 40px 12px 12px;margin:14px 0;
+  position:relative;color:var(--ink);box-shadow:5px 5px 0 #000}
+.notif:nth-child(odd){transform:rotate(-1deg)} .notif:nth-child(even){transform:rotate(1.2deg)}
+.notif .x{position:absolute;top:4px;right:8px;border:0;background:none;font-size:22px;cursor:pointer;font-weight:900;color:#111}
+.notif .tt{font-weight:900;font-size:14px} .notif .cc{font-size:13px;opacity:.8}
+.glitchbox{background:linear-gradient(135deg,#1b1030,#3d0f52 60%,#0e0e10);border:3px solid var(--pink);
+  border-radius:8px;padding:26px 14px;text-align:center;position:relative;overflow:hidden}
+.glitch{position:relative;display:inline-block;font-size:25px;font-weight:900;color:#fff;letter-spacing:3px}
+.glitch::before,.glitch::after{content:attr(data-t);position:absolute;left:0;top:0;width:100%;overflow:hidden;pointer-events:none}
+.glitch::before{color:var(--pink);z-index:-1;transform:translate(-4px,-2px);clip-path:inset(0 0 52% 0)}
+.glitch::after{color:var(--green);z-index:-2;transform:translate(4px,2px);clip-path:inset(52% 0 0 0)}
+.glitch.play{animation:gl .5s steps(2) 3}
+@keyframes gl{0%{transform:translate(0)}25%{transform:translate(-4px,2px) skewX(5deg)}50%{transform:translate(4px,-2px)}75%{transform:translate(-2px,-2px) skewX(-5deg)}100%{transform:translate(0)}}
+.stars{display:flex;gap:2px;margin:6px 0}
+.stars button{background:none;border:0;font-size:38px;cursor:pointer;color:#5a5a5a;padding:0 3px;line-height:1;transition:transform .15s}
+.stars button.on{color:var(--yellow);text-shadow:2px 2px 0 #000;transform:rotate(-8deg) scale(1.12)}
+.prog{height:30px;border:3px solid #000;background:#0a0a0a;border-radius:6px;overflow:hidden;position:relative;transform:rotate(-.8deg)}
+.prog i{display:block;height:100%;width:0;background:repeating-linear-gradient(135deg,var(--green) 0 12px,#134a06 12px 24px)}
+.prog b{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;color:#fff;text-shadow:1px 1px 0 #000}
+.ava-wall{display:flex;flex-wrap:wrap;gap:13px}
+.ava{width:56px;height:56px;border-radius:50%;border:3px solid #000;display:flex;align-items:center;justify-content:center;
+  font-weight:900;font-size:20px;position:relative;box-shadow:3px 3px 0 #000;color:#000}
+.ava:nth-child(odd){transform:rotate(-6deg)} .ava:nth-child(even){transform:rotate(5deg)}
+.ava .st{position:absolute;right:-3px;bottom:-3px;width:17px;height:17px;border-radius:50%;border:2px solid #000;background:var(--green)}
+.ava .st.off{background:#777}
+.price{display:inline-block;padding:9px 18px 9px 28px;font-weight:900;font-size:16px;border:3px solid #000;color:#111;
+  background:#fff;cursor:pointer;margin:8px 10px 8px 0;position:relative;
+  clip-path:polygon(15px 0,100% 0,100% 100%,15px 100%,0 50%)}
+.price small{display:block;font-weight:700;font-size:12px}
+.price.hot{background:var(--pink);color:#fff;transform:rotate(-2deg)}
+.price.mid{background:var(--yellow);transform:rotate(1.5deg)}
+.price.sel{outline:4px solid var(--green);outline-offset:3px}
+
+/* ===== 色板 / 字体 / 拼贴 ===== */
+.swatches{display:flex;flex-wrap:wrap;gap:12px}
+.sw{width:64px;cursor:pointer;text-align:center}
+.sw i{display:block;width:64px;height:64px;border:3px solid #000;box-shadow:3px 3px 0 #000}
+.sw:nth-child(odd) i{transform:rotate(-4deg)} .sw:nth-child(even) i{transform:rotate(3deg)}
+.sw span{font-size:11px;font-weight:700;display:block;margin-top:5px;word-break:break-all}
+.fontline{padding:9px 4px;border-bottom:2px dashed #8a8a8a;font-size:16px}
+.fontline small{display:block;font-size:12px;opacity:.7}
+.mini-mq{background:#000;color:var(--yellow);overflow:hidden;border:3px solid #000;border-radius:6px;margin:4px 0 10px}
+.mini-mq div{display:inline-block;white-space:nowrap;padding:8px 0;font-weight:800;animation:mqmove 10s linear infinite}
+.hero-col{position:relative;height:215px;background:#0a0a0a;border:3px solid var(--purple);border-radius:8px;overflow:hidden;margin-top:6px}
+.pz{position:absolute;font-weight:900;transition:transform .3s}
+.pz.s1{left:8%;top:14%;background:var(--pink);color:#fff;padding:8px 14px;font-size:18px;border:3px solid #000;transform:rotate(-6deg);box-shadow:4px 4px 0 #000}
+.pz.s2{right:10%;top:10%;color:var(--yellow);font-size:44px;transform:rotate(12deg);text-shadow:2px 2px 0 #000}
+.pz.s3{left:14%;bottom:16%;background:var(--green);color:#000;padding:6px 12px;font-size:14px;border:3px solid #000;transform:rotate(4deg)}
+.pz.s4{right:14%;bottom:22%;color:var(--green);font-size:30px;transform:rotate(-10deg)}
+.pz.s5{left:44%;top:44%;background:var(--yellow);color:#000;padding:6px 10px;font-size:13px;border:2px solid #000;transform:rotate(-3deg)}
+.pz.s6{right:34%;top:64%;color:var(--pink);font-size:26px;transform:rotate(8deg)}
+
+/* ===== 反馈：弹窗 / toast / 加载 / 错误 ===== */
+.ovl{position:fixed;inset:0;background:rgba(0,0,0,.66);display:none;align-items:center;justify-content:center;z-index:80;padding:22px}
+.ovl.show{display:flex}
+.modal{background:#fff;color:#111;border:4px solid #000;max-width:330px;width:100%;padding:20px 18px;
+  border-radius:10px;transform:rotate(3deg);box-shadow:9px 9px 0 var(--pink);position:relative}
+.modal h4{font-size:19px;margin-bottom:8px}
+.modal p{font-size:14px;margin-bottom:14px}
+.modal .x{position:absolute;top:8px;right:12px;border:0;background:none;font-size:24px;font-weight:900;cursor:pointer}
+#toast{position:fixed;right:12px;bottom:106px;z-index:90;background:#000;color:var(--green);border:3px solid var(--green);
+  padding:10px 16px;font-weight:800;font-size:14px;max-width:72vw;border-radius:8px;
+  transform:translateX(130%) rotate(2deg);transition:transform .3s cubic-bezier(.6,-.2,.3,1.4);
+  box-shadow:4px 4px 0 rgba(57,255,20,.35)}
+#toast.show{transform:none}
+.loader{display:none;gap:10px;justify-content:center;padding:20px 0}
+.loader.show{display:flex}
+.loader span{width:20px;height:20px;display:inline-block;border:2px solid #000}
+.loader span:nth-child(1){background:var(--pink);animation:bnc .55s ease-in-out infinite}
+.loader span:nth-child(2){background:var(--yellow);animation:bnc .55s .12s ease-in-out infinite}
+.loader span:nth-child(3){background:var(--green);animation:bnc .55s .24s ease-in-out infinite}
+@keyframes bnc{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-20px) rotate(90deg)}}
+.err{background:var(--red);color:#fff;border:3px solid #000;padding:12px 40px 12px 14px;font-weight:800;font-size:14px;
+  transform:rotate(-1.5deg);box-shadow:0 0 20px rgba(255,43,43,.85);border-radius:6px;margin:10px 0;position:relative}
+.err .x{position:absolute;top:6px;right:10px;border:0;background:none;color:#fff;font-size:20px;font-weight:900;cursor:pointer}
+.empty{text-align:center;padding:22px 10px}
+.empty .doodle{font-size:54px;color:var(--purple);transform:rotate(-8deg);display:inline-block}
+.empty p{font-weight:800;margin-top:8px}
+
+/* ===== 底部悬浮胶囊 Tab 栏 ===== */
+.tabbar{position:fixed;left:50%;transform:translateX(-50%) rotate(-1deg);bottom:14px;z-index:60;
+  background:#0a0a0a;border:3px solid var(--yellow);border-radius:999px;padding:6px;display:flex;
+  box-shadow:0 6px 22px rgba(0,0,0,.55),0 0 16px rgba(255,230,0,.35);max-width:96vw}
+.tabbar button{position:relative;z-index:1;background:transparent;border:0;color:#fff;font-weight:900;
+  font-size:14px;padding:10px 13px;cursor:pointer;white-space:nowrap;-webkit-tap-highlight-color:transparent}
+.tabbar button.active{color:#000}
+#pill{position:absolute;top:6px;left:6px;height:calc(100% - 12px);width:60px;background:var(--pink);
+  border-radius:999px;z-index:0;transition:transform .32s cubic-bezier(.6,-.3,.3,1.3),width .32s}
+.foot-note{text-align:center;font-size:12px;opacity:.55;margin:26px 16px 0;transform:rotate(.8deg)}
+</style>
+</head>
+<body>
+<!-- 顶部跑马灯 -->
+<div class="mq" aria-hidden="true"><div class="mq-track" id="top-mq">
+<span><b>★</b> 去水印解析 <span class="st">★</span> 站点导航 <b>★</b> 工时打卡 <span class="st">★</span> 去水印解析 <b>★</b> 站点导航 <span class="st">★</span> 工时打卡 <b>★</b>&nbsp;</span><span><b>★</b> 去水印解析 <span class="st">★</span> 站点导航 <b>★</b> 工时打卡 <span class="st">★</span> 去水印解析 <b>★</b> 站点导航 <span class="st">★</span> 工时打卡 <b>★</b>&nbsp;</span>
+</div></div>
+
+<header class="hero">
+  <h1 class="fun"><span class="p">ANTI</span>-<span class="g">DESIGN</span> <span class="y">★</span> 反设计</h1><br>
+  <span class="sub">对齐是种偏见 · 混乱但可读 · 「懒得找了」视觉实验场</span>
+</header>
+
+<main>
+<!-- ============ TAB 0 总览 ============ -->
+<section class="panel" data-tab="0">
+  <div class="panel-tag fun">TAB 01 · 总览 OVERVIEW</div>
+  <div class="cards">
+
+    <div class="card tape">
+      <h3><span class="no">01</span>风格宣言</h3>
+      <p class="desc">MANIFESTO · 先读完再造反</p>
+      <div class="demo">
+        <p class="fun" style="font-size:24px;font-weight:900;transform:rotate(-1.5deg)">“规则就是用来打破的。”</p>
+        <p style="margin-top:8px;font-size:14px">但按钮还得能点，字还得能读。<span class="wavy">乱中有序</span>是唯一的纪律。</p>
+        <div class="btn-row" style="margin-top:12px">
+          <button class="btn tilt-a" data-toast="很好，保持叛逆！★">我偏要</button>
+          <button class="btn tilt-b" data-toast="收到！继续对齐（bushi）">我对齐</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card tape pk">
+      <h3><span class="no">02</span>配色色板</h3>
+      <p class="desc">PALETTE · 点色块复制色值</p>
+      <div class="demo">
+        <div class="swatches">
+          <div class="sw" data-hex="#ff2fb3"><i style="background:#ff2fb3"></i><span>#ff2fb3<br>荧光粉</span></div>
+          <div class="sw" data-hex="#39ff14"><i style="background:#39ff14"></i><span>#39ff14<br>荧光绿</span></div>
+          <div class="sw" data-hex="#ffe600"><i style="background:#ffe600"></i><span>#ffe600<br>亮黄</span></div>
+          <div class="sw" data-hex="#7b2ff7"><i style="background:#7b2ff7"></i><span>#7b2ff7<br>紫</span></div>
+          <div class="sw" data-hex="#0e0e10"><i style="background:#0e0e10"></i><span>#0e0e10<br>黑底</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3><span class="no">03</span>字体混搭</h3>
+      <p class="desc">TYPE · 正式与不正经并存</p>
+      <div class="demo">
+        <div class="fontline"><span class="fun" style="font-size:21px;font-weight:900">Comic Sans 式标题 ★ FUN</span><small>英文标题 / 手写涂鸦感</small></div>
+        <div class="fontline"><span style="font-weight:800">系统黑体正文：去水印解析又快又稳</span><small>中文正文 / 保证可读</small></div>
+        <div class="fontline"><span class="fun">1234567890 <span class="wavy">波浪线</span> !!!</span><small>数字点缀 / 随机下划线</small></div>
+      </div>
+    </div>
+
+    <div class="card tape gr">
+      <h3><span class="no">04</span>撕纸分隔线</h3>
+      <p class="desc">DIVIDER · 锯齿 clip-path，一刀两断</p>
+      <div class="demo">
+        <div class="torn" style="--c:#ff2fb3"></div>
+        <div class="torn" style="--c:#39ff14;transform:rotate(1deg)"></div>
+        <div class="torn" style="--c:#ffe600;transform:rotate(-1.5deg)"></div>
+        <p style="font-size:13px;opacity:.7">把页面撕成几截，再拼回去。</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3><span class="no">05</span>跑马灯</h3>
+      <p class="desc">MARQUEE · 顶部的那条，可以调速</p>
+      <div class="demo">
+        <div class="mini-mq"><div id="mini-mq">★ 去水印解析 ★ 站点导航 ★ 工时打卡 ★ 去水印解析 ★ 站点导航 ★ 工时打卡 ★&nbsp;</div></div>
+        <div class="btn-row">
+          <button class="btn small tilt-a" id="mq-slow">慢一点</button>
+          <button class="btn small tilt-b" id="mq-fast">快一点</button>
+          <button class="btn small tilt-c" id="mq-stop">停！</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3><span class="no">06</span>混乱拼贴 hero</h3>
+      <p class="desc">COLLAGE · 贴纸 / 星星 / 涂鸦，一锅烩</p>
+      <div class="demo">
+        <div class="hero-col" id="hero-col">
+          <span class="pz s1">NEW!</span>
+          <span class="pz s2">★</span>
+          <span class="pz s3">去水印</span>
+          <span class="pz s4 fun">→ go!</span>
+          <span class="pz s5">工时打卡</span>
+          <span class="pz s6">✦</span>
+        </div>
+        <div class="btn-row" style="margin-top:12px">
+          <button class="btn sticker" id="shuffle">打乱重来 ★</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============ TAB 1 按钮 ============ -->
+<section class="panel" data-tab="1">
+  <div class="panel-tag fun">TAB 02 · 按钮 BUTTONS</div>
+  <div class="cards">
+
+    <div class="card tape">
+      <h3><span class="no">07</span>歪扭按钮</h3>
+      <p class="desc">TILT · 每个 ±2~4°，绝不站直</p>
+      <div class="demo">
+        <div class="btn-row">
+          <button class="btn tilt-a" data-toast="解析了一条视频 ★">开始解析</button>
+          <button class="btn tilt-b" data-toast="已加入站点导航">收藏站点</button>
+          <button class="btn tilt-c" data-toast="打卡成功！继续搬砖">上班打卡</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card tape pk">
+      <h3><span class="no">08</span>撕纸边按钮</h3>
+      <p class="desc">TORN · 边缘是手撕的</p>
+      <div class="demo">
+        <div class="btn-row">
+          <button class="btn torn-btn" data-toast="撕！解析完成 ★">一键去水印</button>
+          <button class="btn torn-btn yl" data-toast="撕！已保存到相册">保存视频</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3><span class="no">09</span>荧光描边按钮</h3>
+      <p class="desc">NEON · 黑底 + 荧光 glow</p>
+      <div class="demo">
+        <div class="btn-row">
+          <button class="btn neon" data-toast="霓虹灯已点亮">夜间模式</button>
+          <button class="btn neon pk" data-toast="粉色警报！">紧急解析</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card tape gr">
+      <h3><span class="no">10</span>双重阴影错位按钮</h3>
+      <p class="desc">OFFSET · 粉影 + 紫影，叠两层</p>
+      <div class="demo">
+        <div class="btn-row">
+          <button class="btn dshadow" data-toast="工时已同步 ★">同步工时</button>
+          <button class="btn dshadow" data-toast="站点已置顶">置顶站点</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3><span class="no">11</span>贴纸按钮</h3>
+      <p class="desc">STICKER ·  die-cut 贴纸质感</p>
+      <div class="demo">
+        <div class="btn-row">
+          <button class="btn sticker" data-toast="★ 已收藏，超稀有！">★ 收藏</button>
+          <button class="btn sticker yl" data-toast="★ 分享链接已复制">★ 分享</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3><span class="no">12</span>抖动悬停按钮</h3>
+      <p class="desc">SHAKE · 碰一下就哆嗦</p>
+      <div class="demo">
+        <div class="btn-row">
+          <button class="btn shaky" data-toast="别抖了别抖了…点了！">别碰我</button>
+          <button class="btn shaky" data-toast="抖完还是点了 ★">再碰一下</button>
+        </div>
+        <p style="font-size:13px;opacity:.7;margin-top:10px">手机上点按同样会抖。</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+<!-- ============ TAB 2 表单 ============ -->
+<section class="panel" data-tab="2">
+  <div class="panel-tag fun">TAB 03 · 表单 FORMS</div>
+  <div class="cards">
+
+    <div class="card tape">
+      <h3><span class="no">13</span>歪斜输入框</h3>
+      <p class="desc">INPUT · 框是歪的，字是正的</p>
+      <div class="demo">
+        <div class="field">
+          <label for="link-in">粘贴视频链接</label>
+          <input class="tilt-input" id="link-in" type="text" placeholder="随手粘一条试试…">
+        </div>
+        <div class="btn-row">
+          <button class="btn tilt-a" id="parse-go">解析 ★</button>
+        </div>
+        <div class="result" id="parse-result"></div>
+      </div>
+    </div>
+
+    <div class="card tape pk">
+      <h3><span class="no">14</span>涂鸦复选框</h3>
+      <p class="desc">CHECKBOX · 对勾是手画的</p>
+      <div class="demo">
+        <label class="chk"><input type="checkbox" checked><span class="box"></span>去水印解析</label>
+        <label class="chk"><input type="checkbox"><span class="box"></span>站点导航</label>
+        <label class="chk"><input type="checkbox"><span class="box"></span>工时打卡提醒</label>
+        <div class="result" id="chk-result">已选 1 项</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3><span class="no">15</span>手绘单选框</h3>
+      <p class="desc">RADIO · 圆圈画不圆才是手绘</p>
+      <div class="demo">
+        <label class="rdo"><input type="radio" name="mode" checked><span class="dot"></span>正常模式</label>
+        <label class="rdo"><input type="radio" name="mode"><span class="dot"></span>发疯模式</label>
+        <label class="rdo"><input type="radio" name="mode"><span class="dot"></span>躺平模式</label>
+        <div class="result" id="rdo-result">当前：正常模式</div>
+      </div>
+    </div>
+
+    <div class="card tape gr">
+      <h3><span class="no">16</span>错位开关</h3>
+      <p class="desc">SWITCH · 旋钮故意凸出来一截</p>
+      <div class="demo">
+        <div class="swline"><span class="t">粘贴自动解析</span>
+          <span class="switch"><input type="checkbox" checked><span class="sw-t"></span><span class="sw-k"></span></span>
+          <span class="sw-state">开</span></div>
+        <div class="swline"><span class="t">深夜免打扰</span>
+          <span class="switch"><input type="checkbox"><span class="sw-t"></span><span class="sw-k"></span></span>
+          <span class="sw-state">关</span></div>
+        <div class="swline"><span class="t">解析完成震动</span>
+          <span class="switch"><input type="checkbox" checked><span class="sw-t"></span><span class="sw-k"></span></span>
+          <span class="sw-state">开</span></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3><span class="no">17</span>胶带标签</h3>
+      <p class="desc">CHIPS · 像随手贴上去的</p>
+      <div class="demo" id="chips">
+        <span class="chip on">去水印</span><span class="chip">图集下载</span><span class="chip">音频提取</span><span class="chip">文案复制</span><span class="chip">批量解析</span>
+        <div class="result" id="chip-result">已选：去水印</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3><span class="no">18</span>设置列表</h3>
+      <p class="desc">SETTINGS · 排得乱，但都好用</p>
+      <div class="demo">
+        <div class="setrow"><div><div class="t">解析画质</div><div class="s">能多高就多高</div></div>
+          <span class="switch"><input type="checkbox" checked><span class="sw-t"></span><span class="sw-k"></span></span></div>
+        <div class="setrow"><div><div class="t">文件名用标题</div><div class="s">清洗后的标题命名</div></div>
+          <span class="switch"><input type="checkbox" checked><span class="sw-t"></span><span class="sw-k"></span></span></div>
+        <div class="setrow"><div><div class="t">工时日历</div><div class="s">在首页显示打卡日历</div></div>
+          <span class="switch"><input type="checkbox"><span class="sw-t"></span><span class="sw-k"></span></span></div>
+        <div class="setrow"><div><div class="t">实验性功能</div><div class="s">可能会炸，谨慎</div></div>
+          <span class="switch"><input type="checkbox"><span class="sw-t"></span><span class="sw-k"></span></span></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============ TAB 3 展示 ============ -->
+<section class="panel" data-tab="3">
+  <div class="panel-tag fun">TAB 04 · 展示 DISPLAY</div>
+  <div class="cards">
+
+    <div class="card tape">
+      <h3><span class="no">19</span>拼贴通知卡</h3>
+      <p class="desc">NOTICE · 胶带一贴就是公告</p>
+      <div class="demo">
+        <div class="notif tape"><button class="x" aria-label="关闭">×</button>
+          <div class="tt">★ 解析完成</div><div class="cc">视频已去水印，点击保存到相册。</div></div>
+        <div class="notif tape pk"><button class="x" aria-label="关闭">×</button>
+          <div class="tt">★ 打卡提醒</div><div class="cc">今天还没打卡，工时君在等你。</div></div>
+      </div>
+    </div>
+
+    <div class="card tape gr">
+      <h3><span class="no">20</span>故障风图片卡</h3>
+      <p class="desc">GLITCH · RGB 错位，信号不良</p>
+      <div class="demo">
+        <div class="glitchbox">
+          <span class="glitch play" id="glitch" data-t="解析完成">解析完成</span>
+          <p style="color:#fff;font-size:13px;margin-top:10px;opacity:.8">1080P · 无水印 · 3.2MB</p>
+        </div>
+        <div class="btn-row" style="margin-top:12px">
+          <button class="btn neon pk" id="glitch-go">再故障一次</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3><span class="no">21</span>星级评分</h3>
+      <p class="desc">RATING · 星星是贴纸，点得着</p>
+      <div class="demo">
+        <div class="stars" id="stars">
+          <button aria-label="1星">★</button><button aria-label="2星">★</button><button aria-label="3星">★</button><button aria-label="4星">★</button><button aria-label="5星">★</button>
+        </div>
+        <div class="result" id="star-txt">点星星打个分 ★</div>
+      </div>
+    </div>
+
+    <div class="card tape pk">
+      <h3><span class="no">22</span>锯齿进度条</h3>
+      <p class="desc">PROGRESS · 警示条纹，一格一格爬</p>
+      <div class="demo">
+        <div class="prog"><i id="prog-fill"></i><b id="prog-txt">等你点开始</b></div>
+        <div class="btn-row" style="margin-top:12px">
+          <button class="btn tilt-b" id="prog-go">开始解析</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3><span class="no">23</span>头像徽章墙</h3>
+      <p class="desc">AVATARS · 懒 / 找 / 了 / 去 / 水 / 印</p>
+      <div class="demo">
+        <div class="ava-wall">
+          <div class="ava" style="background:#ff2fb3">懒<span class="st"></span></div>
+          <div class="ava" style="background:#39ff14">找<span class="st"></span></div>
+          <div class="ava" style="background:#ffe600">了<span class="st off"></span></div>
+          <div class="ava" style="background:#7b2ff7;color:#fff">去<span class="st"></span></div>
+          <div class="ava" style="background:#fff">水<span class="st off"></span></div>
+          <div class="ava" style="background:#ff2fb3">印<span class="st"></span></div>
+        </div>
+        <p style="font-size:13px;opacity:.7;margin-top:10px">绿点在线，灰点摸鱼中。</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3><span class="no">24</span>价格标签</h3>
+      <p class="desc">PRICING · 吊牌剪角，点一个选中</p>
+      <div class="demo" id="prices">
+        <span class="price sel">免费<small>基础解析</small></span><span class="price mid">¥9.9<small>去广告</small></span><span class="price hot">¥29<small>全功能 ★</small></span>
+        <div class="result" id="price-result">已选：免费档</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+<!-- ============ TAB 4 反馈 ============ -->
+<section class="panel" data-tab="4">
+  <div class="panel-tag fun">TAB 05 · 反馈 FEEDBACK</div>
+  <div class="cards">
+
+    <div class="card tape">
+      <h3><span class="no">25</span>歪弹窗</h3>
+      <p class="desc">MODAL · 故意歪 3°，爱关不关</p>
+      <div class="demo">
+        <div class="btn-row">
+          <button class="btn tilt-a" id="open-modal">弹一个</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card tape pk">
+      <h3><span class="no">26</span>角落 toast</h3>
+      <p class="desc">TOAST · 从右下角弹出来</p>
+      <div class="demo">
+        <div class="btn-row">
+          <button class="btn sticker" id="toast-go">弹一条 ★</button>
+          <button class="btn sticker yl" id="toast-go2">再来一条</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3><span class="no">27</span>确认框</h3>
+      <p class="desc">CONFIRM · 按钮一大一小，态度分明</p>
+      <div class="demo">
+        <div class="btn-row">
+          <button class="btn torn-btn" id="open-confirm">删除记录</button>
+        </div>
+        <div class="result" id="confirm-result"></div>
+      </div>
+    </div>
+
+    <div class="card tape gr">
+      <h3><span class="no">28</span>弹跳加载</h3>
+      <p class="desc">LOADER · 三个方块蹦跶</p>
+      <div class="demo">
+        <div class="loader" id="loader"><span></span><span></span><span></span></div>
+        <div class="btn-row">
+          <button class="btn neon" id="load-go">假装加载</button>
+        </div>
+        <div class="result" id="load-result"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3><span class="no">29</span>荧光错误</h3>
+      <p class="desc">ERROR · 荧光红，瞎子都看得见</p>
+      <div class="demo">
+        <div class="err" id="err-box"><button class="x" aria-label="关闭">×</button>
+          ✕ 解析失败：链接好像不太对，换一条试试？</div>
+        <div class="btn-row">
+          <button class="btn small tilt-b" id="err-show">再报错一次</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3><span class="no">30</span>涂鸦空状态</h3>
+      <p class="desc">EMPTY · 没东西也要有态度</p>
+      <div class="demo">
+        <div class="empty">
+          <span class="doodle fun">∅ ★</span>
+          <p>这里空空如也<br><span style="font-size:13px;opacity:.7">去解析一条视频回来吧</span></p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+</main>
+
+<p class="foot-note fun">★ ANTI-DESIGN KIT · 30 components · made to be broken ★</p>
+
+<!-- 底部悬浮胶囊 Tab 栏 -->
+<nav class="tabbar" aria-label="组件分类">
+  <span id="pill"></span>
+  <button data-i="0" class="active">总览</button>
+  <button data-i="1">按钮</button>
+  <button data-i="2">表单</button>
+  <button data-i="3">展示</button>
+  <button data-i="4">反馈</button>
+</nav>
+
+<!-- 歪弹窗 -->
+<div class="ovl" id="ovl-modal">
+  <div class="modal tape">
+    <button class="x" data-close aria-label="关闭">×</button>
+    <h4 class="fun">歪一点怎么了 ★</h4>
+    <p>这个弹窗故意歪了 3°。内容照样可读，按钮照样能点——<span class="wavy">反设计不是反人类</span>。</p>
+    <div class="btn-row">
+      <button class="btn tilt-a" data-close>知道了</button>
+      <button class="btn small" data-close>再歪点</button>
+    </div>
+  </div>
+</div>
+
+<!-- 确认框 -->
+<div class="ovl" id="ovl-confirm">
+  <div class="modal tape pk">
+    <button class="x" data-close aria-label="关闭">×</button>
+    <h4 class="fun">真要删掉这条记录？</h4>
+    <p>删了可就找不回来了（并没有，演示而已）。</p>
+    <div class="btn-row" style="align-items:flex-end">
+      <button class="btn big" id="confirm-yes" style="background:var(--pink);color:#fff;transform:rotate(-2deg)">删掉它！</button>
+      <button class="btn small" id="confirm-no">算了</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast" role="status"></div>
+
+<script>
+function $(s,c){return (c||document).querySelector(s)}
+function $all(s,c){return Array.prototype.slice.call((c||document).querySelectorAll(s))}
+
+/* ---------- toast ---------- */
+var toastTimer=null;
+function toast(msg){
+  var t=$('#toast');
+  t.textContent='★ '+msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(function(){t.classList.remove('show')},2200);
+}
+
+/* ---------- Tab 切换 + 深链 + 滑动 pill ---------- */
+var tabs=$all('.tabbar button'),panels=$all('.panel'),pill=$('#pill'),cur=0;
+function placePill(animate){
+  var b=tabs[cur];if(!b)return;
+  if(!animate){pill.style.transition='none'}
+  pill.style.width=b.offsetWidth+'px';
+  pill.style.transform='translateX('+(b.offsetLeft-6)+'px)';
+  if(!animate){void pill.offsetWidth;pill.style.transition=''}
+}
+function setTab(i,replace){
+  i=Math.max(0,Math.min(4,i|0));cur=i;
+  tabs.forEach(function(b,j){b.classList.toggle('active',j===i)});
+  panels.forEach(function(p,j){p.classList.toggle('active',j===i)});
+  placePill(true);
+  try{if(replace!==false){history.replaceState('?tab='+i,document.title)}}catch(e){}
+  window.scrollTo(0,0);
+}
+tabs.forEach(function(b){b.addEventListener('click',function(){setTab(parseInt(b.dataset.i,10))})});
+window.addEventListener('resize',function(){placePill(false)});
+window.addEventListener('load',function(){placePill(false)});
+(function(){
+  var m=/[?&]tab=(\d)/.exec(location.search),t=m?parseInt(m[1],10):0;
+  cur=Math.max(0,Math.min(4,isNaN(t)?0:t));
+  tabs.forEach(function(b,j){b.classList.toggle('active',j===cur)});
+  panels.forEach(function(p,j){p.classList.toggle('active',j===cur)});
+  placePill(false);
+})();
+
+/* ---------- 通用 data-toast 按钮 ---------- */
+$all('[data-toast]').forEach(function(b){
+  b.addEventListener('click',function(){toast(b.dataset.toast)});
+});
+
+/* ---------- 弹窗 ---------- */
+function openOvl(id){$('#'+id).classList.add('show')}
+$all('.ovl').forEach(function(o){
+  o.addEventListener('click',function(e){if(e.target===o)o.classList.remove('show')});
+  $all('[data-close]',o).forEach(function(x){x.addEventListener('click',function(){o.classList.remove('show')})});
+});
+$('#open-modal').addEventListener('click',function(){openOvl('ovl-modal')});
+$('#open-confirm').addEventListener('click',function(){openOvl('ovl-confirm')});
+$('#confirm-yes').addEventListener('click',function(){
+  $('#ovl-confirm').classList.remove('show');
+  $('#confirm-result').textContent='已删除（并没有）★';
+  toast('记录已删除（演示）');
+});
+$('#confirm-no').addEventListener('click',function(){
+  $('#ovl-confirm').classList.remove('show');
+  $('#confirm-result').textContent='已取消，没删。';
+});
+
+/* ---------- toast 演示 ---------- */
+$('#toast-go').addEventListener('click',function(){toast('解析完成，视频已就绪！')});
+$('#toast-go2').addEventListener('click',function(){toast('打卡成功，工时 +8h ★')});
+
+/* ---------- 色板复制 ---------- */
+function copyHex(hex){
+  function done(ok){toast(ok?('已复制 '+hex):('复制失败，自己记一下 '+hex))}
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(hex).then(function(){done(true)},function(){done(false)});
+  }else{done(false)}
+}
+$all('.sw').forEach(function(s){s.addEventListener('click',function(){copyHex(s.dataset.hex)})});
+
+/* ---------- 跑马灯调速 ---------- */
+var topMq=$('#top-mq'),miniMq=$('#mini-mq');
+function setMqSpeed(dur){
+  topMq.style.animationDuration=dur;miniMq.style.animationDuration=dur;
+  topMq.style.animationPlayState='running';miniMq.style.animationPlayState='running';
+}
+$('#mq-slow').addEventListener('click',function(){setMqSpeed('30s');toast('跑马灯：慢放模式')});
+$('#mq-fast').addEventListener('click',function(){setMqSpeed('5s');toast('跑马灯：起飞！')});
+$('#mq-stop').addEventListener('click',function(){
+  topMq.style.animationPlayState='paused';miniMq.style.animationPlayState='paused';toast('跑马灯：罚站');
+});
+
+/* ---------- 拼贴打乱 ---------- */
+$('#shuffle').addEventListener('click',function(){
+  $all('#hero-col .pz').forEach(function(el){
+    el.style.transform='rotate('+((Math.random()*12)-6).toFixed(1)+'deg) scale('+(0.92+Math.random()*0.2).toFixed(2)+')';
+  });
+  toast('拼贴已打乱，依然好看');
+});
+
+/* ---------- 输入框解析 ---------- */
+$('#parse-go').addEventListener('click',function(){
+  var v=$('#link-in').value.trim();
+  $('#parse-result').textContent=v?('收到「'+(v.length>18?v.slice(0,18)+'…':v)+'」，已加入解析队列 ★'):('先粘条链接再点我 ★');
+});
+
+/* ---------- 复选框计数 ---------- */
+var chkInputs=$all('.chk input');
+function updChk(){
+  var n=chkInputs.filter(function(i){return i.checked}).length;
+  $('#chk-result').textContent='已选 '+n+' 项';
+}
+chkInputs.forEach(function(i){i.addEventListener('change',updChk)});updChk();
+
+/* ---------- 单选 ---------- */
+$all('.rdo input').forEach(function(i){
+  i.addEventListener('change',function(){
+    $('#rdo-result').textContent='当前：'+i.parentNode.textContent.trim();
+  });
+});
+
+/* ---------- 开关状态文字 ---------- */
+$all('.swline').forEach(function(line){
+  var inp=$('input',line),st=$('.sw-state',line);
+  inp.addEventListener('change',function(){st.textContent=inp.checked?'开':'关'});
+});
+
+/* ---------- 胶带标签 ---------- */
+$all('#chips .chip').forEach(function(c){
+  c.addEventListener('click',function(){
+    c.classList.toggle('on');
+    var sel=$all('#chips .chip.on').map(function(x){return x.textContent});
+    $('#chip-result').textContent=sel.length?('已选：'+sel.join('、')):'一个都没选';
+  });
+});
+
+/* ---------- 通知卡关闭 ---------- */
+$all('.notif .x').forEach(function(x){
+  x.addEventListener('click',function(){x.parentNode.remove();toast('通知已忽略')});
+});
+
+/* ---------- 故障重播 ---------- */
+$('#glitch-go').addEventListener('click',function(){
+  var g=$('#glitch');g.classList.remove('play');void g.offsetWidth;g.classList.add('play');
+});
+
+/* ---------- 星级评分 ---------- */
+var starBtns=$all('#stars button'),
+    starWords=['还没点','很烂','一般般','还不错','挺好','封神'];
+starBtns.forEach(function(b,i){
+  b.addEventListener('click',function(){
+    starBtns.forEach(function(x,j){x.classList.toggle('on',j<=i)});
+    $('#star-txt').textContent=(i+1)+' 星：'+starWords[i+1]+' ★';
+  });
+});
+
+/* ---------- 锯齿进度条 ---------- */
+$('#prog-go').addEventListener('click',function(){
+  var f=$('#prog-fill'),t=$('#prog-txt'),w=0,
+      target=62+Math.floor(Math.random()*38),done=false;
+  t.textContent='解析中…0%';
+  var iv=setInterval(function(){
+    w+=4+Math.random()*7;
+    if(w>=target){w=target;clearInterval(iv);done=true;t.textContent='完成 '+Math.round(w)+'% ★';toast('解析完成 ★')}
+    else{t.textContent='解析中…'+Math.round(w)+'%'}
+    f.style.width=w+'%';
+  },110);
+});
+
+/* ---------- 价格标签 ---------- */
+$all('#prices .price').forEach(function(p){
+  p.addEventListener('click',function(){
+    $all('#prices .price').forEach(function(x){x.classList.remove('sel')});
+    p.classList.add('sel');
+    $('#price-result').textContent='已选：'+p.childNodes[0].textContent.trim()+'档';
+  });
+});
+
+/* ---------- 弹跳加载 ---------- */
+$('#load-go').addEventListener('click',function(){
+  var l=$('#loader'),r=$('#load-result');
+  r.textContent='';l.classList.add('show');
+  setTimeout(function(){l.classList.remove('show');r.textContent='加载完成 ★';toast('加载完成')},2500);
+});
+
+/* ---------- 错误提示 ---------- */
+$('#err-show').addEventListener('click',function(){
+  var e=$('#err-box');e.style.display='block';toast('又报错了，习惯就好');
+});
+$('#err-box .x').addEventListener('click',function(){$('#err-box').style.display='none'});
+</script>
+</body>
+</html>
