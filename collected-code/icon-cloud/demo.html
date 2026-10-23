@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>IconCloud · 3D 图标球复刻</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{background:#0a0a0f;color:#e8e8ef;font-family:-apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;overflow:hidden;display:flex;flex-direction:column;align-items:center}
+.hd{padding:26px 16px 4px;text-align:center;z-index:2}
+.hd h1{font-size:22px;font-weight:800;letter-spacing:.5px}
+.hd h1 span{background:linear-gradient(90deg,#61dafb,#a78bfa,#f472b6);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hd p{font-size:12.5px;color:#8a8a99;margin-top:6px}
+#stage{position:relative;flex:1;width:100%;max-width:560px;touch-action:none;cursor:grab}
+#stage:active{cursor:grabbing}
+#cv{position:absolute;inset:0;width:100%;height:100%}
+.cap{padding:4px 16px 10px;font-size:12px;color:#77778a;text-align:center;z-index:2;line-height:1.7}
+.cap b{color:#b9b9cc;font-weight:600}
+.grid{width:100%;max-width:560px;padding:0 20px 26px;z-index:2}
+.grid .t{font-size:12px;color:#77778a;margin-bottom:10px;text-align:center}
+.grid .row{display:grid;grid-template-columns:repeat(8,1fr);gap:10px}
+.grid .cell{aspect-ratio:1;border-radius:14px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;overflow:hidden}
+.grid .cell img{width:56%;height:56%;object-fit:contain;filter:brightness(0) invert(.92)}
+</style>
+</head>
+<body>
+<div class="hd">
+  <h1><span>IconCloud</span> · 3D 图标球</h1>
+  <p>复刻自 magicui · 30 个技术栈图标 · Fibonacci 球面分布</p>
+</div>
+<div id="stage"><canvas id="cv"></canvas></div>
+<div class="cap"><b>拖拽</b>旋转图标球 · 松手后惯性继续 · 图标来自 simpleicons CDN</div>
+<div class="grid">
+  <div class="t">静态网格备用展示（CDN 加载慢时也有东西看）</div>
+  <div class="row" id="gridRow"></div>
+</div>
+<script>
+const slugs=["typescript","javascript","dart","java","react","flutter","android","html5","css3","nodedotjs","express","nextdotjs","prisma","amazonaws","postgresql","firebase","nginx","vercel","testinglibrary","jest","cypress","docker","git","jira","github","gitlab","visualstudiocode","androidstudio","sonarqube","figma"];
+const N=slugs.length;
+// Fibonacci sphere 均匀分布
+const pts=[];
+for(let i=0;i<N;i++){
+  const y=1-(i/(N-1))*2, r=Math.sqrt(1-y*y), th=i*2.399963;
+  pts.push({x:Math.cos(th)*r, y:y, z:Math.sin(th)*r, slug:slugs[i], img:new Image(), ok:false});
+}
+pts.forEach(p=>{
+  p.img.onload=()=>{p.ok=true};
+  p.img.onerror=()=>{p.ok=false};
+  p.img.src=`https://cdn.simpleicons.org/${p.slug}/${p.slug}`;
+});
+// 备用网格 8 个
+const gridSlugs=["typescript","react","flutter","docker","git","figma","javascript","github"];
+const gr=document.getElementById('gridRow');
+gridSlugs.forEach(s=>{
+  const d=document.createElement('div');d.className='cell';
+  const im=document.createElement('img');im.src=`https://cdn.simpleicons.org/${s}/${s}`;im.alt=s;
+  d.appendChild(im);gr.appendChild(d);
+});
+
+const stage=document.getElementById('stage'), cv=document.getElementById('cv'), ctx=cv.getContext('2d');
+let W=0,H=0,DPR=1;
+function resize(){DPR=Math.min(2,window.devicePixelRatio||1);W=stage.clientWidth;H=stage.clientHeight;cv.width=W*DPR;cv.height=H*DPR;ctx.setTransform(DPR,0,0,DPR,0,0)}
+resize();window.addEventListener('resize',resize);
+
+let rotY=0, rotX=0.35, velY=0.0035, velX=0, dragging=false, lastX=0, lastY=0;
+stage.addEventListener('pointerdown',e=>{dragging=true;lastX=e.clientX;lastY=e.clientY;velY=0;velX=0;stage.setPointerCapture(e.pointerId)});
+stage.addEventListener('pointermove',e=>{
+  if(!dragging)return;
+  const dx=e.clientX-lastX, dy=e.clientY-lastY; lastX=e.clientX; lastY=e.clientY;
+  rotY+=dx*0.008; rotX+=dy*0.005;
+  rotX=Math.max(-1.2,Math.min(1.2,rotX));
+  velY=dx*0.008; velX=dy*0.005;
+});
+const end=()=>{dragging=false};
+stage.addEventListener('pointerup',end);stage.addEventListener('pointercancel',end);
+
+function project(p){
+  // 绕 X 再绕 Y
+  const cx=Math.cos(rotX), sx=Math.sin(rotX);
+  let y=p.y*cx-p.z*sx, z=p.y*sx+p.z*cx, x=p.x;
+  const cy=Math.cos(rotY), sy=Math.sin(rotY);
+  const x2=x*cy+z*sy, z2=-x*sy+z*cy;
+  return {x:x2,y:y,z:z2};
+}
+function frame(){
+  if(!dragging){
+    rotY+=velY; rotX+=velX;
+    rotX=Math.max(-1.2,Math.min(1.2,rotX));
+    velY*=0.96; velX*=0.96;
+    if(Math.abs(velY)<0.0004) velY=0.0035; // 恢复缓慢自转
+  }
+  ctx.clearRect(0,0,W,H);
+  const R=Math.min(W,H)*0.36, cxp=W/2, cyp=H/2, fov=3.2;
+  const arr=pts.map(p=>{const q=project(p);return {...q,slug:p.slug,img:p.img,ok:p.ok}}).sort((a,b)=>a.z-b.z);
+  for(const q of arr){
+    const per=fov/(fov+q.z);           // 透视缩放
+    const px=cxp+q.x*R*per, py=cyp+q.y*R*per;
+    const t=(q.z+1)/2;                 // 0 远 → 1 近
+    const alpha=0.3+0.7*t;
+    const size=46*(0.45+0.75*t);
+    ctx.globalAlpha=alpha;
+    if(q.ok&&q.img.complete){
+      const s=size;
+      ctx.drawImage(q.img,px-s/2,py-s/2,s,s);
+    }else{
+      // 占位圆点：首字母
+      ctx.beginPath();ctx.arc(px,py,size*0.42,0,7);
+      const g=ctx.createLinearGradient(px-size/2,py-size/2,px+size/2,py+size/2);
+      g.addColorStop(0,'#3a3a4d');g.addColorStop(1,'#1c1c28');
+      ctx.fillStyle=g;ctx.fill();
+      ctx.fillStyle='#cfcfe0';ctx.font=`700 ${Math.max(10,size*0.34)}px system-ui`;
+      ctx.textAlign='center';ctx.textBaseline='middle';
+      ctx.fillText(q.slug[0].toUpperCase(),px,py+1);
+    }
+  }
+  ctx.globalAlpha=1;
+  requestAnimationFrame(frame);
+}
+frame();
+</script>
+</body>
+</html>
