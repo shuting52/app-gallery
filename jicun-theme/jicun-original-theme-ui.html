@@ -7,11 +7,11 @@
 <style>
 /* ===== jicun palette 原样还原（lib/ui/palette.dart + motion.dart 背景三层叠加）===== */
 :root,[data-theme="light"]{
-  --page:#CDDCDC; --surface:rgba(0,0,0,.07); --accent:#1257C9;
+  --page:#CDDCDC; --surface:rgba(255,255,255,.55); --accent:#1257C9;
   --accent-soft:rgba(18,87,201,.08); --fg:#1B2430; --secondary:#6E7887;
   --bar:rgba(242,242,247,.9); --danger:#C0392B; --skeleton:rgba(0,0,0,.07);
   --avatar:rgba(0,0,0,.12); --subtle:rgba(0,0,0,.08);
-  --dialog:#F2F2F7; --input:rgba(255,255,255,.55); --thumb-line:rgba(0,0,0,.05);
+  --dialog:#F2F2F7; --input:rgba(255,255,255,.6); --thumb-line:rgba(0,0,0,.05);
   /* 真机背景 = 底色 + 顶部到底部白25%→黑25%（overlay）+ 底部中心径向辉光（screen），见 LightThemeBackgroundPainter */
   --bg-layer:
     radial-gradient(ellipse 130% 100% at 50% 108%, rgba(255,255,255,.5), rgba(255,255,255,0) 55%),
@@ -20,7 +20,7 @@
   --bg-blend:screen,overlay,normal;
 }
 [data-theme="dark"]{
-  --page:#434343; --surface:rgba(255,255,255,.12); --accent:#5AA9FF;
+  --page:#434343; --surface:rgba(255,255,255,.15); --accent:#5AA9FF;
   --accent-soft:rgba(90,169,255,.12); --fg:#F5F7FA; --secondary:#ADB7C5;
   --bar:rgba(28,28,30,.9); --danger:#FF7B72; --skeleton:rgba(255,255,255,.12);
   --avatar:rgba(255,255,255,.16); --subtle:rgba(255,255,255,.1);
@@ -219,7 +219,7 @@ input[type=range]{width:100%;accent-color:var(--accent);height:28px}
   <div class="card"><h3><span class="no">01</span>主题介绍</h3>
     <div class="desc">jicun 是一款短视频去水印工具：粘贴分享链接 → 解析 → 预览 → 下载。本套装将其浅 / 深两档配色与"半透明卡片、无描边、无投影"的核心特征原样还原。</div>
     <div class="kv"><span>设计语言</span><b>扁平 · 通透 · 无阴影</b></div>
-    <div class="kv"><span>卡片</span><b>7% 黑 / 12% 白半透明</b></div>
+    <div class="kv"><span>卡片</span><b>55% 白 / 15% 白毛玻璃</b></div>
     <div class="kv"><span>圆角</span><b>超椭圆 20px</b></div>
   </div>
   <div class="card"><h3><span class="no">02</span>浅色色板 · 点击复制</h3>
@@ -233,7 +233,7 @@ input[type=range]{width:100%;accent-color:var(--accent);height:28px}
   <div class="card"><h3><span class="no">04</span>半透明 surface 特性</h3>
     <div class="desc">卡片没有描边和阴影，靠半透明与底色形成层次。同一张卡片放在不同底色上会自动"透"出底色。</div>
     <div class="surface-demo">
-      <div class="demo s1">surface<br>7% 黑</div>
+      <div class="demo s1">GlassPanel<br>55% 白</div>
       <div class="demo s2">accentSoft<br>8% 蓝</div>
       <div class="demo s3">accent<br>实心</div>
     </div>
@@ -475,8 +475,8 @@ function confirmClear(){
 }
 mask.addEventListener('click',e=>{if(e.target===mask)mask.classList.remove('show')});
 /* ---------- 色板 ---------- */
-const L=[['页面底 pageBackground','#CDDCDC'],['卡片 surface','#12000000'],['主色 accent','#1257C9'],['选中填充 accentSoft','#141257C9'],['主文字 foreground','#1B2430'],['次要文字 secondary','#6E7887']];
-const D=[['页面底 pageBackground','#434343'],['卡片 surface','#1FFFFFFF'],['主色 accent','#5AA9FF'],['选中填充 accentSoft','#1F5AA9FF'],['主文字 foreground','#F5F7FA'],['次要文字 secondary','#ADB7C5']];
+const L=[['页面底 pageBackground','#CDDCDC'],['卡片 GlassPanel','#8CFFFFFF'],['主色 accent','#1257C9'],['选中填充 accentSoft','#141257C9'],['主文字 foreground','#1B2430'],['次要文字 secondary','#6E7887']];
+const D=[['页面底 pageBackground','#434343'],['卡片 GlassPanel','#26FFFFFF'],['主色 accent','#5AA9FF'],['选中填充 accentSoft','#1F5AA9FF'],['主文字 foreground','#F5F7FA'],['次要文字 secondary','#ADB7C5']];
 function fillSw(id,list){
   document.getElementById(id).innerHTML=list.map(([n,c])=>`<div class="sw" data-c="${c}"><i style="background:${c}"></i><span><b>${n}</b>${c}</span></div>`).join('');
   document.getElementById(id).querySelectorAll('.sw').forEach(el=>el.onclick=()=>{
