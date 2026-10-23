@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Liquid Glass Button · Metal Button 复刻 Demo</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;background:#0f1420;color:#e8edf5;min-height:100vh}
+header{max-width:430px;margin:0 auto;padding:28px 20px 8px}
+header h1{font-size:22px;font-weight:800;letter-spacing:.5px}
+header h1 span{background:linear-gradient(90deg,#7dd3fc,#c4b5fd,#f9a8d4);-webkit-background-clip:text;background-clip:text;color:transparent}
+header p{margin-top:8px;font-size:13px;color:#93a0b4;line-height:1.7}
+header p code{color:#7dd3fc;font-size:12px}
+main{max-width:430px;margin:0 auto;padding:12px 20px 60px}
+h2{font-size:16px;font-weight:700;margin:26px 0 6px}
+.desc{font-size:12.5px;color:#93a0b4;line-height:1.7;margin-bottom:12px}
+
+/* ---------- 主题切换 ---------- */
+.seg{display:inline-flex;background:rgba(255,255,255,.08);border-radius:999px;padding:3px;margin-bottom:12px}
+.seg button{border:none;background:none;color:#93a0b4;font-size:13px;padding:7px 18px;border-radius:999px;cursor:pointer}
+.seg button.on{background:#e8edf5;color:#0f1420;font-weight:700}
+
+/* ---------- LiquidButton 舞台 ---------- */
+.stage{position:relative;border-radius:20px;overflow:hidden;padding:34px 18px;display:flex;flex-direction:column;align-items:center;gap:18px;isolation:isolate}
+.stage[data-ltheme="light"]{background:
+  radial-gradient(340px 200px at 15% 20%, rgba(56,189,248,.85), transparent 70%),
+  radial-gradient(300px 220px at 85% 30%, rgba(244,114,182,.8), transparent 70%),
+  radial-gradient(360px 240px at 50% 95%, rgba(251,191,36,.75), transparent 70%),
+  radial-gradient(280px 200px at 80% 85%, rgba(167,139,250,.7), transparent 70%),
+  linear-gradient(135deg,#1e3a8a,#7c3aed)}
+.stage[data-ltheme="dark"]{background:
+  radial-gradient(340px 200px at 15% 20%, rgba(14,165,233,.5), transparent 70%),
+  radial-gradient(300px 220px at 85% 30%, rgba(219,39,119,.45), transparent 70%),
+  radial-gradient(360px 240px at 50% 95%, rgba(245,158,11,.4), transparent 70%),
+  radial-gradient(280px 200px at 80% 85%, rgba(139,92,246,.45), transparent 70%),
+  linear-gradient(135deg,#020617,#1e1b4b)}
+.stage .cap{font-size:11px;color:rgba(255,255,255,.75);background:rgba(0,0,0,.25);padding:3px 10px;border-radius:999px;z-index:3}
+
+/* ---------- LiquidButton 本体（照源码复刻） ---------- */
+.lbtn{position:relative;isolation:isolate;display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  background:transparent;border:none;cursor:pointer;white-space:nowrap;font-weight:500;outline:none;
+  border-radius:6px;transition:transform .3s,color .3s;flex:none}
+.lbtn:hover{transform:scale(1.05)}
+.lbtn:active{transform:scale(1.02)}
+.lbtn-sm{height:32px;padding:0 16px;font-size:12px;gap:6px}
+.lbtn-default{height:36px;padding:8px 16px;font-size:14px}
+.lbtn-lg{height:40px;padding:0 24px;font-size:14px}
+.lbtn-xl{height:48px;padding:0 32px;font-size:15px}
+.lbtn-xxl{height:56px;padding:0 40px;font-size:16px}
+.stage[data-ltheme="light"] .lbtn{color:#1d4ed8}
+.stage[data-ltheme="dark"] .lbtn{color:#bfdbfe}
+/* 高光层：源码那组多层 inset box-shadow，rounded-full */
+.lbtn-hl{position:absolute;inset:0;z-index:1;border-radius:9999px;pointer-events:none;transition:box-shadow .3s}
+.stage[data-ltheme="light"] .lbtn-hl{box-shadow:
+  0 0 6px rgba(0,0,0,0.03),0 2px 6px rgba(0,0,0,0.08),
+  inset 3px 3px 0.5px -3px rgba(0,0,0,0.9),inset -3px -3px 0.5px -3px rgba(0,0,0,0.85),
+  inset 1px 1px 1px -0.5px rgba(0,0,0,0.6),inset -1px -1px 1px -0.5px rgba(0,0,0,0.6),
+  inset 0 0 6px 6px rgba(0,0,0,0.12),inset 0 0 2px 2px rgba(0,0,0,0.06),
+  0 0 12px rgba(255,255,255,0.15)}
+.stage[data-ltheme="dark"] .lbtn-hl{box-shadow:
+  0 0 8px rgba(0,0,0,0.03),0 2px 6px rgba(0,0,0,0.08),
+  inset 3px 3px 0.5px -3.5px rgba(255,255,255,0.09),inset -3px -3px 0.5px -3.5px rgba(255,255,255,0.85),
+  inset 1px 1px 1px -0.5px rgba(255,255,255,0.6),inset -1px -1px 1px -0.5px rgba(255,255,255,0.6),
+  inset 0 0 6px 6px rgba(255,255,255,0.12),inset 0 0 2px 2px rgba(255,255,255,0.06),
+  0 0 12px rgba(0,0,0,0.15)}
+/* 扭曲层：backdrop-filter 引用 SVG 滤镜（源码 GlassFilter 原样） */
+.lbtn-distort{position:absolute;inset:0;z-index:0;border-radius:6px;overflow:hidden;pointer-events:none;
+  backdrop-filter:blur(2px);backdrop-filter:url(#container-glass)}
+.lbtn-label{position:relative;z-index:2;pointer-events:none}
+.lrow{display:flex;align-items:center;gap:14px;z-index:3}
+.lrow .sz{font-size:11px;color:rgba(255,255,255,.65);width:52px;text-align:right}
+
+/* ---------- MetalButton（照源码复刻） ---------- */
+.mgrid{display:grid;grid-template-columns:1fr 1fr;gap:16px;justify-items:center}
+.mcell{display:flex;flex-direction:column;align-items:center;gap:8px}
+.mcell .nm{font-size:11px;color:#93a0b4}
+.mbtn{position:relative;display:inline-flex;border-radius:6px;padding:1.25px;transform:translateY(0) scale(1);
+  box-shadow:0 3px 8px rgba(0,0,0,0.08);transition:all 250ms cubic-bezier(0.1,0.4,0.2,1);transform-origin:center;will-change:transform;cursor:pointer}
+.mbtn.pressed{transform:translateY(2.5px) scale(.99);box-shadow:0 1px 2px rgba(0,0,0,0.15)}
+.mbtn.hovered{box-shadow:0 4px 12px rgba(0,0,0,0.12)}
+.mbtn-inner{position:absolute;inset:1px;border-radius:8px;transition:all 250ms cubic-bezier(0.1,0.4,0.2,1);pointer-events:none}
+.mbtn.hovered:not(.pressed) .mbtn-inner{filter:brightness(1.05)}
+.mbtn-btn{position:relative;z-index:1;margin:1px;border:none;border-radius:6px;display:inline-flex;height:44px;align-items:center;justify-content:center;
+  overflow:hidden;padding:8px 24px;font-size:14px;line-height:1;font-weight:600;cursor:pointer;outline:none;
+  transition:all 250ms cubic-bezier(0.1,0.4,0.2,1);transform-origin:center;will-change:transform}
+.mbtn.pressed .mbtn-btn{transform:scale(.97)}
+.mbtn.hovered:not(.pressed) .mbtn-btn{filter:brightness(1.02)}
+.mbtn-shine{position:absolute;inset:0;z-index:2;overflow:hidden;pointer-events:none;opacity:0;transition:opacity .3s}
+.mbtn.pressed .mbtn-shine{opacity:.2}
+.mbtn-shine i{position:absolute;inset:0;border-radius:6px;background:linear-gradient(to right,transparent,#f5f5f5,transparent);display:block}
+.mbtn-hov{position:absolute;inset:0;border-radius:8px;background:linear-gradient(to top,transparent,rgba(255,255,255,.05));pointer-events:none;display:none}
+.mbtn.hovered:not(.pressed) .mbtn-hov{display:block}
+/* 六种配色（colorVariants 原样转 CSS） */
+.mbtn[data-v="default"]{background:linear-gradient(to bottom,#000,#A0A0A0)}
+.mbtn[data-v="default"] .mbtn-inner{background:linear-gradient(to bottom,#FAFAFA,#3E3E3E,#E5E5E5)}
+.mbtn[data-v="default"] .mbtn-btn{background:linear-gradient(to bottom,#B9B9B9,#969696);color:#fff;text-shadow:0 -1px 0 rgb(80 80 80 / 100%)}
+.mbtn[data-v="primary"]{background:linear-gradient(to bottom,#000,#A0A0A0)}
+.mbtn[data-v="primary"] .mbtn-inner{background:linear-gradient(to bottom,#1d4ed8,#3b82f6,#dbeafe)}
+.mbtn[data-v="primary"] .mbtn-btn{background:linear-gradient(to bottom,#2563eb,rgba(37,99,235,.4));color:#fff;text-shadow:0 -1px 0 rgb(30 58 138 / 100%)}
+.mbtn[data-v="success"]{background:linear-gradient(to bottom,#005A43,#7CCB9B)}
+.mbtn[data-v="success"] .mbtn-inner{background:linear-gradient(to bottom,#E5F8F0,#00352F,#D1F0E6)}
+.mbtn[data-v="success"] .mbtn-btn{background:linear-gradient(to bottom,#9ADBC8,#3E8F7C);color:#FFF7F0;text-shadow:0 -1px 0 rgb(6 78 59 / 100%)}
+.mbtn[data-v="error"]{background:linear-gradient(to bottom,#5A0000,#FFAEB0)}
+.mbtn[data-v="error"] .mbtn-inner{background:linear-gradient(to bottom,#FFDEDE,#680002,#FFE9E9)}
+.mbtn[data-v="error"] .mbtn-btn{background:linear-gradient(to bottom,#F08D8F,#A45253);color:#FFF7F0;text-shadow:0 -1px 0 rgb(146 64 14 / 100%)}
+.mbtn[data-v="gold"]{background:linear-gradient(to bottom,#917100,#EAD98F)}
+.mbtn[data-v="gold"] .mbtn-inner{background:linear-gradient(to bottom,#FFFDDD,#856807,#FFF1B3)}
+.mbtn[data-v="gold"] .mbtn-btn{background:linear-gradient(to bottom,#FFEBA1,#9B873F);color:#FFFDE5;text-shadow:0 -1px 0 rgb(178 140 2 / 100%)}
+.mbtn[data-v="bronze"]{background:linear-gradient(to bottom,#864813,#E9B486)}
+.mbtn[data-v="bronze"] .mbtn-inner{background:linear-gradient(to bottom,#EDC5A1,#5F2D01,#FFDEC1)}
+.mbtn[data-v="bronze"] .mbtn-btn{background:linear-gradient(to bottom,#FFE3C9,#A36F3D);color:#FFF7F0;text-shadow:0 -1px 0 rgb(124 45 18 / 100%)}
+
+footer{max-width:430px;margin:0 auto;padding:0 20px 40px;font-size:11px;color:#5b6a82;line-height:1.8}
+</style>
+</head>
+<body>
+<header>
+  <h1><span>Liquid Glass</span> Button 复刻</h1>
+  <p>原样复刻 <code>liquid-glass-button.tsx</code>：LiquidButton 的液态扭曲来自 SVG 滤镜 <code>#container-glass</code>（feTurbulence → 模糊 → 置换 → 模糊），经 <code>backdrop-filter: url(#container-glass)</code> 作用于按钮；多层 inset 高光分浅/深两档。MetalButton 为三层金属结构，6 种配色。</p>
+</header>
+<main>
+  <h2>LiquidButton · 液态玻璃按钮</h2>
+  <p class="desc">hover 放大 1.05。切换浅/深档看两套高光 shadow。玻璃扭曲需要背后有色彩——舞台放了彩色光斑。</p>
+  <div class="seg" id="lseg"><button class="on" data-t="light">浅色档</button><button data-t="dark">深色档</button></div>
+  <div class="stage" id="stage" data-ltheme="light">
+    <div class="lrow"><span class="sz">sm</span><button class="lbtn lbtn-sm"><span class="lbtn-hl"></span><span class="lbtn-distort"></span><span class="lbtn-label">Liquid Glass</span></button></div>
+    <div class="lrow"><span class="sz">default</span><button class="lbtn lbtn-default"><span class="lbtn-hl"></span><span class="lbtn-distort"></span><span class="lbtn-label">Liquid Glass</span></button></div>
+    <div class="lrow"><span class="sz">lg</span><button class="lbtn lbtn-lg"><span class="lbtn-hl"></span><span class="lbtn-distort"></span><span class="lbtn-label">Liquid Glass</span></button></div>
+    <div class="lrow"><span class="sz">xl</span><button class="lbtn lbtn-xl"><span class="lbtn-hl"></span><span class="lbtn-distort"></span><span class="lbtn-label">Liquid Glass</span></button></div>
+    <div class="lrow"><span class="sz">xxl</span><button class="lbtn lbtn-xxl"><span class="lbtn-hl"></span><span class="lbtn-distort"></span><span class="lbtn-label">Liquid Glass</span></button></div>
+    <span class="cap">backdrop-filter: url(#container-glass)</span>
+  </div>
+
+  <h2>MetalButton · 金属按钮</h2>
+  <p class="desc">按住试试：下沉 2.5px + 缩小 + 扫光出现；悬停提亮。6 种配色照源码 colorVariants。</p>
+  <div class="mgrid" id="mgrid">
+    <div class="mcell"><div class="mbtn" data-v="default"><div class="mbtn-inner"></div><button class="mbtn-btn"><span class="mbtn-shine"><i></i></span><span>Default</span><span class="mbtn-hov"></span></button></div><span class="nm">default 灰</span></div>
+    <div class="mcell"><div class="mbtn" data-v="primary"><div class="mbtn-inner"></div><button class="mbtn-btn"><span class="mbtn-shine"><i></i></span><span>Primary</span><span class="mbtn-hov"></span></button></div><span class="nm">primary 蓝</span></div>
+    <div class="mcell"><div class="mbtn" data-v="success"><div class="mbtn-inner"></div><button class="mbtn-btn"><span class="mbtn-shine"><i></i></span><span>Success</span><span class="mbtn-hov"></span></button></div><span class="nm">success 绿</span></div>
+    <div class="mcell"><div class="mbtn" data-v="error"><div class="mbtn-inner"></div><button class="mbtn-btn"><span class="mbtn-shine"><i></i></span><span>Error</span><span class="mbtn-hov"></span></button></div><span class="nm">error 红</span></div>
+    <div class="mcell"><div class="mbtn" data-v="gold"><div class="mbtn-inner"></div><button class="mbtn-btn"><span class="mbtn-shine"><i></i></span><span>Gold</span><span class="mbtn-hov"></span></button></div><span class="nm">gold 金</span></div>
+    <div class="mcell"><div class="mbtn" data-v="bronze"><div class="mbtn-inner"></div><button class="mbtn-btn"><span class="mbtn-shine"><i></i></span><span>Bronze</span><span class="mbtn-hov"></span></button></div><span class="nm">bronze 铜</span></div>
+  </div>
+</main>
+<footer>复刻自 liquid-glass-button.tsx（Button / LiquidButton / MetalButton）。LiquidButton 默认尺寸为 xxl；MetalButton 按压/悬停逻辑照源码的 isPressed / isHovered 状态机。</footer>
+
+<!-- GlassFilter 原样复刻 -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <filter id="container-glass" x="0%" y="0%" width="100%" height="100%" color-interpolation-filters="sRGB">
+      <feTurbulence type="fractalNoise" baseFrequency="0.05 0.05" numOctaves="1" seed="1" result="turbulence"/>
+      <feGaussianBlur in="turbulence" stdDeviation="2" result="blurredNoise"/>
+      <feDisplacementMap in="SourceGraphic" in2="blurredNoise" scale="70" xChannelSelector="R" yChannelSelector="B" result="displaced"/>
+      <feGaussianBlur in="displaced" stdDeviation="4" result="finalBlur"/>
+      <feComposite in="finalBlur" in2="finalBlur" operator="over"/>
+    </filter>
+  </defs>
+</svg>
+
+<script>
+// 浅/深档切换
+document.getElementById('lseg').addEventListener('click', function(e){
+  var b = e.target.closest('button'); if(!b) return;
+  this.querySelectorAll('button').forEach(function(x){x.classList.toggle('on', x===b)});
+  document.getElementById('stage').dataset.ltheme = b.dataset.t;
+});
+// MetalButton 状态机（照源码：pressed / hovered / touch）
+var isTouch = ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
+document.querySelectorAll('.mbtn').forEach(function(w){
+  var btn = w.querySelector('.mbtn-btn');
+  function press(){ w.classList.add('pressed'); }
+  function release(){ w.classList.remove('pressed'); }
+  btn.addEventListener('mousedown', press);
+  btn.addEventListener('mouseup', release);
+  btn.addEventListener('mouseleave', function(){ release(); w.classList.remove('hovered'); });
+  btn.addEventListener('mouseenter', function(){ if(!isTouch) w.classList.add('hovered'); });
+  btn.addEventListener('touchstart', press, {passive:true});
+  btn.addEventListener('touchend', release);
+  btn.addEventListener('touchcancel', release);
+});
+</script>
+</body>
+</html>
