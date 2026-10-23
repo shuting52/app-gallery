@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>复古未来主义 UI 套装 · Retrofuturism</title>
+<style>
+/* ============ 复古未来主义 Retro-Futurism / Synthwave ============ */
+:root{
+  --bg:#0d0217; --bg2:#160a2e; --card:#150a2ecc;
+  --pink:#ff2fb3; --cyan:#00f0ff; --purple:#7b2ff7; --yellow:#ffe600;
+  --ink:#f4ecff; --dim:#a78fc9;
+  --mono:ui-monospace,'SF Mono',Menlo,Consolas,monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{
+  font-family:-apple-system,'PingFang SC','Microsoft YaHei',system-ui,sans-serif;
+  background:var(--bg); color:var(--ink); min-height:100vh; padding-bottom:110px;
+  background-image:
+    radial-gradient(1200px 500px at 50% -80px, #2b1055 0%, transparent 60%),
+    radial-gradient(800px 400px at 100% 30%, #3d0a4e33 0%, transparent 60%);
+}
+/* CRT 扫描线 */
+.scanlines{position:fixed;inset:0;z-index:60;pointer-events:none;
+  background:repeating-linear-gradient(to bottom, transparent 0 3px, rgba(0,0,0,.22) 3px 4px);}
+.vignette{position:fixed;inset:0;z-index:59;pointer-events:none;
+  background:radial-gradient(120% 90% at 50% 40%, transparent 55%, rgba(5,0,15,.55) 100%);}
+
+header.top{padding:26px 20px 6px;text-align:center}
+.kicker{font-family:var(--mono);font-size:11px;letter-spacing:6px;color:var(--cyan);
+  text-shadow:0 0 8px var(--cyan)}
+h1.chrome{
+  font-size:44px;font-weight:900;letter-spacing:2px;margin:8px 0 4px;
+  background:linear-gradient(180deg,#ffffff 0%,#d9f2ff 28%,#8fb6d9 44%,#101c33 49%,#101c33 51%,#7de7ff 54%,#ff9de2 78%,#ffffff 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  filter:drop-shadow(0 2px 0 #000) drop-shadow(0 0 14px rgba(0,240,255,.45));
+}
+.sub{font-size:12px;color:var(--dim);letter-spacing:2px}
+
+main{max-width:430px;margin:0 auto;padding:10px 16px 0}
+.tab-panel{display:none}
+.tab-panel.on{display:block;animation:fadeUp .35s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+.card{background:var(--card);border:1px solid rgba(0,240,255,.22);border-radius:16px;
+  padding:16px;margin:14px 0;position:relative;overflow:hidden;
+  box-shadow:0 0 18px rgba(123,47,247,.18), inset 0 0 24px rgba(123,47,247,.06)}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,var(--pink),var(--cyan),transparent)}
+.card h3{font-size:14px;margin-bottom:4px;color:#fff;letter-spacing:1px}
+.card h3 .tag{font-family:var(--mono);font-size:10px;color:var(--cyan);border:1px solid var(--cyan);
+  border-radius:4px;padding:1px 6px;margin-left:8px;vertical-align:2px}
+.card .desc{font-size:12px;color:var(--dim);margin-bottom:12px;line-height:1.6}
+
+/* ---- 网格落日 ---- */
+.sunwrap{display:flex;flex-direction:column;align-items:center;padding:6px 0 0}
+.sun{width:170px;height:170px;border-radius:50%;position:relative;overflow:hidden;
+  background:linear-gradient(180deg,#ffe600 0%,#ffb300 35%,#ff5e3a 60%,#ff2fb3 100%);
+  box-shadow:0 0 40px rgba(255,47,179,.55),0 0 90px rgba(255,94,58,.25)}
+.sun::after{content:'';position:absolute;left:0;right:0;bottom:0;height:62%;
+  background:repeating-linear-gradient(to bottom,
+    transparent 0 6px, var(--bg) 6px 8px,
+    transparent 8px 16px, var(--bg) 16px 19px,
+    transparent 19px 29px, var(--bg) 29px 33px,
+    transparent 33px 45px, var(--bg) 45px 50px)}
+.floor{width:120%;height:80px;margin-top:-6px;
+  background:
+    repeating-linear-gradient(to right, rgba(0,240,255,.55) 0 2px, transparent 2px 34px),
+    repeating-linear-gradient(to bottom, rgba(0,240,255,.55) 0 2px, transparent 2px 20px);
+  transform:perspective(220px) rotateX(62deg);transform-origin:top center;
+  mask-image:linear-gradient(to bottom,#000 20%,transparent 95%);
+  -webkit-mask-image:linear-gradient(to bottom,#000 20%,transparent 95%)}
+.sunlabel{font-family:var(--mono);font-size:11px;letter-spacing:4px;color:var(--yellow);
+  text-shadow:0 0 10px var(--yellow);margin-top:2px}
+
+/* ---- 霓虹色板 ---- */
+.swatches{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.sw{border-radius:10px;overflow:hidden;border:1px solid rgba(255,255,255,.12);text-align:center}
+.sw i{display:block;height:52px}
+.sw b{display:block;font-size:10px;padding:5px 2px;font-family:var(--mono);font-weight:400;color:var(--dim)}
+.sw:nth-child(1) i{background:#ff2fb3;box-shadow:0 0 16px #ff2fb3}
+.sw:nth-child(2) i{background:#00f0ff;box-shadow:0 0 16px #00f0ff}
+.sw:nth-child(3) i{background:#7b2ff7;box-shadow:0 0 16px #7b2ff7}
+.sw:nth-child(4) i{background:#ffe600;box-shadow:0 0 16px #ffe600}
+.sw:nth-child(5) i{background:#0d0217;box-shadow:inset 0 0 0 1px #7b2ff7}
+
+/* ---- VHS 故障文字 ---- */
+.glitch{position:relative;display:inline-block;font-weight:900;color:#fff}
+.glitch::before,.glitch::after{content:attr(data-text);position:absolute;left:0;top:0;width:100%;overflow:hidden}
+.glitch::before{color:var(--pink);z-index:-1;animation:gl1 2.6s infinite steps(2,end)}
+.glitch::after{color:var(--cyan);z-index:-2;animation:gl2 3.4s infinite steps(2,end)}
+@keyframes gl1{0%,90%{transform:none;opacity:.85}92%{transform:translate(-5px,2px);clip-path:inset(8% 0 62% 0);opacity:1}94%{transform:translate(4px,-1px);clip-path:inset(58% 0 12% 0)}96%,100%{transform:none;opacity:.85}}
+@keyframes gl2{0%,88%{transform:none;opacity:.85}90%{transform:translate(5px,1px);clip-path:inset(48% 0 30% 0);opacity:1}93%{transform:translate(-4px,3px);clip-path:inset(12% 0 70% 0)}95%,100%{transform:none;opacity:.85}}
+.glitch-demo{font-size:34px;letter-spacing:3px;padding:10px 0;text-align:center}
+.glitch-btn-row{display:flex;gap:10px;justify-content:center;margin-top:6px}
+.mini{font-family:var(--mono);font-size:11px;color:var(--dim);border:1px dashed rgba(167,143,201,.5);
+  background:transparent;border-radius:8px;padding:6px 12px;cursor:pointer;color:var(--dim)}
+.mini:hover{color:var(--cyan);border-color:var(--cyan)}
+
+/* ---- 镀铬文字 ---- */
+.chrome-big{font-size:38px;font-weight:900;text-align:center;letter-spacing:4px;
+  background:linear-gradient(180deg,#fff 0%,#d9f2ff 28%,#8fb6d9 44%,#101c33 49%,#101c33 51%,#7de7ff 54%,#ff9de2 78%,#fff 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  filter:drop-shadow(0 2px 0 #000) drop-shadow(0 0 12px rgba(255,47,179,.4));padding:8px 0}
+
+/* ---- 像素装饰 ---- */
+.pxrow{display:flex;align-items:center;justify-content:center;gap:14px;padding:8px 0}
+.pxheart{width:56px;height:48px;position:relative;image-rendering:pixelated;
+  background:
+   linear-gradient(#ff2fb3,#ff2fb3) 8px 0/16px 8px no-repeat,
+   linear-gradient(#ff2fb3,#ff2fb3) 32px 0/16px 8px no-repeat,
+   linear-gradient(#ff2fb3,#ff2fb3) 0 8px/56px 24px no-repeat,
+   linear-gradient(#ff2fb3,#ff2fb3) 8px 32px/40px 8px no-repeat,
+   linear-gradient(#ff2fb3,#ff2fb3) 16px 40px/24px 8px no-repeat;
+  filter:drop-shadow(0 0 8px #ff2fb3);animation:pxbeat 1.2s infinite}
+@keyframes pxbeat{0%,100%{transform:scale(1)}12%{transform:scale(1.12)}24%{transform:scale(1)}}
+.pxdiv{height:8px;image-rendering:pixelated;
+  background:repeating-linear-gradient(to right,var(--cyan) 0 8px,transparent 8px 16px,var(--pink) 16px 24px,transparent 24px 32px)}
+.pxlabel{font-family:var(--mono);font-size:11px;color:var(--cyan);letter-spacing:3px;text-shadow:0 0 8px var(--cyan)}
+
+/* ---- 扫描线演示 ---- */
+.crt{background:#05010d;border-radius:10px;padding:18px;text-align:center;position:relative;overflow:hidden;
+  border:1px solid rgba(0,240,255,.3)}
+.crt::after{content:'';position:absolute;inset:0;pointer-events:none;
+  background:repeating-linear-gradient(to bottom,transparent 0 2px,rgba(0,0,0,.45) 2px 4px)}
+.crt p{font-family:var(--mono);color:var(--cyan);text-shadow:0 0 8px var(--cyan);font-size:13px;letter-spacing:2px}
+.crt small{color:var(--dim);font-size:11px}
+
+/* ============ 按钮 ============ */
+.btnrow{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.btn{font-family:inherit;font-size:14px;font-weight:700;border:none;cursor:pointer;
+  padding:12px 22px;border-radius:10px;letter-spacing:2px;color:#fff;position:relative}
+.btn-neon{background:linear-gradient(135deg,#ff2fb3,#7b2ff7);color:#fff;
+  box-shadow:0 0 14px rgba(255,47,179,.8),0 0 34px rgba(255,47,179,.35),inset 0 0 12px rgba(255,255,255,.25);
+  text-shadow:0 0 6px #fff;transition:transform .12s}
+.btn-neon:hover{transform:translateY(-2px);box-shadow:0 0 20px rgba(255,47,179,1),0 0 50px rgba(255,47,179,.5),inset 0 0 12px rgba(255,255,255,.3)}
+.btn-neon:active{transform:translateY(1px) scale(.98)}
+.btn-chrome{color:#0d0217;
+  background:linear-gradient(180deg,#ffffff 0%,#cfe3f5 30%,#7d9cbd 48%,#2b3f58 50%,#9fd8ef 52%,#e9b8f2 80%,#ffffff 100%);
+  box-shadow:0 3px 0 #0a0518,0 0 16px rgba(0,240,255,.35);text-shadow:0 1px 0 rgba(255,255,255,.6)}
+.btn-chrome:active{transform:translateY(2px);box-shadow:0 1px 0 #0a0518,0 0 10px rgba(0,240,255,.3)}
+.btn-glitch{background:#0d0217;border:2px solid var(--cyan);color:var(--cyan);
+  font-family:var(--mono);text-shadow:0 0 8px var(--cyan);box-shadow:0 0 12px rgba(0,240,255,.4),inset 0 0 12px rgba(0,240,255,.12)}
+.btn-glitch:hover{animation:btnshake .3s infinite;color:#fff;border-color:var(--pink);
+  text-shadow:2px 0 var(--pink),-2px 0 var(--cyan);box-shadow:0 0 18px rgba(255,47,179,.6)}
+@keyframes btnshake{0%{transform:translate(0)}25%{transform:translate(-2px,1px)}50%{transform:translate(2px,-1px)}75%{transform:translate(-1px,-1px)}100%{transform:translate(1px,2px)}}
+.btn-pixel{background:var(--yellow);color:#0d0217;font-family:var(--mono);font-weight:700;border-radius:0;
+  box-shadow:inset -4px -4px 0 rgba(0,0,0,.25),inset 4px 4px 0 rgba(255,255,255,.5),0 0 14px rgba(255,230,0,.5);
+  clip-path:polygon(0 8px,8px 8px,8px 0,calc(100% - 8px) 0,calc(100% - 8px) 8px,100% 8px,100% calc(100% - 8px),calc(100% - 8px) calc(100% - 8px),calc(100% - 8px) 100%,8px 100%,8px calc(100% - 8px),0 calc(100% - 8px))}
+.btn-pixel:active{transform:translateY(2px)}
+.btn-outline{background:transparent;border:2px solid var(--pink);color:var(--pink);
+  text-shadow:0 0 8px var(--pink);box-shadow:0 0 12px rgba(255,47,179,.35),inset 0 0 10px rgba(255,47,179,.15)}
+.btn-outline:hover{background:rgba(255,47,179,.12)}
+.btn-sunset{background:linear-gradient(90deg,#ffe600,#ff5e3a,#ff2fb3,#7b2ff7);color:#fff;
+  text-shadow:0 1px 3px rgba(0,0,0,.5);box-shadow:0 0 16px rgba(255,94,58,.5)}
+.btn-block{width:100%}
+.btn:disabled{opacity:.45;cursor:not-allowed;filter:grayscale(.4)}
+
+/* ============ 表单 ============ */
+.field{margin-bottom:14px}
+.field label{display:block;font-size:12px;color:var(--dim);margin-bottom:6px;letter-spacing:1px}
+.neon-input{width:100%;background:#0a0118;border:1px solid rgba(0,240,255,.4);border-radius:10px;
+  color:#fff;font-size:14px;padding:12px 14px;font-family:inherit;outline:none;transition:.2s}
+.neon-input::placeholder{color:#5d4a7d}
+.neon-input:focus{border-color:var(--cyan);box-shadow:0 0 0 1px var(--cyan),0 0 16px rgba(0,240,255,.45)}
+.input-wrap{display:flex;gap:10px}
+.input-wrap .neon-input{flex:1}
+.input-wrap .btn{white-space:nowrap}
+
+/* 发光开关（固定宽高 + relative） */
+.switch{position:relative;display:inline-block;width:58px;height:32px;flex:none;cursor:pointer}
+.switch input{position:absolute;opacity:0;width:100%;height:100%;cursor:pointer;z-index:2;margin:0}
+.sw-track{position:absolute;inset:0;border-radius:16px;background:#241040;border:1px solid rgba(123,47,247,.6);transition:.25s}
+.sw-knob{position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;
+  background:linear-gradient(135deg,#8a7aa8,#4a3a68);transition:.25s;box-shadow:0 0 6px rgba(0,0,0,.5)}
+.switch input:checked ~ .sw-track{background:#2b0a3e;border-color:var(--pink);box-shadow:0 0 12px rgba(255,47,179,.6),inset 0 0 8px rgba(255,47,179,.3)}
+.switch input:checked ~ .sw-knob{left:29px;background:linear-gradient(135deg,#ff9de2,#ff2fb3);box-shadow:0 0 12px var(--pink)}
+.switch-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px dashed rgba(123,47,247,.25)}
+.switch-row:last-child{border:none}
+.switch-row .t{font-size:13px}
+.switch-row .d{font-size:11px;color:var(--dim);margin-top:2px}
+
+/* 霓虹单选 / 复选 */
+.opts{display:flex;gap:10px;flex-wrap:wrap}
+.opt{position:relative;cursor:pointer}
+.opt input{position:absolute;opacity:0;inset:0;cursor:pointer}
+.opt span{display:inline-block;font-size:13px;padding:9px 16px;border-radius:20px;
+  border:1px solid rgba(0,240,255,.35);color:var(--dim);transition:.2s;font-family:var(--mono)}
+.opt input:checked + span{color:#fff;border-color:var(--cyan);background:rgba(0,240,255,.1);
+  box-shadow:0 0 12px rgba(0,240,255,.5);text-shadow:0 0 6px var(--cyan)}
+.chk{display:flex;align-items:center;gap:10px;padding:9px 0;cursor:pointer;font-size:13px;position:relative}
+.chk input{position:absolute;opacity:0}
+.box{width:22px;height:22px;flex:none;border:2px solid var(--pink);border-radius:6px;position:relative;transition:.2s;
+  box-shadow:0 0 8px rgba(255,47,179,.3)}
+.chk input:checked + .box{background:linear-gradient(135deg,#ff2fb3,#7b2ff7);box-shadow:0 0 12px rgba(255,47,179,.7)}
+.chk input:checked + .box::after{content:'';position:absolute;left:6px;top:2px;width:6px;height:11px;
+  border:solid #fff;border-width:0 3px 3px 0;transform:rotate(45deg)}
+
+/* 磁带式滑杆 */
+.tape-slider{padding:6px 0 2px}
+.tape-slider input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:26px;background:transparent;cursor:pointer}
+.tape-slider input[type=range]::-webkit-slider-runnable-track{height:8px;border-radius:4px;
+  background:linear-gradient(90deg,var(--pink),var(--purple),var(--cyan));box-shadow:0 0 10px rgba(255,47,179,.5)}
+.tape-slider input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;margin-top:-7px;border-radius:50%;
+  background:radial-gradient(circle at 35% 35%,#fff,#9fd8ef 40%,#2b3f58 70%,#0d0217);
+  border:2px solid var(--cyan);box-shadow:0 0 12px var(--cyan)}
+.tape-slider input[type=range]::-moz-range-track{height:8px;border-radius:4px;
+  background:linear-gradient(90deg,var(--pink),var(--purple),var(--cyan))}
+.tape-slider input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;border:2px solid var(--cyan);
+  background:radial-gradient(circle at 35% 35%,#fff,#9fd8ef 40%,#2b3f58 70%,#0d0217)}
+.tape-scale{display:flex;justify-content:space-between;font-family:var(--mono);font-size:10px;color:var(--dim);margin-top:2px}
+.tape-val{font-family:var(--mono);font-size:12px;color:var(--yellow);text-shadow:0 0 8px var(--yellow);text-align:center;margin-top:6px}
+
+.neon-select{width:100%;background:#0a0118;border:1px solid rgba(123,47,247,.6);border-radius:10px;color:#fff;
+  font-size:14px;padding:12px;font-family:inherit;outline:none;appearance:none;
+  background-image:linear-gradient(45deg,transparent 50%,var(--pink) 50%),linear-gradient(135deg,var(--pink) 50%,transparent 50%);
+  background-position:calc(100% - 20px) 50%,calc(100% - 14px) 50%;background-size:6px 6px;background-repeat:no-repeat}
+.neon-select:focus{border-color:var(--pink);box-shadow:0 0 12px rgba(255,47,179,.5)}
+.neon-select option{background:#150a2e}
+
+/* ============ 展示 ============ */
+.poster{border-radius:12px;overflow:hidden;border:1px solid rgba(255,47,179,.4);position:relative}
+.poster .psun{height:150px;position:relative;overflow:hidden;
+  background:linear-gradient(180deg,#1a0b3d 0%,#3d0a4e 45%,#ff5e3a 75%,#ffe600 100%)}
+.poster .psun::before{content:'';position:absolute;left:50%;top:26px;width:92px;height:92px;border-radius:50%;
+  transform:translateX(-50%);background:linear-gradient(180deg,#ffe600,#ff2fb3);
+  box-shadow:0 0 26px rgba(255,47,179,.8)}
+.poster .psun::after{content:'';position:absolute;left:0;right:0;bottom:0;height:46px;
+  background:
+   repeating-linear-gradient(to right,rgba(0,240,255,.6) 0 2px,transparent 2px 26px),
+   repeating-linear-gradient(to bottom,rgba(0,240,255,.6) 0 2px,transparent 2px 13px);
+  transform:perspective(160px) rotateX(60deg);transform-origin:top center}
+.poster .pbody{padding:12px 14px;background:#0a0118}
+.poster .pbody b{font-size:14px;letter-spacing:1px}
+.poster .pbody p{font-size:11px;color:var(--dim);margin-top:4px}
+.pill-new{position:absolute;top:10px;right:10px;font-family:var(--mono);font-size:10px;background:var(--pink);color:#fff;
+  padding:3px 10px;border-radius:10px;box-shadow:0 0 12px var(--pink);z-index:2}
+
+/* 霓虹进度条 */
+.nprog{height:14px;border-radius:7px;background:#0a0118;border:1px solid rgba(0,240,255,.35);
+  overflow:hidden;position:relative;box-shadow:inset 0 0 8px rgba(0,0,0,.6)}
+.nprog i{display:block;height:100%;width:72%;border-radius:7px;
+  background:linear-gradient(90deg,var(--pink),var(--purple),var(--cyan));
+  box-shadow:0 0 14px rgba(0,240,255,.7);position:relative}
+.nprog i::after{content:'';position:absolute;inset:0;
+  background:repeating-linear-gradient(115deg,transparent 0 8px,rgba(255,255,255,.35) 8px 12px);
+  animation:stripes 1s linear infinite}
+@keyframes stripes{to{transform:translateX(22px)}}
+.prow{display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;color:var(--dim);margin-bottom:6px}
+.prow b{color:var(--cyan);text-shadow:0 0 6px var(--cyan)}
+
+/* 均衡器 */
+.eq{display:flex;align-items:flex-end;justify-content:center;gap:6px;height:64px;padding:8px 0}
+.eq i{width:10px;border-radius:3px;background:linear-gradient(180deg,var(--cyan),var(--pink));
+  box-shadow:0 0 8px rgba(0,240,255,.6);animation:eq 1s ease-in-out infinite}
+.eq i:nth-child(1){animation-delay:0s}.eq i:nth-child(2){animation-delay:.12s}
+.eq i:nth-child(3){animation-delay:.28s}.eq i:nth-child(4){animation-delay:.06s}
+.eq i:nth-child(5){animation-delay:.34s}.eq i:nth-child(6){animation-delay:.18s}
+.eq i:nth-child(7){animation-delay:.42s}.eq i:nth-child(8){animation-delay:.1s}
+.eq i:nth-child(9){animation-delay:.3s}.eq i:nth-child(10){animation-delay:.22s}
+.eq i:nth-child(11){animation-delay:.38s}.eq i:nth-child(12){animation-delay:.04s}
+@keyframes eq{0%,100%{height:10px}50%{height:56px}}
+
+/* 故障头像框 */
+.ava-row{display:flex;align-items:center;gap:14px}
+.ava{width:72px;height:72px;flex:none;position:relative;border:2px solid var(--pink);border-radius:12px;
+  box-shadow:0 0 14px rgba(255,47,179,.6);overflow:hidden;background:#0a0118}
+.ava canvas{width:100%;height:100%;image-rendering:pixelated;display:block}
+.ava::before,.ava::after{content:'';position:absolute;left:0;right:0;height:3px;background:var(--cyan);opacity:.7}
+.ava::before{top:20%;animation:scanA 2.2s infinite}
+.ava::after{top:65%;background:var(--pink);animation:scanB 3s infinite}
+@keyframes scanA{0%,100%{top:18%}50%{top:72%}}
+@keyframes scanB{0%,100%{top:70%}50%{top:22%}}
+.ava-info b{font-size:14px}
+.ava-info p{font-size:11px;color:var(--dim);margin-top:3px}
+.lvl{font-family:var(--mono);font-size:10px;color:var(--yellow);text-shadow:0 0 6px var(--yellow);margin-top:4px;display:block}
+
+/* VHS 磁带卡 */
+.tape{background:linear-gradient(135deg,#1c0d38,#0f0623);border:1px solid rgba(255,47,179,.4);border-radius:12px;
+  padding:14px;position:relative;overflow:hidden}
+.tape .reels{display:flex;justify-content:space-around;margin:6px 0 10px}
+.reel{width:56px;height:56px;border-radius:50%;border:3px solid var(--cyan);position:relative;
+  box-shadow:0 0 10px rgba(0,240,255,.5);animation:spin 6s linear infinite}
+.reel::before,.reel::after{content:'';position:absolute;background:var(--cyan);box-shadow:0 0 6px var(--cyan)}
+.reel::before{left:50%;top:4px;bottom:4px;width:3px;transform:translateX(-50%)}
+.reel::after{top:50%;left:4px;right:4px;height:3px;transform:translateY(-50%)}
+@keyframes spin{to{transform:rotate(360deg)}}
+.tape .tlabel{font-family:var(--mono);font-size:11px;letter-spacing:2px;color:var(--pink);text-shadow:0 0 8px var(--pink)}
+.tape .tmeta{display:flex;justify-content:space-between;font-size:11px;color:var(--dim);margin-top:6px}
+.sticker{position:absolute;top:10px;right:-30px;transform:rotate(35deg);background:var(--yellow);color:#0d0217;
+  font-family:var(--mono);font-size:10px;font-weight:700;padding:3px 34px;box-shadow:0 0 10px rgba(255,230,0,.6)}
+
+/* 霓虹时钟 */
+.clock{text-align:center;padding:8px 0}
+.clock .time{font-family:var(--mono);font-size:40px;font-weight:700;color:#fff;letter-spacing:4px;
+  text-shadow:0 0 6px #fff,0 0 18px var(--cyan),0 0 40px var(--cyan)}
+.clock .date{font-size:12px;color:var(--dim);margin-top:6px;letter-spacing:2px}
+
+/* ============ 反馈 ============ */
+.toast{position:fixed;top:18px;left:50%;transform:translate(-50%,-80px);z-index:100;
+  background:#150a2e;border:1px solid var(--cyan);color:#fff;font-size:13px;padding:12px 20px;border-radius:12px;
+  box-shadow:0 0 20px rgba(0,240,255,.5);transition:transform .35s cubic-bezier(.2,1.4,.4,1);max-width:86vw;text-align:center}
+.toast.show{transform:translate(-50%,0)}
+.toast b{color:var(--cyan);text-shadow:0 0 6px var(--cyan)}
+
+.modal-bg{position:fixed;inset:0;z-index:90;background:rgba(5,0,15,.7);display:none;
+  align-items:center;justify-content:center;padding:30px;backdrop-filter:blur(3px)}
+.modal-bg.show{display:flex}
+.modal{width:100%;max-width:320px;background:#150a2e;border:2px solid var(--pink);border-radius:16px;
+  padding:22px 18px;text-align:center;box-shadow:0 0 30px rgba(255,47,179,.5);animation:mIn .3s ease}
+@keyframes mIn{from{transform:scale(.9);opacity:0}to{transform:none;opacity:1}}
+.modal .glitch{font-size:22px;letter-spacing:2px}
+.modal p{font-size:12px;color:var(--dim);margin:12px 0 18px;line-height:1.7}
+.modal .btnrow{justify-content:center}
+
+/* 磁带加载 */
+.loadbox{background:#0a0118;border:1px solid rgba(123,47,247,.5);border-radius:10px;padding:14px;text-align:center}
+.loadbar{height:12px;border-radius:6px;background:#1c0d38;overflow:hidden;margin:10px 0;position:relative}
+.loadbar i{display:block;height:100%;width:0;border-radius:6px;
+  background:repeating-linear-gradient(115deg,var(--pink) 0 10px,var(--purple) 10px 20px);
+  box-shadow:0 0 12px rgba(255,47,179,.7);transition:width .15s}
+.loadtxt{font-family:var(--mono);font-size:11px;color:var(--cyan);letter-spacing:1px;min-height:16px}
+.empty{text-align:center;padding:14px 0}
+.empty .pxdiv{margin:10px auto;max-width:180px}
+.empty p{font-size:12px;color:var(--dim);margin:8px 0 12px}
+.succ{display:flex;gap:12px;align-items:center;background:rgba(0,240,255,.06);
+  border:1px solid rgba(0,240,255,.4);border-radius:12px;padding:12px}
+.succ .ring{width:44px;height:44px;flex:none;border-radius:50%;border:3px solid var(--cyan);
+  display:flex;align-items:center;justify-content:center;color:var(--cyan);font-size:20px;
+  box-shadow:0 0 14px rgba(0,240,255,.6);text-shadow:0 0 8px var(--cyan)}
+.succ b{font-size:13px}.succ p{font-size:11px;color:var(--dim);margin-top:3px}
+.err{border:1px solid rgba(255,47,179,.5);background:rgba(255,47,179,.07);border-radius:12px;padding:12px;
+  display:flex;gap:10px;align-items:flex-start}
+.err .x{width:26px;height:26px;flex:none;border-radius:50%;background:var(--pink);color:#fff;
+  display:flex;align-items:center;justify-content:center;font-weight:700;box-shadow:0 0 10px var(--pink)}
+.err b{font-size:13px;color:#ffb3e2}.err p{font-size:11px;color:var(--dim);margin-top:3px;line-height:1.6}
+
+/* ============ 底部悬浮胶囊 Tab 栏 ============ */
+.tabbar{position:fixed;left:50%;transform:translateX(-50%);bottom:16px;z-index:80;
+  display:flex;background:rgba(21,10,46,.92);border:1px solid rgba(0,240,255,.35);border-radius:30px;
+  padding:6px;box-shadow:0 0 24px rgba(123,47,247,.45),0 8px 24px rgba(0,0,0,.5);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);max-width:94vw}
+.tabbar button{position:relative;z-index:2;background:transparent;border:none;color:var(--dim);
+  font-family:inherit;font-size:12px;font-weight:700;padding:10px 0;width:64px;cursor:pointer;
+  letter-spacing:1px;transition:color .25s;white-space:nowrap}
+.tabbar button.on{color:#0d0217}
+.tabbar .pill{position:absolute;top:6px;bottom:6px;border-radius:24px;z-index:1;
+  background:linear-gradient(135deg,var(--cyan),var(--pink));
+  box-shadow:0 0 16px rgba(0,240,255,.7);transition:left .3s cubic-bezier(.3,1.3,.4,1),width .3s}
+</style>
+</head>
+<body>
+<div class="vignette"></div>
+<div class="scanlines"></div>
+
+<header class="top">
+  <div class="kicker">SYNTHWAVE · UI KIT</div>
+  <h1 class="chrome">复古未来</h1>
+  <div class="sub">霓虹 × 网格落日 × VHS 故障 × 镀铬</div>
+</header>
+
+<main>
+<!-- ================= Tab 0 总览 ================= -->
+<section class="tab-panel" data-tab="0">
+  <div class="card">
+    <h3>风格介绍 <span class="tag">HERO</span></h3>
+    <div class="desc">80 年代霓虹夜空：网格落日缓缓下沉，镀铬大字反射着粉青双色光。</div>
+    <div class="sunwrap">
+      <div class="sun"></div><div class="floor"></div>
+      <div class="sunlabel">GRID SUN · 1986</div>
+    </div>
+  </div>
+  <div class="card">
+    <h3>霓虹色板 <span class="tag">PALETTE</span></h3>
+    <div class="desc">深紫夜空打底，粉 / 青 / 紫 / 黄四色霓虹发光。</div>
+    <div class="swatches">
+      <div class="sw"><i></i><b>#FF2FB3<br>霓虹粉</b></div>
+      <div class="sw"><i></i><b>#00F0FF<br>电光青</b></div>
+      <div class="sw"><i></i><b>#7B2FF7<br>深空紫</b></div>
+      <div class="sw"><i></i><b>#FFE600<br>落日黄</b></div>
+      <div class="sw"><i></i><b>#0D0217<br>夜空黑</b></div>
+    </div>
+  </div>
+  <div class="card">
+    <h3>故障文字演示 <span class="tag">GLITCH</span></h3>
+    <div class="desc">VHS 信号干扰：RGB 三色分离抖动，循环播放永不掉帧。</div>
+    <div class="glitch-demo"><span class="glitch" data-text="信号故障中">信号故障中</span></div>
+    <div class="glitch-btn-row">
+      <button class="mini" id="reGlitch">↻ 重新触发</button>
+    </div>
+  </div>
+  <div class="card">
+    <h3>镀铬文字 <span class="tag">CHROME</span></h3>
+    <div class="desc">金属拉丝渐变，跑车尾标同款质感。</div>
+    <div class="chrome-big">去水印解析</div>
+  </div>
+  <div class="card">
+    <h3>像素风点缀 <span class="tag">8-BIT</span></h3>
+    <div class="desc">8 比特像素心跳动，霓虹分割线收尾。</div>
+    <div class="pxrow">
+      <div class="pxheart"></div>
+      <div class="pxlabel">PIXEL LOVE</div>
+    </div>
+    <div class="pxdiv" style="margin-top:10px"></div>
+  </div>
+  <div class="card">
+    <h3>扫描线 <span class="tag">CRT</span></h3>
+    <div class="desc">整页覆盖 CRT 扫描线，这张卡片是放大演示。</div>
+    <div class="crt"><p>▶ 解析完成 · 3 个视频</p><small>TRACKING · SP 模式 · 1986</small></div>
+  </div>
+</section>
+
+<!-- ================= Tab 1 按钮 ================= -->
+<section class="tab-panel" data-tab="1">
+  <div class="card">
+    <h3>霓虹发光按钮 <span class="tag">NEON</span></h3>
+    <div class="desc">粉紫渐变 + 多层辉光，悬停浮起，点击弹出提示。</div>
+    <div class="btnrow">
+      <button class="btn btn-neon" data-toast="⚡ 正在解析视频链接…">开始解析</button>
+      <button class="btn btn-neon" data-toast="已加入下载队列">批量解析</button>
+    </div>
+  </div>
+  <div class="card">
+    <h3>镀铬按钮 <span class="tag">CHROME</span></h3>
+    <div class="desc">金属渐变 + 底部硬阴影，按下有真实下沉感。</div>
+    <div class="btnrow">
+      <button class="btn btn-chrome" data-toast="已打开站点导航">站点导航</button>
+      <button class="btn btn-chrome" data-toast="历史记录已清空">清空记录</button>
+    </div>
+  </div>
+  <div class="card">
+    <h3>VHS 故障按钮 <span class="tag">GLITCH</span></h3>
+    <div class="desc">悬停触发信号抖动 + 红青重影，松开即恢复。</div>
+    <div class="btnrow">
+      <button class="btn btn-glitch" data-toast="⚠ 信号已干扰（演示）">故障启动</button>
+      <button class="btn btn-glitch" data-toast="磁带已倒带">倒带</button>
+    </div>
+  </div>
+  <div class="card">
+    <h3>像素风按钮 <span class="tag">PIXEL</span></h3>
+    <div class="desc">阶梯切角 + 内嵌高光，像红白机卡带按钮。</div>
+    <div class="btnrow">
+      <button class="btn btn-pixel" data-toast="▮ 游戏开始（演示）">▶ 开始</button>
+      <button class="btn btn-pixel" data-toast="已暂停">❚❚ 暂停</button>
+    </div>
+  </div>
+  <div class="card">
+    <h3>描边霓虹按钮 <span class="tag">OUTLINE</span></h3>
+    <div class="desc">透明底 + 粉色霓虹描边，适合次级操作。</div>
+    <div class="btnrow">
+      <button class="btn btn-outline" data-toast="已取消当前任务">取消</button>
+      <button class="btn btn-outline" data-toast="链接已复制到剪贴板">复制链接</button>
+    </div>
+  </div>
+  <div class="card">
+    <h3>日落渐变按钮 <span class="tag">SUNSET</span></h3>
+    <div class="desc">黄→橙→粉→紫四段日落渐变，整页最亮的一颗星。</div>
+    <div class="btnrow">
+      <button class="btn btn-sunset btn-block" data-toast="✓ 今日已打卡 · 工时 8h">工时打卡</button>
+    </div>
+    <div class="btnrow" style="margin-top:10px">
+      <button class="btn btn-neon" disabled>解析中…</button>
+      <button class="btn btn-outline" disabled>不可用</button>
+    </div>
+  </div>
+</section>
+
+<!-- ================= Tab 2 表单 ================= -->
+<section class="tab-panel" data-tab="2">
+  <div class="card">
+    <h3>霓虹输入框 <span class="tag">INPUT</span></h3>
+    <div class="desc">聚焦时青色辉光点亮边框，粘贴视频分享链接一键解析。</div>
+    <div class="field">
+      <label>视频链接</label>
+      <div class="input-wrap">
+        <input class="neon-input" id="linkInput" placeholder="粘贴抖音 / 快手 / B站分享链接…">
+        <button class="btn btn-neon" id="parseBtn">解析</button>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <h3>发光开关 <span class="tag">SWITCH</span></h3>
+    <div class="desc">打开后粉色辉光充满轨道，旋钮滑向右侧。</div>
+    <div class="switch-row">
+      <div><div class="t">粘贴自动解析</div><div class="d">复制链接后自动开始去水印</div></div>
+      <label class="switch"><input type="checkbox" id="swAuto" checked><span class="sw-track"></span><span class="sw-knob"></span></label>
+    </div>
+    <div class="switch-row">
+      <div><div class="t">霓虹夜间模式</div><div class="d">已锁定为本主题默认开启</div></div>
+      <label class="switch"><input type="checkbox" checked disabled><span class="sw-track"></span><span class="sw-knob"></span></label>
+    </div>
+    <div class="switch-row">
+      <div><div class="t">下载完成提醒</div><div class="d">解析完成后震动 + 提示音</div></div>
+      <label class="switch"><input type="checkbox" id="swNotify"><span class="sw-track"></span><span class="sw-knob"></span></label>
+    </div>
+  </div>
+  <div class="card">
+    <h3>霓虹单选 <span class="tag">RADIO</span></h3>
+    <div class="desc">选择默认解析站点，选中项亮起青色光环。</div>
+    <div class="opts" id="siteOpts">
+      <label class="opt"><input type="radio" name="site" checked><span>抖音</span></label>
+      <label class="opt"><input type="radio" name="site"><span>快手</span></label>
+      <label class="opt"><input type="radio" name="site"><span>B站</span></label>
+      <label class="opt"><input type="radio" name="site"><span>小红书</span></label>
+    </div>
+  </div>
+  <div class="card">
+    <h3>霓虹复选 <span class="tag">CHECK</span></h3>
+    <div class="desc">多选解析附加项，勾选后粉紫渐变填充。</div>
+    <label class="chk"><input type="checkbox" checked><span class="box"></span>同时下载视频封面</label>
+    <label class="chk"><input type="checkbox"><span class="box"></span>保存原视频文案</label>
+    <label class="chk"><input type="checkbox"><span class="box"></span>提取无水印音频</label>
+  </div>
+  <div class="card">
+    <h3>磁带式滑杆 <span class="tag">SLIDER</span></h3>
+    <div class="desc">拖动磁带旋钮选择清晰度，轨道是日落渐变。</div>
+    <div class="tape-slider">
+      <input type="range" id="qRange" min="0" max="3" step="1" value="2">
+      <div class="tape-scale"><span>流畅</span><span>标清</span><span>高清</span><span>原画</span></div>
+      <div class="tape-val" id="qVal">当前：高清 1080P</div>
+    </div>
+  </div>
+  <div class="card">
+    <h3>霓虹下拉 <span class="tag">SELECT</span></h3>
+    <div class="desc">选择视频默认保存位置。</div>
+    <div class="field" style="margin:0">
+      <label>保存到</label>
+      <select class="neon-select" id="saveSel">
+        <option>手机相册 / DCIM</option>
+        <option>懒得找了 / 下载</option>
+        <option>SD 卡 / 视频</option>
+      </select>
+    </div>
+  </div>
+</section>
+
+<!-- ================= Tab 3 展示 ================= -->
+<section class="tab-panel" data-tab="3">
+  <div class="card">
+    <h3>落日网格海报 <span class="tag">POSTER</span></h3>
+    <div class="desc">解析完成的视频生成一张蒸汽波海报封面。</div>
+    <div class="poster">
+      <div class="pill-new">NEW</div>
+      <div class="psun"></div>
+      <div class="pbody"><b>城市夜跑 · 无水印版</b><p>1080P · 24.6MB · 刚刚解析完成</p></div>
+    </div>
+  </div>
+  <div class="card">
+    <h3>霓虹进度条 <span class="tag">PROGRESS</span></h3>
+    <div class="desc">粉→紫→青渐变填充，白色斜纹流动表示进行中。</div>
+    <div class="prow"><span>正在解析 · 抖音视频</span><b id="progTxt">72%</b></div>
+    <div class="nprog"><i id="progBar"></i></div>
+    <div class="btnrow" style="margin-top:12px">
+      <button class="mini" id="progBtn">▶ 模拟进度</button>
+    </div>
+  </div>
+  <div class="card">
+    <h3>波形均衡器 <span class="tag">EQUALIZER</span></h3>
+    <div class="desc">提取到的音频波形可视化，霓虹柱体随节拍跳动。</div>
+    <div class="eq"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+    <p style="text-align:center;font-family:var(--mono);font-size:11px;color:var(--dim)">♪ BGM · 合成器浪潮 · 03:24</p>
+  </div>
+  <div class="card">
+    <h3>故障头像框 <span class="tag">AVATAR</span></h3>
+    <div class="desc">像素头像 + 故障扫描线，霓虹粉描边。</div>
+    <div class="ava-row">
+      <div class="ava"><canvas id="pxAva" width="12" height="12"></canvas></div>
+      <div class="ava-info">
+        <b>霓虹旅人</b>
+        <p>累计解析 1,286 个视频 · 等级 12</p>
+        <span class="lvl">★ VIP · 去水印无限次</span>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <h3>VHS 磁带卡 <span class="tag">TAPE</span></h3>
+    <div class="desc">本周工时打卡记录，存进一盘会转的磁带里。</div>
+    <div class="tape">
+      <div class="sticker">SP</div>
+      <div class="tlabel">WORK LOG · 本周工时</div>
+      <div class="reels"><div class="reel"></div><div class="reel"></div></div>
+      <div class="tmeta"><span>已打卡 5 天</span><span>累计 42.5h</span><span>预估 ¥850</span></div>
+    </div>
+  </div>
+  <div class="card">
+    <h3>霓虹时钟 <span class="tag">CLOCK</span></h3>
+    <div class="desc">实时跳动的青色辉光数字钟。</div>
+    <div class="clock">
+      <div class="time" id="clockTime">--:--:--</div>
+      <div class="date" id="clockDate">LOADING…</div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= Tab 4 反馈 ================= -->
+<section class="tab-panel" data-tab="4">
+  <div class="card">
+    <h3>霓虹 Toast <span class="tag">TOAST</span></h3>
+    <div class="desc">顶部滑入的辉光提示条，2 秒后自动消失。</div>
+    <div class="btnrow">
+      <button class="btn btn-neon" data-toast="✓ 链接解析成功，已开始下载">成功提示</button>
+      <button class="btn btn-outline" data-toast="⚠ 链接格式不正确，请检查后重试">警告提示</button>
+    </div>
+  </div>
+  <div class="card">
+    <h3>VHS 故障对话框 <span class="tag">DIALOG</span></h3>
+    <div class="desc">删除确认弹窗，标题自带 RGB 分离故障。</div>
+    <div class="btnrow">
+      <button class="btn btn-glitch" id="delBtn">删除这条记录</button>
+    </div>
+  </div>
+  <div class="card">
+    <h3>插入磁带式加载 <span class="tag">LOADING</span></h3>
+    <div class="desc">点击插入磁带，粉紫条纹滚动加载，完成后提示。</div>
+    <div class="loadbox">
+      <div class="loadtxt" id="loadTxt">▌ 磁带仓空 · 点击下方按钮插入</div>
+      <div class="loadbar"><i id="loadBar"></i></div>
+      <button class="btn btn-pixel" id="tapeBtn">⏵ 插入磁带</button>
+    </div>
+  </div>
+  <div class="card">
+    <h3>空状态 <span class="tag">EMPTY</span></h3>
+    <div class="desc">暂无解析记录时的占位，像素风收尾。</div>
+    <div class="empty">
+      <div class="pxlabel">NO SIGNAL</div>
+      <div class="pxdiv"></div>
+      <p>还没有解析记录<br>粘贴第一条视频链接开始吧</p>
+      <button class="btn btn-neon" data-goto="2">去粘贴链接</button>
+    </div>
+  </div>
+  <div class="card">
+    <h3>打卡成功 <span class="tag">SUCCESS</span></h3>
+    <div class="desc">工时打卡完成后的成功反馈卡。</div>
+    <div class="succ">
+      <div class="ring">✓</div>
+      <div><b>今日打卡成功</b><p>上班 09:00 · 累计 8.0h · 继续保持霓虹节奏</p></div>
+    </div>
+  </div>
+  <div class="card">
+    <h3>错误提示 <span class="tag">ERROR</span></h3>
+    <div class="desc">解析失败时的错误说明卡。</div>
+    <div class="err">
+      <div class="x">!</div>
+      <div><b>链接解析失败</b><p>该视频可能已删除或设为私密，请换一条链接重试。不支持需要登录后观看的内容。</p></div>
+    </div>
+  </div>
+</section>
+</main>
+
+<nav class="tabbar" id="tabbar">
+  <div class="pill" id="pill"></div>
+  <button data-i="0" class="on">总览</button>
+  <button data-i="1">按钮</button>
+  <button data-i="2">表单</button>
+  <button data-i="3">展示</button>
+  <button data-i="4">反馈</button>
+</nav>
+
+<div class="toast" id="toast"></div>
+<div class="modal-bg" id="modalBg">
+  <div class="modal">
+    <span class="glitch" data-text="确认删除？">确认删除？</span>
+    <p>这条解析记录将从磁带上抹去，<br>倒带也找不回来。确定吗？</p>
+    <div class="btnrow">
+      <button class="btn btn-outline" id="modalCancel">再想想</button>
+      <button class="btn btn-neon" id="modalOk">抹去它</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ---- Tab 切换 + 深链 + 滑动 pill ---- */
+const panels=[...document.querySelectorAll('.tab-panel')];
+const tabs=[...document.querySelectorAll('#tabbar button')];
+const pill=document.getElementById('pill');
+function movePill(btn){pill.style.left=btn.offsetLeft+'px';pill.style.width=btn.offsetWidth+'px';}
+function switchTab(i,push){
+  i=Math.max(0,Math.min(4,i|0));
+  panels.forEach((p,k)=>p.classList.toggle('on',k===i));
+  tabs.forEach((b,k)=>b.classList.toggle('on',k===i));
+  movePill(tabs[i]);
+  const url=new URL(location.href);url.searchParams.set('tab',i);
+  history.replaceState(null,'',url);
+  window.scrollTo(0,0);
+}
+tabs.forEach(b=>b.addEventListener('click',()=>switchTab(+b.dataset.i)));
+window.addEventListener('resize',()=>movePill(document.querySelector('#tabbar button.on')));
+(function init(){
+  const t=new URLSearchParams(location.search).get('tab');
+  switchTab(t===null?0:+t);
+  requestAnimationFrame(()=>movePill(document.querySelector('#tabbar button.on')));
+})();
+
+/* ---- Toast ---- */
+const toast=document.getElementById('toast');let toastT;
+function showToast(html){
+  toast.innerHTML=html;toast.classList.add('show');
+  clearTimeout(toastT);toastT=setTimeout(()=>toast.classList.remove('show'),2000);
+}
+document.querySelectorAll('[data-toast]').forEach(b=>
+  b.addEventListener('click',()=>showToast(b.dataset.toast)));
+document.querySelectorAll('[data-goto]').forEach(b=>
+  b.addEventListener('click',()=>switchTab(+b.dataset.goto)));
+
+/* ---- 故障文字重新触发 ---- */
+document.getElementById('reGlitch').addEventListener('click',function(){
+  const g=document.querySelector('.glitch-demo .glitch');
+  const c=g.cloneNode(true);g.replaceWith(c);
+  showToast('↻ <b>故障信号</b>已重新注入');
+});
+
+/* ---- 表单交互 ---- */
+document.getElementById('parseBtn').addEventListener('click',()=>{
+  const v=document.getElementById('linkInput').value.trim();
+  showToast(v?('⚡ 正在解析：<b>'+v.slice(0,18)+'…</b>'):'⚠ 请先粘贴视频分享链接');
+});
+document.getElementById('swAuto').addEventListener('change',e=>
+  showToast(e.target.checked?'✓ <b>粘贴自动解析</b>已开启':'粘贴自动解析已关闭'));
+document.getElementById('swNotify').addEventListener('change',e=>
+  showToast(e.target.checked?'✓ 下载完成提醒已开启':'下载完成提醒已关闭'));
+document.querySelectorAll('#siteOpts input').forEach(r=>r.addEventListener('change',()=>{
+  const s=r.parentElement.textContent.trim();
+  showToast('默认解析站点 → <b>'+s+'</b>');
+}));
+const qNames=['流畅 480P','标清 720P','高清 1080P','原画 4K'];
+document.getElementById('qRange').addEventListener('input',e=>{
+  document.getElementById('qVal').textContent='当前：'+qNames[+e.target.value];
+});
+document.getElementById('saveSel').addEventListener('change',e=>
+  showToast('保存位置 → <b>'+e.target.value+'</b>'));
+
+/* ---- 进度条模拟 ---- */
+let progV=72,progT;
+document.getElementById('progBtn').addEventListener('click',()=>{
+  clearInterval(progT);progV=0;
+  progT=setInterval(()=>{
+    progV+=Math.random()*9+3;
+    if(progV>=100){progV=100;clearInterval(progT);showToast('✓ <b>解析完成</b>，已生成无水印视频');}
+    document.getElementById('progBar').style.width=progV+'%';
+    document.getElementById('progTxt').textContent=Math.round(progV)+'%';
+  },220);
+});
+
+/* ---- 像素头像（canvas 生成） ---- */
+(function(){
+  const c=document.getElementById('pxAva'),x=c.getContext('2d');
+  const P=['#ff2fb3','#00f0ff','#7b2ff7','#ffe600'];
+  const rnd=(a=>()=> (a=(a*16807)%2147483647)/2147483647)(1986);
+  x.fillStyle='#0d0217';x.fillRect(0,0,12,12);
+  for(let r=0;r<12;r++)for(let col=0;col<6;col++){
+    if(rnd()<.48){const colr=P[(rnd()*4)|0];x.fillStyle=colr;
+      x.fillRect(col,r,1,1);x.fillRect(11-col,r,1,1);}
+  }
+})();
+
+/* ---- 霓虹时钟 ---- */
+function tick(){
+  const d=new Date(),p=n=>String(n).padStart(2,'0');
+  document.getElementById('clockTime').textContent=p(d.getHours())+':'+p(d.getMinutes())+':'+p(d.getSeconds());
+  const wk=['周日','周一','周二','周三','周四','周五','周六'][d.getDay()];
+  document.getElementById('clockDate').textContent=
+    d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+' '+wk+' · NEON TIME';
+}
+tick();setInterval(tick,1000);
+
+/* ---- 故障对话框 ---- */
+const modalBg=document.getElementById('modalBg');
+document.getElementById('delBtn').addEventListener('click',()=>modalBg.classList.add('show'));
+document.getElementById('modalCancel').addEventListener('click',()=>modalBg.classList.remove('show'));
+document.getElementById('modalOk').addEventListener('click',()=>{
+  modalBg.classList.remove('show');showToast('✓ 记录已从磁带上抹去');
+});
+modalBg.addEventListener('click',e=>{if(e.target===modalBg)modalBg.classList.remove('show');});
+
+/* ---- 插入磁带式加载 ---- */
+let loading=false;
+document.getElementById('tapeBtn').addEventListener('click',function(){
+  if(loading)return;loading=true;this.disabled=true;
+  const bar=document.getElementById('loadBar'),txt=document.getElementById('loadTxt');
+  const msgs=['▸ 磁带插入…','▸ 磁头清洁中…','▸ 正在倒带…','▸ 信号锁定…','▸ 读取完成 ✓'];
+  let v=0;bar.style.width='0';
+  const t=setInterval(()=>{
+    v+=8+Math.random()*10;
+    if(v>=100){v=100;clearInterval(t);
+      txt.textContent=msgs[4];txt.style.color='var(--yellow)';
+      showToast('✓ <b>磁带读取完成</b>');loading=false;
+      setTimeout(()=>{this.disabled=false;bar.style.width='0';
+        txt.textContent='▌ 磁带仓空 · 点击下方按钮插入';txt.style.color='';},1800);return;}
+    bar.style.width=v+'%';
+    txt.textContent=msgs[Math.min(3,(v/28)|0)];
+  },200);
+});
+</script>
+</body>
+</html>
