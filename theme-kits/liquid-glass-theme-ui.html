@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Liquid Glass · 冰晶液态主题 UI 组件库</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --primary:#2879F3; --primary-d:#1F66E0; --secondary:#F37E10;
+  --bg:#EDF1F6; --text:#22303F; --muted:#64748B;
+  --card-bd:rgba(255,255,255,.55);
+}
+html,body{height:100%}
+body{
+  font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sans-serif;
+  color:var(--text);
+  background:linear-gradient(165deg,#D3E3F8 0%,#EDF1F6 48%,#F8E9D4 100%);
+  min-height:100vh; overflow-x:hidden; padding-bottom:110px;
+}
+/* 彩色光斑 BLOBS */
+.blob{position:fixed;border-radius:50%;filter:blur(70px);opacity:.5;pointer-events:none;z-index:0;animation:drift 14s ease-in-out infinite alternate}
+.b1{width:340px;height:340px;background:#8FBDF8;top:-90px;left:-80px}
+.b2{width:300px;height:300px;background:#F8BE78;top:30%;right:-90px;animation-delay:-5s}
+.b3{width:320px;height:320px;background:#F6A9C8;bottom:-60px;left:10%;animation-delay:-9s}
+@keyframes drift{from{transform:translate(0,0) scale(1)}to{transform:translate(40px,30px) scale(1.12)}}
+.wrap{position:relative;z-index:1;max-width:480px;margin:0 auto;padding:18px 16px 0}
+/* 顶栏 */
+.hero{padding:10px 4px 16px}
+.hero .tag{display:inline-block;font-size:11px;letter-spacing:2px;color:var(--primary);background:rgba(255,255,255,.5);border:1px solid var(--card-bd);padding:4px 12px;border-radius:20px;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.hero h1{font-size:26px;margin:10px 0 6px}
+.hero p{font-size:13px;color:var(--muted);line-height:1.7}
+/* 毛玻璃卡片 */
+.card{background:linear-gradient(135deg,rgba(255,255,255,.32),rgba(255,255,255,.45));
+  backdrop-filter:blur(18px) saturate(160%);-webkit-backdrop-filter:blur(18px) saturate(160%);
+  border:1px solid var(--card-bd);border-radius:20px;padding:16px;margin-bottom:14px;
+  box-shadow:0 8px 24px rgba(40,121,243,.10)}
+.card h3{font-size:15px;margin-bottom:4px}
+.card .desc{font-size:12px;color:var(--muted);margin-bottom:12px;line-height:1.6}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+/* 按钮 */
+.btn{border:none;cursor:pointer;font-size:14px;font-weight:600;border-radius:14px;padding:12px 22px;transition:transform .15s,box-shadow .15s,opacity .15s;font-family:inherit}
+.btn:active{transform:scale(.96)}
+.btn-pri{background:linear-gradient(135deg,#3A8BF5,var(--primary-d));color:#fff;box-shadow:0 6px 16px rgba(40,121,243,.35)}
+.btn-sec{background:linear-gradient(135deg,#F79A3A,#E06F0A);color:#fff;box-shadow:0 6px 16px rgba(243,126,16,.32)}
+.btn-ol{background:rgba(255,255,255,.4);color:var(--primary);border:1.5px solid var(--primary);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.btn-txt{background:transparent;color:var(--primary);padding:10px 12px}
+.btn-dis{background:rgba(100,116,139,.18);color:#9AA7B8;cursor:not-allowed;box-shadow:none}
+.ibtn{width:44px;height:44px;border-radius:14px;border:1px solid var(--card-bd);background:rgba(255,255,255,.5);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(40,121,243,.10);transition:transform .15s}
+.ibtn:active{transform:scale(.9)}
+.fab{position:fixed;right:18px;bottom:104px;width:56px;height:56px;border-radius:50%;border:none;background:linear-gradient(135deg,#3A8BF5,var(--primary-d));color:#fff;font-size:26px;cursor:pointer;box-shadow:0 10px 24px rgba(40,121,243,.45);z-index:60;transition:transform .15s}
+.fab:active{transform:scale(.9) rotate(45deg)}
+.spin{width:16px;height:16px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;display:inline-block;animation:rot .7s linear infinite;vertical-align:-3px;margin-right:6px}
+@keyframes rot{to{transform:rotate(360deg)}}
+.seg{display:flex;background:rgba(255,255,255,.4);border:1px solid var(--card-bd);border-radius:14px;padding:4px;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.seg button{flex:1;border:none;background:transparent;padding:9px 0;border-radius:10px;font-size:13px;color:var(--muted);cursor:pointer;font-family:inherit;transition:all .2s}
+.seg button.on{background:#fff;color:var(--primary);font-weight:700;box-shadow:0 3px 8px rgba(40,121,243,.15)}
+/* 表单 */
+.field{margin-bottom:12px}
+.field label{display:block;font-size:12px;color:var(--muted);margin-bottom:6px}
+.inp{width:100%;border:1px solid var(--card-bd);border-radius:14px;padding:12px 14px;font-size:14px;font-family:inherit;color:var(--text);
+  background:rgba(255,255,255,.5);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);outline:none;transition:border .2s,box-shadow .2s}
+.inp:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(40,121,243,.15)}
+.inp::placeholder{color:#9AA7B8}
+.sbox{position:relative}
+.sbox .inp{padding-left:40px}
+.sbox .sic{position:absolute;left:13px;top:50%;transform:translateY(-50%);font-size:16px;color:#9AA7B8}
+/* 开关 */
+.switch{position:relative;display:inline-block;width:52px;height:30px;flex:none}
+.switch input{opacity:0;width:0;height:0}
+.sl{position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;border-radius:20px;transition:.3s;
+  background:rgba(255,255,255,.55);border:1px solid var(--card-bd);box-shadow:inset 0 2px 5px rgba(100,116,139,.18)}
+.sl:before{position:absolute;content:"";width:22px;height:22px;left:4px;top:3px;border-radius:50%;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.18);transition:.3s}
+.switch input:checked + .sl{background:linear-gradient(135deg,#3A8BF5,var(--primary-d))}
+.switch input:checked + .sl:before{transform:translateX(22px)}
+.setrow{display:flex;align-items:center;justify-content:space-between;padding:12px 2px;border-bottom:1px solid rgba(255,255,255,.5)}
+.setrow:last-child{border-bottom:none}
+.setrow .t{font-size:14px}
+.setrow .s{font-size:11px;color:var(--muted);margin-top:2px}
+/* 复选/单选 */
+.chk{display:flex;align-items:center;gap:10px;padding:9px 2px;font-size:14px;cursor:pointer}
+.box{width:22px;height:22px;border-radius:8px;border:1.5px solid #B9C6D8;background:rgba(255,255,255,.6);display:flex;align-items:center;justify-content:center;font-size:14px;color:#fff;transition:all .2s;flex:none}
+.chk.on .box{background:linear-gradient(135deg,#3A8BF5,var(--primary-d));border-color:var(--primary)}
+.rdo{width:22px;height:22px;border-radius:50%;border:1.5px solid #B9C6D8;background:rgba(255,255,255,.6);display:flex;align-items:center;justify-content:center;flex:none;transition:all .2s}
+.rdo:after{content:"";width:10px;height:10px;border-radius:50%;background:transparent;transition:all .2s}
+.chk.on .rdo{border-color:var(--primary)}
+.chk.on .rdo:after{background:var(--primary)}
+/* 滑杆 */
+input[type=range]{-webkit-appearance:none;width:100%;height:8px;border-radius:6px;background:linear-gradient(90deg,var(--primary) var(--p,50%),rgba(255,255,255,.6) var(--p,50%));outline:none;border:1px solid var(--card-bd)}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:#fff;border:1px solid var(--card-bd);box-shadow:0 3px 8px rgba(40,121,243,.3);cursor:pointer}
+/* 展示 */
+.stat{display:flex;gap:10px}
+.stat .cell{flex:1;text-align:center;padding:14px 6px;border-radius:16px;background:rgba(255,255,255,.4);border:1px solid var(--card-bd)}
+.stat .v{font-size:22px;font-weight:800;color:var(--primary)}
+.stat .v.o{color:var(--secondary)}
+.stat .k{font-size:11px;color:var(--muted);margin-top:4px}
+.hrow{display:flex;align-items:center;gap:12px;padding:11px 2px;border-bottom:1px solid rgba(255,255,255,.5)}
+.hrow:last-child{border:none}
+.thumb{width:46px;height:46px;border-radius:12px;flex:none;display:flex;align-items:center;justify-content:center;font-size:20px;color:#fff}
+.hrow .tt{font-size:13.5px;font-weight:600}
+.hrow .ts{font-size:11px;color:var(--muted);margin-top:2px}
+.badge{margin-left:auto;font-size:11px;padding:4px 10px;border-radius:12px;background:rgba(40,121,243,.12);color:var(--primary);flex:none}
+.grid9{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.g9{aspect-ratio:1;border-radius:16px;background:rgba(255,255,255,.4);border:1px solid var(--card-bd);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;font-size:11px;color:var(--muted);cursor:pointer;transition:transform .15s}
+.g9:active{transform:scale(.93)}
+.g9 .ic{font-size:24px}
+.pbar{height:10px;border-radius:6px;background:rgba(255,255,255,.55);border:1px solid var(--card-bd);overflow:hidden}
+.pbar i{display:block;height:100%;border-radius:6px;background:linear-gradient(90deg,#3A8BF5,var(--primary-d));transition:width .4s}
+.avt{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;color:#fff;position:relative;flex:none;border:2px solid rgba(255,255,255,.7)}
+.dot{position:absolute;right:0;bottom:2px;width:14px;height:14px;border-radius:50%;background:#22C55E;border:2.5px solid #fff}
+.nbanner{display:flex;gap:10px;align-items:flex-start;padding:12px;border-radius:16px;background:rgba(255,255,255,.55);border:1px solid var(--card-bd);font-size:12.5px;line-height:1.6}
+/* Token 色板 */
+.swatches{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.sw{border-radius:14px;overflow:hidden;border:1px solid var(--card-bd);cursor:pointer;background:rgba(255,255,255,.4)}
+.sw .c{height:56px}
+.sw .n{font-size:11px;padding:7px 9px;color:var(--muted)}
+.sw .n b{display:block;font-size:12px;color:var(--text)}
+/* 底部 Tab 栏 */
+.tabbar{position:fixed;left:50%;transform:translateX(-50%);bottom:16px;z-index:50;
+  display:flex;padding:6px;border-radius:28px;
+  background:linear-gradient(135deg,rgba(255,255,255,.45),rgba(255,255,255,.6));
+  backdrop-filter:blur(20px) saturate(170%);-webkit-backdrop-filter:blur(20px) saturate(170%);
+  border:1px solid var(--card-bd);box-shadow:0 10px 30px rgba(40,121,243,.18)}
+.tabbar button{position:relative;z-index:2;border:none;background:transparent;font-family:inherit;font-size:13px;color:var(--muted);padding:10px 18px;border-radius:22px;cursor:pointer;transition:color .25s;white-space:nowrap}
+.tabbar button.on{color:#fff;font-weight:700}
+#pill{position:absolute;z-index:1;top:6px;bottom:6px;border-radius:22px;background:linear-gradient(135deg,#3A8BF5,var(--primary-d));box-shadow:0 4px 12px rgba(40,121,243,.4);transition:left .3s cubic-bezier(.3,1.4,.5,1),width .3s}
+/* 视图 */
+.view{display:none}
+.view.on{display:block;animation:vin .25s ease}
+@keyframes vin{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+/* Toast / 对话框 / 动作面板 */
+#toast{position:fixed;left:50%;transform:translateX(-50%) translateY(-20px);top:24px;z-index:100;opacity:0;pointer-events:none;transition:all .3s;
+  background:rgba(34,48,63,.92);color:#fff;font-size:13px;padding:12px 20px;border-radius:14px;box-shadow:0 8px 24px rgba(0,0,0,.25)}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+#toastB{position:fixed;left:50%;transform:translateX(-50%) translateY(20px);bottom:110px;z-index:100;opacity:0;pointer-events:none;transition:all .3s;
+  background:linear-gradient(135deg,#3A8BF5,var(--primary-d));color:#fff;font-size:13px;padding:12px 22px;border-radius:24px;box-shadow:0 8px 24px rgba(40,121,243,.4)}
+#toastB.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.mask{position:fixed;inset:0;background:rgba(34,48,63,.35);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);z-index:90;display:none;align-items:center;justify-content:center;padding:30px}
+.mask.show{display:flex}
+.dialog{width:100%;max-width:340px;border-radius:22px;padding:22px;text-align:center;
+  background:linear-gradient(135deg,rgba(255,255,255,.75),rgba(255,255,255,.9));
+  backdrop-filter:blur(24px) saturate(170%);-webkit-backdrop-filter:blur(24px) saturate(170%);
+  border:1px solid var(--card-bd);box-shadow:0 20px 50px rgba(40,121,243,.2);animation:pop .25s cubic-bezier(.3,1.5,.5,1)}
+@keyframes pop{from{transform:scale(.85);opacity:0}to{transform:scale(1);opacity:1}}
+.dialog h4{font-size:16px;margin-bottom:8px}
+.dialog p{font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:16px}
+.sheet{position:fixed;left:0;right:0;bottom:0;z-index:95;border-radius:24px 24px 0 0;padding:14px 18px 30px;
+  background:linear-gradient(180deg,rgba(255,255,255,.8),rgba(255,255,255,.95));
+  backdrop-filter:blur(24px) saturate(170%);-webkit-backdrop-filter:blur(24px) saturate(170%);
+  border-top:1px solid var(--card-bd);transform:translateY(105%);transition:transform .32s cubic-bezier(.3,1,.4,1)}
+.sheet.show{transform:translateY(0)}
+.sheet .grab{width:44px;height:5px;border-radius:3px;background:#C6D2E0;margin:2px auto 12px}
+.sheet button{width:100%;border:none;background:rgba(255,255,255,.6);border:1px solid var(--card-bd);border-radius:14px;padding:13px;font-size:14px;font-family:inherit;color:var(--text);margin-bottom:8px;cursor:pointer}
+.sheet button.danger{color:#E5484D}
+.okwrap{text-align:center;padding:8px}
+.okc{width:72px;height:72px;margin:0 auto 10px;border-radius:50%;background:linear-gradient(135deg,#3A8BF5,var(--primary-d));display:flex;align-items:center;justify-content:center;box-shadow:0 10px 24px rgba(40,121,243,.4)}
+.okc svg{width:36px;height:36px}
+.okc path{stroke:#fff;stroke-width:4;fill:none;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:60;stroke-dashoffset:60;animation:draw .6s .2s forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+.empty{text-align:center;padding:26px 10px;color:var(--muted)}
+.empty .big{font-size:44px;margin-bottom:8px}
+.skel{border-radius:12px;background:linear-gradient(90deg,rgba(255,255,255,.35) 25%,rgba(255,255,255,.7) 50%,rgba(255,255,255,.35) 75%);background-size:200% 100%;animation:sk 1.2s linear infinite}
+@keyframes sk{to{background-position:-200% 0}}
+.type-h{display:flex;align-items:baseline;gap:8px;margin-bottom:10px}
+.kicker{font-size:11px;color:var(--primary);font-weight:700;letter-spacing:1px}
+</style>
+</head>
+<body>
+<div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
+<div class="wrap">
+  <div class="hero">
+    <span class="tag">GLASS UI · THEME KIT</span>
+    <h1>Liquid Glass<br>冰晶液态主题</h1>
+    <p>雾面毛玻璃 × 彩色光斑。30 个组件 · 5 大分类 · 全部可交互<br>AppTheme(id="glass") 完整还原</p>
+  </div>
+
+  <!-- 总览 -->
+  <div class="view on" id="v0">
+    <div class="card">
+      <div class="type-h"><span class="kicker">01</span><h3>主题介绍</h3></div>
+      <p class="desc">id="glass" · tag="GLASS UI" · category=GLASS<br>雾面毛玻璃，彩色光斑。浅色底 + 三色渐变背景 + 柔雾色块，卡片半透明白 + 55% 白描边 + 模糊饱和，轻盈通透。</p>
+      <div class="row">
+        <span class="badge">雾面毛玻璃</span><span class="badge">彩色光斑</span><span class="badge">DesignStyle.GLASSMORPHISM</span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="type-h"><span class="kicker">02</span><h3>Token 色板 · 点击复制</h3></div>
+      <p class="desc">取自 ThemeUiColors，点击任意色块复制色值</p>
+      <div class="swatches">
+        <div class="sw" data-c="#2879F3"><div class="c" style="background:#2879F3"></div><div class="n"><b>主色 primary</b>#2879F3</div></div>
+        <div class="sw" data-c="#F37E10"><div class="c" style="background:#F37E10"></div><div class="n"><b>辅色 secondary</b>#F37E10</div></div>
+        <div class="sw" data-c="#EDF1F6"><div class="c" style="background:#EDF1F6"></div><div class="n"><b>背景 background</b>#EDF1F6</div></div>
+        <div class="sw" data-c="#D3E3F8"><div class="c" style="background:#D3E3F8"></div><div class="n"><b>渐变蓝</b>#D3E3F8</div></div>
+        <div class="sw" data-c="#F8E9D4"><div class="c" style="background:#F8E9D4"></div><div class="n"><b>渐变暖</b>#F8E9D4</div></div>
+        <div class="sw" data-c="#22303F"><div class="c" style="background:#22303F"></div><div class="n"><b>文字 text</b>#22303F</div></div>
+        <div class="sw" data-c="#64748B"><div class="c" style="background:#64748B"></div><div class="n"><b>次要文字</b>#64748B</div></div>
+        <div class="sw" data-c="#FFFFFF"><div class="c" style="background:#fff"></div><div class="n"><b>卡片 surface</b>#FFFFFF</div></div>
+        <div class="sw" data-c="alpha 0.55"><div class="c" style="background:linear-gradient(135deg,rgba(255,255,255,.32),rgba(255,255,255,.45))"></div><div class="n"><b>卡片渐变</b>52→73 白</div></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="type-h"><span class="kicker">03</span><h3>光斑背景 BLOBS</h3></div>
+      <p class="desc">bgDecor = BLOBS：蓝 / 橙 / 粉三团柔雾，大而柔，缓慢漂移</p>
+      <div class="row">
+        <div class="thumb" style="background:#8FBDF8">●</div>
+        <div class="thumb" style="background:#F8BE78">●</div>
+        <div class="thumb" style="background:#F6A9C8">●</div>
+        <span style="font-size:12px;color:var(--muted)">blur(70px) · opacity .5</span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="type-h"><span class="kicker">04</span><h3>字体层级</h3></div>
+      <div style="font-size:22px;font-weight:800;margin-bottom:6px">标题 Title · 去水印解析</div>
+      <div style="font-size:15px;font-weight:600;margin-bottom:6px">副标题 Subtitle · 站点导航</div>
+      <div style="font-size:13px;color:var(--muted)">正文 Body · 工时打卡，次要文字 #64748B</div>
+    </div>
+    <div class="card">
+      <div class="type-h"><span class="kicker">05</span><h3>玻璃三要素</h3></div>
+      <div class="stat">
+        <div class="cell"><div class="v">18</div><div class="k">blur(px)</div></div>
+        <div class="cell"><div class="v">160</div><div class="k">saturate(%)</div></div>
+        <div class="cell"><div class="v o">55</div><div class="k">白描边(%)</div></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="type-h"><span class="kicker">06</span><h3>圆角与投影</h3></div>
+      <div class="row">
+        <div class="thumb" style="border-radius:8px;background:rgba(255,255,255,.6);border:1px solid var(--card-bd);color:var(--primary);font-size:12px">8</div>
+        <div class="thumb" style="border-radius:14px;background:rgba(255,255,255,.6);border:1px solid var(--card-bd);color:var(--primary);font-size:12px">14</div>
+        <div class="thumb" style="border-radius:20px;background:rgba(255,255,255,.6);border:1px solid var(--card-bd);color:var(--primary);font-size:12px">20</div>
+        <div class="thumb" style="border-radius:50%;background:rgba(255,255,255,.6);border:1px solid var(--card-bd);color:var(--primary);font-size:12px">○</div>
+      </div>
+      <p class="desc" style="margin:10px 0 0">投影：0 8px 24px rgba(40,121,243,.10)，柔和不抢戏</p>
+    </div>
+  </div>
+
+  <!-- 按钮 -->
+  <div class="view" id="v1">
+    <div class="card">
+      <div class="type-h"><span class="kicker">07</span><h3>主按钮 / 辅按钮</h3></div>
+      <div class="row">
+        <button class="btn btn-pri" onclick="toast('开始解析去水印链接')">开始解析</button>
+        <button class="btn btn-sec" onclick="toast('已加入高速下载')">高速下载</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="type-h"><span class="kicker">08</span><h3>描边 / 文字 / 禁用</h3></div>
+      <div class="row">
+        <button class="btn btn-ol" onclick="toast('已复制分享链接')">复制链接</button>
+        <button class="btn btn-txt" onclick="toast('查看全部解析历史')">查看全部 ›</button>
+        <button class="btn btn-dis" disabled>解析中…</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="type-h"><span class="kicker">09</span><h3>图标按钮</h3></div>
+      <div class="row">
+        <button class="ibtn" onclick="toast('搜索站点')">🔍</button>
+        <button class="ibtn" onclick="toast('扫码解析')">📷</button>
+        <button class="ibtn" onclick="toast('打卡成功')">✓</button>
+        <button class="ibtn" onclick="toast('已收藏')">☆</button>
+        <button class="ibtn" onclick="toast('分享给好友')">↗</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="type-h"><span class="kicker">10</span><h3>加载中按钮</h3></div>
+      <div class="row">
+        <button class="btn btn-pri" id="loadBtn" onclick="fakeLoad()"><span class="spin"></span>正在去水印</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="type-h"><span class="kicker">11</span><h3>分段选择</h3></div>
+      <div class="seg" id="seg1">
+        <button class="on">去水印</button><button>站点</button><button>打卡</button><button>我的</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="type-h"><span class="kicker">12</span><h3>悬浮按钮 FAB</h3></div>
+      <p class="desc">右下角 + 号，点击展开快捷操作（试一试）</p>
+    </div>
+  </div>
+
+  <!-- 表单 -->
+  <div class="view" id="v2">
+    <div class="card">
+      <div class="type-h"><span class="kicker">13</span><h3>毛玻璃输入框</h3></div>
+      <div class="field"><label>分享链接</label><input class="inp" placeholder="粘贴抖音 / 快手 / 小红书分享链接…"></div>
+      <div class="field" style="margin:0"><label>备注（可选）</label><input class="inp" placeholder="给这条解析起个名字"></div>
+    </div>
+    <div class="card">
+      <div class="type-h"><span class="kicker">14</span><h3>搜索框 · 实时过滤</h3></div>
+      <div class="sbox"><span class="sic">🔍</span><input class="inp" id="siteSearch" placeholder="搜索 1821 个收录站点…"></div>
+      <div id="siteList" style="margin-top:8px"></div>
+    </div>
+    <div class="card">
+      <div class="type-h"><span class="kicker">15</span><h3>开关 Switch</h3></div>
+      <div class="setrow"><div><div class="t">去水印解析</div><div class="s">自动去除视频水印</div></div><label class="switch"><input type="checkbox" checked><span class="sl"></span></label></div>
+      <div class="setrow"><div><div class="t">打卡提醒</div><div class="s">每天 9:00 提醒打卡</div></div><label class="switch"><input type="checkbox"><span class="sl"></span></label></div>
+      <div class="setrow"><div><div class="t">仅 WiFi 下载</div><div class="s">省流量</div></div><label class="switch"><input type="checkbox" checked><span class="sl"></span></label></div>
+    </div>
+    <div class="card">
+      <div class="type-h"><span class="kicker">16</span><h3>复选框</h3></div>
+      <div class="chk on" onclick="this.classList.toggle('on')"><span class="box">✓</span>保存到相册</div>
+      <div class="chk" onclick="this.classList.toggle('on')"><span class="box">✓</span>同时下载封面</div>
+      <div class="chk on" onclick="this.classList.toggle('on')"><span class="box">✓</span>解析完成后通知我</div>
+    </div>
+    <div class="card">
+      <div class="type-h"><span class="kicker">17</span><h3>单选框 · 清晰度</h3></div>
+      <div class="chk on" data-r="q"><span class="rdo"></span>原画（推荐）</div>
+      <div class="chk" data-r="q"><span class="rdo"></span>720P · 更省流量</div>
+      <div class="chk" data-r="q"><span class="rdo"></span>540P · 极速</div>
+    </div>
+    <div class="card">
+      <div class="type-h"><span class="kicker">18</span><h3>滑杆 · 下载线程</h3></div>
+      <input type="range" min="1" max="8" value="4" id="thRange" oninput="thOut(this)">
+      <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-top:6px"><span>线程数</span><b id="thVal" style="color:var(--primary)">4</b></div>
+    </div>
+  </div>
+
+  <!-- 展示 -->
+  <div class="view" id="v3">
+    <div class="card">
+      <div class="type-h"><span class="kicker">19</span><h3>光斑统计卡</h3></div>
+      <div class="stat">
+        <div class="cell"><div class="v">128</div><div class="k">今日解析</div></div>
+        <div class="cell"><div class="v o">1.2G</div><div class="k">已下载</div></div>
+        <div class="cell"><div class="v">8.5h</div><div class="k">今日工时</div></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="type-h"><span class="kicker">20</span><h3>解析历史</h3></div>
+      <div class="hrow"><div class="thumb" style="background:linear-gradient(135deg,#3A8BF5,#1F66E0)">▶</div><div><div class="tt">抖音去水印 · 刚刚</div><div class="ts">12.4MB · 原画</div></div><span class="badge">无水印</span></div>
+      <div class="hrow"><div class="thumb" style="background:linear-gradient(135deg,#F79A3A,#E06F0A)">▶</div><div><div class="tt">快手无水印 · 10 分钟前</div><div class="ts">8.1MB · 720P</div></div><span class="badge">无水印</span></div>
+      <div class="hrow"><div class="thumb" style="background:linear-gradient(135deg,#8FBDF8,#5B8DEF)">▶</div><div><div class="tt">小红书图集 · 1 小时前</div><div class="ts">9 张 · 已保存</div></div><span class="badge">图集</span></div>
+    </div>
+    <div class="card">
+      <div class="type-h"><span class="kicker">21</span><h3>站点九宫格</h3></div>
+      <div class="grid9">
+        <div class="g9" onclick="toast('打开 抖音去水印')"><span class="ic">🎵</span>抖音</div>
+        <div class="g9" onclick="toast('打开 快手去水印')"><span class="ic">📹</span>快手</div>
+        <div class="g9" onclick="toast('打开 小红书')"><span class="ic">📕</span>小红书</div>
+        <div class="g9" onclick="toast('打开 哔哩哔哩')"><span class="ic">📺</span>B站</div>
+        <div class="g9" onclick="toast('打开 微博')"><span class="ic">💬</span>微博</div>
+        <div class="g9" onclick="toast('打开 豆包AI')"><span class="ic">🤖</span>豆包</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="type-h"><span class="kicker">22</span><h3>进度条</h3></div>
+      <div class="pbar"><i id="dlBar" style="width:62%"></i></div>
+      <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin:8px 0 12px"><span>正在下载 · 7.7/12.4MB</span><b style="color:var(--primary)">62%</b></div>
+      <button class="btn btn-pri" style="width:100%" onclick="runDl()">模拟下载</button>
+    </div>
+    <div class="card">
+      <div class="type-h"><span class="kicker">23</span><h3>头像徽章</h3></div>
+      <div class="row">
+        <div class="avt" style="background:linear-gradient(135deg,#3A8BF5,#1F66E0)">懒<span class="dot"></span></div>
+        <div class="avt" style="background:linear-gradient(135deg,#F79A3A,#E06F0A)">得</div>
+        <div class="avt" style="background:linear-gradient(135deg,#8FBDF8,#5B8DEF)">找<span class="dot" style="background:#9AA7B8"></span></div>
+        <span style="font-size:12px;color:var(--muted)">在线 / 离线状态点</span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="type-h"><span class="kicker">24</span><h3>通知横幅</h3></div>
+      <div class="nbanner"><span style="font-size:20px">🔔</span><div><b>打卡提醒</b><br>今日工时 8.5h，薪资估算 ¥320，快下班啦记得打卡。</div></div>
+    </div>
+  </div>
+
+  <!-- 反馈 -->
+  <div class="view" id="v4">
+    <div class="card">
+      <div class="type-h"><span class="kicker">25</span><h3>Toast 提示</h3></div>
+      <div class="row">
+        <button class="btn btn-ol" onclick="toast('✓ 已复制分享链接')">顶部 Toast</button>
+        <button class="btn btn-ol" onclick="toastB('⬇️ 开始下载 · 原画')">底部 Toast</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="type-h"><span class="kicker">26</span><h3>确认对话框</h3></div>
+      <button class="btn btn-sec" style="width:100%" onclick="showMask('dlg')">清空解析历史</button>
+    </div>
+    <div class="card">
+      <div class="type-h"><span class="kicker">27</span><h3>底部动作面板</h3></div>
+      <button class="btn btn-pri" style="width:100%" onclick="showSheet()">选择下载方式</button>
+    </div>
+    <div class="card">
+      <div class="type-h"><span class="kicker">28</span><h3>成功动画</h3></div>
+      <div class="okwrap">
+        <div class="okc"><svg viewBox="0 0 40 40"><path d="M12 21 L18 27 L29 14"/></svg></div>
+        <div style="font-size:14px;font-weight:700">去水印成功</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:4px">已保存到相册 · 12.4MB</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="type-h"><span class="kicker">29</span><h3>空状态</h3></div>
+      <div class="empty"><div class="big">🗂️</div><div style="font-weight:700;color:var(--text);margin-bottom:4px">暂无解析历史</div><div style="font-size:12px">粘贴一条分享链接，开启第一次去水印</div></div>
+      <button class="btn btn-pri" style="width:100%" onclick="toast('去粘贴一条链接试试')">去解析</button>
+    </div>
+    <div class="card">
+      <div class="type-h"><span class="kicker">30</span><h3>骨架屏</h3></div>
+      <div id="skBox">
+        <div class="skel" style="height:46px;margin-bottom:10px"></div>
+        <div class="skel" style="height:46px;margin-bottom:10px"></div>
+        <div class="skel" style="height:46px"></div>
+      </div>
+      <button class="btn btn-ol" style="width:100%;margin-top:12px" onclick="loadSk()">重新加载</button>
+    </div>
+  </div>
+</div>
+
+<button class="fab" onclick="showSheet()">+</button>
+
+<nav class="tabbar" id="tabbar">
+  <div id="pill"></div>
+  <button data-t="0" class="on">总览</button>
+  <button data-t="1">按钮</button>
+  <button data-t="2">表单</button>
+  <button data-t="3">展示</button>
+  <button data-t="4">反馈</button>
+</nav>
+
+<div id="toast"></div><div id="toastB"></div>
+<div class="mask" id="dlg" onclick="if(event.target===this)hideMask('dlg')">
+  <div class="dialog">
+    <h4>清空解析历史？</h4>
+    <p>将删除全部 128 条解析记录，下载好的文件不受影响。</p>
+    <div class="row" style="justify-content:center">
+      <button class="btn btn-ol" onclick="hideMask('dlg')">取消</button>
+      <button class="btn btn-sec" onclick="hideMask('dlg');toast('已清空解析历史')">确认清空</button>
+    </div>
+  </div>
+</div>
+<div class="mask" id="sheetMask" onclick="hideSheet()">
+  <div class="sheet" id="sheet" onclick="event.stopPropagation()">
+    <div class="grab"></div>
+    <button onclick="hideSheet();toast('原画下载 · 12.4MB')">⬇️ 原画下载</button>
+    <button onclick="hideSheet();toast('720P 下载 · 8.1MB')">⬇️ 720P 下载</button>
+    <button onclick="hideSheet();toast('仅复制无水印链接')">🔗 仅复制链接</button>
+    <button class="danger" onclick="hideSheet()">取消</button>
+  </div>
+</div>
+<script>
+var cur=0;
+var btns=document.querySelectorAll('#tabbar button');
+var pill=document.getElementById('pill');
+function movePill(){
+  var b=btns[cur];
+  pill.style.left=b.offsetLeft+'px';
+  pill.style.width=b.offsetWidth+'px';
+}
+function go(t){
+  cur=t;
+  document.querySelectorAll('.view').forEach(function(v,i){v.classList.toggle('on',i===t)});
+  btns.forEach(function(b,i){b.classList.toggle('on',i===t)});
+  movePill();
+  try{history.replaceState(null,'','?tab='+t)}catch(e){}
+  window.scrollTo(0,0);
+}
+btns.forEach(function(b){b.addEventListener('click',function(){go(+b.dataset.t)})});
+window.addEventListener('resize',movePill);
+window.addEventListener('load',movePill);
+(function(){
+  var t=0;
+  try{t=parseInt(new URLSearchParams(location.search).get('tab'))||0}catch(e){}
+  if(t<0||t>4)t=0;
+  go(t); setTimeout(movePill,60);
+})();
+/* toast */
+var toastTimer=null;
+function toast(msg){
+  var el=document.getElementById('toast');
+  el.textContent=msg; el.classList.add('show');
+  clearTimeout(toastTimer); toastTimer=setTimeout(function(){el.classList.remove('show')},1800);
+}
+var toastBTimer=null;
+function toastB(msg){
+  var el=document.getElementById('toastB');
+  el.textContent=msg; el.classList.add('show');
+  clearTimeout(toastBTimer); toastBTimer=setTimeout(function(){el.classList.remove('show')},1800);
+}
+/* mask / sheet */
+function showMask(id){document.getElementById(id).classList.add('show')}
+function hideMask(id){document.getElementById(id).classList.remove('show')}
+function showSheet(){
+  document.getElementById('sheetMask').classList.add('show');
+  setTimeout(function(){document.getElementById('sheet').classList.add('show')},30);
+}
+function hideSheet(){
+  document.getElementById('sheet').classList.remove('show');
+  setTimeout(function(){document.getElementById('sheetMask').classList.remove('show')},300);
+}
+/* 色板复制 */
+document.querySelectorAll('.sw').forEach(function(sw){
+  sw.addEventListener('click',function(){
+    var c=sw.dataset.c;
+    function done(){toast('已复制 '+c)}
+    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(c).then(done,done)}
+    else{var i=document.createElement('input');i.value=c;document.body.appendChild(i);i.select();try{document.execCommand('copy')}catch(e){}document.body.removeChild(i);done()}
+  });
+});
+/* 分段选择 */
+document.querySelectorAll('#seg1 button').forEach(function(b){
+  b.addEventListener('click',function(){
+    document.querySelectorAll('#seg1 button').forEach(function(x){x.classList.remove('on')});
+    b.classList.add('on'); toast('切换到：'+b.textContent);
+  });
+});
+/* 加载按钮 */
+function fakeLoad(){
+  var b=document.getElementById('loadBtn');
+  b.innerHTML='✓ 去水印完成';
+  toast('✓ 已保存到相册');
+  setTimeout(function(){b.innerHTML='<span class="spin"></span>正在去水印'},2200);
+}
+/* 单选 */
+document.querySelectorAll('[data-r]').forEach(function(el){
+  el.addEventListener('click',function(){
+    var g=el.dataset.r;
+    document.querySelectorAll('[data-r="'+g+'"]').forEach(function(x){x.classList.remove('on')});
+    el.classList.add('on');
+  });
+});
+/* 滑杆 */
+function thOut(r){
+  var p=(r.value-r.min)/(r.max-r.min)*100;
+  r.style.setProperty('--p',p+'%');
+  document.getElementById('thVal').textContent=r.value;
+}
+(function(){var r=document.getElementById('thRange');if(r)thOut(r)})();
+/* 站点搜索 */
+var sites=['抖音去水印','快手去水印','小红书','哔哩哔哩','微信视频号','微博','豆包AI','汽水音乐','皮皮虾','西瓜视频','知乎','今日头条'];
+function renderSites(kw){
+  var box=document.getElementById('siteList'); if(!box)return;
+  var list=sites.filter(function(s){return !kw||s.indexOf(kw)>-1});
+  box.innerHTML=list.length?list.map(function(s){
+    return '<div class="hrow" onclick="toast(\'打开 '+s+'\')"><div class="thumb" style="background:linear-gradient(135deg,#3A8BF5,#1F66E0);font-size:14px">🔗</div><div><div class="tt">'+s+'</div></div><span class="badge">去看看</span></div>';
+  }).join(''):'<div class="empty" style="padding:12px">没有匹配的站点</div>';
+}
+var ss=document.getElementById('siteSearch');
+if(ss){ss.addEventListener('input',function(){renderSites(ss.value.trim())});renderSites('')}
+/* 下载进度模拟 */
+var dlTimer=null;
+function runDl(){
+  var bar=document.getElementById('dlBar'); var w=0;
+  clearInterval(dlTimer);
+  dlTimer=setInterval(function(){
+    w+=7; if(w>=100){w=100;clearInterval(dlTimer);toastB('✓ 下载完成 · 已保存到相册')}
+    bar.style.width=w+'%';
+  },220);
+}
+/* 骨架屏 */
+function loadSk(){
+  var box=document.getElementById('skBox');
+  box.innerHTML='<div class="skel" style="height:46px;margin-bottom:10px"></div><div class="skel" style="height:46px;margin-bottom:10px"></div><div class="skel" style="height:46px"></div>';
+  setTimeout(function(){
+    box.innerHTML='<div class="hrow"><div class="thumb" style="background:linear-gradient(135deg,#3A8BF5,#1F66E0)">▶</div><div><div class="tt">抖音去水印 · 刚刚</div><div class="ts">12.4MB · 原画</div></div><span class="badge">无水印</span></div><div class="hrow"><div class="thumb" style="background:linear-gradient(135deg,#F79A3A,#E06F0A)">▶</div><div><div class="tt">快手无水印 · 5 分钟前</div><div class="ts">8.1MB · 720P</div></div><span class="badge">无水印</span></div>';
+    toast('加载完成');
+  },1400);
+}
+</script>
+</body>
+</html>
