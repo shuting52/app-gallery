@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>拟物化组件库 · Skeuomorphism — 懒得找了 UI 套件 K01</title>
+<style>
+/* ============ 基础 ============ */
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --leather-d:#241305; --leather:#4a2c14; --leather-l:#7a4e26;
+  --metal-hi:#f4f4f4; --metal:#b9b9b9; --metal-d:#6f6f6f; --metal-dd:#3f3f3f;
+  --brass-hi:#f3d97b; --brass:#b98a1e; --brass-d:#6e5210;
+  --lcd-bg:#0a120a; --lcd:#8dff9a; --lcd-dim:#3f7a46;
+  --ink:#2b1a0c; --paper:#f5ead6;
+}
+html{background:#1c0f05}
+body{
+  font-family:system-ui,-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;
+  color:var(--paper); min-height:100vh; padding-bottom:110px;
+  /* 皮革质感：深棕渐变 + 双向斜纹模拟皮纹 + 顶部柔光 */
+  background:
+    radial-gradient(ellipse 120% 40% at 50% -5%, rgba(255,205,130,.14), transparent 60%),
+    repeating-linear-gradient(45deg, rgba(0,0,0,.14) 0 2px, transparent 2px 5px),
+    repeating-linear-gradient(-45deg, rgba(0,0,0,.11) 0 2px, transparent 2px 6px),
+    repeating-linear-gradient(0deg, rgba(255,220,170,.025) 0 1px, transparent 1px 4px),
+    linear-gradient(165deg, #5c3a1e 0%, #41260f 45%, #2a1708 100%);
+  background-attachment:fixed;
+}
+/* ============ 顶栏 ============ */
+.topbar{
+  position:sticky; top:0; z-index:40; margin:14px 14px 0; border-radius:14px;
+  background:linear-gradient(180deg,#3a3a3a,#232323 60%,#1b1b1b);
+  border:1px solid #0d0d0d; box-shadow:0 4px 10px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.22);
+  padding:14px 16px 14px 44px;
+}
+.topbar h1{font-size:17px; letter-spacing:2px; color:#f2e7cf;
+  text-shadow:0 1px 0 #000, 0 0 12px rgba(255,200,120,.25)}
+.topbar p{font-size:11px; color:#b9a67f; margin-top:4px; letter-spacing:1px}
+/* ============ 螺丝钉 ============ */
+.screw{position:absolute; width:16px; height:16px; border-radius:50%;
+  background:radial-gradient(circle at 35% 30%, #f0f0f0, #a9a9a9 55%, #4a4a4a 90%);
+  box-shadow:inset 0 -2px 3px rgba(0,0,0,.55), inset 0 1px 1px rgba(255,255,255,.7), 0 1px 2px rgba(0,0,0,.7);}
+.screw::before,.screw::after{content:""; position:absolute; left:2px; right:2px; top:50%; height:2px; margin-top:-1px;
+  background:#3a3a3a; border-radius:1px; box-shadow:inset 0 1px 1px rgba(0,0,0,.9)}
+.screw::after{transform:rotate(90deg)}
+.screw.tl{top:8px;left:8px;transform:rotate(24deg)} .screw.tr{top:8px;right:8px;transform:rotate(-61deg)}
+.screw.bl{bottom:8px;left:8px;transform:rotate(103deg)} .screw.br{bottom:8px;right:8px;transform:rotate(-15deg)}
+/* ============ Tab 页 ============ */
+.tabpage{display:none; padding:14px 14px 0; animation:pagein .25s ease}
+.tabpage.active{display:block}
+@keyframes pagein{from{opacity:0; transform:translateY(8px)} to{opacity:1; transform:none}}
+/* ============ 组件卡片（皮革底 + 缝线） ============ */
+.card{
+  position:relative; border-radius:12px; margin-bottom:14px; padding:16px 16px 18px;
+  background:
+    repeating-linear-gradient(45deg, rgba(0,0,0,.10) 0 2px, transparent 2px 5px),
+    linear-gradient(170deg, #54341a, #3a2110 70%, #2c190b);
+  border:1px solid #170c04;
+  box-shadow:0 5px 12px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,215,160,.25), inset 0 -2px 4px rgba(0,0,0,.35);
+}
+.card::before{ /* 缝线边框 */
+  content:""; position:absolute; inset:7px; border-radius:8px; pointer-events:none;
+  border:1.5px dashed rgba(240,200,140,.55);
+}
+.card h3{font-size:14px; color:#f3dfb8; letter-spacing:1px; margin-bottom:12px; padding-left:24px;
+  text-shadow:0 1px 0 #000; position:relative}
+.card h3::before{content:""; position:absolute; left:6px; top:50%; width:10px; height:10px; margin-top:-5px; border-radius:50%;
+  background:radial-gradient(circle at 35% 30%, var(--brass-hi), var(--brass) 60%, var(--brass-d));
+  box-shadow:0 1px 2px rgba(0,0,0,.6), inset 0 1px 1px rgba(255,255,255,.6)}
+.card .desc{font-size:12px; color:#c9a878; line-height:1.8; margin-bottom:12px}
+/* ============ 金属 3D 斜面按钮 ============ */
+.btn-metal{
+  display:inline-block; border:1px solid #5c5c5c; border-radius:10px; cursor:pointer;
+  font-size:15px; font-weight:700; color:#2c2c2c; letter-spacing:2px; padding:13px 30px;
+  background:linear-gradient(180deg,#f7f7f7 0%,#d9d9d9 42%,#a9a9a9 55%,#cfcfcf 100%);
+  box-shadow:0 4px 0 #545454, 0 7px 10px rgba(0,0,0,.55),
+    inset 0 1px 0 #ffffff, inset 0 -2px 3px rgba(0,0,0,.18);
+  text-shadow:0 1px 0 rgba(255,255,255,.8);
+  transition:transform .06s, box-shadow .06s;
+  font-family:inherit; user-select:none;
+}
+.btn-metal:active, .btn-metal.pressed{
+  transform:translateY(4px);
+  box-shadow:0 0 0 #545454, 0 2px 4px rgba(0,0,0,.5),
+    inset 0 3px 8px rgba(0,0,0,.35), inset 0 -1px 0 rgba(255,255,255,.4);
+  background:linear-gradient(180deg,#c6c6c6,#a8a8a8);
+}
+.btn-metal.small{font-size:13px; padding:9px 20px; letter-spacing:1px}
+.btn-metal.brass{
+  color:#3d2c05;
+  background:linear-gradient(180deg,#f7e08e 0%,#dcae3c 42%,#a87c14 55%,#d9b64a 100%);
+  border-color:#6e5210;
+  box-shadow:0 4px 0 #5f470c, 0 7px 10px rgba(0,0,0,.55),
+    inset 0 1px 0 #fff3c4, inset 0 -2px 3px rgba(0,0,0,.2);
+  text-shadow:0 1px 0 rgba(255,240,190,.8);
+}
+.btn-metal.brass:active{transform:translateY(4px);
+  box-shadow:0 0 0 #5f470c, inset 0 3px 8px rgba(0,0,0,.35);}
+.btn-leather{
+  display:inline-block; border:1px solid #170c04; border-radius:10px; cursor:pointer;
+  font-size:15px; font-weight:700; color:#f3dfb8; letter-spacing:2px; padding:13px 30px;
+  font-family:inherit; user-select:none; position:relative;
+  background:
+    repeating-linear-gradient(45deg, rgba(0,0,0,.14) 0 2px, transparent 2px 5px),
+    linear-gradient(180deg,#6b4423,#4a2c14 60%,#38200d);
+  box-shadow:0 4px 0 #1c0e04, 0 7px 10px rgba(0,0,0,.55),
+    inset 0 1px 0 rgba(255,215,160,.35), inset 0 -2px 3px rgba(0,0,0,.4);
+  text-shadow:0 1px 2px #000;
+  transition:transform .06s, box-shadow .06s;
+}
+.btn-leather:active{transform:translateY(4px);
+  box-shadow:0 0 0 #1c0e04, inset 0 3px 8px rgba(0,0,0,.5);}
+/* ============ LCD 小屏幕 ============ */
+.lcd{
+  position:relative; border-radius:6px; overflow:hidden;
+  background:linear-gradient(180deg,#0c150c,#060c07);
+  border:2px solid #2e2e2e;
+  box-shadow:inset 0 3px 10px #000, inset 0 -1px 2px rgba(120,255,140,.08), 0 1px 0 rgba(255,255,255,.14);
+  color:var(--lcd); font-family:"Courier New",ui-monospace,monospace;
+  text-shadow:0 0 7px rgba(130,255,145,.75);
+  padding:10px 12px; font-size:14px; line-height:1.7; letter-spacing:1px;
+}
+.lcd::after{content:""; position:absolute; inset:0; pointer-events:none;
+  background:repeating-linear-gradient(0deg, rgba(255,255,255,.035) 0 1px, transparent 1px 3px);}
+.lcd .dim{color:var(--lcd-dim); text-shadow:none}
+.lcd.warn{color:#ffd257; text-shadow:0 0 7px rgba(255,210,87,.75)}
+.lcd.err{color:#ff7b7b; text-shadow:0 0 7px rgba(255,123,123,.75)}
+/* ============ 拨杆开关（金属拨杆） ============ */
+.lever{
+  position:relative; width:118px; height:46px; border-radius:23px; flex:none;
+  background:linear-gradient(180deg,#161616,#2e2e2e);
+  border:1px solid #0a0a0a;
+  box-shadow:inset 0 3px 8px rgba(0,0,0,.9), 0 1px 0 rgba(255,255,255,.18);
+  cursor:pointer; outline:none;
+}
+.lever .slot{position:absolute; left:16px; right:16px; top:50%; height:10px; margin-top:-5px;
+  border-radius:5px; background:#080808; box-shadow:inset 0 2px 5px #000, 0 1px 0 rgba(255,255,255,.08)}
+.lever .knob{
+  position:absolute; top:5px; left:7px; width:36px; height:36px; border-radius:50%;
+  background:radial-gradient(circle at 35% 28%, #ffffff, #c2c2c2 45%, #7c7c7c 80%, #565656);
+  box-shadow:0 3px 6px rgba(0,0,0,.65), inset 0 2px 2px rgba(255,255,255,.9), inset 0 -3px 4px rgba(0,0,0,.35);
+  transition:left .16s cubic-bezier(.55,-.35,.35,1.35);
+}
+.lever .knob::after{content:""; position:absolute; left:8px; right:8px; top:50%; height:3px; margin-top:-1.5px;
+  border-radius:2px; background:#4a4a4a; box-shadow:inset 0 1px 1px rgba(0,0,0,.7), 0 1px 0 rgba(255,255,255,.5)}
+.lever.on .knob{left:calc(100% - 43px)}
+.lever .led{position:absolute; right:10px; top:50%; width:9px; height:9px; margin-top:-4.5px; border-radius:50%;
+  background:#3a1414; box-shadow:inset 0 1px 2px rgba(0,0,0,.8); transition:all .15s}
+.lever.on .led{background:#ff4b4b; box-shadow:0 0 8px #ff4b4b, inset 0 1px 1px rgba(255,255,255,.6)}
+.lever-row{display:flex; align-items:center; justify-content:space-between; padding:10px 2px; gap:10px}
+.lever-row + .lever-row{border-top:1px dashed rgba(240,200,140,.25)}
+.lever-row .lab{font-size:13px; color:#ecd9ae}
+.lever-row .lab small{display:block; font-size:11px; color:#a3805a; margin-top:2px}
+/* ============ 旋钮 ============ */
+.knob-wrap{display:flex; align-items:center; gap:18px}
+.knob{
+  position:relative; width:104px; height:104px; border-radius:50%; flex:none; cursor:grab; touch-action:none;
+  background:
+    repeating-conic-gradient(rgba(255,255,255,.14) 0 2deg, transparent 2deg 12deg),
+    radial-gradient(circle at 35% 30%, #efefef, #b5b5b5 55%, #6e6e6e 90%);
+  border:1px solid #4a4a4a;
+  box-shadow:0 6px 12px rgba(0,0,0,.6), inset 0 2px 3px rgba(255,255,255,.85), inset 0 -4px 6px rgba(0,0,0,.35);
+}
+.knob:active{cursor:grabbing}
+.knob .ptr{position:absolute; left:50%; top:6px; width:5px; height:26px; margin-left:-2.5px; border-radius:3px;
+  background:linear-gradient(180deg,#c0392b,#7c1f14); box-shadow:0 0 4px rgba(0,0,0,.6);
+  transform-origin:2.5px 46px;}
+.knob .cap{position:absolute; inset:30px; border-radius:50%;
+  background:radial-gradient(circle at 40% 30%, #d8d8d8, #8f8f8f 70%, #5f5f5f);
+  box-shadow:inset 0 2px 4px rgba(0,0,0,.4), 0 1px 1px rgba(255,255,255,.5)}
+/* ============ 缝线输入框 / 表单 ============ */
+.field{margin-bottom:12px}
+.field label{display:block; font-size:12px; color:#d9bd85; letter-spacing:1px; margin-bottom:7px}
+.in-stitch{
+  width:100%; border:1.5px dashed rgba(240,200,140,.6); border-radius:9px;
+  background:linear-gradient(180deg,#120a04,#1d1106);
+  box-shadow:inset 0 3px 7px rgba(0,0,0,.75), 0 1px 0 rgba(255,215,160,.18);
+  color:#f3dfb8; font-size:14px; padding:11px 13px; font-family:inherit; outline:none;
+}
+.in-stitch:focus{border-color:#ffd98a; box-shadow:inset 0 3px 7px rgba(0,0,0,.75), 0 0 8px rgba(255,200,120,.35)}
+.in-stitch::placeholder{color:#7d6142}
+select.in-stitch{appearance:none;
+  background-image:linear-gradient(45deg,transparent 50%,#c9a878 50%),linear-gradient(135deg,#c9a878 50%,transparent 50%);
+  background-position:calc(100% - 18px) 55%, calc(100% - 12px) 55%; background-size:6px 6px; background-repeat:no-repeat}
+select.in-stitch option{background:#2a1708; color:#f3dfb8}
+/* 金属滑杆 */
+input[type=range].metal-range{-webkit-appearance:none; appearance:none; width:100%; height:34px; background:transparent; cursor:pointer}
+input[type=range].metal-range::-webkit-slider-runnable-track{height:12px; border-radius:6px;
+  background:linear-gradient(180deg,#0e0e0e,#262626);
+  box-shadow:inset 0 2px 5px #000, 0 1px 0 rgba(255,255,255,.15)}
+input[type=range].metal-range::-webkit-slider-thumb{-webkit-appearance:none; width:30px; height:30px; margin-top:-9px; border-radius:50%;
+  background:radial-gradient(circle at 35% 30%, #ffffff, #c0c0c0 50%, #747474 85%);
+  border:1px solid #4c4c4c;
+  box-shadow:0 3px 6px rgba(0,0,0,.6), inset 0 2px 2px rgba(255,255,255,.9)}
+input[type=range].metal-range::-moz-range-track{height:12px; border-radius:6px; background:linear-gradient(180deg,#0e0e0e,#262626)}
+input[type=range].metal-range::-moz-range-thumb{width:28px; height:28px; border-radius:50%; border:1px solid #4c4c4c;
+  background:radial-gradient(circle at 35% 30%, #ffffff, #c0c0c0 50%, #747474 85%)}
+/* 复古单选 / 复选 */
+.pill-group{display:flex; gap:8px; flex-wrap:wrap}
+.radio-pill input, .check-pill input{position:absolute; opacity:0; pointer-events:none}
+.radio-pill span, .check-pill span{
+  display:inline-block; font-size:13px; padding:9px 18px; border-radius:999px; cursor:pointer; user-select:none;
+  color:#cdb488; letter-spacing:1px;
+  background:linear-gradient(180deg,#3d3d3d,#242424);
+  border:1px solid #101010;
+  box-shadow:0 3px 0 #0f0f0f, 0 4px 6px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.2);
+  transition:all .08s;
+}
+.radio-pill input:checked + span, .check-pill input:checked + span{
+  color:#3d2c05;
+  background:linear-gradient(180deg,#f7e08e,#dcae3c 55%,#c39a2e);
+  border-color:#6e5210;
+  box-shadow:0 1px 0 #0f0f0f, inset 0 2px 5px rgba(120,80,10,.45);
+  transform:translateY(2px); text-shadow:0 1px 0 rgba(255,240,190,.7);
+}
+/* ============ 螺丝面板 ============ */
+.plate{
+  position:relative; border-radius:10px; padding:26px 18px 20px; text-align:center;
+  background:linear-gradient(180deg,#e2e2e2,#bdbdbd 50%,#9a9a9a);
+  border:1px solid #5c5c5c;
+  box-shadow:0 5px 10px rgba(0,0,0,.5), inset 0 1px 0 #fff, inset 0 -2px 4px rgba(0,0,0,.25);
+  color:#333; font-size:13px; font-weight:700; letter-spacing:1px;
+}
+/* ============ 材质色板 ============ */
+.swatches{display:grid; grid-template-columns:repeat(4,1fr); gap:10px}
+.sw{border-radius:9px; overflow:hidden; border:1px solid rgba(0,0,0,.6); box-shadow:0 3px 6px rgba(0,0,0,.45)}
+.sw i{display:block; height:56px}
+.sw b{display:block; font-size:11px; text-align:center; padding:6px 2px; background:#1d1106; color:#d9bd85; font-weight:400}
+.sw-leather{background:repeating-linear-gradient(45deg,rgba(0,0,0,.16) 0 2px,transparent 2px 5px),linear-gradient(160deg,#6b4423,#3a2110)}
+.sw-metal{background:linear-gradient(180deg,#f4f4f4,#b9b9b9 55%,#d5d5d5)}
+.sw-brass{background:linear-gradient(180deg,#f3d97b,#b98a1e 60%,#8a6712)}
+.sw-lcd{background:linear-gradient(180deg,#0e1a0e,#060c07)}
+/* ============ 解析记录 / 仪表盘 ============ */
+.rec{display:flex; align-items:center; gap:10px; padding:11px 12px; border-radius:9px; margin-bottom:9px;
+  background:linear-gradient(180deg,#dcdcdc,#b4b4b4);
+  border:1px solid #5c5c5c; color:#2b2b2b;
+  box-shadow:0 3px 0 #4c4c4c, 0 5px 8px rgba(0,0,0,.4), inset 0 1px 0 #fff;}
+.rec:last-child{margin-bottom:0}
+.rec .dot{width:34px; height:34px; border-radius:50%; flex:none; display:flex; align-items:center; justify-content:center;
+  font-size:15px; background:radial-gradient(circle at 35% 30%,#fff,#b9b9b9 70%,#7c7c7c);
+  box-shadow:inset 0 -2px 3px rgba(0,0,0,.3), 0 1px 2px rgba(0,0,0,.4)}
+.rec .t{flex:1; min-width:0}
+.rec .t b{display:block; font-size:13px}
+.rec .t small{font-size:11px; color:#555}
+.rec .ok{font-size:11px; color:#0d5c1e; background:#bfe8c6; border:1px solid #6fae7c; border-radius:20px; padding:3px 9px; flex:none}
+.gauges{display:flex; justify-content:space-around; text-align:center}
+.gauge{width:96px}
+.dial{position:relative; width:96px; height:96px; border-radius:50%; margin:0 auto 6px;
+  background:
+    repeating-conic-gradient(from -90deg, rgba(60,60,60,.9) 0 1.5deg, transparent 1.5deg 15deg),
+    radial-gradient(circle at 35% 30%, #f0f0f0, #b9b9b9 60%, #7c7c7c);
+  border:1px solid #4c4c4c;
+  box-shadow:0 4px 8px rgba(0,0,0,.5), inset 0 2px 3px rgba(255,255,255,.7)}
+.dial .needle{position:absolute; left:50%; bottom:50%; width:4px; height:36px; margin-left:-2px; border-radius:2px;
+  background:linear-gradient(180deg,#c0392b,#7c1f14); transform-origin:50% 100%;
+  transform:rotate(var(--a,0deg)); transition:transform .5s cubic-bezier(.3,1.4,.5,1)}
+.dial .hub{position:absolute; left:50%; top:50%; width:16px; height:16px; margin:-8px; border-radius:50%;
+  background:radial-gradient(circle at 35% 30%,#fff,#8f8f8f); box-shadow:0 1px 3px rgba(0,0,0,.6)}
+.gauge b{font-size:12px; color:#ecd9ae; display:block}
+.gauge small{font-size:11px; color:#a3805a}
+/* 皮革钱包卡 */
+.wallet{position:relative; border-radius:12px; padding:18px; overflow:hidden;
+  background:
+    repeating-linear-gradient(45deg, rgba(0,0,0,.13) 0 2px, transparent 2px 5px),
+    linear-gradient(150deg,#6b4423,#4a2c14 60%,#2f1a0a);
+  border:1px solid #170c04;
+  box-shadow:0 6px 14px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,215,160,.3)}
+.wallet::before{content:""; position:absolute; inset:8px; border-radius:8px; border:1.5px dashed rgba(240,200,140,.5); pointer-events:none}
+.wallet .num{font-family:"Courier New",monospace; font-size:44px; color:#ffe9bd; text-shadow:0 2px 0 #000, 0 0 14px rgba(255,200,120,.35); letter-spacing:3px}
+.wallet .cap{font-size:12px; color:#c9a878; letter-spacing:2px; margin:4px 0 12px}
+.wallet .row{display:flex; gap:10px}
+/* 站点导航 */
+.sites{display:grid; grid-template-columns:repeat(3,1fr); gap:10px}
+.site{border-radius:10px; padding:13px 4px; text-align:center; font-size:13px; font-weight:700; color:#2c2c2c; cursor:pointer;
+  background:linear-gradient(180deg,#f0f0f0,#c6c6c6 55%,#a8a8a8);
+  border:1px solid #5c5c5c;
+  box-shadow:0 3px 0 #545454, 0 5px 8px rgba(0,0,0,.4), inset 0 1px 0 #fff;
+  transition:transform .06s, box-shadow .06s; user-select:none}
+.site:active{transform:translateY(3px); box-shadow:0 0 0 #545454, inset 0 2px 5px rgba(0,0,0,.3)}
+/* 进度条（金属槽） */
+.ptrack{height:20px; border-radius:10px; background:linear-gradient(180deg,#0d0d0d,#242424);
+  box-shadow:inset 0 3px 6px #000, 0 1px 0 rgba(255,255,255,.15); overflow:hidden; margin:12px 0}
+.pfill{height:100%; width:0%; border-radius:10px;
+  background:linear-gradient(180deg,#ffe9a8,#dcae3c 55%,#a87c14);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.6);
+  transition:width .25s}
+/* ============ 金属 toast ============ */
+.toast{
+  position:fixed; top:-70px; left:50%; transform:translateX(-50%); z-index:100;
+  padding:12px 22px; border-radius:10px; font-size:13px; font-weight:700; color:#2c2c2c; letter-spacing:1px;
+  white-space:nowrap; max-width:92vw; overflow:hidden; text-overflow:ellipsis;
+  background:linear-gradient(180deg,#f7f7f7,#cfcfcf 55%,#ababab);
+  border:1px solid #5c5c5c;
+  box-shadow:0 8px 18px rgba(0,0,0,.6), inset 0 1px 0 #fff;
+  transition:top .3s cubic-bezier(.3,1.3,.5,1);
+}
+.toast.show{top:16px}
+/* ============ 底部悬浮胶囊 Tab 栏 ============ */
+.tabbar{
+  position:fixed; bottom:calc(14px + env(safe-area-inset-bottom)); left:50%; transform:translateX(-50%);
+  z-index:60; display:flex; padding:6px; border-radius:999px; max-width:94vw;
+  background:linear-gradient(180deg,#434343,#232323 60%,#191919);
+  border:1px solid #0c0c0c;
+  box-shadow:0 8px 20px rgba(0,0,0,.65), inset 0 1px 0 rgba(255,255,255,.25), inset 0 -2px 4px rgba(0,0,0,.5);
+}
+.tabbar .pill{
+  position:absolute; top:6px; bottom:6px; border-radius:999px;
+  background:linear-gradient(180deg,#f5e08e,#dcae3c 55%,#c39a2e);
+  border:1px solid #6e5210;
+  box-shadow:0 2px 5px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,245,200,.8);
+  transition:left .28s cubic-bezier(.4,1.3,.5,1), width .28s;
+}
+.tabbar button{
+  position:relative; z-index:1; border:0; background:none; cursor:pointer; font-family:inherit;
+  font-size:13px; letter-spacing:1px; color:#cdb488; padding:10px 15px; border-radius:999px; white-space:nowrap;
+  text-shadow:0 1px 1px #000; transition:color .2s;
+}
+.tabbar button.active{color:#3d2c05; font-weight:700; text-shadow:0 1px 0 rgba(255,240,190,.7)}
+/* 工具 */
+.row2{display:flex; gap:10px; flex-wrap:wrap; align-items:center}
+.mt{margin-top:12px}
+.center{text-align:center}
+.big-clock{font-size:30px; letter-spacing:4px}
+.ledline{display:flex; align-items:center; gap:8px; font-size:12px; color:#c9a878; margin-top:10px}
+.leddot{width:10px; height:10px; border-radius:50%; background:#3a1414; box-shadow:inset 0 1px 2px rgba(0,0,0,.8)}
+.leddot.on{background:#ff4b4b; box-shadow:0 0 8px #ff4b4b}
+@keyframes blink{0%,100%{opacity:1} 50%{opacity:.25}}
+.blink{animation:blink 1.2s infinite}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <span class="screw tl"></span><span class="screw tr"></span>
+  <h1>拟物化组件库</h1>
+  <p>SKEUOMORPHISM · 懒得找了 UI 套件 K01</p>
+</div>
+
+<!-- ============ TAB 0 总览 ============ -->
+<section class="tabpage" data-tab="0">
+  <div class="card">
+    <h3>风格介绍</h3>
+    <div class="desc">拟物化：用皮革、金属、LCD 荧光屏等真实材质质感做界面。按钮要有"按得下去"的厚度，开关要有"拨得动"的段落感，屏幕要有通电的荧光。<br>本套件为「懒得找了」App（去水印解析 · 站点导航 · 工时打卡）定制。</div>
+    <div class="row2">
+      <span class="ok" style="font-size:11px;color:#0d5c1e;background:#bfe8c6;border:1px solid #6fae7c;border-radius:20px;padding:4px 11px">✔ 真实材质</span>
+      <span class="ok" style="font-size:11px;color:#0d5c1e;background:#bfe8c6;border:1px solid #6fae7c;border-radius:20px;padding:4px 11px">✔ 立体按压</span>
+      <span class="ok" style="font-size:11px;color:#0d5c1e;background:#bfe8c6;border:1px solid #6fae7c;border-radius:20px;padding:4px 11px">✔ 机械反馈</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>材质色板</h3>
+    <div class="swatches">
+      <div class="sw"><i class="sw-leather"></i><b>皮革<br>#4A2C14</b></div>
+      <div class="sw"><i class="sw-metal"></i><b>金属<br>#B9B9B9</b></div>
+      <div class="sw"><i class="sw-brass"></i><b>黄铜<br>#B98A1E</b></div>
+      <div class="sw"><i class="sw-lcd"></i><b>LCD<br>#8DFF9A</b></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>3D 斜面按钮</h3>
+    <div class="desc">多层描边 + 内嵌高光 + 底部投影，按下整体下沉 4px，投影消失——"陷入"感。</div>
+    <div class="center"><button class="btn-metal" data-toast="开始解析：正在读取剪贴板链接…">开始解析</button></div>
+  </div>
+
+  <div class="card">
+    <h3>缝线卡片</h3>
+    <div class="desc">皮革卡片内圈 dashed 虚线模拟手工缝线，是本套件的标志性装饰。</div>
+    <div class="lcd"><span class="dim">SYS&gt;</span> 缝线间距 2px · 线色 #F0C88C<br><span class="dim">SYS&gt;</span> 卡片四角预留螺丝位</div>
+  </div>
+
+  <div class="card">
+    <h3>螺丝钉装饰</h3>
+    <div class="desc">面板四角金属螺丝：径向高光 + 十字槽，每个旋转角度不同，更像手工拧上去的。</div>
+    <div class="plate">
+      <span class="screw tl"></span><span class="screw tr"></span>
+      <span class="screw bl"></span><span class="screw br"></span>
+      不锈钢铭牌 · MADE FOR 懒得找了
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>LCD 状态屏</h3>
+    <div class="desc">深绿底 + 等宽像素字 + 扫描线 + 荧光辉光，通电感拉满。</div>
+    <div class="lcd center"><span class="dim">TIME&nbsp;</span><span class="big-clock" id="lcdClock">--:--:--</span><br><span class="dim">STATUS&nbsp;</span><span class="blink">●</span> READY</div>
+  </div>
+</section>
+
+<!-- ============ TAB 1 按钮 ============ -->
+<section class="tabpage" data-tab="1">
+  <div class="card">
+    <h3>金属斜面大按钮</h3>
+    <div class="desc">主操作按钮，点击计数显示在下方 LCD 上。</div>
+    <div class="center"><button class="btn-metal" id="btnParse">解析视频</button></div>
+    <div class="lcd mt center" id="lcdParseCount"><span class="dim">COUNT&nbsp;</span>000</div>
+  </div>
+
+  <div class="card">
+    <h3>皮革按钮</h3>
+    <div class="desc">整块皮革压出的按钮，适合"我的""设置"类次级入口。</div>
+    <div class="center"><button class="btn-leather" data-toast="已进入：站点导航">站点导航</button></div>
+  </div>
+
+  <div class="card">
+    <h3>LCD 显示按钮</h3>
+    <div class="desc">按钮自带一块小 LCD，按一次换一行状态文案。</div>
+    <div class="center"><button class="btn-metal small" id="btnLcd">下一步</button></div>
+    <div class="lcd mt" id="lcdBtnMsg"><span class="dim">MSG&gt;</span> 等待操作…</div>
+  </div>
+
+  <div class="card">
+    <h3>拨杆开关</h3>
+    <div class="desc">金属拨杆滑槽 + 回弹段落感，右侧 LED 通电变红。点拨杆或整条都可切换。</div>
+    <div class="lever-row">
+      <div class="lab">去水印增强<small>解析时自动去除浮动水印</small></div>
+      <div class="lever" role="switch" aria-checked="false" tabindex="0" data-led><span class="slot"></span><span class="knob"></span><span class="led"></span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>旋钮（可拖拽旋转）</h3>
+    <div class="desc">按住旋钮上下/左右拖动旋转，阻尼 0–100，当前值实时进 LCD。</div>
+    <div class="knob-wrap">
+      <div class="knob" id="knob1" role="slider" aria-valuemin="0" aria-valuemax="100" tabindex="0"><span class="ptr" id="knobPtr"></span><span class="cap"></span></div>
+      <div class="lcd" style="flex:1"><span class="dim">VOL&nbsp;</span><span id="knobVal">50</span><br><span class="dim">提示音量</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>螺丝装饰按钮</h3>
+    <div class="desc">四角螺丝固定的金属面板按钮，整块可按压。</div>
+    <div class="plate" id="plateBtn" style="cursor:pointer; user-select:none">
+      <span class="screw tl"></span><span class="screw tr"></span>
+      <span class="screw bl"></span><span class="screw br"></span>
+      <span id="plateBtnTxt">工时打卡 · 上班</span>
+    </div>
+  </div>
+</section>
+<!-- ============ TAB 2 表单 ============ -->
+<section class="tabpage" data-tab="2">
+  <div class="card">
+    <h3>缝线边框输入框</h3>
+    <div class="field"><label>粘贴视频链接</label>
+      <input class="in-stitch" id="linkInput" placeholder="https://v.douyin.com/…">
+    </div>
+    <div class="row2">
+      <button class="btn-metal small" id="btnSubmitLink">解析</button>
+      <button class="btn-metal small" id="btnClearLink">清除</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>金属滑杆</h3>
+    <div class="desc">同时解析任务数：拖动金属旋钮滑块。</div>
+    <input type="range" class="metal-range" id="taskRange" min="1" max="5" step="1" value="2">
+    <div class="lcd mt"><span class="dim">TASK&nbsp;</span><span id="taskVal">2</span> 线程</div>
+  </div>
+
+  <div class="card">
+    <h3>拨杆开关组</h3>
+    <div class="lever-row">
+      <div class="lab">粘贴自动解析<small>复制链接回 App 自动开始</small></div>
+      <div class="lever on" role="switch" aria-checked="true" tabindex="0"><span class="slot"></span><span class="knob"></span><span class="led"></span></div>
+    </div>
+    <div class="lever-row">
+      <div class="lab">下载完成提示音<small>叮一声 + 震动</small></div>
+      <div class="lever" role="switch" aria-checked="false" tabindex="0"><span class="slot"></span><span class="knob"></span><span class="led"></span></div>
+    </div>
+    <div class="lever-row">
+      <div class="lab">夜间省电模式<small>暂停后台轮询</small></div>
+      <div class="lever" role="switch" aria-checked="false" tabindex="0"><span class="slot"></span><span class="knob"></span><span class="led"></span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>LCD 状态屏表单</h3>
+    <div class="field"><label>站点</label>
+      <select class="in-stitch" id="siteSelect">
+        <option>抖音</option><option>快手</option><option>小红书</option><option>哔哩哔哩</option><option>微博</option>
+      </select>
+    </div>
+    <div class="field"><label>关键词</label>
+      <input class="in-stitch" id="kwInput" placeholder="如：美食探店">
+    </div>
+    <button class="btn-metal small" id="btnSiteSearch">搜索站点</button>
+    <div class="lcd mt" id="lcdSearch"><span class="dim">QUERY&gt;</span> —</div>
+  </div>
+
+  <div class="card">
+    <h3>复古单选</h3>
+    <div class="desc">下载画质：选中项"陷下去"并变成黄铜色。</div>
+    <div class="pill-group" id="qualityGroup">
+      <label class="radio-pill"><input type="radio" name="q" checked><span>原画</span></label>
+      <label class="radio-pill"><input type="radio" name="q"><span>高清</span></label>
+      <label class="radio-pill"><input type="radio" name="q"><span>流畅</span></label>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>复古复选</h3>
+    <div class="desc">保存内容：可多选。</div>
+    <div class="pill-group">
+      <label class="check-pill"><input type="checkbox" checked><span>🎬 视频</span></label>
+      <label class="check-pill"><input type="checkbox" checked><span>🖼 封面</span></label>
+      <label class="check-pill"><input type="checkbox"><span>📝 文案</span></label>
+      <label class="check-pill"><input type="checkbox"><span>🎵 音频</span></label>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TAB 3 展示 ============ -->
+<section class="tabpage" data-tab="3">
+  <div class="card">
+    <h3>LCD 解析进度屏</h3>
+    <div class="lcd"><span class="dim">TASK&gt;</span> douyin.com/abc123<br><span class="dim">STAT&gt;</span> <span id="parseStat">IDLE</span> <span id="parsePct">0%</span></div>
+    <div class="ptrack"><div class="pfill" id="pfill"></div></div>
+    <div class="center"><button class="btn-metal small" id="btnStartParse">开始模拟解析</button></div>
+  </div>
+
+  <div class="card">
+    <h3>金属质感卡片 · 解析记录</h3>
+    <div class="rec"><span class="dot">🎵</span><div class="t"><b>抖音 · 美食探店合集</b><small>10-23 12:05 · 18.6 MB</small></div><span class="ok">已完成</span></div>
+    <div class="rec"><span class="dot">📕</span><div class="t"><b>小红书 · 穿搭种草</b><small>10-23 11:42 · 9.2 MB</small></div><span class="ok">已完成</span></div>
+    <div class="rec"><span class="dot">📺</span><div class="t"><b>哔哩哔哩 · 评测视频</b><small>10-23 09:18 · 42.0 MB</small></div><span class="ok">已完成</span></div>
+  </div>
+
+  <div class="card">
+    <h3>皮革钱包卡 · 剩余次数</h3>
+    <div class="wallet center">
+      <div class="num" id="walletNum">128</div>
+      <div class="cap">剩余解析次数</div>
+      <div class="row2" style="justify-content:center">
+        <button class="btn-metal small brass" id="btnRecharge">充值 +10</button>
+        <button class="btn-metal small" id="btnConsume">解析 -1</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>仪表盘式统计</h3>
+    <div class="desc">今日解析 / 成功率 / 省流量，指针仪表。</div>
+    <div class="gauges">
+      <div class="gauge"><div class="dial" data-a="-50"><span class="needle"></span><span class="hub"></span></div><b>36 次</b><small>今日解析</small></div>
+      <div class="gauge"><div class="dial" data-a="55"><span class="needle"></span><span class="hub"></span></div><b>98%</b><small>成功率</small></div>
+      <div class="gauge"><div class="dial" data-a="10"><span class="needle"></span><span class="hub"></span></div><b>1.2G</b><small>已省流量</small></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>工时打卡屏</h3>
+    <div class="lcd center"><span class="dim">TODAY&nbsp;</span><span id="workTime">08:00</span><br><span class="dim">STATE&nbsp;</span><span id="workState">上班中</span></div>
+    <div class="center mt"><button class="btn-metal small" id="btnClock">打卡下班</button></div>
+  </div>
+
+  <div class="card">
+    <h3>站点导航</h3>
+    <div class="desc">点击站点进入对应解析入口。</div>
+    <div class="sites">
+      <div class="site" data-toast="进入：抖音解析">抖音</div>
+      <div class="site" data-toast="进入：快手解析">快手</div>
+      <div class="site" data-toast="进入：小红书解析">小红书</div>
+      <div class="site" data-toast="进入：哔哩哔哩解析">哔哩哔哩</div>
+      <div class="site" data-toast="进入：微博解析">微博</div>
+      <div class="site" data-toast="进入：西瓜视频解析">西瓜视频</div>
+    </div>
+  </div>
+</section>
+<!-- ============ TAB 4 反馈 ============ -->
+<section class="tabpage" data-tab="4">
+  <div class="card">
+    <h3>按下凹陷的确认按钮</h3>
+    <div class="desc">危险操作按钮：按下时整颗"陷进"面板，松开后弹回并 toast 确认。</div>
+    <div class="center"><button class="btn-metal" id="btnDanger" data-toast="已清空全部解析记录">确认清空记录</button></div>
+  </div>
+
+  <div class="card">
+    <h3>LCD 提示屏</h3>
+    <div class="desc">三种提示色：绿 = 成功，黄 = 警告，红 = 错误。</div>
+    <div class="lcd" id="lcdAlert"><span class="dim">ALERT&gt;</span> <span id="alertTxt">等待事件…</span></div>
+    <div class="row2 mt">
+      <button class="btn-metal small" data-alert="ok">成功</button>
+      <button class="btn-metal small" data-alert="warn">警告</button>
+      <button class="btn-metal small" data-alert="err">错误</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>金属 toast</h3>
+    <div class="desc">拉丝金属质感的顶部弹出提示，3 秒自动收回。</div>
+    <div class="center"><button class="btn-metal small" data-toast="解析完成，已保存到相册 ✔">弹出提示</button></div>
+  </div>
+
+  <div class="card">
+    <h3>拨杆式二次确认</h3>
+    <div class="desc">拨一次 = 上膛（黄灯待命），4 秒内再拨一次 = 确认执行；超时自动退膛。</div>
+    <div class="lever-row">
+      <div class="lab">删除全部记录<small id="armHint">拨动拨杆开始确认</small></div>
+      <div class="lever" id="armLever" role="switch" aria-checked="false" tabindex="0"><span class="slot"></span><span class="knob"></span><span class="led"></span></div>
+    </div>
+    <div class="ledline"><span class="leddot" id="armLed"></span><span id="armState">SAFE · 未上膛</span></div>
+  </div>
+
+  <div class="card">
+    <h3>震动反馈按钮</h3>
+    <div class="desc">支持的设备会真实震动 50ms，同时按钮下沉 + toast。</div>
+    <div class="center"><button class="btn-metal small" id="btnBuzz">试一下震动</button></div>
+  </div>
+
+  <div class="card">
+    <h3>LCD 倒计时器</h3>
+    <div class="lcd center"><span class="dim">TIMER&nbsp;</span><span class="big-clock" id="cdNum">10.0</span><span class="dim">s</span></div>
+    <div class="row2 mt" style="justify-content:center">
+      <button class="btn-metal small" id="cdStart">开始</button>
+      <button class="btn-metal small" id="cdPause">暂停</button>
+      <button class="btn-metal small" id="cdReset">重置</button>
+    </div>
+  </div>
+</section>
+
+<!-- 悬浮胶囊 Tab 栏 -->
+<nav class="tabbar" id="tabbar">
+  <span class="pill" id="pill"></span>
+  <button data-tab="0" class="active">总览</button>
+  <button data-tab="1">按钮</button>
+  <button data-tab="2">表单</button>
+  <button data-tab="3">展示</button>
+  <button data-tab="4">反馈</button>
+</nav>
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  "use strict";
+  var $ = function(s,c){ return (c||document).querySelector(s); };
+  var $$ = function(s,c){ return Array.prototype.slice.call((c||document).querySelectorAll(s)); };
+
+  /* ---- toast ---- */
+  var toastEl = $("#toast"), toastTimer = null;
+  function toast(msg){
+    toastEl.textContent = msg;
+    toastEl.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ toastEl.classList.remove("show"); }, 2600);
+  }
+  $$("[data-toast]").forEach(function(el){
+    el.addEventListener("click", function(){ toast(el.getAttribute("data-toast")); });
+  });
+
+  /* ---- Tab 切换 + 滑动 pill + 深链 ---- */
+  var pages = $$(".tabpage"), tabBtns = $$("#tabbar button"), pill = $("#pill");
+  function movePill(btn){
+    pill.style.left = btn.offsetLeft + "px";
+    pill.style.width = btn.offsetWidth + "px";
+  }
+  function switchTab(n, push){
+    n = Math.max(0, Math.min(4, n|0));
+    pages.forEach(function(p){ p.classList.toggle("active", p.getAttribute("data-tab") == n); });
+    tabBtns.forEach(function(b){ b.classList.toggle("active", b.getAttribute("data-tab") == n); });
+    var btn = tabBtns[n]; movePill(btn);
+    if(push !== false){
+      try{ history.replaceState(null,"","?tab="+n); }catch(e){}
+    }
+    document.querySelectorAll(".dial .needle").forEach(function(nd){
+      var d = nd.closest(".dial"); nd.style.setProperty("--a", d.getAttribute("data-a")+"deg");
+    });
+    window.scrollTo(0,0);
+  }
+  tabBtns.forEach(function(b){
+    b.addEventListener("click", function(){ switchTab(+b.getAttribute("data-tab")); });
+  });
+  window.addEventListener("resize", function(){ movePill($(".tabbar button.active")); });
+  var init = 0;
+  try{ var m = location.search.match(/tab=(\d)/); if(m) init = +m[1]; }catch(e){}
+  switchTab(init, false);
+  requestAnimationFrame(function(){ movePill($(".tabbar button.active")); });
+
+  /* ---- 总览：LCD 时钟 ---- */
+  var clockEl = $("#lcdClock");
+  function tickClock(){
+    var d = new Date(), p = function(x){ return (x<10?"0":"")+x; };
+    clockEl.textContent = p(d.getHours())+":"+p(d.getMinutes())+":"+p(d.getSeconds());
+  }
+  tickClock(); setInterval(tickClock, 1000);
+
+  /* ---- 按钮 Tab：解析计数 ---- */
+  var pc = 0;
+  $("#btnParse").addEventListener("click", function(){
+    pc++;
+    $("#lcdParseCount").innerHTML = '<span class="dim">COUNT&nbsp;</span>' + ("00"+pc).slice(-3);
+    toast("第 " + pc + " 次解析完成 ✔");
+  });
+
+  /* ---- 按钮 Tab：LCD 消息轮播 ---- */
+  var msgs = ["等待操作…","正在读取链接…","去水印中…","已保存到相册 ✔"], mi = 0;
+  $("#btnLcd").addEventListener("click", function(){
+    mi = (mi+1) % msgs.length;
+    $("#lcdBtnMsg").innerHTML = '<span class="dim">MSG&gt;</span> ' + msgs[mi];
+  });
+
+  /* ---- 拨杆开关通用 ---- */
+  $$(".lever").forEach(function(lv){
+    if(lv.id === "armLever") return;
+    function toggle(){
+      var on = lv.classList.toggle("on");
+      lv.setAttribute("aria-checked", on ? "true" : "false");
+    }
+    lv.addEventListener("click", toggle);
+    lv.addEventListener("keydown", function(e){
+      if(e.key === " " || e.key === "Enter"){ e.preventDefault(); toggle(); }
+    });
+  });
+
+  /* ---- 旋钮拖拽 ---- */
+  var knob = $("#knob1"), ptr = $("#knobPtr"), kval = $("#knobVal");
+  var kVal = 50, dragging = false;
+  function setKnob(v){
+    kVal = Math.max(0, Math.min(100, Math.round(v)));
+    var ang = -135 + (kVal/100)*270;
+    ptr.style.transform = "rotate(" + ang + "deg)";
+    kval.textContent = kVal;
+    knob.setAttribute("aria-valuenow", kVal);
+  }
+  function knobMove(e){
+    var r = knob.getBoundingClientRect();
+    var cx = r.left + r.width/2, cy = r.top + r.height/2;
+    var x = (e.touches ? e.touches[0].clientX : e.clientX) - cx;
+    var y = (e.touches ? e.touches[0].clientY : e.clientY) - cy;
+    var deg = Math.atan2(y, x) * 180/Math.PI + 90; /* 0=上 */
+    if(deg < -180) deg += 360; if(deg > 180) deg -= 360;
+    if(deg < -135) deg = -135; if(deg > 135) deg = 135;
+    setKnob((deg + 135) / 270 * 100);
+  }
+  knob.addEventListener("pointerdown", function(e){ dragging = true; knob.setPointerCapture(e.pointerId); knobMove(e); });
+  knob.addEventListener("pointermove", function(e){ if(dragging) knobMove(e); });
+  knob.addEventListener("pointerup", function(){ dragging = false; });
+  knob.addEventListener("keydown", function(e){
+    if(e.key === "ArrowUp" || e.key === "ArrowRight"){ setKnob(kVal+5); e.preventDefault(); }
+    if(e.key === "ArrowDown" || e.key === "ArrowLeft"){ setKnob(kVal-5); e.preventDefault(); }
+  });
+  setKnob(50);
+
+  /* ---- 螺丝面板按钮（打卡切换） ---- */
+  var onDuty = true;
+  $("#plateBtn").addEventListener("click", function(){
+    onDuty = !onDuty;
+    $("#plateBtnTxt").textContent = onDuty ? "工时打卡 · 上班" : "工时打卡 · 下班";
+    toast(onDuty ? "上班打卡成功 ✔" : "下班打卡成功 ✔");
+  });
+
+  /* ---- 表单 Tab ---- */
+  $("#btnClearLink").addEventListener("click", function(){ $("#linkInput").value = ""; $("#linkInput").focus(); });
+  $("#btnSubmitLink").addEventListener("click", function(){
+    var v = $("#linkInput").value.trim();
+    toast(v ? "链接已提交解析 ✔" : "请先粘贴视频链接");
+  });
+  var range = $("#taskRange");
+  range.addEventListener("input", function(){ $("#taskVal").textContent = range.value; });
+  $("#btnSiteSearch").addEventListener("click", function(){
+    var s = $("#siteSelect").value, k = $("#kwInput").value.trim() || "（空）";
+    $("#lcdSearch").innerHTML = '<span class="dim">QUERY&gt;</span> ' + k + " @ " + s;
+    toast("正在搜索「" + s + "」…");
+  });
+
+  /* ---- 展示 Tab：模拟解析进度 ---- */
+  var pTimer = null, pVal = 0;
+  $("#btnStartParse").addEventListener("click", function(){
+    if(pTimer) return;
+    pVal = 0; $("#pfill").style.width = "0%"; $("#parsePct").textContent = "0%"; $("#parseStat").textContent = "RUN";
+    pTimer = setInterval(function(){
+      pVal += 4 + Math.random()*7;
+      if(pVal >= 100){
+        pVal = 100; clearInterval(pTimer); pTimer = null;
+        $("#parseStat").textContent = "DONE"; toast("解析完成，已保存到相册 ✔");
+      }
+      $("#pfill").style.width = pVal + "%";
+      $("#parsePct").textContent = Math.floor(pVal) + "%";
+    }, 220);
+  });
+
+  /* ---- 钱包 ---- */
+  var wallet = 128;
+  function renderWallet(){ $("#walletNum").textContent = wallet; }
+  $("#btnRecharge").addEventListener("click", function(){ wallet += 10; renderWallet(); toast("充值成功，+10 次"); });
+  $("#btnConsume").addEventListener("click", function(){
+    if(wallet <= 0){ toast("次数不足，请先充值"); return; }
+    wallet -= 1; renderWallet(); toast("解析 1 次，剩余 " + wallet + " 次");
+  });
+
+  /* ---- 工时打卡 ---- */
+  var clocked = true;
+  $("#btnClock").addEventListener("click", function(){
+    clocked = !clocked;
+    $("#workState").textContent = clocked ? "上班中" : "已下班";
+    $("#btnClock").textContent = clocked ? "打卡下班" : "打卡上班";
+    toast(clocked ? "上班打卡成功 ✔" : "下班打卡成功 ✔");
+  });
+
+  /* ---- 反馈 Tab：LCD 提示 ---- */
+  var alertBox = $("#lcdAlert"), alertTxt = $("#alertTxt");
+  var alertCfg = {
+    ok:   ["", "解析成功，已去水印 ✔"],
+    warn: ["warn", "网络较慢，已切换备用线路"],
+    err:  ["err", "链接无效，请检查后重试"]
+  };
+  $$("[data-alert]").forEach(function(b){
+    b.addEventListener("click", function(){
+      var c = alertCfg[b.getAttribute("data-alert")];
+      alertBox.className = "lcd" + (c[0] ? " " + c[0] : "");
+      alertTxt.textContent = c[1];
+    });
+  });
+
+  /* ---- 反馈 Tab：拨杆二次确认 ---- */
+  var arm = $("#armLever"), armed = false, armTimer = null;
+  function disarm(silent){
+    armed = false; clearTimeout(armTimer);
+    arm.classList.remove("on"); arm.setAttribute("aria-checked","false");
+    $("#armLed").classList.remove("on");
+    $("#armState").textContent = "SAFE · 未上膛";
+    $("#armHint").textContent = "拨动拨杆开始确认";
+    if(!silent) toast("已退膛");
+  }
+  function armDo(e){
+    if(e){ e.stopPropagation(); }
+    if(!armed){
+      armed = true;
+      arm.classList.add("on"); arm.setAttribute("aria-checked","true");
+      $("#armLed").classList.add("on");
+      $("#armState").textContent = "ARMED · 待命，4 秒内再拨确认";
+      $("#armHint").textContent = "已上膛！再拨一次执行删除";
+      armTimer = setTimeout(function(){ disarm(true); toast("超时，已自动退膛"); }, 4000);
+    }else{
+      disarm(true);
+      toast("已确认：全部记录已删除");
+    }
+  }
+  arm.addEventListener("click", armDo);
+  arm.addEventListener("keydown", function(e){
+    if(e.key === " " || e.key === "Enter"){ e.preventDefault(); armDo(); }
+  });
+
+  /* ---- 震动 ---- */
+  $("#btnBuzz").addEventListener("click", function(){
+    try{ if(navigator.vibrate) navigator.vibrate(50); }catch(e){}
+    toast("震动反馈 50ms ✔");
+  });
+
+  /* ---- 倒计时 ---- */
+  var cdT = 10.0, cdTimer = null, cdEl = $("#cdNum");
+  function renderCd(){ cdEl.textContent = cdT.toFixed(1); }
+  $("#cdStart").addEventListener("click", function(){
+    if(cdTimer || cdT <= 0) return;
+    cdTimer = setInterval(function(){
+      cdT = Math.max(0, cdT - 0.1); renderCd();
+      if(cdT <= 0){ clearInterval(cdTimer); cdTimer = null; toast("倒计时结束 ⏰"); }
+    }, 100);
+  });
+  $("#cdPause").addEventListener("click", function(){ clearInterval(cdTimer); cdTimer = null; });
+  $("#cdReset").addEventListener("click", function(){ clearInterval(cdTimer); cdTimer = null; cdT = 10.0; renderCd(); });
+  renderCd();
+})();
+</script>
+</body>
