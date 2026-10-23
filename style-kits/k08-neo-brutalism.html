@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>新粗野主义 NEO-BRUTALISM · UI 组件库</title>
+<style>
+:root{
+  --ink:#111;
+  --paper:#FFFDF6;
+  --yellow:#FFD02F;
+  --pink:#FF90E8;
+  --lime:#B6F09C;
+  --sky:#87CEEB;
+  --red:#FF6B6B;
+  --lav:#C9B8FF;
+  --bd:3px solid var(--ink);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;background:var(--paper);color:var(--ink);
+  font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC",Arial,sans-serif;
+  padding-bottom:112px;
+}
+/* ---------- 顶栏 ---------- */
+.hero{padding:26px 18px 4px;max-width:560px;margin:0 auto}
+.hero .en{display:inline-block;background:var(--ink);color:#fff;font-weight:900;letter-spacing:3px;font-size:12px;padding:5px 12px;transform:rotate(-2deg);margin-bottom:12px}
+.hero h1{margin:0;font-size:34px;font-weight:900;line-height:1.25}
+.hero h1 .hl{background:var(--pink);border:var(--bd);box-shadow:3px 3px 0 var(--ink);padding:0 8px;display:inline-block;transform:rotate(-1deg)}
+.hero p{font-size:14px;color:#444;margin:14px 0 0;line-height:1.7}
+/* ---------- Tab 内容区 ---------- */
+main{max-width:560px;margin:0 auto;padding:10px 18px 0}
+.tabpage{display:none}
+.tabpage.active{display:block;animation:pagein .18s ease}
+@keyframes pagein{from{opacity:0;transform:translateY(8px)}}
+.tabhead{display:flex;align-items:center;gap:10px;margin:8px 0 20px}
+.tabhead .t-en{font-weight:900;font-size:12px;letter-spacing:2px;background:var(--sky);border:var(--bd);padding:4px 10px;box-shadow:3px 3px 0 var(--ink);white-space:nowrap}
+.tabhead h2{margin:0;font-size:24px;font-weight:900}
+/* ---------- 组件卡片 ---------- */
+.card{position:relative;background:#fff;border:var(--bd);box-shadow:6px 6px 0 var(--ink);margin:0 0 24px;padding:18px 16px}
+.card-num{position:absolute;top:-15px;right:12px;background:var(--ink);color:#fff;font-weight:900;padding:3px 10px;transform:rotate(3deg);font-size:13px;letter-spacing:1px}
+.card>h3{margin:0 0 4px;font-size:18px;font-weight:900}
+.card>.sub{font-size:13px;color:#555;margin:0 0 14px;line-height:1.6}
+.card>.sub b{color:var(--ink)}
+.demo{background:var(--paper);border:2px dashed #bbb;padding:14px;margin-top:4px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+/* ---------- 按钮基类 ---------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:var(--bd);
+  background:var(--yellow);color:var(--ink);font-weight:900;font-size:16px;font-family:inherit;
+  padding:12px 20px;box-shadow:4px 4px 0 var(--ink);cursor:pointer;user-select:none;
+  transition:transform .08s ease,box-shadow .08s ease;text-decoration:none}
+.btn:hover{transform:translate(-1px,-1px);box-shadow:5px 5px 0 var(--ink)}
+.btn:active{transform:translate(3px,3px);box-shadow:1px 1px 0 var(--ink)}
+.btn.white{background:#fff}
+.btn.pink{background:var(--pink)}
+.btn.lime{background:var(--lime)}
+.btn.sky{background:var(--sky)}
+.btn.red{background:var(--red);color:#fff;text-shadow:1px 1px 0 var(--ink)}
+.btn.sm{font-size:14px;padding:9px 14px}
+.btn.block{width:100%}
+/* ---------- 分段选择器 ---------- */
+.seg{position:relative;display:flex;border:var(--bd);background:#fff;box-shadow:4px 4px 0 var(--ink);overflow:hidden}
+.seg-pill{position:absolute;top:0;left:0;bottom:0;width:33.3333%;background:var(--lime);z-index:0;transition:transform .2s ease}
+.seg button{position:relative;z-index:1;flex:1;background:transparent;border:0;border-left:3px solid var(--ink);
+  font-family:inherit;font-weight:900;font-size:15px;padding:13px 0;cursor:pointer;color:var(--ink)}
+.seg button:first-of-type{border-left:0}
+/* ---------- 贴纸 ---------- */
+.sticker{display:inline-block;border:var(--bd);box-shadow:3px 3px 0 var(--ink);
+  font-weight:900;padding:6px 12px;font-size:14px;transform:rotate(-2deg);margin:5px;background:#fff}
+.sticker.r{transform:rotate(2deg)}
+.sticker.yellow{background:var(--yellow)} .sticker.pink{background:var(--pink)}
+.sticker.lime{background:var(--lime)} .sticker.sky{background:var(--sky)}
+.sticker.red{background:var(--red);color:#fff} .sticker.lav{background:var(--lav)}
+.sticker.flip{transform:rotate(2deg)}
+.sticker.r.flip{transform:rotate(-2deg)}
+/* ---------- 色板 ---------- */
+.swatches{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.swatch{border:var(--bd);box-shadow:3px 3px 0 var(--ink);height:78px;cursor:pointer;position:relative;transition:transform .08s,box-shadow .08s}
+.swatch:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ink)}
+.swatch span{position:absolute;left:6px;bottom:5px;background:#fff;border:2px solid var(--ink);font-size:11px;font-weight:900;padding:1px 6px}
+/* ---------- 代码块 ---------- */
+.code{background:var(--ink);color:#f2f2f2;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  font-size:12.5px;padding:14px;border:var(--bd);box-shadow:4px 4px 0 var(--pink);
+  overflow-x:auto;white-space:pre;line-height:1.8;margin:0}
+.code .k{color:var(--pink)} .code .v{color:var(--yellow)} .code .c{color:#888}
+/* ---------- 表单 ---------- */
+.field{margin-bottom:12px}
+.field label{display:block;font-weight:900;font-size:14px;margin-bottom:8px}
+.input,.textarea{width:100%;border:var(--bd);padding:12px 14px;font-size:16px;font-weight:700;
+  font-family:inherit;background:#fff;box-shadow:4px 4px 0 var(--ink);outline:none;color:var(--ink);
+  transition:box-shadow .12s ease;border-radius:0}
+.input:focus,.textarea:focus{box-shadow:4px 4px 0 var(--pink)}
+.textarea{resize:vertical;min-height:70px}
+.hint{font-size:12px;color:#666;margin-top:8px;font-weight:700}
+.searchbar{display:flex;gap:0}
+.searchbar .input{box-shadow:4px 4px 0 var(--ink)}
+.searchbar .btn{margin-left:-3px;box-shadow:4px 4px 0 var(--ink);white-space:nowrap;flex:none}
+.sitelist{margin:12px 0 0;padding:0;list-style:none}
+.sitelist li{border:var(--bd);background:#fff;box-shadow:3px 3px 0 var(--ink);padding:10px 12px;
+  font-weight:900;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center}
+.sitelist li .tag{font-size:11px;background:var(--lime);border:2px solid var(--ink);padding:2px 8px;font-weight:900}
+/* 设置列表 */
+.setrow{display:flex;align-items:center;justify-content:space-between;gap:12px;
+  border:var(--bd);background:#fff;box-shadow:3px 3px 0 var(--ink);padding:12px;margin-bottom:10px}
+.setrow .t{font-weight:900;font-size:15px}
+.setrow .d{font-size:12px;color:#666;margin-top:2px}
+/* 开关：必须 relative + 固定宽高 */
+.switch{position:relative;width:66px;height:36px;flex:none;border:var(--bd);background:#fff;
+  box-shadow:3px 3px 0 var(--ink);cursor:pointer;transition:background .15s}
+.switch .knob{position:absolute;top:2px;left:2px;width:26px;height:26px;background:var(--red);
+  border:var(--bd);transition:left .15s ease,background .15s}
+.switch.on{background:var(--lime)}
+.switch.on .knob{left:32px;background:#fff}
+.switch:active .knob{width:30px}
+.switch.on:active .knob{left:28px}
+/* 复选 / 单选 */
+.chk{display:flex;align-items:center;gap:12px;cursor:pointer;font-weight:700;padding:9px 0;user-select:none}
+.chk .box{width:28px;height:28px;flex:none;border:var(--bd);background:#fff;box-shadow:3px 3px 0 var(--ink);
+  display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:900}
+.chk .box i{font-style:normal;opacity:0;transform:scale(.4);transition:all .12s}
+.chk.on .box{background:var(--lime)}
+.chk.on .box i{opacity:1;transform:scale(1)}
+.chk.radio .box{border-radius:50%}
+.chk.radio.on .box{background:var(--sky)}
+/* 滑杆 */
+input[type=range].slider{-webkit-appearance:none;appearance:none;width:100%;height:14px;background:#fff;
+  border:var(--bd);box-shadow:3px 3px 0 var(--ink);outline:none;margin:6px 0 4px}
+input[type=range].slider::-webkit-slider-thumb{-webkit-appearance:none;width:30px;height:30px;
+  background:var(--yellow);border:var(--bd);box-shadow:2px 2px 0 var(--ink);cursor:pointer;border-radius:0}
+input[type=range].slider::-moz-range-thumb{width:24px;height:24px;background:var(--yellow);
+  border:var(--bd);box-shadow:2px 2px 0 var(--ink);cursor:pointer;border-radius:0}
+/* ---------- 展示 ---------- */
+.record{border:var(--bd);background:#fff;box-shadow:4px 4px 0 var(--ink);padding:12px;margin-bottom:12px}
+.record .rt{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.record .rt b{font-size:15px;font-weight:900}
+.record .meta{font-size:12px;color:#555;font-weight:700;margin-bottom:10px}
+.progress{height:26px;border:var(--bd);background:#fff;box-shadow:3px 3px 0 var(--ink);overflow:hidden}
+.progress .fill{height:100%;width:0;border-right:3px solid var(--ink);
+  background:repeating-linear-gradient(45deg,var(--yellow),var(--yellow) 12px,#EAB308 12px,#EAB308 24px);
+  transition:width .25s ease}
+.progress.lime .fill{background:repeating-linear-gradient(45deg,var(--lime),var(--lime) 12px,#7BC96F 12px,#7BC96F 24px)}
+.banner{border:var(--bd);box-shadow:4px 4px 0 var(--ink);background:var(--pink);padding:12px 14px;
+  font-weight:900;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.banner .x{flex:none;width:32px;height:32px;border:var(--bd);background:#fff;font-weight:900;
+  cursor:pointer;box-shadow:2px 2px 0 var(--ink);font-size:15px;line-height:1}
+.banner .x:active{transform:translate(2px,2px);box-shadow:none}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.stat{border:var(--bd);box-shadow:3px 3px 0 var(--ink);padding:12px 6px;text-align:center;background:#fff}
+.stat .n{font-size:22px;font-weight:900}
+.stat .l{font-size:11px;font-weight:900;color:#555;margin-top:4px}
+.avatars{display:flex;align-items:center;padding:6px 0}
+.av{width:52px;height:52px;border-radius:50%;border:var(--bd);background:var(--sky);
+  display:flex;align-items:center;justify-content:center;font-size:24px;margin-left:-12px;
+  box-shadow:2px 2px 0 var(--ink);cursor:pointer;transition:transform .12s;flex:none}
+.av:first-child{margin-left:0}
+.av:hover{transform:translateY(-6px) rotate(-6deg)}
+.av.more{background:var(--ink);color:#fff;font-size:15px;font-weight:900}
+/* ---------- 反馈 ---------- */
+#toasts{position:fixed;top:14px;left:0;right:0;display:flex;flex-direction:column;align-items:center;
+  gap:10px;z-index:300;pointer-events:none;padding:0 16px}
+.toast{background:#fff;border:var(--bd);box-shadow:4px 4px 0 var(--ink);font-weight:900;
+  padding:12px 18px;animation:pop .18s ease;pointer-events:auto;max-width:100%;font-size:15px}
+.toast.yellow{background:var(--yellow)} .toast.pink{background:var(--pink)}
+.toast.lime{background:var(--lime)} .toast.red{background:var(--red);color:#fff}
+@keyframes pop{from{transform:translateY(-12px) scale(.94);opacity:0}}
+.overlay{position:fixed;inset:0;background:rgba(17,17,17,.45);display:none;align-items:center;
+  justify-content:center;z-index:200;padding:20px}
+.overlay.show{display:flex}
+.dialog{background:#fff;border:4px solid var(--ink);box-shadow:8px 8px 0 var(--ink);
+  padding:22px;max-width:340px;width:100%;animation:pop .18s}
+.dialog h4{margin:0 0 8px;font-size:19px;font-weight:900}
+.dialog p{font-size:14px;color:#444;margin:0 0 18px;line-height:1.7}
+.loading{height:24px;border:var(--bd);background:#fff;box-shadow:3px 3px 0 var(--ink);
+  overflow:hidden;position:relative}
+.loading .bar{position:absolute;top:0;bottom:0;width:40%;display:none;
+  background:repeating-linear-gradient(45deg,var(--sky),var(--sky) 10px,#4FA8DC 10px,#4FA8DC 20px);
+  border-right:3px solid var(--ink);animation:slide 1s linear infinite}
+.loading.run .bar{display:block}
+@keyframes slide{from{left:-40%}to{left:100%}}
+.statuscard{border:var(--bd);box-shadow:4px 4px 0 var(--ink);padding:16px;text-align:center;margin-bottom:12px}
+.statuscard .big{font-size:40px;line-height:1}
+.statuscard h4{margin:10px 0 6px;font-size:17px;font-weight:900}
+.statuscard p{margin:0 0 14px;font-size:13px;color:#444}
+.statuscard.ok{background:var(--lime)} .statuscard.fail{background:#fff}
+.statuscard.fail .big{filter:grayscale(.2)}
+.sheet-ov{position:fixed;inset:0;background:rgba(17,17,17,.45);z-index:200;display:none}
+.sheet-ov.show{display:block}
+.sheet{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:4px solid var(--ink);
+  z-index:210;transform:translateY(105%);transition:transform .22s ease;padding:14px 18px 34px}
+.sheet.show{transform:none}
+.sheet .grab{width:56px;height:8px;background:var(--ink);margin:0 auto 14px}
+.sheet .btn{margin-bottom:10px}
+.empty{text-align:center;padding:20px 10px}
+.empty .big{font-size:56px}
+.empty h4{margin:12px 0 6px;font-size:18px;font-weight:900}
+.empty p{margin:0 0 16px;font-size:13px;color:#666}
+/* ---------- 底部 Tab 栏 ---------- */
+.tabbar{position:fixed;left:12px;right:12px;bottom:12px;max-width:520px;margin:0 auto;
+  background:#fff;border:var(--bd);border-radius:999px;box-shadow:4px 4px 0 var(--ink);
+  display:flex;padding:6px;z-index:100}
+.tabbar .pill{position:absolute;top:6px;bottom:6px;left:6px;width:calc((100% - 12px)/5);
+  background:var(--yellow);border:var(--bd);border-radius:999px;z-index:0;
+  transition:transform .22s cubic-bezier(.55,0,.2,1.35)}
+.tabbar button{position:relative;z-index:1;flex:1;background:transparent;border:0;font-family:inherit;
+  font-weight:900;font-size:14px;padding:12px 0;cursor:pointer;color:var(--ink)}
+.tabbar button small{display:block;font-size:9px;font-weight:900;letter-spacing:1px;opacity:.65}
+/* ---------- 杂项 ---------- */
+.kv{display:flex;justify-content:space-between;font-size:13px;font-weight:700;padding:6px 0;border-bottom:2px dashed #ccc}
+.kv:last-child{border-bottom:0}
+.statebox{border:var(--bd);background:var(--ink);color:#fff;font-weight:900;padding:12px;
+  text-align:center;font-size:15px;letter-spacing:1px;box-shadow:3px 3px 0 var(--pink);margin-top:12px}
+.legend{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.legend .sticker{font-size:12px;margin:0}
+.foot{max-width:560px;margin:26px auto 0;padding:0 18px;text-align:center;font-size:12px;color:#888;font-weight:700}
+.shadows{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.shbox{border:var(--bd);background:#fff;padding:16px 8px;text-align:center;font-weight:900;
+  cursor:pointer;transition:transform .08s,box-shadow .08s}
+.shbox.sel{background:var(--yellow)}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <span class="en">NEO-BRUTALISM</span>
+  <h1>新<span class="hl">粗野主义</span>组件库</h1>
+  <p>3px 纯黑粗边框 × 硬阴影 × 高对比撞色。所有元素像贴纸一样「啪」地贴在纸面上，按下去会有真实的按压反馈。</p>
+</header>
+
+<main>
+<!-- ================= TAB 0 总览 ================= -->
+<section class="tabpage" id="page0">
+  <div class="tabhead"><span class="t-en">OVERVIEW</span><h2>总览</h2></div>
+
+  <div class="card"><span class="card-num">01</span>
+    <h3>风格介绍</h3>
+    <p class="sub">新粗野主义 = <b>粗黑边框</b> + <b>硬阴影</b>(无模糊纯色偏移) + <b>马卡龙撞色</b> + <b>贴纸感</b>。按钮 hover 时阴影外扩、active 时整体下沉，做出"按进纸里"的感觉。</p>
+    <div class="demo"><div class="row">
+      <span class="sticker yellow">3PX 黑边</span>
+      <span class="sticker r pink">硬阴影</span>
+      <span class="sticker lime">撞色</span>
+      <span class="sticker r sky">贴纸感</span>
+    </div></div>
+  </div>
+
+  <div class="card"><span class="card-num">02</span>
+    <h3>撞色色板</h3>
+    <p class="sub">点任意色块<b>复制色值</b>，黑字压亮色保证可读。</p>
+    <div class="demo"><div class="swatches" id="swatches">
+      <div class="swatch" data-c="#FFD02F" style="background:#FFD02F"><span>#FFD02F 亮黄</span></div>
+      <div class="swatch" data-c="#FF90E8" style="background:#FF90E8"><span>#FF90E8 品红</span></div>
+      <div class="swatch" data-c="#B6F09C" style="background:#B6F09C"><span>#B6F09C 酸橙</span></div>
+      <div class="swatch" data-c="#87CEEB" style="background:#87CEEB"><span>#87CEEB 天蓝</span></div>
+      <div class="swatch" data-c="#FF6B6B" style="background:#FF6B6B"><span>#FF6B6B 珊瑚红</span></div>
+      <div class="swatch" data-c="#C9B8FF" style="background:#C9B8FF"><span>#C9B8FF 淡紫</span></div>
+    </div></div>
+  </div>
+
+  <div class="card"><span class="card-num">03</span>
+    <h3>按钮三态演示</h3>
+    <p class="sub">把鼠标/手指放在按钮上试试：<b>悬停外扩</b>，<b>按住下沉</b>。</p>
+    <div class="demo" style="text-align:center">
+      <button class="btn" id="stateBtn" style="font-size:18px;padding:14px 30px">按我试试 👇</button>
+      <div class="statebox" id="stateLabel">当前状态：默认 DEFAULT</div>
+      <div class="legend">
+        <span class="sticker">默认 4px 4px</span>
+        <span class="sticker r">悬停 5px 5px</span>
+        <span class="sticker">按压 1px 1px</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card"><span class="card-num">04</span>
+    <h3>用法代码</h3>
+    <p class="sub">两行 CSS 就是全部秘诀，点右下角复制。</p>
+    <div class="demo">
+      <pre class="code" id="codeBlock"><span class="c">/* 新粗野主义核心 token */</span>
+<span class="k">.brutal</span> {
+  <span class="k">border</span>: <span class="v">3px solid #111</span>;
+  <span class="k">box-shadow</span>: <span class="v">4px 4px 0 #111</span>;
+  <span class="k">background</span>: <span class="v">#FFD02F</span>;
+  <span class="k">font-weight</span>: <span class="v">900</span>;
+}
+<span class="k">.brutal:active</span> {
+  <span class="k">transform</span>: <span class="v">translate(3px,3px)</span>;
+  <span class="k">box-shadow</span>: <span class="v">1px 1px 0 #111</span>;
+}</pre>
+      <div style="margin-top:12px"><button class="btn sm white" id="copyCode">📋 复制代码</button></div>
+    </div>
+  </div>
+
+  <div class="card"><span class="card-num">05</span>
+    <h3>硬阴影阶梯</h3>
+    <p class="sub">点选一种阴影强度，卡片层级全靠它。当前：<b id="shLabel">4px 标准</b></p>
+    <div class="demo"><div class="shadows" id="shadows">
+      <div class="shbox" data-s="2px 2px 0 #111" data-n="2px 轻" style="box-shadow:2px 2px 0 #111">2px 轻</div>
+      <div class="shbox sel" data-s="4px 4px 0 #111" data-n="4px 标准" style="box-shadow:4px 4px 0 #111">4px 标准</div>
+      <div class="shbox" data-s="6px 6px 0 #111" data-n="6px 重" style="box-shadow:6px 6px 0 #111">6px 重</div>
+      <div class="shbox" data-s="8px 8px 0 #111" data-n="8px 特重" style="box-shadow:8px 8px 0 #111">8px 特重</div>
+    </div></div>
+  </div>
+
+  <div class="card"><span class="card-num">06</span>
+    <h3>旋转贴纸</h3>
+    <p class="sub">标签微微倾斜，像随手贴上去的。<b>点一下</b>翻转角度。</p>
+    <div class="demo" id="stickerDemo" style="text-align:center">
+      <span class="sticker yellow">去水印</span>
+      <span class="sticker r pink">站点导航</span>
+      <span class="sticker lime">工时打卡</span>
+      <span class="sticker r sky">NEW!</span>
+      <span class="sticker red">HOT</span>
+    </div>
+  </div>
+</section>
+
+<!-- ================= TAB 1 按钮 ================= -->
+<section class="tabpage" id="page1">
+  <div class="tabhead"><span class="t-en">BUTTONS</span><h2>按钮</h2></div>
+
+  <div class="card"><span class="card-num">07</span>
+    <h3>主按钮</h3>
+    <p class="sub">亮黄底 + 黑边 + 硬阴影，点一次计数一次。</p>
+    <div class="demo" style="text-align:center">
+      <button class="btn" id="mainBtn" style="font-size:18px;padding:14px 34px">⚡ 开始解析</button>
+      <div class="hint">已点击 <b id="mainCount" style="font-size:16px">0</b> 次</div>
+    </div>
+  </div>
+
+  <div class="card"><span class="card-num">08</span>
+    <h3>描边按钮</h3>
+    <p class="sub">白底描边款，点选后翻成黄底表示选中。</p>
+    <div class="demo"><div class="row" id="outlineRow">
+      <button class="btn white sm obtn">视频</button>
+      <button class="btn white sm obtn">图集</button>
+      <button class="btn white sm obtn">音频</button>
+      <button class="btn white sm obtn">文案</button>
+    </div></div>
+  </div>
+
+  <div class="card"><span class="card-num">09</span>
+    <h3>危险按钮</h3>
+    <p class="sub">珊瑚红底白字。点一次进入<b>待确认</b>，再点一次执行删除。</p>
+    <div class="demo" style="text-align:center">
+      <button class="btn red" id="dangerBtn">🗑 清空解析记录</button>
+      <div class="hint" id="dangerHint">记录共 12 条，删了找不回来</div>
+    </div>
+  </div>
+
+  <div class="card"><span class="card-num">10</span>
+    <h3>图标按钮</h3>
+    <p class="sub">方形图标键，单选，选中块翻成天蓝。</p>
+    <div class="demo"><div class="row" id="iconRow">
+      <button class="btn white sm ibtn" data-t="解析">🔗</button>
+      <button class="btn white sm ibtn" data-t="导航">🧭</button>
+      <button class="btn white sm ibtn" data-t="打卡">⏰</button>
+      <button class="btn white sm ibtn" data-t="设置">⚙️</button>
+    </div>
+    <div class="hint">当前功能：<b id="iconLabel">解析</b></div></div>
+  </div>
+
+  <div class="card"><span class="card-num">11</span>
+    <h3>开关</h3>
+    <p class="sub">粗野风拨动开关，拨杆「啪」地弹过去。状态：<b id="swLabel">关 OFF</b></p>
+    <div class="demo"><div class="row">
+      <div class="switch" id="demoSwitch" role="switch" aria-checked="false" tabindex="0"><div class="knob"></div></div>
+      <span style="font-weight:900">粘贴自动解析</span>
+    </div></div>
+  </div>
+
+  <div class="card"><span class="card-num">12</span>
+    <h3>分段选择器</h3>
+    <p class="sub">色块滑块跟随选项移动。</p>
+    <div class="demo">
+      <div class="seg" id="seg">
+        <div class="seg-pill" id="segPill"></div>
+        <button data-i="0">解析</button>
+        <button data-i="1">导航</button>
+        <button data-i="2">打卡</button>
+      </div>
+      <div class="hint" id="segLabel">当前：<b>解析</b> — 粘贴链接，一键去水印</div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= TAB 2 表单 ================= -->
+<section class="tabpage" id="page2">
+  <div class="tabhead"><span class="t-en">FORMS</span><h2>表单</h2></div>
+
+  <div class="card"><span class="card-num">13</span>
+    <h3>粗边输入框</h3>
+    <p class="sub">聚焦时阴影翻成<b>品红</b>，提示"正在输入"。</p>
+    <div class="demo">
+      <div class="field">
+        <label>📝 备注名称</label>
+        <input class="input" id="remarkInput" maxlength="30" placeholder="给这条解析起个名">
+        <div class="hint"><span id="remarkCount">0</span>/30 字</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card"><span class="card-num">14</span>
+    <h3>搜索框</h3>
+    <p class="sub">输入关键词，实时过滤站点列表。</p>
+    <div class="demo">
+      <div class="searchbar">
+        <input class="input" id="siteSearch" placeholder="搜站点：抖音 / 快手…" style="border-right:0">
+        <button class="btn sm" id="siteGo">🔍</button>
+      </div>
+      <ul class="sitelist" id="siteList">
+        <li data-k="抖音 douyin">📱 抖音 <span class="tag">去水印</span></li>
+        <li data-k="快手 kuaishou">📱 快手 <span class="tag">去水印</span></li>
+        <li data-k="小红书 xiaohongshu">📕 小红书 <span class="tag">去水印</span></li>
+        <li data-k="哔哩哔哩 bilibili b站">📺 哔哩哔哩 <span class="tag">解析</span></li>
+        <li data-k="微博 weibo">🔥 微博 <span class="tag">解析</span></li>
+        <li data-k="皮皮虾 pipixia">🦐 皮皮虾 <span class="tag">去水印</span></li>
+      </ul>
+      <div class="hint" id="siteEmpty" style="display:none">没找到，换个词试试</div>
+    </div>
+  </div>
+
+  <div class="card"><span class="card-num">15</span>
+    <h3>设置列表</h3>
+    <p class="sub">每行一个粗野开关，点拨杆即时生效。</p>
+    <div class="demo" id="setList">
+      <div class="setrow"><div><div class="t">📋 粘贴自动解析</div><div class="d">复制链接回 App 自动开解析</div></div>
+        <div class="switch on" role="switch" aria-checked="true" tabindex="0"><div class="knob"></div></div></div>
+      <div class="setrow"><div><div class="t">🔔 下载完成提醒</div><div class="d">文件落盘后弹通知</div></div>
+        <div class="switch" role="switch" aria-checked="false" tabindex="0"><div class="knob"></div></div></div>
+      <div class="setrow"><div><div class="t">📶 仅 WiFi 下载</div><div class="d">流量环境下暂停大文件</div></div>
+        <div class="switch on" role="switch" aria-checked="true" tabindex="0"><div class="knob"></div></div></div>
+    </div>
+  </div>
+
+  <div class="card"><span class="card-num">16</span>
+    <h3>复选框 / 单选框</h3>
+    <p class="sub">粗边大方块，选中翻色 + 打钩。</p>
+    <div class="demo">
+      <div style="font-weight:900;font-size:13px;margin-bottom:4px">解析选项（多选）</div>
+      <div class="chk on"><span class="box"><i>✓</i></span>去除水印</div>
+      <div class="chk"><span class="box"><i>✓</i></span>保留原画质</div>
+      <div style="font-weight:900;font-size:13px;margin:10px 0 4px">保存位置（单选）</div>
+      <div class="chk radio on" data-g="save"><span class="box"><i>✓</i></span>存到相册</div>
+      <div class="chk radio" data-g="save"><span class="box"><i>✓</i></span>仅复制链接</div>
+    </div>
+  </div>
+
+  <div class="card"><span class="card-num">17</span>
+    <h3>滑杆</h3>
+    <p class="sub">拖动设置下载线程数，滑块也是贴纸风。</p>
+    <div class="demo">
+      <input type="range" class="slider" id="threadSlider" min="1" max="8" value="4">
+      <div class="hint">下载线程数：<b id="threadVal" style="font-size:16px">4</b>（越多越快，越费电）</div>
+    </div>
+  </div>
+
+  <div class="card"><span class="card-num">18</span>
+    <h3>提交行</h3>
+    <p class="sub">粘贴视频链接 → 点去水印，模拟一次完整解析。</p>
+    <div class="demo">
+      <div class="searchbar">
+        <input class="input" id="parseLink" placeholder="粘贴视频分享链接" style="border-right:0">
+        <button class="btn sm pink" id="parseGo">去水印</button>
+      </div>
+      <div class="progress lime" id="parseProg" style="margin-top:12px;display:none"><div class="fill" id="parseFill"></div></div>
+      <div class="hint" id="parseResult"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= TAB 3 展示 ================= -->
+<section class="tabpage" id="page3">
+  <div class="tabhead"><span class="t-en">DISPLAY</span><h2>展示</h2></div>
+
+  <div class="card"><span class="card-num">19</span>
+    <h3>解析记录卡片</h3>
+    <p class="sub">按类型拆卡：视频 / 音频，点下载弹提示。</p>
+    <div class="demo">
+      <div class="record">
+        <div class="rt"><b>🎬 海边日落混剪</b><span class="sticker lime" style="font-size:11px;margin:0">视频</span></div>
+        <div class="meta">12.4 MB · 1080P · 10:32 解析</div>
+        <button class="btn sm block dlbtn" data-n="海边日落混剪">⬇ 下载无水印版</button>
+      </div>
+      <div class="record">
+        <div class="rt"><b>🎵 卡点 BGM 提取</b><span class="sticker sky" style="font-size:11px;margin:0">音频</span></div>
+        <div class="meta">3.1 MB · MP3 · 09:15 解析</div>
+        <button class="btn sm block white dlbtn" data-n="卡点 BGM">⬇ 下载音频</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card"><span class="card-num">20</span>
+    <h3>条纹进度条</h3>
+    <p class="sub">斜条纹下载进度，点开始跑一遍。</p>
+    <div class="demo">
+      <div class="progress" style="margin-bottom:12px"><div class="fill" id="dlFill"></div></div>
+      <div class="row">
+        <button class="btn sm" id="dlStart">▶ 开始下载</button>
+        <button class="btn sm white" id="dlReset">↺ 重置</button>
+        <b id="dlPct">0%</b>
+      </div>
+    </div>
+  </div>
+
+  <div class="card"><span class="card-num">21</span>
+    <h3>徽章 / 标签</h3>
+    <p class="sub">旋转贴纸徽章，点一下翻转角度。</p>
+    <div class="demo" id="badgeDemo" style="text-align:center">
+      <span class="sticker yellow">VIP</span>
+      <span class="sticker r pink">去水印 ×128</span>
+      <span class="sticker lime">连续打卡 21 天</span>
+      <span class="sticker r sky">NEW</span>
+      <span class="sticker red">限时免费</span>
+      <span class="sticker r lav">PRO</span>
+    </div>
+  </div>
+
+  <div class="card"><span class="card-num">22</span>
+    <h3>通知横幅</h3>
+    <p class="sub">品红撞色横幅，点 ✕ 关闭，可再召回。</p>
+    <div class="demo">
+      <div class="banner" id="banner">
+        <span>📢 今晚 20:00「站点导航」新增 3 个平台解析</span>
+        <button class="x" id="bannerX">✕</button>
+      </div>
+      <div style="margin-top:12px;display:none" id="bannerBack"><button class="btn sm white" id="bannerShow">↩ 显示横幅</button></div>
+    </div>
+  </div>
+
+  <div class="card"><span class="card-num">23</span>
+    <h3>统计卡</h3>
+    <p class="sub">切到本页时数字滚动增长。</p>
+    <div class="demo"><div class="stats">
+      <div class="stat" style="background:var(--yellow)"><div class="n" data-to="128">0</div><div class="l">今日解析</div></div>
+      <div class="stat" style="background:var(--pink)"><div class="n" data-to="3260">0</div><div class="l">累计去水印</div></div>
+      <div class="stat" style="background:var(--lime)"><div class="n" data-to="21">0</div><div class="l">打卡天数</div></div>
+    </div></div>
+  </div>
+
+  <div class="card"><span class="card-num">24</span>
+    <h3>头像组</h3>
+    <p class="sub">表情头像叠放，<b>点一下</b>打乱顺序。</p>
+    <div class="demo">
+      <div class="avatars" id="avatarStack">
+        <div class="av" style="background:var(--yellow)">🦊</div>
+        <div class="av" style="background:var(--pink)">🐼</div>
+        <div class="av" style="background:var(--lime)">🐸</div>
+        <div class="av" style="background:var(--sky)">🐙</div>
+        <div class="av more">+99</div>
+      </div>
+      <div class="hint">128 人正在用「懒得找了」去水印</div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= TAB 4 反馈 ================= -->
+<section class="tabpage" id="page4">
+  <div class="tabhead"><span class="t-en">FEEDBACK</span><h2>反馈</h2></div>
+
+  <div class="card"><span class="card-num">25</span>
+    <h3>Toast 提示</h3>
+    <p class="sub">硬阴影小弹窗，顶部弹出，2 秒消失。</p>
+    <div class="demo"><div class="row">
+      <button class="btn sm lime" data-toast="✅ 解析成功，已保存到相册|lime">成功</button>
+      <button class="btn sm red" data-toast="❌ 链接无效，换一条试试|red">失败</button>
+      <button class="btn sm white" data-toast="📋 色值已复制|yellow">提示</button>
+    </div></div>
+  </div>
+
+  <div class="card"><span class="card-num">26</span>
+    <h3>确认对话框</h3>
+    <p class="sub">黑边 4px + 8px 硬阴影，态度强硬。</p>
+    <div class="demo" style="text-align:center">
+      <button class="btn sm pink" id="openDialog">⚠ 打开确认框</button>
+    </div>
+  </div>
+
+  <div class="card"><span class="card-num">27</span>
+    <h3>加载条</h3>
+    <p class="sub">斜条纹来回跑，表示"正在拼命干活"。</p>
+    <div class="demo">
+      <div class="loading" id="loader"><div class="bar"></div></div>
+      <div class="row" style="margin-top:12px">
+        <button class="btn sm" id="loadStart">▶ 开始加载</button>
+        <button class="btn sm white" id="loadStop">⏹ 停止</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card"><span class="card-num">28</span>
+    <h3>成功 / 失败状态</h3>
+    <p class="sub">结果页大卡片，失败可重试。</p>
+    <div class="demo">
+      <div class="statuscard ok">
+        <div class="big">✅</div>
+        <h4>解析成功！</h4>
+        <p>无水印视频已就绪，12.4 MB</p>
+        <button class="btn sm" id="okView">👀 去看看</button>
+      </div>
+      <div class="statuscard fail">
+        <div class="big">❌</div>
+        <h4>解析失败</h4>
+        <p>链接已失效或平台反爬升级</p>
+        <button class="btn sm white" id="failRetry">↺ 重新解析</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card"><span class="card-num">29</span>
+    <h3>底部动作条</h3>
+    <p class="sub">从底部弹出的操作面板。</p>
+    <div class="demo" style="text-align:center">
+      <button class="btn sm sky" id="openSheet">⬆ 弹出动作条</button>
+    </div>
+  </div>
+
+  <div class="card"><span class="card-num">30</span>
+    <h3>空状态</h3>
+    <p class="sub">没数据时的样子，按钮直接跳去解析页。</p>
+    <div class="demo"><div class="empty">
+      <div class="big">📭</div>
+      <h4>暂无解析记录</h4>
+      <p>粘贴一条视频链接，3 秒去水印</p>
+      <button class="btn sm" id="emptyGo">🔗 去解析一条</button>
+    </div></div>
+  </div>
+</section>
+</main>
+
+<footer class="foot">新粗野主义 NEO-BRUTALISM · 30 组件 · 单文件零框架</footer>
+
+<!-- 底部 Tab 栏 -->
+<nav class="tabbar" id="tabbar">
+  <div class="pill" id="pill"></div>
+  <button data-t="0">总览<small>OVERVIEW</small></button>
+  <button data-t="1">按钮<small>BUTTONS</small></button>
+  <button data-t="2">表单<small>FORMS</small></button>
+  <button data-t="3">展示<small>DISPLAY</small></button>
+  <button data-t="4">反馈<small>FEEDBACK</small></button>
+</nav>
+
+<!-- Toast 容器 / 对话框 / 动作条 -->
+<div id="toasts"></div>
+<div class="overlay" id="dlgOv">
+  <div class="dialog">
+    <h4>⚠ 确认清空？</h4>
+    <p>将删除全部 12 条解析记录，这个操作<b>无法撤销</b>，想清楚了？</p>
+    <div class="row" style="justify-content:flex-end">
+      <button class="btn sm white" id="dlgCancel">再想想</button>
+      <button class="btn sm red" id="dlgOk">确认清空</button>
+    </div>
+  </div>
+</div>
+<div class="sheet-ov" id="sheetOv"></div>
+<div class="sheet" id="sheet">
+  <div class="grab"></div>
+  <button class="btn block lime" data-act="已保存到相册">💾 保存到相册</button>
+  <button class="btn block white" data-act="链接已复制">📋 复制无水印链接</button>
+  <button class="btn block sky" data-act="已呼起分享面板">📤 分享给朋友</button>
+  <button class="btn block white" id="sheetClose" style="margin-top:6px">取消</button>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var $=function(s,c){return (c||document).querySelector(s)};
+  var $$=function(s,c){return Array.prototype.slice.call((c||document).querySelectorAll(s))};
+
+  /* ---------- Toast ---------- */
+  function toast(msg,color){
+    var box=$("#toasts"),el=document.createElement("div");
+    el.className="toast "+(color||"");el.textContent=msg;box.appendChild(el);
+    setTimeout(function(){el.style.transition="opacity .25s,transform .25s";el.style.opacity="0";el.style.transform="translateY(-8px)";
+      setTimeout(function(){el.remove()},260)},2000);
+  }
+  function copyText(t,okMsg){
+    if(navigator.clipboard&&navigator.clipboard.writeText){
+      navigator.clipboard.writeText(t).then(function(){toast(okMsg||"📋 已复制","yellow")},function(){fallback()});
+    }else fallback();
+    function fallback(){var ta=document.createElement("textarea");ta.value=t;document.body.appendChild(ta);ta.select();
+      try{document.execCommand("copy");toast(okMsg||"📋 已复制","yellow")}catch(e){toast("复制失败","red")}ta.remove()}
+  }
+
+  /* ---------- Tab 切换 + 深链 ---------- */
+  var cur=0,pill=$("#pill");
+  function goTab(i,push){
+    i=Math.max(0,Math.min(4,parseInt(i,10)||0));cur=i;
+    $$(".tabpage").forEach(function(p,idx){p.classList.toggle("active",idx===i)});
+    pill.style.transform="translateX("+(i*100)+"%)";
+    try{if(push===false){}else{history.replaceState(null,"","?tab="+i)}}catch(e){}
+    window.scrollTo(0,0);
+    if(i===3)countUp();
+  }
+  $$("#tabbar button").forEach(function(b){b.addEventListener("click",function(){goTab(b.dataset.t)})});
+  (function(){var m=location.search.match(/tab=(\d)/);goTab(m?m[1]:0,false)})();
+
+  /* ---------- 数字滚动 ---------- */
+  var counted=false;
+  function countUp(){
+    if(counted)return;counted=true;
+    $$("#page3 .stat .n").forEach(function(el){
+      var to=parseInt(el.dataset.to,10),t0=null;
+      function step(ts){if(!t0)t0=ts;var p=Math.min(1,(ts-t0)/900);
+        el.textContent=Math.round(to*(1-Math.pow(1-p,3)));
+        if(p<1)requestAnimationFrame(step)}
+      requestAnimationFrame(step);
+    });
+  }
+
+  /* ---------- 02 色板复制 ---------- */
+  $$("#swatches .swatch").forEach(function(s){
+    s.addEventListener("click",function(){copyText(s.dataset.c,"📋 "+s.dataset.c+" 已复制")});
+  });
+
+  /* ---------- 03 三态 ---------- */
+  var sb=$("#stateBtn"),sl=$("#stateLabel");
+  function setState(t){sl.textContent="当前状态："+t}
+  sb.addEventListener("mouseenter",function(){setState("悬停 HOVER · 阴影 5px 5px")});
+  sb.addEventListener("mouseleave",function(){setState("默认 DEFAULT")});
+  sb.addEventListener("mousedown",function(){setState("按压 ACTIVE · 下沉 3px")});
+  sb.addEventListener("mouseup",function(){setState("悬停 HOVER · 阴影 5px 5px")});
+  sb.addEventListener("touchstart",function(){setState("按压 ACTIVE · 下沉 3px")},{passive:true});
+  sb.addEventListener("touchend",function(){setState("默认 DEFAULT")});
+
+  /* ---------- 04 复制代码 ---------- */
+  $("#copyCode").addEventListener("click",function(){
+    copyText($("#codeBlock").innerText,"📋 CSS 代码已复制");
+  });
+
+  /* ---------- 05 阴影阶梯 ---------- */
+  $$("#shadows .shbox").forEach(function(b){
+    b.addEventListener("click",function(){
+      $$("#shadows .shbox").forEach(function(x){x.classList.remove("sel")});
+      b.classList.add("sel");
+      $("#shLabel").textContent=b.dataset.n;
+      b.style.boxShadow=b.dataset.s;
+      toast("阴影切换为 "+b.dataset.n,"sky");
+    });
+  });
+
+  /* ---------- 06/21 贴纸翻转 ---------- */
+  [["#stickerDemo",".sticker"],["#badgeDemo",".sticker"]].forEach(function(pair){
+    $$(pair[1],$(pair[0])).forEach(function(s){
+      s.style.cursor="pointer";
+      s.addEventListener("click",function(){s.classList.toggle("flip")});
+    });
+  });
+
+  /* ---------- 07 主按钮计数 ---------- */
+  var mc=0;
+  $("#mainBtn").addEventListener("click",function(){mc++;$("#mainCount").textContent=mc;
+    if(mc===10)toast("⚡ 解析了 10 次，够拼！","pink")});
+
+  /* ---------- 08 描边按钮单选 ---------- */
+  $$("#outlineRow .obtn").forEach(function(b){
+    b.addEventListener("click",function(){
+      $$("#outlineRow .obtn").forEach(function(x){x.classList.remove("lime");x.classList.add("white")});
+      b.classList.remove("white");b.classList.add("lime");
+      toast("已选："+b.textContent,"lime");
+    });
+  });
+
+  /* ---------- 09 危险按钮两步确认 ---------- */
+  var armed=false,dt;
+  $("#dangerBtn").addEventListener("click",function(){
+    var btn=$("#dangerBtn");
+    if(!armed){armed=true;btn.textContent="⚠ 再点一次确认删除";btn.classList.add("pink");
+      $("#dangerHint").textContent="已进入待确认状态，5 秒后自动取消";
+      dt=setTimeout(disarm,5000);
+    }else{clearTimeout(dt);disarm();$("#dangerHint").textContent="记录已清空（演示，未真删）";toast("🗑 12 条记录已清空","red")}
+    function disarm(){armed=false;btn.textContent="🗑 清空解析记录";btn.classList.remove("pink")}
+  });
+
+  /* ---------- 10 图标按钮 ---------- */
+  $$("#iconRow .ibtn").forEach(function(b){
+    b.addEventListener("click",function(){
+      $$("#iconRow .ibtn").forEach(function(x){x.classList.remove("sky");x.classList.add("white")});
+      b.classList.remove("white");b.classList.add("sky");
+      $("#iconLabel").textContent=b.dataset.t;
+    });
+  });
+
+  /* ---------- 开关通用 ---------- */
+  function bindSwitch(el,onChange){
+    function toggle(){
+      el.classList.toggle("on");
+      var on=el.classList.contains("on");
+      el.setAttribute("aria-checked",on);
+      if(onChange)onChange(on);
+    }
+    el.addEventListener("click",toggle);
+    el.addEventListener("keydown",function(e){if(e.key===" "||e.key==="Enter"){e.preventDefault();toggle()}});
+  }
+  /* 11 演示开关 */
+  bindSwitch($("#demoSwitch"),function(on){
+    $("#swLabel").textContent=on?"开 ON":"关 OFF";
+    toast(on?"📋 粘贴自动解析：开":"📋 粘贴自动解析：关",on?"lime":"");
+  });
+  /* 15 设置列表开关 */
+  $$("#setList .switch").forEach(function(sw){
+    var name=sw.parentElement.querySelector(".t").textContent;
+    bindSwitch(sw,function(on){toast(name+"："+(on?"开":"关"),on?"lime":"")});
+  });
+
+  /* ---------- 12 分段选择器 ---------- */
+  var segTxt=["解析 — 粘贴链接，一键去水印","导航 — 39 个站点直达解析","打卡 — 今日工时 8.5h，已达标"];
+  $$("#seg button").forEach(function(b){
+    b.addEventListener("click",function(){
+      $("#segPill").style.transform="translateX("+(b.dataset.i*100)+"%)";
+      $("#segLabel").innerHTML="当前：<b>"+segTxt[b.dataset.i]+"</b>";
+    });
+  });
+
+  /* ---------- 13 输入计数 ---------- */
+  $("#remarkInput").addEventListener("input",function(){
+    $("#remarkCount").textContent=this.value.length;
+  });
+
+  /* ---------- 14 搜索过滤 ---------- */
+  var sInput=$("#siteSearch");
+  function doSearch(){
+    var k=sInput.value.trim().toLowerCase(),n=0;
+    $$("#siteList li").forEach(function(li){
+      var hit=!k||li.dataset.k.indexOf(k)>-1;
+      li.style.display=hit?"":"none";if(hit)n++;
+    });
+    $("#siteEmpty").style.display=n?"none":"block";
+  }
+  sInput.addEventListener("input",doSearch);
+  $("#siteGo").addEventListener("click",function(){doSearch();
+    toast(sInput.value.trim()?("🔍 搜「"+sInput.value.trim()+"」"):"🔍 请输入关键词","sky")});
+
+  /* ---------- 16 复选/单选 ---------- */
+  $$(".chk").forEach(function(c){
+    c.addEventListener("click",function(){
+      if(c.classList.contains("radio")){
+        $$('.chk.radio[data-g="'+c.dataset.g+'"]').forEach(function(x){x.classList.remove("on")});
+        c.classList.add("on");
+      }else c.classList.toggle("on");
+    });
+  });
+
+  /* ---------- 17 滑杆 ---------- */
+  $("#threadSlider").addEventListener("input",function(){
+    $("#threadVal").textContent=this.value;
+  });
+
+  /* ---------- 18 模拟解析 ---------- */
+  var parsing=false;
+  $("#parseGo").addEventListener("click",function(){
+    var link=$("#parseLink").value.trim();
+    if(!link){toast("❌ 先粘贴一条视频链接","red");$("#parseLink").focus();return}
+    if(parsing)return;parsing=true;
+    var prog=$("#parseProg"),fill=$("#parseFill"),res=$("#parseResult");
+    prog.style.display="block";res.textContent="";var p=0;
+    var timer=setInterval(function(){
+      p=Math.min(100,p+Math.random()*22+8);fill.style.width=p+"%";
+      if(p>=100){clearInterval(timer);parsing=false;
+        res.innerHTML="<b>✅ 解析完成！</b>无水印视频已就绪（演示数据）";
+        toast("✅ 解析成功","lime")}
+    },220);
+  });
+
+  /* ---------- 19 下载按钮 ---------- */
+  $$(".dlbtn").forEach(function(b){
+    b.addEventListener("click",function(){toast("⬇ 开始下载："+b.dataset.n,"sky")});
+  });
+
+  /* ---------- 20 条纹进度 ---------- */
+  var dlt=null;
+  $("#dlStart").addEventListener("click",function(){
+    if(dlt)return;var p=0,fill=$("#dlFill"),pct=$("#dlPct");
+    dlt=setInterval(function(){p=Math.min(100,p+4);fill.style.width=p+"%";pct.textContent=p+"%";
+      if(p>=100){clearInterval(dlt);dlt=null;toast("✅ 下载完成","lime")}},120);
+  });
+  $("#dlReset").addEventListener("click",function(){
+    if(dlt){clearInterval(dlt);dlt=null}$("#dlFill").style.width="0";$("#dlPct").textContent="0%"
+  });
+
+  /* ---------- 22 横幅 ---------- */
+  $("#bannerX").addEventListener("click",function(){
+    $("#banner").style.display="none";$("#bannerBack").style.display="block";
+  });
+  $("#bannerShow").addEventListener("click",function(){
+    $("#banner").style.display="flex";$("#bannerBack").style.display="none";
+  });
+
+  /* ---------- 24 头像打乱 ---------- */
+  $("#avatarStack").addEventListener("click",function(){
+    var stack=$("#avatarStack"),items=$$(".av",stack),more=items.pop();
+    for(var i=items.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));
+      var t=items[i];items[i]=items[j];items[j]=t}
+    items.forEach(function(a){stack.insertBefore(a,more)});
+  });
+
+  /* ---------- 25 toast 演示 ---------- */
+  $$("[data-toast]").forEach(function(b){
+    b.addEventListener("click",function(){var a=b.dataset.toast.split("|");toast(a[0],a[1])});
+  });
+
+  /* ---------- 26 对话框 ---------- */
+  $("#openDialog").addEventListener("click",function(){$("#dlgOv").classList.add("show")});
+  $("#dlgCancel").addEventListener("click",function(){$("#dlgOv").classList.remove("show")});
+  $("#dlgOk").addEventListener("click",function(){
+    $("#dlgOv").classList.remove("show");toast("🗑 已清空（演示）","red")});
+  $("#dlgOv").addEventListener("click",function(e){if(e.target===this)this.classList.remove("show")});
+
+  /* ---------- 27 加载条 ---------- */
+  $("#loadStart").addEventListener("click",function(){$("#loader").classList.add("run")});
+  $("#loadStop").addEventListener("click",function(){$("#loader").classList.remove("run")});
+
+  /* ---------- 28 状态按钮 ---------- */
+  $("#okView").addEventListener("click",function(){toast("👀 正在打开文件…","yellow")});
+  $("#failRetry").addEventListener("click",function(){toast("↺ 已重新加入解析队列","sky")});
+
+  /* ---------- 29 动作条 ---------- */
+  function openSheet(){$("#sheet").classList.add("show");$("#sheetOv").classList.add("show")}
+  function closeSheet(){$("#sheet").classList.remove("show");$("#sheetOv").classList.remove("show")}
+  $("#openSheet").addEventListener("click",openSheet);
+  $("#sheetClose").addEventListener("click",closeSheet);
+  $("#sheetOv").addEventListener("click",closeSheet);
+  $$("#sheet [data-act]").forEach(function(b){
+    b.addEventListener("click",function(){closeSheet();toast("✅ "+b.dataset.act,"lime")});
+  });
+
+  /* ---------- 30 空状态跳转 ---------- */
+  $("#emptyGo").addEventListener("click",function(){goTab(2)});
+})();
+</script>
+</body>
+</html>
