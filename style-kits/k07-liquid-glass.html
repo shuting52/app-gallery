@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>液态玻璃 Liquid Glass · UI 组件库</title>
+<style>
+/* ============ 液态玻璃 Liquid Glass · 设计 Token ============ */
+:root{
+  --bg:#0a0e1a;
+  --ink:#f2f5ff;
+  --ink-dim:rgba(214,224,255,.62);
+  --ink-faint:rgba(214,224,255,.42);
+  --glass:linear-gradient(135deg, rgba(255,255,255,.13), rgba(255,255,255,.045) 55%, rgba(255,255,255,.09));
+  --edge:rgba(255,255,255,.22);
+  --accent:#5ee6ff; --accent2:#a78bfa; --accent3:#5b8cff;
+  --ok:#34e0a1; --warn:#ffc45e; --danger:#ff7a9e;
+  --r:20px;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  background:var(--bg); color:var(--ink);
+  min-height:100vh; overflow-x:hidden;
+}
+/* ---- 流动光斑背景（大面积慢速漂移，永远垫在内容之下） ---- */
+.blobs{position:fixed;inset:-15%;z-index:0;pointer-events:none;overflow:hidden}
+.blob{position:absolute;border-radius:50%;filter:blur(70px);opacity:.55}
+.blob.b1{width:52vmax;height:52vmax;left:-12vmax;top:-8vmax;background:radial-gradient(circle,#2b5cff 0%,transparent 70%);animation:drift1 26s ease-in-out infinite alternate}
+.blob.b2{width:46vmax;height:46vmax;right:-10vmax;top:22%;background:radial-gradient(circle,#8b3dff 0%,transparent 70%);animation:drift2 32s ease-in-out infinite alternate}
+.blob.b3{width:44vmax;height:44vmax;left:8%;bottom:-14vmax;background:radial-gradient(circle,#00c2d8 0%,transparent 70%);opacity:.42;animation:drift3 30s ease-in-out infinite alternate}
+@keyframes drift1{to{transform:translate(9vmax,7vmax) scale(1.12)}}
+@keyframes drift2{to{transform:translate(-8vmax,-6vmax) scale(.92)}}
+@keyframes drift3{to{transform:translate(7vmax,-9vmax) scale(1.08)}}
+.vignette{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(120% 90% at 50% 0%,transparent 40%,rgba(4,6,14,.55) 100%)}
+
+.page{position:relative;z-index:1;max-width:430px;margin:0 auto;padding:22px 16px 120px}
+
+/* ---- 页眉 ---- */
+.hero{margin-bottom:18px}
+.hero .kicker{display:inline-block;font-size:11px;letter-spacing:3px;color:var(--accent);
+  padding:5px 12px;border:1px solid rgba(94,230,255,.35);border-radius:99px;
+  background:rgba(94,230,255,.08);margin-bottom:10px}
+.hero h1{font-size:26px;font-weight:800;letter-spacing:1px;
+  background:linear-gradient(100deg,#fff 20%,var(--accent) 45%,var(--accent2) 60%,#fff 80%);
+  background-size:220% auto;-webkit-background-clip:text;background-clip:text;color:transparent;
+  animation:shimmerText 5s linear infinite}
+@keyframes shimmerText{to{background-position:220% center}}
+.hero p{font-size:12.5px;color:var(--ink-dim);margin-top:8px;line-height:1.7}
+
+/* ---- 玻璃卡片基座 ---- */
+.gcard{
+  position:relative;overflow:hidden;border-radius:var(--r);
+  background:var(--glass);
+  -webkit-backdrop-filter:blur(22px) saturate(170%);backdrop-filter:blur(22px) saturate(170%);
+  border:1px solid var(--edge);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.28), inset 0 -1px 0 rgba(255,255,255,.06),
+             0 18px 40px rgba(2,6,20,.45);
+  padding:16px;margin-bottom:14px;
+}
+.gcard::before{ /* 折射高光带：斜向白色渐变 */
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(115deg,transparent 28%,rgba(255,255,255,.16) 44%,rgba(255,255,255,.03) 54%,transparent 68%);
+}
+.gcard::after{ /* 镜面内描边 */
+  content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  border:1px solid transparent;
+  background:linear-gradient(135deg,rgba(255,255,255,.5),transparent 30%,transparent 70%,rgba(255,255,255,.28)) border-box;
+  -webkit-mask:linear-gradient(#fff 0 0) padding-box,linear-gradient(#fff 0 0);
+  -webkit-mask-composite:xor;mask-composite:exclude;
+  opacity:.5;
+}
+.card-title{font-size:14px;font-weight:700;margin-bottom:4px;display:flex;align-items:center;gap:8px}
+.card-title .dot{width:7px;height:7px;border-radius:50%;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));box-shadow:0 0 10px var(--accent)}
+.card-sub{font-size:11.5px;color:var(--ink-faint);margin-bottom:12px;line-height:1.6}
+
+/* ---- Tab 页 ---- */
+.tabpane{display:none}
+.tabpane.active{display:block;animation:fadeUp .35s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+/* ---- 底部悬浮胶囊 Tab 栏 + 滑动 pill ---- */
+.tabbar{
+  position:fixed;left:50%;transform:translateX(-50%);bottom:18px;z-index:50;
+  display:flex;padding:6px;border-radius:99px;
+  background:linear-gradient(135deg,rgba(30,38,66,.72),rgba(14,20,38,.72));
+  -webkit-backdrop-filter:blur(24px) saturate(180%);backdrop-filter:blur(24px) saturate(180%);
+  border:1px solid rgba(255,255,255,.22);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.3),0 14px 34px rgba(2,6,20,.6);
+  max-width:calc(100vw - 32px);
+}
+.tabbar .pill{position:absolute;top:6px;bottom:6px;left:0;border-radius:99px;
+  background:linear-gradient(120deg,rgba(94,230,255,.32),rgba(167,139,250,.32));
+  border:1px solid rgba(255,255,255,.35);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.4),0 0 16px rgba(94,230,255,.25);
+  transition:transform .32s cubic-bezier(.6,.1,.2,1.2),width .32s ease;pointer-events:none}
+.tabbar button{
+  position:relative;z-index:1;border:0;background:none;color:var(--ink-dim);
+  font-size:12.5px;font-weight:600;padding:10px 13px;cursor:pointer;white-space:nowrap;
+  font-family:inherit;transition:color .25s;
+}
+.tabbar button.active{color:#fff;text-shadow:0 0 12px rgba(94,230,255,.6)}
+
+/* ---- 按钮 ---- */
+.btn{
+  position:relative;display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  border:0;cursor:pointer;font-family:inherit;font-weight:700;font-size:14px;color:#06121f;
+  padding:13px 26px;border-radius:16px;overflow:hidden;
+  background:linear-gradient(120deg,#7df3ff,#5b8cff 55%,#a78bfa);
+  background-size:200% auto;animation:btnFlow 4s linear infinite;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.7),0 8px 24px rgba(91,140,255,.35);
+  transition:transform .15s;
+}
+@keyframes btnFlow{to{background-position:200% center}}
+.btn::after{ /* 流动高光扫过 */
+  content:"";position:absolute;inset:0;
+  background:linear-gradient(110deg,transparent 32%,rgba(255,255,255,.55) 50%,transparent 68%);
+  transform:translateX(-110%);animation:shine 3s ease-in-out infinite;
+}
+@keyframes shine{0%{transform:translateX(-110%)}55%,100%{transform:translateX(110%)}}
+.btn:active{transform:scale(.96)}
+.btn.small{padding:9px 18px;font-size:12.5px;border-radius:12px}
+.btn.ghost{background:rgba(255,255,255,.06);color:var(--ink);
+  border:1px solid rgba(255,255,255,.35);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.25);animation:none}
+.btn.ghost::after{display:none}
+.btn.block{width:100%}
+.btn:disabled{opacity:.4;cursor:not-allowed;animation:none}
+.iconbtn{
+  width:46px;height:46px;border-radius:15px;border:1px solid rgba(255,255,255,.3);
+  background:linear-gradient(135deg,rgba(255,255,255,.16),rgba(255,255,255,.05));
+  -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
+  color:var(--ink);font-size:19px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.35);transition:transform .15s;
+}
+.iconbtn:active{transform:scale(.9)}
+.fab{
+  width:60px;height:60px;border-radius:50%;border:0;cursor:pointer;font-size:28px;color:#06121f;
+  background:linear-gradient(135deg,#7df3ff,#a78bfa);
+  box-shadow:inset 0 2px 0 rgba(255,255,255,.7),0 10px 26px rgba(139,92,246,.5);
+  display:inline-flex;align-items:center;justify-content:center;
+}
+
+/* ---- 玻璃开关（position:relative + 固定宽高） ---- */
+.switch{
+  position:relative;display:inline-block;width:54px;height:31px;flex:0 0 auto;
+  border-radius:99px;border:1px solid rgba(255,255,255,.3);cursor:pointer;
+  background:rgba(255,255,255,.1);
+  -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+  box-shadow:inset 0 2px 6px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.25);
+  transition:background .25s,border-color .25s;padding:0;
+}
+.switch .knob{
+  position:absolute;top:2px;left:2px;width:25px;height:25px;border-radius:50%;
+  background:linear-gradient(135deg,rgba(255,255,255,.95),rgba(200,220,255,.75));
+  box-shadow:0 2px 8px rgba(0,0,0,.4),inset 0 1px 0 #fff;
+  transition:left .25s cubic-bezier(.6,.1,.2,1.3);
+}
+.switch.on{background:linear-gradient(120deg,rgba(94,230,255,.55),rgba(167,139,250,.55));border-color:rgba(255,255,255,.5)}
+.switch.on .knob{left:25px}
+
+/* ---- 分段选择器 ---- */
+.seg{display:flex;position:relative;padding:4px;border-radius:16px;
+  background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.2);
+  -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
+.seg button{flex:1;border:0;background:none;color:var(--ink-dim);font-size:13px;font-weight:600;
+  padding:10px 4px;border-radius:12px;cursor:pointer;position:relative;z-index:1;font-family:inherit;transition:color .25s}
+.seg button.active{color:#fff}
+.seg .segpill{position:absolute;top:4px;bottom:4px;left:4px;border-radius:12px;
+  background:linear-gradient(120deg,rgba(94,230,255,.4),rgba(167,139,250,.4));
+  border:1px solid rgba(255,255,255,.4);box-shadow:inset 0 1px 0 rgba(255,255,255,.5);
+  transition:transform .3s cubic-bezier(.6,.1,.2,1.2),width .3s ease}
+
+/* ---- 表单 ---- */
+.field{margin-bottom:12px}
+.field label{display:block;font-size:12px;color:var(--ink-dim);margin-bottom:7px}
+.input{
+  width:100%;padding:13px 16px;border-radius:14px;font-size:14px;color:var(--ink);font-family:inherit;
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.22);
+  -webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);
+  box-shadow:inset 0 2px 8px rgba(0,0,0,.25);outline:none;transition:border-color .2s,box-shadow .2s;
+}
+.input::placeholder{color:var(--ink-faint)}
+.input:focus{border-color:var(--accent);
+  box-shadow:inset 0 2px 8px rgba(0,0,0,.25),0 0 0 3px rgba(94,230,255,.18),0 0 18px rgba(94,230,255,.25)}
+.searchwrap{position:relative}
+.searchwrap .input{padding-left:42px}
+.searchwrap .sicon{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:16px;opacity:.6}
+.setrow{display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:13px 4px;border-bottom:1px solid rgba(255,255,255,.09)}
+.setrow:last-child{border-bottom:0}
+.setrow .t{font-size:13.5px;font-weight:600}
+.setrow .d{font-size:11.5px;color:var(--ink-faint);margin-top:3px}
+.checkrow{display:flex;gap:14px;flex-wrap:wrap}
+.check{display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer;user-select:none}
+.check .box{width:22px;height:22px;border-radius:8px;border:1.5px solid rgba(255,255,255,.4);
+  background:rgba(255,255,255,.07);display:inline-flex;align-items:center;justify-content:center;
+  font-size:14px;color:#06121f;transition:all .2s}
+.check input{display:none}
+.check input:checked + .box{background:linear-gradient(135deg,#7df3ff,#a78bfa);border-color:transparent;box-shadow:0 0 12px rgba(94,230,255,.4)}
+.check input:checked + .box::after{content:"✓";font-weight:800}
+.check .radio{border-radius:50%}
+.check input:checked + .radio::after{content:"";width:10px;height:10px;border-radius:50%;background:#06121f}
+input[type=range].slider{-webkit-appearance:none;appearance:none;width:100%;height:8px;border-radius:99px;outline:none;
+  background:linear-gradient(90deg,var(--accent),var(--accent2));box-shadow:inset 0 1px 3px rgba(0,0,0,.4)}
+input[type=range].slider::-webkit-slider-thumb{-webkit-appearance:none;width:26px;height:26px;border-radius:50%;
+  background:linear-gradient(135deg,#fff,#cfe8ff);border:1px solid rgba(255,255,255,.8);
+  box-shadow:0 3px 10px rgba(0,0,0,.5),0 0 14px rgba(94,230,255,.5);cursor:pointer}
+
+/* ---- 展示 ---- */
+.recrow{display:flex;align-items:center;gap:12px;padding:11px 4px;border-bottom:1px solid rgba(255,255,255,.09)}
+.recrow:last-child{border-bottom:0}
+.thumb{width:46px;height:46px;border-radius:13px;flex:0 0 auto;
+  background:conic-gradient(from 40deg,#2b5cff,#8b3dff,#00c2d8,#2b5cff);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.5);position:relative;overflow:hidden}
+.thumb::after{content:"▶";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  color:#fff;font-size:15px;text-shadow:0 1px 4px rgba(0,0,0,.5)}
+.recinfo{flex:1;min-width:0}
+.recinfo .t{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.recinfo .d{font-size:11px;color:var(--ink-faint);margin-top:3px}
+.tag{font-size:10.5px;padding:4px 10px;border-radius:99px;font-weight:700;flex:0 0 auto}
+.tag.ok{background:rgba(52,224,161,.16);color:var(--ok);border:1px solid rgba(52,224,161,.4)}
+.tag.wait{background:rgba(255,196,94,.14);color:var(--warn);border:1px solid rgba(255,196,94,.4)}
+.pbar{height:14px;border-radius:99px;background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.18);overflow:hidden;position:relative;
+  box-shadow:inset 0 2px 5px rgba(0,0,0,.35)}
+.pbar .fill{height:100%;width:0;border-radius:99px;position:relative;overflow:hidden;
+  background:linear-gradient(90deg,#5b8cff,#5ee6ff,#a78bfa);background-size:200% auto;
+  animation:btnFlow 3s linear infinite;transition:width .8s cubic-bezier(.3,.8,.3,1)}
+.pbar .fill::after{content:"";position:absolute;inset:0;
+  background:linear-gradient(110deg,transparent 30%,rgba(255,255,255,.6) 50%,transparent 70%);
+  transform:translateX(-110%);animation:shine 2.2s ease-in-out infinite}
+.avatrow{display:flex;align-items:center;gap:12px}
+.avatar{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:20px;font-weight:800;color:#fff;flex:0 0 auto;
+  background:linear-gradient(135deg,#5b8cff,#a78bfa);
+  border:2px solid transparent;
+  background-clip:padding-box;position:relative;
+  box-shadow:0 0 0 2px rgba(94,230,255,.5),0 6px 18px rgba(91,140,255,.4)}
+.badge{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;
+  padding:5px 12px;border-radius:99px;
+  background:linear-gradient(120deg,rgba(255,196,94,.25),rgba(255,122,158,.25));
+  border:1px solid rgba(255,196,94,.5);color:#ffe3b3}
+.banner{display:flex;gap:12px;align-items:flex-start;padding:13px 14px;border-radius:16px;
+  background:linear-gradient(135deg,rgba(94,230,255,.14),rgba(167,139,250,.1));
+  border:1px solid rgba(94,230,255,.35);
+  -webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.3)}
+.banner .x{margin-left:auto;border:0;background:none;color:var(--ink-faint);font-size:15px;cursor:pointer}
+.statgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.stat{padding:14px;border-radius:16px;text-align:center;
+  background:linear-gradient(135deg,rgba(255,255,255,.1),rgba(255,255,255,.03));
+  border:1px solid rgba(255,255,255,.2);box-shadow:inset 0 1px 0 rgba(255,255,255,.25)}
+.stat .n{font-size:24px;font-weight:800;
+  background:linear-gradient(100deg,#fff,var(--accent));-webkit-background-clip:text;background-clip:text;color:transparent}
+.stat .l{font-size:11px;color:var(--ink-faint);margin-top:5px}
+.imgcard{border-radius:16px;overflow:hidden;border:1px solid rgba(255,255,255,.22);position:relative}
+.imgcard .art{height:130px;background:
+  radial-gradient(circle at 20% 30%,rgba(94,230,255,.5),transparent 55%),
+  radial-gradient(circle at 80% 70%,rgba(167,139,250,.55),transparent 55%),
+  radial-gradient(circle at 55% 55%,rgba(43,92,255,.5),transparent 60%),#101a38;
+  position:relative;overflow:hidden}
+.imgcard .art::after{content:"";position:absolute;inset:0;
+  background:linear-gradient(115deg,transparent 35%,rgba(255,255,255,.22) 48%,transparent 60%)}
+.imgcard .cap{padding:11px 13px;font-size:12.5px;font-weight:600;display:flex;justify-content:space-between;align-items:center}
+.imgcard .cap span:last-child{font-size:11px;color:var(--ink-faint);font-weight:400}
+
+/* ---- 反馈 ---- */
+.toast{
+  position:fixed;left:50%;transform:translateX(-50%) translateY(-24px);z-index:100;
+  padding:12px 22px;border-radius:99px;font-size:13px;font-weight:600;color:#fff;white-space:nowrap;
+  background:linear-gradient(135deg,rgba(40,52,88,.85),rgba(20,28,54,.85));
+  -webkit-backdrop-filter:blur(20px) saturate(170%);backdrop-filter:blur(20px) saturate(170%);
+  border:1px solid rgba(255,255,255,.35);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.4),0 12px 30px rgba(2,6,20,.55);
+  opacity:0;pointer-events:none;transition:opacity .3s,transform .3s;
+}
+.toast.top{top:20px}.toast.bottom{bottom:96px}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.modal-mask{position:fixed;inset:0;z-index:90;background:rgba(4,7,16,.55);
+  -webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);
+  display:none;align-items:center;justify-content:center;padding:30px}
+.modal-mask.show{display:flex}
+.modal{width:100%;max-width:320px;animation:popIn .3s cubic-bezier(.5,1.4,.6,1)}
+@keyframes popIn{from{transform:scale(.85);opacity:0}to{transform:scale(1);opacity:1}}
+.modal .btnrow{display:flex;gap:10px;margin-top:14px}
+.modal .btnrow .btn{flex:1;padding:11px 0}
+.spinner{width:52px;height:52px;border-radius:50%;margin:6px auto;
+  border:4px solid rgba(255,255,255,.15);border-top-color:var(--accent);
+  animation:spin 1s linear infinite;box-shadow:0 0 18px rgba(94,230,255,.3)}
+@keyframes spin{to{transform:rotate(360deg)}}
+.success{width:74px;height:74px;margin:4px auto;display:block}
+.success circle{stroke:url(#okg);stroke-width:5;fill:none;stroke-dasharray:220;stroke-dashoffset:220}
+.success path{stroke:#34e0a1;stroke-width:6;fill:none;stroke-linecap:round;stroke-linejoin:round;
+  stroke-dasharray:60;stroke-dashoffset:60}
+.success.play circle{animation:draw .7s ease forwards}
+.success.play path{animation:draw .5s .55s ease forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+.sheet-mask{position:fixed;inset:0;z-index:90;background:rgba(4,7,16,.5);display:none}
+.sheet-mask.show{display:block}
+.sheet{position:fixed;left:0;right:0;bottom:0;z-index:95;max-width:430px;margin:0 auto;
+  border-radius:26px 26px 0 0;padding:14px 18px 34px;
+  background:linear-gradient(160deg,rgba(38,50,86,.92),rgba(14,20,38,.94));
+  -webkit-backdrop-filter:blur(28px) saturate(180%);backdrop-filter:blur(28px) saturate(180%);
+  border:1px solid rgba(255,255,255,.25);border-bottom:0;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 -14px 40px rgba(2,6,20,.6);
+  transform:translateY(105%);transition:transform .38s cubic-bezier(.5,1,.4,1)}
+.sheet.show{transform:translateY(0)}
+.sheet .grab{width:44px;height:5px;border-radius:99px;background:rgba(255,255,255,.3);margin:0 auto 14px}
+.sheetopt{display:flex;align-items:center;gap:12px;width:100%;text-align:left;
+  border:0;background:none;color:var(--ink);font-size:14px;font-weight:600;font-family:inherit;
+  padding:13px 6px;cursor:pointer;border-bottom:1px solid rgba(255,255,255,.09)}
+.sheetopt:last-child{border-bottom:0}
+.sheetopt .em{font-size:19px}
+
+/* ---- 代码片段 ---- */
+.code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:11px;line-height:1.75;
+  background:rgba(2,6,16,.55);border:1px solid rgba(255,255,255,.14);border-radius:12px;
+  padding:13px;color:#bfe9ff;overflow-x:auto;white-space:pre;margin-bottom:10px}
+.code .k{color:#a78bfa}.code .v{color:#7df3ff}
+.swatchrow{display:flex;gap:10px;flex-wrap:wrap}
+.swatch{flex:1;min-width:70px;border-radius:14px;padding:10px 8px;text-align:center;
+  border:1px solid rgba(255,255,255,.2);font-size:10.5px;color:var(--ink-dim);
+  -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
+.swatch b{display:block;font-size:12px;color:var(--ink);margin-bottom:4px}
+.paramrow{display:flex;justify-content:space-between;align-items:center;font-size:12.5px;
+  padding:9px 2px;border-bottom:1px solid rgba(255,255,255,.09)}
+.paramrow:last-child{border-bottom:0}
+.paramrow code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11px;color:var(--accent)}
+.navgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.navbtn{border:1px solid rgba(255,255,255,.22);border-radius:14px;padding:13px 10px;cursor:pointer;
+  background:linear-gradient(135deg,rgba(255,255,255,.1),rgba(255,255,255,.03));
+  color:var(--ink);font-family:inherit;font-size:12.5px;font-weight:600;
+  -webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);transition:transform .15s}
+.navbtn:active{transform:scale(.95)}
+.navbtn .em{font-size:20px;display:block;margin-bottom:6px}
+.center{text-align:center}
+.mt{margin-top:12px}.rowflex{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.hint{font-size:11px;color:var(--ink-faint);margin-top:10px;line-height:1.6}
+</style>
+</head>
+<body>
+<div class="blobs"><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div></div>
+<div class="vignette"></div>
+
+<div class="page">
+  <div class="hero">
+    <span class="kicker">K07 · UI COMPONENT KIT</span>
+    <h1>液态玻璃 Liquid Glass</h1>
+    <p>动态玻璃 · 折射高光 · 流动光泽 —— 比玻璃拟态更进一步：高光会动，光泽会流动。文案围绕「懒得找了」App：去水印解析 / 站点导航 / 工时打卡。</p>
+  </div>
+
+  <!-- ============ TAB 0 总览 ============ -->
+  <div class="tabpane" id="pane0">
+    <div class="gcard">
+      <div class="card-title"><span class="dot"></span>风格介绍</div>
+      <div class="card-sub">液态玻璃 = 深色底 + 真实模糊 + 会流动的光。四大识别点：</div>
+      <div class="paramrow"><span>🌊 动态玻璃</span><code>blur(22px) saturate(170%)</code></div>
+      <div class="paramrow"><span>✨ 折射高光</span><code>115° 白色斜向高光带</code></div>
+      <div class="paramrow"><span>💧 流动渐变光泽</span><code>shimmer 扫过动画</code></div>
+      <div class="paramrow"><span>🪞 镜面描边</span><code>双层 1px 渐变边框</code></div>
+    </div>
+    <div class="gcard">
+      <div class="card-title"><span class="dot"></span>玻璃质感色板</div>
+      <div class="card-sub">深色底 #0a0e1a 上的光斑与渐变</div>
+      <div class="swatchrow">
+        <div class="swatch" style="background:rgba(43,92,255,.35)"><b>电光蓝</b>#2b5cff</div>
+        <div class="swatch" style="background:rgba(139,61,255,.35)"><b>霓紫</b>#8b3dff</div>
+        <div class="swatch" style="background:rgba(0,194,216,.3)"><b>冰青</b>#00c2d8</div>
+        <div class="swatch" style="background:rgba(125,243,255,.3)"><b>流光白</b>#7df3ff</div>
+      </div>
+    </div>
+    <div class="gcard">
+      <div class="card-title"><span class="dot"></span>质感参数</div>
+      <div class="card-sub">拖动滑杆，实时感受玻璃参数变化</div>
+      <div class="field"><label>模糊度 <span id="bv" style="color:var(--accent)">22</span>px</label>
+        <input type="range" class="slider" id="blurRange" min="4" max="40" value="22"></div>
+      <div class="field" style="margin-bottom:2px"><label>透明度 <span id="ov" style="color:var(--accent)">13</span>%</label>
+        <input type="range" class="slider" id="opRange" min="4" max="40" value="13"></div>
+      <div class="hint">参数实时作用于本页所有玻璃卡片 —— 这就是液态玻璃的"可调质感"。</div>
+    </div>
+    <div class="gcard">
+      <div class="card-title"><span class="dot"></span>按钮三态一览</div>
+      <div class="card-sub">主按钮 / 描边按钮 / 禁用态</div>
+      <div class="rowflex">
+        <button class="btn small" onclick="toast('开始解析链接…','top')">开始解析</button>
+        <button class="btn ghost small" onclick="toast('已复制分享链接','top')">复制链接</button>
+        <button class="btn small" disabled>解析中…</button>
+      </div>
+    </div>
+    <div class="gcard">
+      <div class="card-title"><span class="dot"></span>用法代码片段</div>
+      <div class="card-sub">一块液态玻璃卡片的核心 CSS</div>
+      <div class="code"><span class="k">.liquid-glass</span> {
+  <span class="k">background</span>: <span class="v">linear-gradient(135deg, rgba(255,255,255,.13), rgba(255,255,255,.045))</span>;
+  <span class="k">backdrop-filter</span>: <span class="v">blur(22px) saturate(170%)</span>;
+  <span class="k">border</span>: <span class="v">1px solid rgba(255,255,255,.22)</span>;
+  <span class="k">box-shadow</span>: <span class="v">inset 0 1px 0 rgba(255,255,255,.28)</span>;
+}</div>
+      <button class="btn ghost small" onclick="copyCode(this)">📋 复制代码</button>
+    </div>
+    <div class="gcard">
+      <div class="card-title"><span class="dot"></span>快速导航</div>
+      <div class="card-sub">跳转到对应分类（也支持 ?tab=0..4 深链）</div>
+      <div class="navgrid">
+        <button class="navbtn" onclick="goTab(1)"><span class="em">🔘</span>按钮</button>
+        <button class="navbtn" onclick="goTab(2)"><span class="em">📝</span>表单</button>
+        <button class="navbtn" onclick="goTab(3)"><span class="em">🪟</span>展示</button>
+        <button class="navbtn" onclick="goTab(4)"><span class="em">💬</span>反馈</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ TAB 1 按钮 ============ -->
+  <div class="tabpane" id="pane1">
+    <div class="gcard">
+      <div class="card-title"><span class="dot"></span>玻璃主按钮 · 流动光泽</div>
+      <div class="card-sub">渐变底色持续流动 + 高光带周期扫过</div>
+      <div class="center"><button class="btn block" onclick="toast('🚀 链接解析中…','top')">一键去水印解析</button></div>
+    </div>
+    <div class="gcard">
+      <div class="card-title"><span class="dot"></span>描边按钮</div>
+      <div class="card-sub">镜面描边 + 半透明玻璃底</div>
+      <div class="rowflex">
+        <button class="btn ghost" onclick="toast('已打开站点导航','bottom')">站点导航</button>
+        <button class="btn ghost small" onclick="toast('记录已导出','bottom')">导出记录</button>
+      </div>
+    </div>
+    <div class="gcard">
+      <div class="card-title"><span class="dot"></span>图标按钮</div>
+      <div class="card-sub">小尺寸玻璃icon按钮组</div>
+      <div class="rowflex">
+        <button class="iconbtn" onclick="toast('搜索站点','top')">🔍</button>
+        <button class="iconbtn" onclick="toast('开始下载','top')">⬇️</button>
+        <button class="iconbtn" onclick="toast('已收藏','top')">❤️</button>
+        <button class="iconbtn" onclick="toast('链接已复制','top')">🔗</button>
+        <button class="iconbtn" onclick="toast('分享','top')">📤</button>
+      </div>
+    </div>
+    <div class="gcard">
+      <div class="card-title"><span class="dot"></span>FAB 悬浮按钮</div>
+      <div class="card-sub">液态渐变圆形 FAB，点击打卡</div>
+      <div class="rowflex" style="justify-content:space-between">
+        <span style="font-size:12.5px;color:var(--ink-dim)">今日工时打卡：<b id="clockState" style="color:var(--accent)">未打卡</b></span>
+        <button class="fab" onclick="clockIn()">＋</button>
+      </div>
+    </div>
+    <div class="gcard">
+      <div class="card-title"><span class="dot"></span>开关 · 玻璃风</div>
+      <div class="card-sub">玻璃质感拨杆，点击切换</div>
+      <div class="setrow"><div><div class="t">粘贴自动解析</div><div class="d">复制链接后自动开始解析</div></div>
+        <button class="switch on" onclick="flipSwitch(this)" aria-label="粘贴自动解析"><span class="knob"></span></button></div>
+      <div class="setrow"><div><div class="t">解析完成提醒</div><div class="d">去水印完成后震动提醒</div></div>
+        <button class="switch" onclick="flipSwitch(this)" aria-label="解析完成提醒"><span class="knob"></span></button></div>
+    </div>
+    <div class="gcard">
+      <div class="card-title"><span class="dot"></span>分段选择器</div>
+      <div class="card-sub">玻璃胶囊 + 滑动高光 pill</div>
+      <div class="seg" id="seg1">
+        <div class="segpill"></div>
+        <button class="active" onclick="segPick('seg1',this)">去水印</button>
+        <button onclick="segPick('seg1',this)">站点导航</button>
+        <button onclick="segPick('seg1',this)">工时打卡</button>
+      </div>
+      <div class="hint" id="segHint">当前：去水印</div>
+    </div>
+  </div>
+
+  <!-- ============ TAB 2 表单 ============ -->
+  <div class="tabpane" id="pane2">
+    <div class="gcard">
+      <div class="card-title"><span class="dot"></span>玻璃输入框 · 聚焦高光</div>
+      <div class="card-sub">聚焦时边缘泛起冰青色光晕</div>
+      <div class="field"><label>视频链接</label>
+        <input class="input" id="linkInput" placeholder="粘贴抖音 / 快手 / 小红书链接…"></div>
+      <button class="btn block" onclick="parseLink()">开始解析</button>
+    </div>
+    <div class="gcard">
+      <div class="card-title"><span class="dot"></span>搜索框</div>
+      <div class="card-sub">站点导航搜索，实时过滤下方列表</div>
+      <div class="searchwrap"><span class="sicon">🔍</span>
+        <input class="input" id="siteSearch" placeholder="搜索站点：抖音 / B站 / 微博…" oninput="filterSites(this.value)"></div>
+      <div id="siteList" class="mt">
+        <div class="setrow" data-s="抖音"><div><div class="t">🎵 抖音</div><div class="d">短视频 · 去水印解析</div></div><span class="tag ok">可用</span></div>
+        <div class="setrow" data-s="快手"><div><div class="t">📹 快手</div><div class="d">短视频 · 去水印解析</div></div><span class="tag ok">可用</span></div>
+        <div class="setrow" data-s="小红书"><div><div class="t">📕 小红书</div><div class="d">图文视频 · 去水印解析</div></div><span class="tag ok">可用</span></div>
+        <div class="setrow" data-s="B站"><div><div class="t">📺 哔哩哔哩</div><div class="d">视频 · 封面提取</div></div><span class="tag wait">维护</span></div>
+      </div>
+    </div>
+    <div class="gcard">
+      <div class="card-title"><span class="dot"></span>设置列表行 · 玻璃开关</div>
+      <div class="card-sub">常用设置开关组</div>
+      <div class="setrow"><div><div class="t">高清原画下载</div><div class="d">优先下载最高清晰度</div></div>
+        <button class="switch on" onclick="flipSwitch(this)" aria-label="高清原画下载"><span class="knob"></span></button></div>
+      <div class="setrow"><div><div class="t">WiFi 下自动下载</div><div class="d">仅 WiFi 环境后台下载</div></div>
+        <button class="switch" onclick="flipSwitch(this)" aria-label="WiFi自动下载"><span class="knob"></span></button></div>
+      <div class="setrow"><div><div class="t">打卡提醒</div><div class="d">每天 9:00 提醒上班打卡</div></div>
+        <button class="switch on" onclick="flipSwitch(this)" aria-label="打卡提醒"><span class="knob"></span></button></div>
+    </div>
+    <div class="gcard">
+      <div class="card-title"><span class="dot"></span>复选框 / 单选框</div>
+      <div class="card-sub">选中态为液态渐变填充</div>
+      <div class="checkrow" style="margin-bottom:12px">
+        <label class="check"><input type="checkbox" checked><span class="box"></span>去水印</label>
+        <label class="check"><input type="checkbox"><span class="box"></span>提取音频</label>
+        <label class="check"><input type="checkbox" checked><span class="box"></span>保存封面</label>
+      </div>
+      <div class="checkrow">
+        <label class="check"><input type="radio" name="q" checked><span class="box radio"></span>高清</label>
+        <label class="check"><input type="radio" name="q"><span class="box radio"></span>标清</label>
+        <label class="check"><input type="radio" name="q"><span class="box radio"></span>流畅</label>
+      </div>
+    </div>
+    <div class="gcard">
+      <div class="card-title"><span class="dot"></span>滑杆</div>
+      <div class="card-sub">玻璃质感滑杆，拖动试试</div>
+      <div class="field"><label>下载并发数 <span id="sv" style="color:var(--accent)">3</span></label>
+        <input type="range" class="slider" min="1" max="8" value="3" oninput="document.getElementById('sv').textContent=this.value"></div>
+    </div>
+    <div class="gcard">
+      <div class="card-title"><span class="dot"></span>提交行</div>
+      <div class="card-sub">表单底部操作区</div>
+      <div class="rowflex">
+        <button class="btn ghost" style="flex:1" onclick="document.getElementById('linkInput').value='';toast('已重置表单','bottom')">重置</button>
+        <button class="btn" style="flex:2" onclick="parseLink()">提交解析</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ TAB 3 展示 ============ -->
+  <div class="tabpane" id="pane3">
+    <div class="gcard">
+      <div class="card-title"><span class="dot"></span>玻璃卡片 · 解析记录</div>
+      <div class="card-sub">点击行展开详情</div>
+      <div class="recrow" onclick="toggleRec(this)"><div class="thumb"></div>
+        <div class="recinfo"><div class="t">街头vlog_城市夜景混剪.mp4</div><div class="d">2分钟前 · 1080P · 12.4MB</div></div><span class="tag ok">成功</span></div>
+      <div class="recrow" onclick="toggleRec(this)"><div class="thumb"></div>
+        <div class="recinfo"><div class="t">美食探店_火锅测评.mp4</div><div class="d">1小时前 · 720P · 8.1MB</div></div><span class="tag ok">成功</span></div>
+      <div class="recrow" onclick="toggleRec(this)"><div class="thumb"></div>
+        <div class="recinfo"><div class="t">链接已失效_请重试</div><div class="d">3小时前 · 解析失败</div></div><span class="tag wait">失败</span></div>
+      <div class="hint" id="recHint">💡 点任意一条记录查看解析详情</div>
+    </div>
+    <div class="gcard">
+      <div class="card-title"><span class="dot"></span>液态进度条</div>
+      <div class="card-sub">流动渐变 + 高光扫过，点击开始模拟下载</div>
+      <div class="pbar"><div class="fill" id="dlFill"></div></div>
+      <div class="rowflex mt" style="justify-content:space-between">
+        <span style="font-size:12px;color:var(--ink-dim)" id="dlText">等待开始</span>
+        <button class="btn ghost small" onclick="startDl()">开始下载</button>
+      </div>
+    </div>
+    <div class="gcard">
+      <div class="card-title"><span class="dot"></span>头像 / 徽章</div>
+      <div class="card-sub">渐变光环头像 + 等级徽章</div>
+      <div class="avatrow">
+        <div class="avatar">懒</div>
+        <div style="flex:1"><div style="font-size:14px;font-weight:700">懒得找了用户</div>
+          <div style="font-size:11px;color:var(--ink-faint);margin-top:4px">累计解析 1,286 条</div></div>
+        <span class="badge">⭐ LV.6</span>
+      </div>
+    </div>
+    <div class="gcard">
+      <div class="card-title"><span class="dot"></span>通知横幅</div>
+      <div class="card-sub">玻璃拟态通知，可关闭</div>
+      <div class="banner" id="banner1"><span style="font-size:18px">🔔</span>
+        <div><div style="font-size:13px;font-weight:700">解析完成</div>
+        <div style="font-size:11.5px;color:var(--ink-dim);margin-top:3px">「街头vlog」已去水印，点击查看</div></div>
+        <button class="x" onclick="document.getElementById('banner1').style.display='none'">✕</button>
+      </div>
+    </div>
+    <div class="gcard">
+      <div class="card-title"><span class="dot"></span>统计数字卡</div>
+      <div class="card-sub">今日数据一览</div>
+      <div class="statgrid">
+        <div class="stat"><div class="n">38</div><div class="l">今日解析</div></div>
+        <div class="stat"><div class="n">1,286</div><div class="l">累计去水印</div></div>
+        <div class="stat"><div class="n">6.5h</div><div class="l">本月工时</div></div>
+        <div class="stat"><div class="n">22</div><div class="l">打卡天数</div></div>
+      </div>
+    </div>
+    <div class="gcard">
+      <div class="card-title"><span class="dot"></span>图片卡</div>
+      <div class="card-sub">光斑艺术封面 + 高光折射</div>
+      <div class="imgcard">
+        <div class="art"></div>
+        <div class="cap"><span>🎬 本周热门解析合集</span><span>128 条 ›</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ TAB 4 反馈 ============ -->
+  <div class="tabpane" id="pane4">
+    <div class="gcard">
+      <div class="card-title"><span class="dot"></span>玻璃 Toast · 顶部</div>
+      <div class="card-sub">从顶部滑入的玻璃提示</div>
+      <div class="center"><button class="btn small" onclick="toast('✅ 链接已复制到剪贴板','top')">弹出顶部 Toast</button></div>
+    </div>
+    <div class="gcard">
+      <div class="card-title"><span class="dot"></span>玻璃 Toast · 底部</div>
+      <div class="card-sub">从底部浮现的玻璃提示</div>
+      <div class="center"><button class="btn ghost small" onclick="toast('⬇️ 已加入下载队列','bottom')">弹出底部 Toast</button></div>
+    </div>
+    <div class="gcard">
+      <div class="card-title"><span class="dot"></span>确认对话框</div>
+      <div class="card-sub">毛玻璃遮罩 + 弹性弹出</div>
+      <div class="center"><button class="btn ghost small" style="color:#ffb3c8;border-color:rgba(255,122,158,.5)" onclick="openModal()">删除这条记录</button></div>
+    </div>
+    <div class="gcard">
+      <div class="card-title"><span class="dot"></span>加载动画</div>
+      <div class="card-sub">液态光环加载，点击开始 2.5 秒后停止</div>
+      <div class="center"><div class="spinner" id="spinner" style="animation-play-state:paused;opacity:.35"></div>
+        <button class="btn ghost small mt" onclick="runSpinner()">开始加载</button></div>
+    </div>
+    <div class="gcard">
+      <div class="card-title"><span class="dot"></span>成功动画</div>
+      <div class="card-sub">SVG 描边绘制对勾，点击重播</div>
+      <div class="center">
+        <svg class="success" id="okSvg" viewBox="0 0 80 80">
+          <defs><linearGradient id="okg" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#7df3ff"/><stop offset="1" stop-color="#34e0a1"/></linearGradient></defs>
+          <circle cx="40" cy="40" r="35"/><path d="M27 41 L37 51 L54 30"/>
+        </svg>
+        <div style="font-size:13px;font-weight:700;margin-top:6px">去水印成功！</div>
+        <button class="btn ghost small mt" onclick="replayOk()">重播动画</button>
+      </div>
+    </div>
+    <div class="gcard">
+      <div class="card-title"><span class="dot"></span>操作表单 Sheet</div>
+      <div class="card-sub">底部上滑的玻璃操作面板</div>
+      <div class="center"><button class="btn small" onclick="openSheet()">打开操作面板</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- 底部悬浮胶囊 Tab 栏 -->
+<nav class="tabbar" id="tabbar">
+  <div class="pill" id="tabPill"></div>
+  <button class="active" data-i="0">总览</button>
+  <button data-i="1">按钮</button>
+  <button data-i="2">表单</button>
+  <button data-i="3">展示</button>
+  <button data-i="4">反馈</button>
+</nav>
+
+<!-- Toast -->
+<div class="toast top" id="toastTop"></div>
+<div class="toast bottom" id="toastBottom"></div>
+
+<!-- 确认对话框 -->
+<div class="modal-mask" id="modalMask" onclick="if(event.target===this)closeModal()">
+  <div class="gcard modal">
+    <div class="card-title"><span class="dot"></span>删除记录？</div>
+    <div class="card-sub">「街头vlog_城市夜景混剪.mp4」将从解析记录中移除，文件保留。</div>
+    <div class="btnrow">
+      <button class="btn ghost" onclick="closeModal()">取消</button>
+      <button class="btn" style="background:linear-gradient(120deg,#ff9db8,#ff7a9e)" onclick="closeModal();toast('🗑️ 记录已删除','top')">删除</button>
+    </div>
+  </div>
+</div>
+
+<!-- 底部 Sheet -->
+<div class="sheet-mask" id="sheetMask" onclick="closeSheet()"></div>
+<div class="sheet" id="sheet">
+  <div class="grab"></div>
+  <button class="sheetopt" onclick="closeSheet();toast('⬇️ 开始下载原视频','top')"><span class="em">⬇️</span>下载原视频</button>
+  <button class="sheetopt" onclick="closeSheet();toast('🔗 分享链接已复制','top')"><span class="em">🔗</span>复制分享链接</button>
+  <button class="sheetopt" onclick="closeSheet();toast('⭐ 已加入收藏','top')"><span class="em">⭐</span>加入收藏</button>
+  <button class="sheetopt" onclick="closeSheet()" style="color:var(--ink-faint);justify-content:center">取消</button>
+</div>
+
+<script>
+/* ---------- Tab 切换 + 深链 ---------- */
+const panes=[0,1,2,3,4].map(i=>document.getElementById('pane'+i));
+const tabBtns=[...document.querySelectorAll('#tabbar button')];
+const pill=document.getElementById('tabPill');
+function movePill(btn){pill.style.width=btn.offsetWidth+'px';pill.style.transform='translateX('+btn.offsetLeft+'px)'}
+function goTab(i,push){
+  i=Math.max(0,Math.min(4,i));
+  panes.forEach((p,k)=>p.classList.toggle('active',k===i));
+  tabBtns.forEach((b,k)=>b.classList.toggle('active',k===i));
+  movePill(tabBtns[i]);
+  window.scrollTo({top:0});
+  if(push!==false){const u=new URL(location.href);u.searchParams.set('tab',i);history.replaceState(null,'',u)}
+}
+tabBtns.forEach(b=>b.addEventListener('click',()=>goTab(+b.dataset.i)));
+window.addEventListener('resize',()=>movePill(tabBtns[+new URLSearchParams(location.search).get('tab')||0]));
+(function init(){
+  const t=parseInt(new URLSearchParams(location.search).get('tab'));
+  goTab(isNaN(t)?0:t,false);
+  requestAnimationFrame(()=>movePill(tabBtns[document.querySelector('#tabbar button.active').dataset.i]));
+})();
+
+/* ---------- Toast ---------- */
+let toastTimer={};
+function toast(msg,pos){
+  const el=pos==='top'?document.getElementById('toastTop'):document.getElementById('toastBottom');
+  el.textContent=msg;el.classList.add('show');
+  clearTimeout(toastTimer[pos]);
+  toastTimer[pos]=setTimeout(()=>el.classList.remove('show'),2200);
+}
+
+/* ---------- 开关 ---------- */
+function flipSwitch(el){el.classList.toggle('on')}
+
+/* ---------- 分段选择器 ---------- */
+function segPick(id,btn){
+  const seg=document.getElementById(id);
+  const btns=[...seg.querySelectorAll('button')];
+  btns.forEach(b=>b.classList.remove('active'));btn.classList.add('active');
+  const p=seg.querySelector('.segpill');
+  p.style.width=btn.offsetWidth+'px';p.style.transform='translateX('+(btn.offsetLeft-4)+'px)';
+  document.getElementById('segHint').textContent='当前：'+btn.textContent;
+}
+window.addEventListener('load',()=>{
+  const seg=document.getElementById('seg1');const b=seg.querySelector('button.active');
+  const p=seg.querySelector('.segpill');p.style.width=b.offsetWidth+'px';p.style.transform='translateX('+(b.offsetLeft-4)+'px)';
+});
+
+/* ---------- 总览：玻璃参数 ---------- */
+const blurR=document.getElementById('blurRange'),opR=document.getElementById('opRange');
+function applyGlass(){
+  const b=blurR.value,o=opR.value;
+  document.getElementById('bv').textContent=b;document.getElementById('ov').textContent=o;
+  document.querySelectorAll('.gcard').forEach(c=>{
+    c.style.backdropFilter='blur('+b+'px) saturate(170%)';
+    c.style.webkitBackdropFilter='blur('+b+'px) saturate(170%)';
+    c.style.background='linear-gradient(135deg, rgba(255,255,255,'+(o/100)+'), rgba(255,255,255,'+(o/320)+') 55%, rgba(255,255,255,'+(o/140)+'))';
+  });
+}
+blurR.addEventListener('input',applyGlass);opR.addEventListener('input',applyGlass);
+function copyCode(btn){
+  const code=btn.parentElement.querySelector('.code').innerText;
+  (navigator.clipboard?navigator.clipboard.writeText(code):Promise.reject()).then(
+    ()=>toast('📋 代码已复制','top'),()=>toast('📋 复制失败，请手动复制','top'));
+}
+
+/* ---------- 打卡 ---------- */
+let clocked=false;
+function clockIn(){
+  clocked=!clocked;
+  document.getElementById('clockState').textContent=clocked?'已打卡 09:02':'未打卡';
+  toast(clocked?'✅ 上班打卡成功':'↩️ 已撤销打卡','top');
+}
+
+/* ---------- 表单 ---------- */
+function parseLink(){
+  const v=document.getElementById('linkInput').value.trim();
+  toast(v?'🚀 正在解析链接…':'⚠️ 请先粘贴视频链接','top');
+}
+function filterSites(q){
+  q=q.trim();
+  document.querySelectorAll('#siteList .setrow').forEach(r=>{
+    r.style.display=r.dataset.s.includes(q)?'':'none';
+  });
+}
+
+/* ---------- 展示 ---------- */
+function toggleRec(row){
+  const t=row.querySelector('.t').textContent,d=row.querySelector('.d').textContent;
+  document.getElementById('recHint').textContent='📌 '+t+' ｜ '+d;
+  toast('已选中该记录','bottom');
+}
+let dlTimer=null;
+function startDl(){
+  const fill=document.getElementById('dlFill'),txt=document.getElementById('dlText');
+  clearInterval(dlTimer);let p=0;fill.style.width='0%';
+  dlTimer=setInterval(()=>{p=Math.min(100,p+Math.random()*14);
+    fill.style.width=p+'%';txt.textContent='下载中 '+Math.floor(p)+'%';
+    if(p>=100){clearInterval(dlTimer);txt.textContent='下载完成 ✅';toast('✅ 视频已保存到相册','top')}},380);
+}
+
+/* ---------- 反馈 ---------- */
+function openModal(){document.getElementById('modalMask').classList.add('show')}
+function closeModal(){document.getElementById('modalMask').classList.remove('show')}
+function runSpinner(){
+  const s=document.getElementById('spinner');
+  s.style.animationPlayState='running';s.style.opacity='1';
+  setTimeout(()=>{s.style.animationPlayState='paused';s.style.opacity='.35';toast('✅ 加载完成','bottom')},2500);
+}
+function replayOk(){
+  const svg=document.getElementById('okSvg');
+  svg.classList.remove('play');void svg.getBoundingClientRect();svg.classList.add('play');
+}
+window.addEventListener('load',()=>replayOk());
+function openSheet(){
+  document.getElementById('sheet').classList.add('show');
+  document.getElementById('sheetMask').classList.add('show');
+}
+function closeSheet(){
+  document.getElementById('sheet').classList.remove('show');
+  document.getElementById('sheetMask').classList.remove('show');
+}
+</script>
+</body>
+</html>
