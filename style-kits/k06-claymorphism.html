@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>粘土拟态 Claymorphism · 组件库</title>
+<style>
+/* ============ 粘土拟态 Token ============ */
+:root{
+  --bg:#EDE7F4;
+  --ink:#54445C;
+  --ink-soft:#8A7A92;
+  --paper:#FFFDFE;
+  /* 糖果色 */
+  --pink:#FFB7C9;  --pink-t:rgba(255,143,173,.45);
+  --yellow:#FFE38E; --yellow-t:rgba(255,193,60,.45);
+  --blue:#A9D7FF;  --blue-t:rgba(123,192,255,.45);
+  --green:#B9E8BB; --green-t:rgba(143,214,148,.45);
+  --purple:#D3BEFF;--purple-t:rgba(183,155,255,.45);
+  --orange:#FFC79E;--orange-t:rgba(255,170,110,.45);
+}
+*{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0; padding:20px 16px 110px;
+  background:var(--bg);
+  background-image:radial-gradient(circle at 15% 10%, rgba(255,183,201,.25), transparent 40%),
+                   radial-gradient(circle at 85% 25%, rgba(169,215,255,.25), transparent 40%),
+                   radial-gradient(circle at 50% 90%, rgba(211,190,255,.2), transparent 45%);
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  color:var(--ink);
+}
+h1,h2,h3,p{margin:0;}
+button{font-family:inherit;}
+
+/* 通用粘土卡片 */
+.kc{
+  background:var(--paper);
+  border-radius:28px;
+  padding:18px;
+  margin-bottom:18px;
+  box-shadow:
+    inset 2px 2px 5px rgba(255,255,255,.95),
+    inset -3px -3px 6px rgba(120,110,140,.08),
+    8px 12px 22px rgba(150,140,180,.28);
+}
+.kc > .t{font-size:15px; font-weight:800; margin-bottom:4px;}
+.kc > .d{font-size:12px; color:var(--ink-soft); margin-bottom:14px;}
+.kc > .d b{color:var(--ink);}
+
+/* 顶部 Hero */
+.hero{
+  border-radius:34px; padding:28px 22px; margin-bottom:22px; text-align:center;
+  background:linear-gradient(160deg,var(--pink),var(--purple));
+  box-shadow:
+    inset 3px 3px 8px rgba(255,255,255,.55),
+    inset -4px -4px 10px rgba(120,60,110,.12),
+    12px 18px 30px rgba(255,143,173,.4);
+}
+.hero h1{font-size:32px; letter-spacing:4px; color:#fff; text-shadow:2px 3px 0 rgba(150,60,100,.25);}
+.hero p{font-size:12px; color:#fff; opacity:.9; margin-top:6px; letter-spacing:2px;}
+.hero .chips{display:flex; gap:8px; justify-content:center; margin-top:14px; flex-wrap:wrap;}
+.hero .chips span{
+  font-size:11px; font-weight:700; color:#6B3A52; background:rgba(255,255,255,.75);
+  border-radius:999px; padding:6px 12px;
+  box-shadow:inset 1px 1px 2px rgba(255,255,255,.9), 2px 4px 8px rgba(150,60,100,.2);
+}
+
+.tab{display:none;}
+.tab.on{display:block; animation:fade .25s;}
+@keyframes fade{from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:none;}}
+.sec-h{display:flex; align-items:center; gap:10px; margin:6px 2px 14px;}
+.sec-h .dot{width:14px; height:14px; border-radius:50%;
+  background:radial-gradient(circle at 35% 30%, #fff, var(--pink) 75%);
+  box-shadow:inset -1px -1px 2px rgba(0,0,0,.1), 2px 3px 6px rgba(255,143,173,.5);}
+.sec-h h2{font-size:19px;}
+.sec-h small{font-size:11px; color:var(--ink-soft); letter-spacing:2px;}
+
+/* ============ 按钮 ============ */
+.clay-btn{
+  --c:var(--pink); --cs:var(--pink-t); --fg:#5A2E3E;
+  background:linear-gradient(180deg, color-mix(in srgb, var(--c) 100%, white 8%), var(--c));
+  background:var(--c);
+  border:none; border-radius:999px; padding:14px 28px;
+  font-size:15px; font-weight:800; color:var(--fg);
+  box-shadow:
+    inset 2px 2px 4px rgba(255,255,255,.6),
+    inset -3px -3px 6px rgba(0,0,0,.08),
+    6px 9px 16px var(--cs);
+  cursor:pointer; transition:transform .08s, box-shadow .08s;
+}
+.clay-btn:active{
+  transform:translateY(3px) scale(.97);
+  box-shadow:
+    inset 5px 5px 10px rgba(0,0,0,.14),
+    inset -2px -2px 5px rgba(255,255,255,.5),
+    2px 3px 6px var(--cs);
+}
+.clay-btn.sm{padding:10px 20px; font-size:13px;}
+.clay-btn[disabled]{opacity:.55; cursor:not-allowed; transform:none;
+  box-shadow:inset 3px 3px 6px rgba(0,0,0,.08), inset -2px -2px 4px rgba(255,255,255,.5), 2px 3px 6px rgba(150,140,180,.2);}
+.clay-btn.ghost{background:var(--paper); --cs:rgba(150,140,180,.25); --fg:var(--ink);}
+
+/* 圆形图标按钮 */
+.icbtn{
+  width:56px; height:56px; border-radius:50%; border:none; cursor:pointer;
+  font-size:22px; color:var(--fg,#5A2E3E);
+  background:var(--c,var(--blue));
+  box-shadow:
+    inset 2px 2px 4px rgba(255,255,255,.65),
+    inset -3px -3px 6px rgba(0,0,0,.08),
+    6px 8px 14px var(--cs,var(--blue-t));
+  transition:transform .08s, box-shadow .08s;
+  display:inline-flex; align-items:center; justify-content:center;
+}
+.icbtn:active{
+  transform:translateY(2px) scale(.94);
+  box-shadow:inset 4px 4px 8px rgba(0,0,0,.14), inset -2px -2px 4px rgba(255,255,255,.5), 2px 3px 6px var(--cs,var(--blue-t));
+}
+
+/* ============ 粘土开关（position:relative + 固定宽高） ============ */
+.cswitch{position:relative; width:58px; height:34px; flex:none; display:inline-block;}
+.cswitch input{position:absolute; inset:0; width:100%; height:100%; margin:0; opacity:0; cursor:pointer; z-index:2;}
+.cswitch .tr{
+  position:absolute; inset:0; border-radius:999px; background:#E2D9EC;
+  box-shadow:inset 3px 3px 6px rgba(90,70,100,.2), inset -2px -2px 4px rgba(255,255,255,.75);
+  transition:background .2s;
+}
+.cswitch .kn{
+  position:absolute; top:4px; left:4px; width:26px; height:26px; border-radius:50%;
+  background:radial-gradient(circle at 35% 30%, #fff, #F1EAF7 75%);
+  box-shadow:inset -2px -2px 3px rgba(120,100,140,.15), 3px 4px 8px rgba(120,100,140,.3);
+  transition:left .18s cubic-bezier(.5,1.4,.5,1);
+}
+.cswitch input:checked ~ .tr{background:var(--c,var(--green));}
+.cswitch input:checked ~ .kn{left:28px;}
+.rowline{display:flex; align-items:center; justify-content:space-between; padding:10px 2px;}
+.rowline .lab{font-size:14px; font-weight:700;}
+.rowline .sub{font-size:11px; color:var(--ink-soft); margin-top:2px;}
+
+/* ============ 分段选择器 ============ */
+.seg{position:relative; display:flex; background:#E9E1F2; border-radius:999px; padding:5px;
+  box-shadow:inset 3px 3px 6px rgba(90,70,100,.16), inset -2px -2px 4px rgba(255,255,255,.75);}
+.seg .pill{position:absolute; top:5px; bottom:5px; left:5px; width:0; border-radius:999px;
+  background:var(--c,var(--yellow));
+  box-shadow:inset 2px 2px 3px rgba(255,255,255,.6), inset -2px -2px 3px rgba(0,0,0,.08), 3px 5px 10px var(--cs,var(--yellow-t));
+  transition:left .22s cubic-bezier(.5,1.3,.4,1), width .22s;}
+.seg button{position:relative; z-index:1; flex:1; border:none; background:none; padding:11px 0;
+  border-radius:999px; font-size:13px; font-weight:800; color:var(--ink-soft); cursor:pointer;}
+.seg button.on{color:#5A3A20;}
+
+/* 药丸标签 */
+.tags{display:flex; flex-wrap:wrap; gap:10px;}
+.tag{
+  border:none; border-radius:999px; padding:10px 18px; font-size:13px; font-weight:700; color:var(--ink);
+  background:var(--paper); cursor:pointer;
+  box-shadow:inset 2px 2px 3px rgba(255,255,255,.9), inset -2px -2px 3px rgba(120,110,140,.1), 4px 6px 10px rgba(150,140,180,.25);
+  transition:all .15s;
+}
+.tag.on{
+  background:var(--c,var(--purple)); color:#3E2A5E;
+  box-shadow:inset 3px 3px 6px rgba(0,0,0,.12), inset -2px -2px 3px rgba(255,255,255,.5), 2px 3px 6px var(--cs,var(--purple-t));
+}
+
+/* ============ 表单 ============ */
+.cinput, .cselect, textarea.cinput{
+  width:100%; border:none; outline:none; border-radius:999px; padding:15px 20px;
+  font-size:14px; font-family:inherit; color:var(--ink); background:#F4EFF9;
+  box-shadow:inset 4px 4px 8px rgba(90,70,100,.14), inset -3px -3px 6px rgba(255,255,255,.85);
+}
+textarea.cinput{border-radius:22px; resize:none;}
+.cinput:focus{background:#fff;
+  box-shadow:inset 3px 3px 6px rgba(90,70,100,.12), inset -2px -2px 4px rgba(255,255,255,.9), 0 0 0 3px var(--blue-t);}
+.cinput::placeholder{color:#B3A6BC;}
+.searchwrap{position:relative;}
+.searchwrap .ico{position:absolute; left:18px; top:50%; transform:translateY(-50%); font-size:16px;}
+.searchwrap .cinput{padding-left:44px;}
+.setrow{display:flex; align-items:center; gap:12px; padding:12px 4px; border-bottom:2px dashed rgba(150,140,180,.18);}
+.setrow:last-child{border-bottom:none;}
+.setrow .sic{width:44px; height:44px; flex:none; border-radius:16px; font-size:20px;
+  display:flex; align-items:center; justify-content:center; background:var(--c,var(--blue));
+  box-shadow:inset 2px 2px 3px rgba(255,255,255,.6), inset -2px -2px 3px rgba(0,0,0,.08), 4px 6px 10px var(--cs,var(--blue-t));}
+.setrow .st{flex:1;} .setrow .st b{font-size:14px; display:block;} .setrow .st small{font-size:11px; color:var(--ink-soft);}
+
+/* 粘土复选框 / 单选框 */
+.copt{display:flex; align-items:center; gap:12px; padding:9px 2px; font-size:14px; font-weight:700; cursor:pointer;}
+.ccheck{position:relative; width:30px; height:30px; flex:none; display:inline-block;}
+.ccheck input{position:absolute; inset:0; width:100%; height:100%; margin:0; opacity:0; cursor:pointer; z-index:2;}
+.ccheck .bx{position:absolute; inset:0; border-radius:12px; background:#EFE9F5; transition:all .15s;
+  box-shadow:inset 2px 2px 4px rgba(90,70,100,.16), inset -2px -2px 3px rgba(255,255,255,.85), 3px 4px 8px rgba(150,140,180,.25);}
+.ccheck input:checked ~ .bx{background:var(--c,var(--green));
+  box-shadow:inset 3px 3px 6px rgba(0,0,0,.14), inset -2px -2px 3px rgba(255,255,255,.5), 2px 3px 6px var(--cs,var(--green-t));}
+.ccheck .bx::after{content:''; position:absolute; left:10px; top:6px; width:6px; height:11px;
+  border:solid #fff; border-width:0 3px 3px 0; border-radius:2px;
+  transform:rotate(45deg) scale(0); transition:transform .15s;}
+.ccheck input:checked ~ .bx::after{transform:rotate(45deg) scale(1);}
+.ccheck.radio .bx{border-radius:50%;}
+.ccheck.radio .bx::after{left:8px; top:8px; width:8px; height:8px; border:none; border-radius:50%;
+  background:#fff; transform:scale(0);}
+.ccheck.radio input:checked ~ .bx::after{transform:scale(1);}
+
+/* 粘土滑杆 */
+.cslider{-webkit-appearance:none; appearance:none; width:100%; height:34px; background:transparent; cursor:pointer;}
+.cslider::-webkit-slider-runnable-track{height:16px; border-radius:999px; background:#E7DFEF;
+  box-shadow:inset 3px 3px 6px rgba(90,70,100,.18), inset -2px -2px 4px rgba(255,255,255,.85);}
+.cslider::-webkit-slider-thumb{-webkit-appearance:none; width:30px; height:30px; border-radius:50%; margin-top:-7px;
+  background:radial-gradient(circle at 35% 30%, #fff, var(--c,var(--blue)) 72%);
+  box-shadow:inset -2px -2px 4px rgba(0,0,0,.1), 3px 5px 10px var(--cs,var(--blue-t));}
+.cslider::-moz-range-track{height:16px; border-radius:999px; background:#E7DFEF;
+  box-shadow:inset 3px 3px 6px rgba(90,70,100,.18);}
+.cslider::-moz-range-thumb{width:28px; height:28px; border:none; border-radius:50%;
+  background:radial-gradient(circle at 35% 30%, #fff, var(--c,var(--blue)) 72%);
+  box-shadow:inset -2px -2px 4px rgba(0,0,0,.1), 3px 5px 10px var(--cs,var(--blue-t));}
+.slide-lab{display:flex; justify-content:space-between; font-size:12px; font-weight:700; margin-bottom:2px;}
+.slide-lab b{color:#3E6FA8;}
+
+/* ============ 展示 ============ */
+.avatar{width:74px; height:74px; border-radius:50%; flex:none; font-size:34px;
+  display:flex; align-items:center; justify-content:center;
+  background:radial-gradient(circle at 35% 30%, #fff, var(--c,var(--pink)) 78%);
+  box-shadow:inset -3px -3px 6px rgba(0,0,0,.1), 6px 9px 16px var(--cs,var(--pink-t));}
+.urow{display:flex; align-items:center; gap:14px;}
+.urow .nm{font-size:17px; font-weight:800;}
+.urow .uid{font-size:11px; color:var(--ink-soft); margin-top:3px;}
+.ustats{display:flex; gap:10px; margin-top:14px;}
+.ustat{flex:1; text-align:center; border-radius:18px; padding:10px 4px; background:#F6F1FB;
+  box-shadow:inset 2px 2px 4px rgba(90,70,100,.1), inset -2px -2px 3px rgba(255,255,255,.8);}
+.ustat b{font-size:16px; display:block;} .ustat small{font-size:10px; color:var(--ink-soft);}
+.stat3{display:flex; gap:12px;}
+.stat-tile{flex:1; border-radius:24px; padding:16px 8px; text-align:center; background:var(--c);
+  box-shadow:inset 2px 2px 4px rgba(255,255,255,.55), inset -3px -3px 6px rgba(0,0,0,.08), 7px 10px 16px var(--cs);}
+.stat-tile b{font-size:24px; display:block; color:#4A2A3A;}
+.stat-tile small{font-size:11px; font-weight:700; color:#6B4A5E;}
+.stat-tile .e{font-size:24px;}
+
+/* 播放器 */
+.player{text-align:center;}
+.cover{width:120px; height:120px; border-radius:50%; margin:6px auto 12px; font-size:52px;
+  display:flex; align-items:center; justify-content:center;
+  background:radial-gradient(circle at 35% 30%, #fff, var(--purple) 78%);
+  box-shadow:inset -4px -4px 8px rgba(0,0,0,.12), 8px 12px 20px var(--purple-t);}
+.cover.spin{animation:spin 6s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.ptitle{font-size:15px; font-weight:800;} .psub{font-size:11px; color:var(--ink-soft); margin:3px 0 10px;}
+.prog{position:relative; height:16px; border-radius:999px; background:#E7DFEF; margin:0 4px;
+  box-shadow:inset 3px 3px 6px rgba(90,70,100,.18), inset -2px -2px 4px rgba(255,255,255,.85);}
+.prog .fill{position:absolute; left:0; top:0; bottom:0; width:20%; border-radius:999px; background:var(--pink);
+  box-shadow:inset 2px 2px 3px rgba(255,255,255,.55), 2px 3px 6px var(--pink-t); transition:width .4s;}
+.prog .knob{position:absolute; top:50%; left:20%; width:26px; height:26px; border-radius:50%;
+  transform:translate(-50%,-50%); transition:left .4s;
+  background:radial-gradient(circle at 35% 30%, #fff, #FFD6E2 75%);
+  box-shadow:inset -2px -2px 3px rgba(0,0,0,.1), 3px 4px 8px var(--pink-t);}
+.ptime{display:flex; justify-content:space-between; font-size:11px; color:var(--ink-soft); margin:8px 4px 12px;}
+.pctrl{display:flex; justify-content:center; align-items:center; gap:16px;}
+
+/* 任务卡 */
+.taskbar{height:18px; border-radius:999px; background:#E7DFEF; margin-top:10px;
+  box-shadow:inset 3px 3px 6px rgba(90,70,100,.16), inset -2px -2px 4px rgba(255,255,255,.85);}
+.taskbar .fill{height:100%; width:65%; border-radius:999px; background:var(--green);
+  box-shadow:inset 2px 2px 3px rgba(255,255,255,.55), 2px 3px 6px var(--green-t);}
+
+/* 通知卡 */
+.nitem{display:flex; gap:12px; padding:12px 4px; align-items:flex-start;}
+.nitem + .nitem{border-top:2px dashed rgba(150,140,180,.18);}
+.ndot{width:44px; height:44px; flex:none; border-radius:50%; font-size:19px;
+  display:flex; align-items:center; justify-content:center; background:var(--c,var(--yellow));
+  box-shadow:inset 2px 2px 3px rgba(255,255,255,.6), inset -2px -2px 3px rgba(0,0,0,.08), 4px 6px 10px var(--cs,var(--yellow-t));}
+.nitem .nt{flex:1; font-size:13px;} .nitem .nt b{display:block; margin-bottom:2px;}
+.nitem .ntm{font-size:10px; color:var(--ink-soft); flex:none;}
+
+/* 徽章 */
+.badges{display:flex; gap:12px; flex-wrap:wrap; justify-content:center;}
+.badge{width:88px; border-radius:24px; padding:14px 6px 12px; text-align:center; background:var(--c);
+  box-shadow:inset 2px 2px 4px rgba(255,255,255,.55), inset -3px -3px 5px rgba(0,0,0,.08), 6px 8px 14px var(--cs);}
+.badge .e{font-size:30px;} .badge b{display:block; font-size:12px; margin-top:6px;} .badge small{font-size:10px; color:#6B4A5E;}
+
+/* 色板 / 圆角 / 阴影对比 */
+.swatches{display:grid; grid-template-columns:repeat(3,1fr); gap:12px;}
+.sw{border-radius:20px; padding:16px 6px 12px; text-align:center; background:var(--c);
+  box-shadow:inset 2px 2px 4px rgba(255,255,255,.55), inset -3px -3px 5px rgba(0,0,0,.08), 5px 8px 14px var(--cs);}
+.sw b{font-size:12px; display:block; color:#4A2A3A;} .sw small{font-size:10px; color:#6B4A5E;}
+.depths{display:flex; gap:12px; align-items:flex-end;}
+.dep{flex:1; border-radius:22px; padding:20px 6px; text-align:center; font-size:12px; font-weight:800; background:var(--paper);}
+.dep.d1{box-shadow:inset 2px 2px 3px rgba(255,255,255,.9), inset -2px -2px 3px rgba(120,110,140,.1), 4px 6px 10px rgba(150,140,180,.22);}
+.dep.d2{box-shadow:inset 2px 2px 4px rgba(255,255,255,.9), inset -3px -3px 5px rgba(120,110,140,.1), 8px 12px 20px rgba(255,143,173,.35);}
+.dep.d3{box-shadow:inset 3px 3px 5px rgba(255,255,255,.9), inset -4px -4px 7px rgba(120,110,140,.12), 14px 20px 30px rgba(123,192,255,.45);}
+.radii{display:flex; gap:10px; align-items:center;}
+.rad{flex:1; height:64px; background:var(--blue);
+  box-shadow:inset 2px 2px 3px rgba(255,255,255,.6), inset -2px -2px 3px rgba(0,0,0,.08), 4px 6px 10px var(--blue-t);}
+.rad.r1{border-radius:16px;} .rad.r2{border-radius:24px;} .rad.r3{border-radius:32px;} .rad.r4{border-radius:999px;}
+.radlab{display:flex; gap:10px; margin-top:6px;} .radlab span{flex:1; text-align:center; font-size:10px; color:var(--ink-soft); font-weight:700;}
+.lightdemo{display:flex; align-items:center; gap:16px;}
+.ball{width:96px; height:96px; border-radius:50%; flex:none;
+  background:radial-gradient(circle at 30% 25%, #fff 0%, var(--orange) 45%, #F5A76C 100%);
+  box-shadow:inset -6px -8px 14px rgba(120,50,20,.18), 10px 14px 24px var(--orange-t);}
+.scenechips{display:flex; flex-wrap:wrap; gap:8px;}
+.scenechips span{font-size:12px; font-weight:700; border-radius:999px; padding:8px 14px; background:#F4EFF9; color:var(--ink);
+  box-shadow:inset 2px 2px 3px rgba(255,255,255,.9), inset -2px -2px 3px rgba(120,110,140,.1), 3px 5px 8px rgba(150,140,180,.22);}
+
+/* ============ 反馈 ============ */
+.toast{position:fixed; left:50%; bottom:104px; z-index:90; max-width:88vw;
+  transform:translateX(-50%) translateY(16px); opacity:0; pointer-events:none; transition:all .25s;
+  background:var(--paper); border-radius:999px; padding:13px 24px; font-size:13px; font-weight:800; color:var(--ink);
+  box-shadow:inset 2px 2px 4px rgba(255,255,255,.9), 8px 12px 22px rgba(150,140,180,.35), 0 0 0 4px var(--tc,var(--green-t));}
+.toast.show{transform:translateX(-50%) translateY(0); opacity:1;}
+.overlay{position:fixed; inset:0; z-index:80; background:rgba(84,68,92,.4);
+  display:flex; align-items:center; justify-content:center; padding:32px;
+  opacity:0; pointer-events:none; transition:opacity .2s;}
+.overlay.show{opacity:1; pointer-events:auto;}
+.dialog{background:#FFF7FA; border-radius:32px; padding:26px 22px; width:100%; max-width:330px; text-align:center;
+  transform:scale(.85); transition:transform .2s cubic-bezier(.5,1.4,.5,1);
+  box-shadow:inset 3px 3px 6px rgba(255,255,255,.9), inset -3px -3px 6px rgba(200,150,170,.14), 12px 18px 32px rgba(150,110,140,.4);}
+.overlay.show .dialog{transform:scale(1);}
+.dialog .e{font-size:44px;}
+.dialog h3{font-size:17px; margin:10px 0 6px;}
+.dialog p{font-size:12px; color:var(--ink-soft); margin-bottom:18px; line-height:1.7;}
+.dbtns{display:flex; gap:10px;}
+.dbtns .clay-btn{flex:1; padding:12px 0; font-size:14px;}
+.sheet{align-items:flex-end; padding:0 0 96px;}
+.asheet{background:var(--paper); border-radius:32px 32px 0 0; width:100%; padding:14px 20px 22px;
+  transform:translateY(40px); transition:transform .22s;
+  box-shadow:inset 0 3px 6px rgba(255,255,255,.9), 0 -10px 30px rgba(120,100,150,.3);}
+.overlay.show .asheet{transform:none;}
+.asheet .grip{width:46px; height:6px; border-radius:999px; background:#DDD2E8; margin:0 auto 12px;
+  box-shadow:inset 1px 1px 2px rgba(90,70,100,.2);}
+.aitem{display:flex; align-items:center; gap:12px; width:100%; border:none; background:none; cursor:pointer;
+  padding:13px 6px; font-size:14px; font-weight:700; color:var(--ink); text-align:left;}
+.aitem + .aitem{border-top:2px dashed rgba(150,140,180,.18);}
+.aitem .e{font-size:20px;}
+.aitem.cancel{color:#C0526B; justify-content:center;}
+
+/* 加载小球（有限次动画，结束后静止） */
+.loader{display:flex; gap:14px; justify-content:center; padding:14px 0 6px;}
+.loader .b{width:26px; height:26px; border-radius:50%;
+  background:radial-gradient(circle at 35% 30%, #fff, var(--c) 78%);
+  box-shadow:inset -2px -2px 4px rgba(0,0,0,.12), 3px 5px 10px var(--cs);}
+.loader.go .b{animation:bnc .55s ease-in-out 4;}
+.loader.go .b:nth-child(1){--c:var(--pink); --cs:var(--pink-t); animation-delay:0s;}
+.loader.go .b:nth-child(2){--c:var(--yellow); --cs:var(--yellow-t); animation-delay:.09s;}
+.loader.go .b:nth-child(3){--c:var(--blue); --cs:var(--blue-t); animation-delay:.18s;}
+@keyframes bnc{0%,100%{transform:translateY(0);} 50%{transform:translateY(-24px);}}
+.loader .b:nth-child(1){--c:var(--pink); --cs:var(--pink-t);}
+.loader .b:nth-child(2){--c:var(--yellow); --cs:var(--yellow-t);}
+.loader .b:nth-child(3){--c:var(--blue); --cs:var(--blue-t);}
+
+.result{display:flex; gap:12px; align-items:center; border-radius:22px; padding:14px; margin-bottom:10px;}
+.result:last-child{margin-bottom:0;}
+.result .e{width:52px; height:52px; flex:none; border-radius:50%; font-size:24px;
+  display:flex; align-items:center; justify-content:center; background:var(--c);
+  box-shadow:inset 2px 2px 3px rgba(255,255,255,.6), inset -2px -2px 3px rgba(0,0,0,.08), 4px 6px 10px var(--cs);}
+.result b{font-size:14px; display:block;} .result small{font-size:11px; color:#6B4A5E;}
+.empty{text-align:center; padding:8px 0 4px;}
+.empty .ec{width:110px; height:110px; border-radius:50%; margin:0 auto 14px; font-size:52px;
+  display:flex; align-items:center; justify-content:center;
+  background:radial-gradient(circle at 35% 30%, #fff, var(--blue) 78%);
+  box-shadow:inset -4px -5px 10px rgba(0,0,0,.1), 8px 12px 20px var(--blue-t);}
+.empty p{font-size:13px; color:var(--ink-soft); margin-bottom:14px;}
+
+/* ============ 底部悬浮胶囊 Tab 栏 ============ */
+.tabbar{position:fixed; left:18px; right:18px; bottom:18px; height:70px; z-index:60;
+  border-radius:999px; display:flex; padding:8px; background:rgba(255,253,254,.9);
+  box-shadow:inset 2px 2px 5px rgba(255,255,255,.95), inset -2px -2px 4px rgba(120,110,140,.08), 8px 14px 26px rgba(120,100,150,.35);}
+.tabbar .ind{position:absolute; top:8px; bottom:8px; left:8px; width:calc((100% - 16px)/5); border-radius:999px;
+  background:linear-gradient(180deg, var(--pink), #FF9FB8);
+  box-shadow:inset 2px 2px 4px rgba(255,255,255,.6), inset -2px -2px 4px rgba(150,50,90,.15), 4px 6px 12px rgba(255,143,173,.5);
+  transition:transform .28s cubic-bezier(.5,1.35,.4,1);}
+.tabbar button{position:relative; z-index:1; flex:1; border:none; background:none; cursor:pointer;
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px;
+  font-size:11px; font-weight:800; color:var(--ink-soft); transition:color .2s;}
+.tabbar button .e{font-size:19px;}
+.tabbar button.on{color:#5A1F36;}
+.btnrow{display:flex; gap:10px; flex-wrap:wrap;}
+.center{text-align:center;}
+.mt{margin-top:12px;}
+</style>
+</head>
+<body>
+
+<!-- 顶部 Hero -->
+<div class="hero">
+  <h1>粘土拟态</h1>
+  <p>CLAYMORPHISM · 糖果质感组件库</p>
+  <div class="chips"><span>30 个组件</span><span>5 个 Tab</span><span>纯手写 CSS</span><span>零框架</span></div>
+</div>
+
+<!-- ============ Tab 0 · 总览 ============ -->
+<section class="tab" id="tab0">
+  <div class="sec-h"><span class="dot"></span><h2>总览</h2><small>OVERVIEW</small></div>
+
+  <div class="kc">
+    <div class="t">01 · 风格介绍</div>
+    <div class="d">像<b>橡皮泥</b>一样圆滚滚的界面：明亮糖果色 + 大圆角 + 厚实柔和的阴影，高光永远打在左上角，按钮按下去会<b>「捏扁」</b>。</div>
+    <div class="btnrow">
+      <button class="clay-btn sm" style="--c:var(--pink);--cs:var(--pink-t)">捏我试试</button>
+      <button class="clay-btn sm" style="--c:var(--blue);--cs:var(--blue-t)">再捏我</button>
+    </div>
+  </div>
+
+  <div class="kc">
+    <div class="t">02 · 糖果色板</div>
+    <div class="d">6 颗糖果色，阴影自带颜色 tint</div>
+    <div class="swatches">
+      <div class="sw" style="--c:var(--pink);--cs:var(--pink-t)"><b>奶油粉</b><small>#FFB7C9</small></div>
+      <div class="sw" style="--c:var(--yellow);--cs:var(--yellow-t)"><b>芝士黄</b><small>#FFE38E</small></div>
+      <div class="sw" style="--c:var(--blue);--cs:var(--blue-t)"><b>薄荷蓝</b><small>#A9D7FF</small></div>
+      <div class="sw" style="--c:var(--green);--cs:var(--green-t)"><b>抹茶绿</b><small>#B9E8BB</small></div>
+      <div class="sw" style="--c:var(--purple);--cs:var(--purple-t)"><b>葡萄紫</b><small>#D3BEFF</small></div>
+      <div class="sw" style="--c:var(--orange);--cs:var(--orange-t)"><b>橘子橙</b><small>#FFC79E</small></div>
+    </div>
+  </div>
+
+  <div class="kc">
+    <div class="t">03 · 阴影层次对比</div>
+    <div class="d">内高光 + 外投影三层叠加，层级越深投影越重</div>
+    <div class="depths">
+      <div class="dep d1">浅<br>卡片</div>
+      <div class="dep d2">中<br>浮起</div>
+      <div class="dep d3">深<br>弹窗</div>
+    </div>
+  </div>
+
+  <div class="kc">
+    <div class="t">04 · 圆角规范</div>
+    <div class="d">最小 <b>16px</b> 起步，按钮一律胶囊</div>
+    <div class="radii">
+      <div class="rad r1"></div><div class="rad r2"></div><div class="rad r3"></div><div class="rad r4"></div>
+    </div>
+    <div class="radlab"><span>16px</span><span>24px</span><span>32px</span><span>胶囊</span></div>
+  </div>
+
+  <div class="kc">
+    <div class="t">05 · 光源方向</div>
+    <div class="d">光源固定在<b>左上</b>：左上内高光 + 右下内阴影</div>
+    <div class="lightdemo">
+      <div class="ball"></div>
+      <div style="font-size:12px; line-height:2; color:var(--ink-soft);">☀️ 左上打光<br>✨ 内高光 2~3px<br>🌑 右下内阴影</div>
+    </div>
+  </div>
+
+  <div class="kc">
+    <div class="t">06 · 适用场景</div>
+    <div class="d">在「懒得找了」里最适合粘土风的地方</div>
+    <div class="scenechips">
+      <span>🎬 解析结果卡</span><span>⏰ 打卡页</span><span>🧭 站点导航</span>
+      <span>📭 空状态</span><span>🎁 新手引导</span><span>🏅 成就徽章</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ Tab 1 · 按钮 ============ -->
+<section class="tab" id="tab1">
+  <div class="sec-h"><span class="dot"></span><h2>按钮</h2><small>BUTTONS</small></div>
+
+  <div class="kc">
+    <div class="t">07 · 彩色主按钮</div>
+    <div class="d">长按感受「捏下去」的 inset 回弹</div>
+    <div class="btnrow">
+      <button class="clay-btn" style="--c:var(--pink);--cs:var(--pink-t)" onclick="toast('开始解析啦', 'var(--pink-t)')">开始解析</button>
+      <button class="clay-btn" style="--c:var(--blue);--cs:var(--blue-t);--fg:#2E4A5E" onclick="toast('已加入下载队列', 'var(--blue-t)')">下载视频</button>
+      <button class="clay-btn" style="--c:var(--yellow);--cs:var(--yellow-t);--fg:#5A4A20" onclick="toast('链接已复制', 'var(--yellow-t)')">复制链接</button>
+    </div>
+  </div>
+
+  <div class="kc">
+    <div class="t">08 · 圆形图标按钮</div>
+    <div class="d">工具栏小圆钮，图标居中</div>
+    <div class="btnrow" style="gap:14px;">
+      <button class="icbtn" style="--c:var(--pink);--cs:var(--pink-t)" onclick="toast('播放', 'var(--pink-t)')" aria-label="播放">▶</button>
+      <button class="icbtn" style="--c:var(--yellow);--cs:var(--yellow-t)" onclick="toast('已收藏', 'var(--yellow-t)')" aria-label="收藏">★</button>
+      <button class="icbtn" style="--c:var(--blue);--cs:var(--blue-t)" onclick="toast('开始下载', 'var(--blue-t)')" aria-label="下载">⬇</button>
+      <button class="icbtn" style="--c:var(--green);--cs:var(--green-t)" onclick="toast('已分享', 'var(--green-t)')" aria-label="分享">⤴</button>
+      <button class="icbtn" style="--c:var(--purple);--cs:var(--purple-t)" onclick="toast('更多选项', 'var(--purple-t)')" aria-label="更多">⋯</button>
+    </div>
+  </div>
+
+  <div class="kc">
+    <div class="t">09 · 粘土开关</div>
+    <div class="d">旋钮弹跳切换，点击试试</div>
+    <div class="rowline"><div><div class="lab">消息推送</div><div class="sub">解析完成时提醒我</div></div>
+      <label class="cswitch" style="--c:var(--pink)"><input type="checkbox" checked><span class="tr"></span><span class="kn"></span></label></div>
+    <div class="rowline"><div><div class="lab">粘贴自动解析</div><div class="sub">打开 App 自动读取剪贴板</div></div>
+      <label class="cswitch" style="--c:var(--blue)"><input type="checkbox"><span class="tr"></span><span class="kn"></span></label></div>
+    <div class="rowline"><div><div class="lab">仅 WiFi 下载</div><div class="sub">省流量模式</div></div>
+      <label class="cswitch" style="--c:var(--green)"><input type="checkbox" checked><span class="tr"></span><span class="kn"></span></label></div>
+  </div>
+
+  <div class="kc">
+    <div class="t">10 · 分段选择器</div>
+    <div class="d">小 pill 滑来滑去</div>
+    <div class="seg" id="seg1" style="--c:var(--yellow);--cs:var(--yellow-t)">
+      <span class="pill"></span>
+      <button class="on">今日</button><button>本周</button><button>本月</button><button>全部</button>
+    </div>
+    <div class="center mt" style="font-size:12px; color:var(--ink-soft);">当前：<b id="seg1val" style="color:var(--ink)">今日</b> · 解析 32 条</div>
+  </div>
+
+  <div class="kc">
+    <div class="t">11 · 药丸标签按钮</div>
+    <div class="d">多选站点标签</div>
+    <div class="tags" id="tags1">
+      <button class="tag on" style="--c:var(--pink);--cs:var(--pink-t)">抖音</button>
+      <button class="tag" style="--c:var(--blue);--cs:var(--blue-t)">快手</button>
+      <button class="tag" style="--c:var(--purple);--cs:var(--purple-t)">小红书</button>
+      <button class="tag" style="--c:var(--green);--cs:var(--green-t)">B站</button>
+      <button class="tag" style="--c:var(--yellow);--cs:var(--yellow-t)">皮皮虾</button>
+      <button class="tag" style="--c:var(--orange);--cs:var(--orange-t)">最右</button>
+    </div>
+  </div>
+
+  <div class="kc">
+    <div class="t">12 · 禁用态</div>
+    <div class="d">灰扑扑、按不动</div>
+    <div class="btnrow">
+      <button class="clay-btn" style="--c:var(--pink);--cs:var(--pink-t)" disabled>开始解析</button>
+      <button class="clay-btn ghost" disabled>取消</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ Tab 2 · 表单 ============ -->
+<section class="tab" id="tab2">
+  <div class="sec-h"><span class="dot"></span><h2>表单</h2><small>FORMS</small></div>
+
+  <div class="kc">
+    <div class="t">13 · 圆滚滚输入框</div>
+    <div class="d">内凹质感，聚焦时描蓝边</div>
+    <input class="cinput" placeholder="粘贴视频链接，一键去水印">
+    <div class="mt"><textarea class="cinput" rows="2" placeholder="备注一下这个视频是干嘛的（选填）"></textarea></div>
+  </div>
+
+  <div class="kc">
+    <div class="t">14 · 搜索框</div>
+    <div class="d">实时过滤下方站点</div>
+    <div class="searchwrap"><span class="ico">🔍</span><input class="cinput" id="siteSearch" placeholder="搜索站点：抖音 / 快手…"></div>
+    <div class="tags mt" id="siteTags">
+      <button class="tag" style="--c:var(--pink);--cs:var(--pink-t)">抖音</button>
+      <button class="tag" style="--c:var(--blue);--cs:var(--blue-t)">快手</button>
+      <button class="tag" style="--c:var(--purple);--cs:var(--purple-t)">小红书</button>
+      <button class="tag" style="--c:var(--green);--cs:var(--green-t)">B站</button>
+      <button class="tag" style="--c:var(--yellow);--cs:var(--yellow-t)">皮皮虾</button>
+      <button class="tag" style="--c:var(--orange);--cs:var(--orange-t)">最右</button>
+    </div>
+  </div>
+
+  <div class="kc">
+    <div class="t">15 · 设置列表行</div>
+    <div class="d">图标 + 文字 + 开关</div>
+    <div class="setrow">
+      <div class="sic" style="--c:var(--pink);--cs:var(--pink-t)">🔔</div>
+      <div class="st"><b>解析完成通知</b><small>后台解析完推送提醒</small></div>
+      <label class="cswitch" style="--c:var(--pink)"><input type="checkbox" checked><span class="tr"></span><span class="kn"></span></label>
+    </div>
+    <div class="setrow">
+      <div class="sic" style="--c:var(--blue);--cs:var(--blue-t)">⬇</div>
+      <div class="st"><b>下载完成后打开</b><small>自动跳转到相册查看</small></div>
+      <label class="cswitch" style="--c:var(--blue)"><input type="checkbox"><span class="tr"></span><span class="kn"></span></label>
+    </div>
+    <div class="setrow">
+      <div class="sic" style="--c:var(--green);--cs:var(--green-t)">🌙</div>
+      <div class="st"><b>夜间省电模式</b><small>降低后台轮询频率</small></div>
+      <label class="cswitch" style="--c:var(--green)"><input type="checkbox" checked><span class="tr"></span><span class="kn"></span></label>
+    </div>
+  </div>
+
+  <div class="kc">
+    <div class="t">16 · 复选框 / 单选框</div>
+    <div class="d">选中时整个块「捏进去」</div>
+    <label class="copt"><span class="ccheck" style="--c:var(--pink);--cs:var(--pink-t)"><input type="checkbox" checked><span class="bx"></span></span>下载无水印视频</label>
+    <label class="copt"><span class="ccheck" style="--c:var(--blue);--cs:var(--blue-t)"><input type="checkbox"><span class="bx"></span></span>同时下载封面图</label>
+    <label class="copt"><span class="ccheck radio" style="--c:var(--yellow);--cs:var(--yellow-t)"><input type="radio" name="q" checked><span class="bx"></span></span>高清画质</label>
+    <label class="copt"><span class="ccheck radio" style="--c:var(--yellow);--cs:var(--yellow-t)"><input type="radio" name="q"><span class="bx"></span></span>省流画质</label>
+  </div>
+
+  <div class="kc">
+    <div class="t">17 · 滑杆</div>
+    <div class="d">大圆钮，拖起来有阻尼感</div>
+    <div class="slide-lab"><span>🔊 提示音量</span><b id="v1v">60%</b></div>
+    <input type="range" class="cslider" id="v1" min="0" max="100" value="60" style="--c:var(--blue);--cs:var(--blue-t)">
+    <div class="slide-lab" style="margin-top:10px;"><span>🚀 下载速度限制</span><b id="v2v">80%</b></div>
+    <input type="range" class="cslider" id="v2" min="0" max="100" value="80" style="--c:var(--pink);--cs:var(--pink-t)">
+  </div>
+
+  <div class="kc">
+    <div class="t">18 · 打卡表单</div>
+    <div class="d">工时打卡小表单</div>
+    <div class="slide-lab"><span>📅 日期</span></div>
+    <input class="cinput" type="date" value="2026-10-23" style="margin-bottom:10px;">
+    <div class="slide-lab"><span>🕘 班次</span></div>
+    <select class="cselect" style="margin-bottom:10px;">
+      <option>早班 08:00–17:00</option><option>晚班 14:00–22:00</option><option>夜班 22:00–06:00</option>
+    </select>
+    <input class="cinput" placeholder="备注（选填）：今天加班 1 小时" style="margin-bottom:14px;">
+    <button class="clay-btn" style="--c:var(--green);--cs:var(--green-t);--fg:#2E5A30; width:100%;" onclick="toast('打卡成功，今日工时 9h', 'var(--green-t)')">✅ 上班打卡</button>
+  </div>
+</section>
+
+<!-- ============ Tab 3 · 展示 ============ -->
+<section class="tab" id="tab3">
+  <div class="sec-h"><span class="dot"></span><h2>展示</h2><small>DISPLAY</small></div>
+
+  <div class="kc">
+    <div class="t">19 · 用户资料卡</div>
+    <div class="d">头像 + 数据 + 关注按钮</div>
+    <div class="urow">
+      <div class="avatar" style="--c:var(--pink);--cs:var(--pink-t)">🦊</div>
+      <div style="flex:1;"><div class="nm">摸鱼达人</div><div class="uid">UID 20261023 · Lv.6</div></div>
+      <button class="clay-btn sm" id="followBtn" style="--c:var(--blue);--cs:var(--blue-t);--fg:#2E4A5E">+ 关注</button>
+    </div>
+    <div class="ustats">
+      <div class="ustat"><b>128</b><small>解析</small></div>
+      <div class="ustat"><b>96</b><small>下载</small></div>
+      <div class="ustat"><b>21天</b><small>打卡</small></div>
+    </div>
+  </div>
+
+  <div class="kc">
+    <div class="t">20 · 统计数字卡</div>
+    <div class="d">本月数据一览</div>
+    <div class="stat3">
+      <div class="stat-tile" style="--c:var(--pink);--cs:var(--pink-t)"><div class="e">🎬</div><b>128</b><small>解析成功</small></div>
+      <div class="stat-tile" style="--c:var(--yellow);--cs:var(--yellow-t)"><div class="e">⬇</div><b>96</b><small>下载完成</small></div>
+      <div class="stat-tile" style="--c:var(--green);--cs:var(--green-t)"><div class="e">⏰</div><b>21</b><small>打卡天数</small></div>
+    </div>
+  </div>
+
+  <div class="kc player">
+    <div class="t" style="text-align:left;">21 · 音乐播放器</div>
+    <div class="d" style="text-align:left;">点播放，进度条会走</div>
+    <div class="cover" id="cover">🎵</div>
+    <div class="ptitle">摸鱼进行曲</div>
+    <div class="psub">纯音乐 · 循环播放中</div>
+    <div class="prog"><div class="fill" id="pfill"></div><div class="knob" id="pknob"></div></div>
+    <div class="ptime"><span id="pcur">0:36</span><span>3:00</span></div>
+    <div class="pctrl">
+      <button class="icbtn" style="--c:var(--blue);--cs:var(--blue-t); width:48px; height:48px; font-size:18px;" onclick="pSkip(-10)">⏮</button>
+      <button class="icbtn" id="pplay" style="--c:var(--pink);--cs:var(--pink-t); width:66px; height:66px; font-size:26px;" onclick="pToggle()">⏸</button>
+      <button class="icbtn" style="--c:var(--blue);--cs:var(--blue-t); width:48px; height:48px; font-size:18px;" onclick="pSkip(10)">⏭</button>
+    </div>
+  </div>
+
+  <div class="kc">
+    <div class="t">22 · 任务卡片</div>
+    <div class="d">升级任务进度</div>
+    <div class="rowline" style="padding-top:0;"><div><div class="lab">🏅 解析达人 · Lv.7</div><div class="sub">再解析 12 条升级</div></div><b style="color:#C0526B;">65%</b></div>
+    <div class="taskbar"><div class="fill"></div></div>
+    <div class="center mt"><button class="clay-btn sm" style="--c:var(--purple);--cs:var(--purple-t);--fg:#3E2A5E" onclick="toast('已领取 20 积分', 'var(--purple-t)')">领取奖励</button></div>
+  </div>
+
+  <div class="kc">
+    <div class="t">23 · 通知卡片</div>
+    <div class="d">两条最新动态</div>
+    <div class="nitem">
+      <div class="ndot" style="--c:var(--green);--cs:var(--green-t)">✅</div>
+      <div class="nt"><b>解析完成</b>「城市夜景混剪」已去水印，可下载</div>
+      <div class="ntm">2分钟前</div>
+    </div>
+    <div class="nitem">
+      <div class="ndot" style="--c:var(--yellow);--cs:var(--yellow-t)">⏰</div>
+      <div class="nt"><b>打卡提醒</b>今天还差 1 小时满 9h，加油</div>
+      <div class="ntm">1小时前</div>
+    </div>
+  </div>
+
+  <div class="kc">
+    <div class="t">24 · 徽章组</div>
+    <div class="d">成就收集墙</div>
+    <div class="badges">
+      <div class="badge" style="--c:var(--pink);--cs:var(--pink-t)"><div class="e">🎬</div><b>解析达人</b><small>累计100条</small></div>
+      <div class="badge" style="--c:var(--yellow);--cs:var(--yellow-t)"><div class="e">🔥</div><b>打卡7天</b><small>连续不断</small></div>
+      <div class="badge" style="--c:var(--blue);--cs:var(--blue-t)"><div class="e">🌅</div><b>早鸟</b><small>6点前打卡</small></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ Tab 4 · 反馈 ============ -->
+<section class="tab" id="tab4">
+  <div class="sec-h"><span class="dot"></span><h2>反馈</h2><small>FEEDBACK</small></div>
+
+  <div class="kc">
+    <div class="t">25 · 粘土 toast</div>
+    <div class="d">底部弹出小胶囊</div>
+    <div class="btnrow">
+      <button class="clay-btn sm" style="--c:var(--green);--cs:var(--green-t);--fg:#2E5A30" onclick="toast('✅ 保存成功', 'var(--green-t)')">成功提示</button>
+      <button class="clay-btn sm" style="--c:var(--pink);--cs:var(--pink-t)" onclick="toast('⚠️ 网络开小差了', 'var(--pink-t)')">警告提示</button>
+      <button class="clay-btn sm" style="--c:var(--blue);--cs:var(--blue-t);--fg:#2E4A5E" onclick="toast('ℹ️ 正在后台解析…', 'var(--blue-t)')">信息提示</button>
+    </div>
+  </div>
+
+  <div class="kc">
+    <div class="t">26 · 粘土对话框</div>
+    <div class="d">弹跳式出现</div>
+    <div class="center"><button class="clay-btn" style="--c:var(--orange);--cs:var(--orange-t);--fg:#5A3A20" onclick="openOv('dlg1')">清空缓存？</button></div>
+  </div>
+
+  <div class="kc">
+    <div class="t">27 · 加载动画</div>
+    <div class="d">三颗小球跳 4 下后静止（截图友好）</div>
+    <div class="loader go" id="loader"><span class="b"></span><span class="b"></span><span class="b"></span></div>
+    <div class="center mt"><button class="clay-btn sm" style="--c:var(--purple);--cs:var(--purple-t);--fg:#3E2A5E" onclick="replayLoader()">再跳一次</button></div>
+  </div>
+
+  <div class="kc">
+    <div class="t">28 · 成功 / 失败提示</div>
+    <div class="d">结果状态卡</div>
+    <div class="result" style="background:var(--green); box-shadow:inset 2px 2px 4px rgba(255,255,255,.5), inset -3px -3px 6px rgba(0,0,0,.08), 6px 8px 14px var(--green-t);">
+      <div class="e" style="--c:#fff;--cs:rgba(255,255,255,.4)">✅</div>
+      <div><b>解析成功</b><small>无水印视频 + 封面 + 文案已就绪</small></div>
+    </div>
+    <div class="result" style="background:var(--pink); box-shadow:inset 2px 2px 4px rgba(255,255,255,.5), inset -3px -3px 6px rgba(0,0,0,.08), 6px 8px 14px var(--pink-t);">
+      <div class="e" style="--c:#fff;--cs:rgba(255,255,255,.4)">❌</div>
+      <div><b>解析失败</b><small>链接无效或站点暂不支持，换个链接试试</small></div>
+    </div>
+  </div>
+
+  <div class="kc">
+    <div class="t">29 · 操作菜单</div>
+    <div class="d">底部升起的粘土动作条</div>
+    <div class="center"><button class="clay-btn" style="--c:var(--blue);--cs:var(--blue-t);--fg:#2E4A5E" onclick="openOv('sheet1')">更多操作</button></div>
+  </div>
+
+  <div class="kc">
+    <div class="t">30 · 空状态</div>
+    <div class="d">没数据时不尴尬</div>
+    <div class="empty">
+      <div class="ec">📭</div>
+      <p>还没有解析记录<br>粘贴一条视频链接开始吧</p>
+      <button class="clay-btn sm" style="--c:var(--yellow);--cs:var(--yellow-t);--fg:#5A4A20" onclick="go(2)">去粘贴链接</button>
+    </div>
+  </div>
+</section>
+
+<!-- 弹窗：对话框 -->
+<div class="overlay" id="dlg1" onclick="if(event.target===this)closeOv('dlg1')">
+  <div class="dialog">
+    <div class="e">🧹</div>
+    <h3>清空缓存？</h3>
+    <p>将删除 128MB 临时文件<br>已下载的视频不受影响</p>
+    <div class="dbtns">
+      <button class="clay-btn ghost" onclick="closeOv('dlg1')">再想想</button>
+      <button class="clay-btn" style="--c:var(--pink);--cs:var(--pink-t)" onclick="closeOv('dlg1');toast('🧹 缓存已清空', 'var(--pink-t)')">清空</button>
+    </div>
+  </div>
+</div>
+
+<!-- 弹窗：操作菜单 -->
+<div class="overlay sheet" id="sheet1" onclick="if(event.target===this)closeOv('sheet1')">
+  <div class="asheet">
+    <div class="grip"></div>
+    <button class="aitem" onclick="closeOv('sheet1');toast('⬇ 开始下载视频', 'var(--blue-t)')"><span class="e">🎬</span>下载无水印视频</button>
+    <button class="aitem" onclick="closeOv('sheet1');toast('🖼 封面已保存', 'var(--green-t)')"><span class="e">🖼</span>保存封面图</button>
+    <button class="aitem" onclick="closeOv('sheet1');toast('🔗 链接已复制', 'var(--yellow-t)')"><span class="e">🔗</span>复制原链接</button>
+    <button class="aitem cancel" onclick="closeOv('sheet1')">取消</button>
+  </div>
+</div>
+
+<!-- toast -->
+<div class="toast" id="toast"></div>
+
+<!-- ============ 底部悬浮胶囊 Tab 栏 ============ -->
+<nav class="tabbar" id="tabbar">
+  <span class="ind" id="tabInd"></span>
+  <button data-i="0"><span class="e">🏠</span>总览</button>
+  <button data-i="1"><span class="e">🔘</span>按钮</button>
+  <button data-i="2"><span class="e">📝</span>表单</button>
+  <button data-i="3"><span class="e">🖼</span>展示</button>
+  <button data-i="4"><span class="e">💬</span>反馈</button>
+</nav>
+
+<script>
+/* ---------- Tab 切换 + 深链 + 滑动指示 ---------- */
+var tabs = document.querySelectorAll('.tab');
+var tabBtns = document.querySelectorAll('#tabbar button');
+var tabInd = document.getElementById('tabInd');
+var cur = 0;
+function go(i){
+  i = Math.max(0, Math.min(4, i|0));
+  cur = i;
+  tabs.forEach(function(t, k){ t.classList.toggle('on', k === i); });
+  tabBtns.forEach(function(b, k){ b.classList.toggle('on', k === i); });
+  tabInd.style.transform = 'translateX(' + (i * 100) + '%)';
+  history.replaceState(null, '', '?tab=' + i);
+  window.scrollTo(0, 0);
+}
+tabBtns.forEach(function(b){ b.addEventListener('click', function(){ go(+b.dataset.i); }); });
+(function init(){
+  var m = /[?&]tab=(\d)/.exec(location.search);
+  go(m ? +m[1] : 0);
+  requestAnimationFrame(function(){ tabInd.style.transform = 'translateX(' + (cur * 100) + '%'; });
+})();
+
+/* ---------- toast ---------- */
+var toastEl = document.getElementById('toast'), toastTimer = null;
+function toast(msg, tint){
+  toastEl.textContent = msg;
+  toastEl.style.setProperty('--tc', tint || 'var(--green-t)');
+  toastEl.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function(){ toastEl.classList.remove('show'); }, 1800);
+}
+
+/* ---------- 弹窗 ---------- */
+function openOv(id){ document.getElementById(id).classList.add('show'); }
+function closeOv(id){ document.getElementById(id).classList.remove('show'); }
+
+/* ---------- 分段选择器 ---------- */
+(function(){
+  var seg = document.getElementById('seg1'), pill = seg.querySelector('.pill'),
+      btns = seg.querySelectorAll('button'), val = document.getElementById('seg1val'),
+      counts = {'今日':'32 条','本周':'148 条','本月':'520 条','全部':'1,204 条'};
+  function place(){
+    var b = seg.querySelector('button.on');
+    pill.style.left = b.offsetLeft + 'px';
+    pill.style.width = b.offsetWidth + 'px';
+  }
+  btns.forEach(function(b){
+    b.addEventListener('click', function(){
+      btns.forEach(function(x){ x.classList.remove('on'); });
+      b.classList.add('on'); place();
+      val.textContent = b.textContent;
+      val.nextSibling.textContent = ' · 解析 ' + counts[b.textContent];
+    });
+  });
+  window.addEventListener('load', place);
+  setTimeout(place, 300);
+})();
+
+/* ---------- 药丸标签多选 ---------- */
+document.querySelectorAll('#tags1 .tag').forEach(function(t){
+  t.addEventListener('click', function(){ t.classList.toggle('on'); });
+});
+
+/* ---------- 搜索过滤 ---------- */
+document.getElementById('siteSearch').addEventListener('input', function(e){
+  var kw = e.target.value.trim();
+  document.querySelectorAll('#siteTags .tag').forEach(function(t){
+    t.style.display = (!kw || t.textContent.indexOf(kw) > -1) ? '' : 'none';
+  });
+});
+
+/* ---------- 滑杆数值 ---------- */
+function bindRange(id, lab){
+  var r = document.getElementById(id), l = document.getElementById(lab);
+  r.addEventListener('input', function(){ l.textContent = r.value + '%'; });
+}
+bindRange('v1', 'v1v'); bindRange('v2', 'v2v');
+
+/* ---------- 关注按钮 ---------- */
+(function(){
+  var b = document.getElementById('followBtn'), on = false;
+  b.addEventListener('click', function(){
+    on = !on;
+    b.textContent = on ? '✓ 已关注' : '+ 关注';
+    b.style.setProperty('--c', on ? 'var(--green)' : 'var(--blue)');
+    b.style.setProperty('--cs', on ? 'var(--green-t)' : 'var(--blue-t)');
+    b.style.setProperty('--fg', on ? '#2E5A30' : '#2E4A5E');
+  });
+})();
+
+/* ---------- 播放器 ---------- */
+var pTotal = 180, pCur = 36, pTimer = null, pPlaying = true;
+var pfill = document.getElementById('pfill'), pknob = document.getElementById('pknob'),
+    pcur = document.getElementById('pcur'), pplay = document.getElementById('pplay'),
+    cover = document.getElementById('cover');
+function fmt(s){ return Math.floor(s/60) + ':' + ('0' + (s%60)).slice(-2); }
+function pRender(){
+  var pct = (pCur / pTotal * 100);
+  pfill.style.width = pct + '%';
+  pknob.style.left = pct + '%';
+  pcur.textContent = fmt(pCur);
+}
+function pTick(){
+  pCur = (pCur + 1) % (pTotal + 1);
+  pRender();
+}
+function pToggle(){
+  pPlaying = !pPlaying;
+  pplay.textContent = pPlaying ? '⏸' : '▶';
+  cover.classList.toggle('spin', pPlaying);
+  if (pPlaying){ pTimer = setInterval(pTick, 500); } else { clearInterval(pTimer); }
+}
+function pSkip(d){ pCur = Math.max(0, Math.min(pTotal, pCur + d)); pRender(); }
+pRender();
+cover.classList.add('spin');
+pTimer = setInterval(pTick, 500);
+
+/* ---------- 加载动画重播（有限次） ---------- */
+function replayLoader(){
+  var l = document.getElementById('loader');
+  l.classList.remove('go');
+  void l.offsetWidth;
+  l.classList.add('go');
+}
+</script>
+</body>
+</html>
