@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>新拟态 Neumorphism · UI 组件库</title>
+<style>
+/* ============ 新拟态 Neumorphism 核心 token ============ */
+:root{
+  --bg:#e0e5ec;          /* 页面底色，卡片与背景同色 */
+  --light:#ffffff;       /* 浅色阴影 */
+  --dark:#a3b1c6;        /* 深色阴影 */
+  --text:#5b6b7f;        /* 主文本 */
+  --text-soft:#8a97a8;   /* 次级文本 */
+  --accent:#4d7ca8;      /* 点缀色（仅小面积） */
+  --ok:#5f9e7a;
+  --bad:#c26a6a;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC",system-ui,sans-serif;
+  padding:20px 16px 120px;min-height:100vh;
+}
+.wrap{max-width:430px;margin:0 auto}
+.page-head{text-align:center;margin:8px 0 26px}
+.page-head .tag{
+  display:inline-block;font-size:11px;letter-spacing:3px;color:var(--text-soft);
+  padding:8px 18px;border-radius:999px;margin-bottom:14px;
+  box-shadow:inset 3px 3px 7px var(--dark),inset -3px -3px 7px var(--light);
+}
+.page-head h1{font-size:26px;font-weight:800;letter-spacing:1px;margin-bottom:8px}
+.page-head p{font-size:12.5px;color:var(--text-soft);line-height:1.8}
+
+/* 基础新拟态原子 */
+.neu{background:var(--bg);border-radius:20px;box-shadow:8px 8px 16px var(--dark),-8px -8px 16px var(--light)}
+.neu-sm{background:var(--bg);border-radius:14px;box-shadow:5px 5px 10px var(--dark),-5px -5px 10px var(--light)}
+.neu-in{background:var(--bg);border-radius:20px;box-shadow:inset 6px 6px 12px var(--dark),inset -6px -6px 12px var(--light)}
+.neu-in-sm{background:var(--bg);border-radius:14px;box-shadow:inset 4px 4px 8px var(--dark),inset -4px -4px 8px var(--light)}
+
+/* 组件卡片 */
+.card{background:var(--bg);border-radius:22px;padding:20px;margin-bottom:22px;
+  box-shadow:9px 9px 18px var(--dark),-9px -9px 18px var(--light)}
+.card-title{font-size:15px;font-weight:700;margin-bottom:4px}
+.card-desc{font-size:12px;color:var(--text-soft);margin-bottom:16px;line-height:1.7}
+.tabpage{display:none}
+.tabpage.active{display:block;animation:fadein .25s ease}
+@keyframes fadein{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* ============ 按钮 ============ */
+.btn{
+  border:0;background:var(--bg);border-radius:14px;padding:13px 26px;cursor:pointer;
+  font-size:15px;font-weight:700;color:var(--accent);font-family:inherit;
+  box-shadow:5px 5px 10px var(--dark),-5px -5px 10px var(--light);
+  transition:box-shadow .15s ease;
+}
+.btn:active,.btn.pressed{box-shadow:inset 4px 4px 8px var(--dark),inset -4px -4px 8px var(--light)}
+.btn.ghost{color:var(--text)}
+.btn.block{width:100%}
+.btn-in{ /* 凹陷按钮：默认凹，按下时凸 */
+  box-shadow:inset 4px 4px 8px var(--dark),inset -4px -4px 8px var(--light);color:var(--text);
+}
+.btn-in:active{box-shadow:5px 5px 10px var(--dark),-5px -5px 10px var(--light)}
+.btn:disabled{opacity:.45;cursor:not-allowed;box-shadow:5px 5px 10px var(--dark),-5px -5px 10px var(--light)}
+.iconbtn{
+  width:56px;height:56px;border-radius:50%;border:0;background:var(--bg);cursor:pointer;
+  font-size:22px;color:var(--text);font-family:inherit;
+  box-shadow:6px 6px 12px var(--dark),-6px -6px 12px var(--light);
+  transition:box-shadow .15s ease;display:flex;align-items:center;justify-content:center;
+}
+.iconbtn:active{box-shadow:inset 4px 4px 8px var(--dark),inset -4px -4px 8px var(--light)}
+.iconrow{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
+
+/* 开关：必须 position:relative + 固定宽高 */
+.nswitch{
+  position:relative;width:58px;height:32px;flex:0 0 auto;cursor:pointer;border:0;background:var(--bg);
+  border-radius:999px;box-shadow:inset 4px 4px 8px var(--dark),inset -4px -4px 8px var(--light);
+  transition:box-shadow .2s ease;
+}
+.nswitch .knob{
+  position:absolute;top:4px;left:4px;width:24px;height:24px;border-radius:50%;background:var(--bg);
+  box-shadow:3px 3px 6px var(--dark),-3px -3px 6px var(--light);
+  transition:left .22s cubic-bezier(.4,0,.2,1);
+}
+.nswitch.on .knob{left:30px}
+.nswitch.on .dot{
+  position:absolute;top:50%;left:11px;transform:translateY(-50%);width:8px;height:8px;border-radius:50%;
+  background:var(--accent);box-shadow:0 0 6px rgba(77,124,168,.7);
+}
+.nswitch:disabled{opacity:.4;cursor:not-allowed}
+.setrow{display:flex;align-items:center;justify-content:space-between;padding:13px 4px}
+.setrow .lab{font-size:14px;font-weight:600}
+.setrow .sub{font-size:11.5px;color:var(--text-soft);margin-top:3px}
+
+/* 分段选择器 */
+.seg{
+  display:flex;padding:6px;border-radius:16px;background:var(--bg);
+  box-shadow:inset 4px 4px 8px var(--dark),inset -4px -4px 8px var(--light);
+}
+.seg button{
+  flex:1;border:0;background:transparent;padding:10px 0;border-radius:12px;cursor:pointer;
+  font-size:13.5px;font-weight:600;color:var(--text-soft);font-family:inherit;transition:all .18s;
+}
+.seg button.active{
+  color:var(--accent);background:var(--bg);
+  box-shadow:4px 4px 8px var(--dark),-4px -4px 8px var(--light);
+}
+
+/* ============ 表单 ============ */
+.ninput{
+  width:100%;border:0;outline:none;background:var(--bg);border-radius:14px;
+  padding:13px 16px;font-size:14px;color:var(--text);font-family:inherit;
+  box-shadow:inset 4px 4px 8px var(--dark),inset -4px -4px 8px var(--light);
+}
+.ninput::placeholder{color:var(--text-soft)}
+.ninput:focus{box-shadow:inset 5px 5px 10px var(--dark),inset -5px -5px 10px var(--light)}
+.flabel{display:block;font-size:12.5px;font-weight:700;color:var(--text-soft);margin:0 0 8px 4px;letter-spacing:1px}
+.searchbox{position:relative}
+.searchbox .ninput{padding-left:42px}
+.searchbox .sic{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:16px;color:var(--text-soft)}
+
+/* 复选框 / 单选框（新拟态风） */
+.checkline{display:flex;align-items:center;gap:12px;padding:9px 2px;cursor:pointer;font-size:14px;user-select:none}
+.ncheck{
+  position:relative;width:26px;height:26px;flex:0 0 auto;border-radius:9px;background:var(--bg);
+  box-shadow:inset 3px 3px 6px var(--dark),inset -3px -3px 6px var(--light);
+}
+.ncheck::after{
+  content:"";position:absolute;top:50%;left:50%;width:12px;height:7px;
+  border-left:3px solid var(--accent);border-bottom:3px solid var(--accent);
+  transform:translate(-50%,-65%) rotate(-45deg) scale(0);transition:transform .18s;
+}
+.checkline.on .ncheck::after{transform:translate(-50%,-65%) rotate(-45deg) scale(1)}
+.nradio{
+  position:relative;width:26px;height:26px;flex:0 0 auto;border-radius:50%;background:var(--bg);
+  box-shadow:inset 3px 3px 6px var(--dark),inset -3px -3px 6px var(--light);
+}
+.nradio::after{
+  content:"";position:absolute;top:50%;left:50%;width:11px;height:11px;border-radius:50%;
+  background:var(--accent);transform:translate(-50%,-50%) scale(0);transition:transform .18s;
+}
+.checkline.on .nradio::after{transform:translate(-50%,-50%) scale(1)}
+
+/* 滑杆 */
+input[type=range].nrange{
+  -webkit-appearance:none;appearance:none;width:100%;height:12px;border-radius:999px;background:var(--bg);outline:none;cursor:pointer;
+  box-shadow:inset 3px 3px 6px var(--dark),inset -3px -3px 6px var(--light);
+}
+input[type=range].nrange::-webkit-slider-thumb{
+  -webkit-appearance:none;width:26px;height:26px;border-radius:50%;background:var(--bg);
+  box-shadow:4px 4px 8px var(--dark),-4px -4px 8px var(--light);cursor:grab;border:0;
+}
+input[type=range].nrange::-moz-range-thumb{
+  width:26px;height:26px;border-radius:50%;background:var(--bg);
+  box-shadow:4px 4px 8px var(--dark),-4px -4px 8px var(--light);cursor:grab;border:0;
+}
+.rangeval{display:flex;justify-content:space-between;font-size:12px;color:var(--text-soft);margin:8px 2px 0}
+.rangeval b{color:var(--accent)}
+.submitrow{display:flex;gap:14px}
+.submitrow .btn{flex:1}
+
+/* ============ 展示 ============ */
+/* 音乐播放器 */
+.player{display:flex;align-items:center;gap:16px}
+.cover{
+  width:68px;height:68px;flex:0 0 auto;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;
+  box-shadow:inset 5px 5px 10px var(--dark),inset -5px -5px 10px var(--light);
+}
+.ptitle{font-size:14.5px;font-weight:700;margin-bottom:3px}
+.partist{font-size:12px;color:var(--text-soft)}
+.pbar{height:10px;border-radius:999px;margin:16px 2px 6px;position:relative;
+  box-shadow:inset 3px 3px 6px var(--dark),inset -3px -3px 6px var(--light)}
+.pbar .fill{position:absolute;left:0;top:0;bottom:0;width:38%;border-radius:999px;background:var(--accent);opacity:.85}
+.ptime{display:flex;justify-content:space-between;font-size:11px;color:var(--text-soft)}
+.pctrl{display:flex;justify-content:center;gap:18px;margin-top:14px}
+.pctrl .iconbtn{width:52px;height:52px;font-size:19px}
+.pctrl .iconbtn.play{width:64px;height:64px;font-size:24px;color:var(--accent)}
+
+/* 用户资料卡 */
+.profile{text-align:center}
+.avatar{
+  width:84px;height:84px;border-radius:50%;margin:0 auto 12px;font-size:38px;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:6px 6px 12px var(--dark),-6px -6px 12px var(--light);
+}
+.pname{font-size:16.5px;font-weight:800}
+.pbio{font-size:12px;color:var(--text-soft);margin:6px 0 14px}
+.pstats{display:flex;gap:12px}
+.pstat{flex:1;padding:12px 4px;border-radius:16px;text-align:center;
+  box-shadow:inset 4px 4px 8px var(--dark),inset -4px -4px 8px var(--light)}
+.pstat b{display:block;font-size:17px;color:var(--accent)}
+.pstat span{font-size:11px;color:var(--text-soft)}
+
+/* 统计数字卡 */
+.statgrid{display:flex;gap:12px}
+.stat{flex:1;padding:14px 6px;border-radius:18px;text-align:center;
+  box-shadow:6px 6px 12px var(--dark),-6px -6px 12px var(--light)}
+.stat .ico{font-size:22px;margin-bottom:8px}
+.stat b{display:block;font-size:19px}
+.stat span{font-size:11px;color:var(--text-soft)}
+
+/* 进度环 */
+.ringwrap{display:flex;align-items:center;gap:20px}
+.ring{width:118px;height:118px;flex:0 0 auto;border-radius:50%;display:flex;align-items:center;justify-content:center;position:relative;
+  box-shadow:inset 6px 6px 12px var(--dark),inset -6px -6px 12px var(--light)}
+.ringtext{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.ringtext b{font-size:22px;color:var(--accent)}
+.ringtext span{display:block;font-size:11px;color:var(--text-soft);margin-top:4px}
+.ringlist{font-size:13px;line-height:2.1}
+.ringlist i{font-style:normal;display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--accent);margin-right:8px;opacity:.8}
+.ringlist em{font-style:normal;display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--dark);margin-right:8px}
+
+/* 通知卡片 */
+.notif{display:flex;gap:12px;align-items:flex-start;padding:13px;border-radius:16px;margin-bottom:12px;
+  box-shadow:5px 5px 10px var(--dark),-5px -5px 10px var(--light)}
+.notif:last-child{margin-bottom:0}
+.nico{width:42px;height:42px;flex:0 0 auto;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:19px;
+  box-shadow:inset 3px 3px 6px var(--dark),inset -3px -3px 6px var(--light)}
+.notif .nt{font-size:13.5px;font-weight:700;margin-bottom:3px}
+.notif .nd{font-size:12px;color:var(--text-soft);line-height:1.6}
+.notif .ntime{font-size:10.5px;color:var(--text-soft);margin-top:5px}
+
+/* 头像组 */
+.avgroup{display:flex;align-items:center;padding:6px 2px}
+.av{
+  width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:21px;
+  background:var(--bg);box-shadow:4px 4px 8px var(--dark),-4px -4px 8px var(--light);
+  margin-left:-12px;border:3px solid var(--bg);
+}
+.av:first-child{margin-left:0}
+.av.more{font-size:13px;font-weight:800;color:var(--accent);box-shadow:inset 3px 3px 6px var(--dark),inset -3px -3px 6px var(--light)}
+.avnote{margin-left:14px;font-size:12px;color:var(--text-soft);line-height:1.7}
+
+/* ============ 反馈 ============ */
+/* toast */
+#toast{
+  position:fixed;left:50%;bottom:104px;transform:translate(-50%,20px);z-index:200;
+  padding:13px 24px;border-radius:999px;font-size:13.5px;font-weight:600;white-space:nowrap;
+  background:var(--bg);box-shadow:6px 6px 14px var(--dark),-6px -6px 14px var(--light);
+  opacity:0;pointer-events:none;transition:all .3s ease;
+}
+#toast.show{opacity:1;transform:translate(-50%,0)}
+/* 对话框 */
+#overlay{
+  position:fixed;inset:0;z-index:300;background:rgba(90,105,125,.28);backdrop-filter:blur(3px);
+  display:none;align-items:center;justify-content:center;padding:30px;
+}
+#overlay.show{display:flex}
+.dialog{width:100%;max-width:330px;padding:26px 22px;border-radius:24px;background:var(--bg);
+  box-shadow:10px 10px 24px rgba(120,135,155,.55),-8px -8px 18px var(--light);text-align:center}
+.dialog h3{font-size:16.5px;margin-bottom:10px}
+.dialog p{font-size:13px;color:var(--text-soft);line-height:1.8;margin-bottom:20px}
+.drow{display:flex;gap:12px}
+.drow .btn{flex:1;padding:11px 0;font-size:14px}
+/* 加载 */
+.loader{display:none;align-items:center;gap:14px}
+.loader.show{display:flex}
+.spin{width:38px;height:38px;flex:0 0 auto;border-radius:50%;
+  box-shadow:inset 4px 4px 8px var(--dark),inset -4px -4px 8px var(--light);position:relative}
+.spin::after{
+  content:"";position:absolute;inset:5px;border-radius:50%;
+  border:3px solid transparent;border-top-color:var(--accent);
+  animation:rot 1s linear infinite;
+}
+@keyframes rot{to{transform:rotate(360deg)}}
+.loader .lt{font-size:13px;color:var(--text-soft)}
+/* 成功 / 失败提示 */
+.msg{display:none;align-items:flex-start;gap:12px;padding:14px;border-radius:16px;margin-top:14px;
+  box-shadow:inset 4px 4px 8px var(--dark),inset -4px -4px 8px var(--light)}
+.msg.show{display:flex}
+.msg .mico{width:34px;height:34px;flex:0 0 auto;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:16px;font-weight:800;background:var(--bg);box-shadow:3px 3px 6px var(--dark),-3px -3px 6px var(--light)}
+.msg.ok .mico{color:var(--ok)} .msg.bad .mico{color:var(--bad)}
+.msg .mt{font-size:13.5px;font-weight:700;margin-bottom:2px}
+.msg .md{font-size:12px;color:var(--text-soft);line-height:1.6}
+/* 操作菜单 */
+#sheet{
+  position:fixed;inset:0;z-index:300;display:none;align-items:flex-end;justify-content:center;
+  background:rgba(90,105,125,.28);backdrop-filter:blur(3px);
+}
+#sheet.show{display:flex}
+.sheetbox{width:100%;max-width:430px;background:var(--bg);border-radius:26px 26px 0 0;padding:18px 20px 30px;
+  box-shadow:-8px -8px 20px var(--light)}
+.sheetbox .grab{width:44px;height:5px;border-radius:99px;margin:0 auto 16px;
+  box-shadow:inset 2px 2px 4px var(--dark),inset -2px -2px 4px var(--light)}
+.sheetopt{width:100%;display:flex;align-items:center;gap:12px;border:0;background:var(--bg);cursor:pointer;
+  padding:13px 14px;border-radius:15px;margin-bottom:10px;font-size:14px;font-weight:600;color:var(--text);font-family:inherit;
+  box-shadow:4px 4px 8px var(--dark),-4px -4px 8px var(--light);transition:box-shadow .15s}
+.sheetopt:active{box-shadow:inset 3px 3px 6px var(--dark),inset -3px -3px 6px var(--light)}
+.sheetopt .e{font-size:18px}
+/* 空状态 */
+.empty{text-align:center;padding:14px 0 6px}
+.empty .eicon{
+  width:96px;height:96px;border-radius:50%;margin:0 auto 16px;font-size:44px;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:inset 6px 6px 12px var(--dark),inset -6px -6px 12px var(--light);
+}
+.empty h4{font-size:15px;margin-bottom:8px}
+.empty p{font-size:12.5px;color:var(--text-soft);line-height:1.8;margin-bottom:16px}
+
+/* ============ 总览特有 ============ */
+.intro{font-size:13.5px;line-height:2;color:var(--text)}
+.intro b{color:var(--accent)}
+.morph3{display:flex;gap:14px;text-align:center}
+.morph3>div{flex:1}
+.morph3 .box{height:74px;border-radius:18px;margin-bottom:10px;display:flex;align-items:center;justify-content:center;font-size:24px}
+.morph3 .raised{background:var(--bg);box-shadow:6px 6px 12px var(--dark),-6px -6px 12px var(--light)}
+.morph3 .sunken{background:var(--bg);box-shadow:inset 6px 6px 12px var(--dark),inset -6px -6px 12px var(--light)}
+.morph3 .flatx{background:var(--bg)}
+.morph3 span{font-size:12.5px;font-weight:700}
+.morph3 small{display:block;font-size:10.5px;color:var(--text-soft);margin-top:3px}
+.swatches{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.sw{border-radius:16px;padding:10px;text-align:center;box-shadow:5px 5px 10px var(--dark),-5px -5px 10px var(--light)}
+.sw .c{height:44px;border-radius:11px;margin-bottom:8px}
+.sw b{display:block;font-size:11px}
+.sw span{font-size:10px;color:var(--text-soft);font-family:ui-monospace,monospace}
+.specrow{display:flex;justify-content:space-between;align-items:center;padding:11px 4px;font-size:13.5px}
+.specrow .k{font-weight:600}
+.specrow .v{font-size:12px;color:var(--text-soft);font-family:ui-monospace,monospace}
+.shadowcode{border-radius:14px;padding:14px 16px;font-size:11.5px;line-height:2;font-family:ui-monospace,SFMono-Regular,monospace;
+  color:var(--text);box-shadow:inset 4px 4px 8px var(--dark),inset -4px -4px 8px var(--light);white-space:pre-wrap}
+.shadowcode .cm{color:var(--text-soft)}
+.chips{display:flex;flex-wrap:wrap;gap:10px}
+.chip{padding:9px 16px;border-radius:999px;font-size:12.5px;font-weight:600;
+  box-shadow:4px 4px 8px var(--dark),-4px -4px 8px var(--light)}
+
+/* ============ 底部悬浮胶囊 Tab 栏 ============ */
+.tabbar{
+  position:fixed;bottom:14px;left:50%;transform:translateX(-50%);z-index:100;
+  width:min(404px,calc(100% - 28px));display:flex;padding:8px;border-radius:999px;background:var(--bg);
+  box-shadow:7px 7px 16px var(--dark),-7px -7px 16px var(--light);
+}
+.tabbar .pill{
+  position:absolute;top:8px;bottom:8px;left:8px;width:calc((100% - 16px)/5);border-radius:999px;background:var(--bg);
+  box-shadow:inset 4px 4px 9px var(--dark),inset -4px -4px 9px var(--light);
+  transition:transform .32s cubic-bezier(.4,0,.2,1);
+}
+.tabbtn{
+  position:relative;z-index:1;flex:1;border:0;background:transparent;cursor:pointer;
+  padding:11px 0;font-size:13px;font-weight:600;color:var(--text-soft);font-family:inherit;border-radius:999px;
+}
+.tabbtn.active{color:var(--accent);font-weight:800}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="page-head">
+  <div class="tag">UI COMPONENT KIT · K04</div>
+  <h1>新拟态 Neumorphism</h1>
+  <p>同色底 + 双阴影的柔和浮雕<br>组件看起来像从背景里「长」出来</p>
+</div>
+
+<!-- ================= Tab 0 · 总览 ================= -->
+<section class="tabpage" id="tab0">
+  <div class="card">
+    <div class="card-title">风格介绍</div>
+    <div class="card-desc">什么是新拟态</div>
+    <div class="intro">
+      新拟态让<b>卡片与背景使用同一种颜色</b>，只靠<b>浅色阴影 #ffffff</b> 与<b>深色阴影 #a3b1c6</b>
+      的组合营造立体感。凸起用<b>外阴影</b>，按下 / 输入框用<b>内阴影</b>。
+      圆角偏大、无描边、无纯色块，整体柔和安静，适合「懒得找了」的工具型界面。
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">三种形态对比</div>
+    <div class="card-desc">凸起 · 凹陷 · 平面</div>
+    <div class="morph3">
+      <div><div class="box raised">⬆</div><span>凸起</span><small>按钮 / 卡片</small></div>
+      <div><div class="box sunken">⬇</div><span>凹陷</span><small>输入框 / 开关槽</small></div>
+      <div><div class="box flatx">▬</div><span>平面</span><small>背景 / 分隔</small></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">色板</div>
+    <div class="card-desc">6 个核心 token</div>
+    <div class="swatches">
+      <div class="sw"><div class="c" style="background:#e0e5ec"></div><b>底色</b><span>#e0e5ec</span></div>
+      <div class="sw"><div class="c" style="background:#ffffff"></div><b>浅阴影</b><span>#ffffff</span></div>
+      <div class="sw"><div class="c" style="background:#a3b1c6"></div><b>深阴影</b><span>#a3b1c6</span></div>
+      <div class="sw"><div class="c" style="background:#5b6b7f"></div><b>主文本</b><span>#5b6b7f</span></div>
+      <div class="sw"><div class="c" style="background:#8a97a8"></div><b>次级文本</b><span>#8a97a8</span></div>
+      <div class="sw"><div class="c" style="background:#4d7ca8"></div><b>点缀</b><span>#4d7ca8</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">尺寸规范</div>
+    <div class="card-desc">圆角 / 阴影 / 字号</div>
+    <div class="specrow"><span class="k">卡片圆角</span><span class="v">20 ~ 24px</span></div>
+    <div class="specrow"><span class="k">按钮圆角</span><span class="v">12 ~ 16px</span></div>
+    <div class="specrow"><span class="k">图标按钮</span><span class="v">正圆 52 ~ 64px</span></div>
+    <div class="specrow"><span class="k">外阴影</span><span class="v">8px 8px 16px</span></div>
+    <div class="specrow"><span class="k">内阴影</span><span class="v">inset 4px 4px 8px</span></div>
+    <div class="specrow"><span class="k">标题字号</span><span class="v">15 ~ 16px / 700</span></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">阴影配方</div>
+    <div class="card-desc">复制即用</div>
+    <div class="shadowcode"><span class="cm">/* 凸起 */</span>
+box-shadow: 8px 8px 16px #a3b1c6,
+            -8px -8px 16px #ffffff;
+<span class="cm">/* 凹陷 */</span>
+box-shadow: inset 6px 6px 12px #a3b1c6,
+            inset -6px -6px 12px #ffffff;</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">适用场景</div>
+    <div class="card-desc">在「懒得找了」里的用法</div>
+    <div class="chips">
+      <span class="chip">去水印解析卡</span><span class="chip">站点导航</span>
+      <span class="chip">工时打卡统计</span><span class="chip">设置页</span>
+      <span class="chip">播放器</span><span class="chip">空状态</span>
+    </div>
+  </div>
+</section>
+
+<!-- ================= Tab 1 · 按钮 ================= -->
+<section class="tabpage" id="tab1">
+  <div class="card">
+    <div class="card-title">凸起主按钮</div>
+    <div class="card-desc">默认浮起，按下时整体凹陷</div>
+    <button class="btn block" id="btnParse">开始解析</button>
+    <div style="height:14px"></div>
+    <div class="submitrow">
+      <button class="btn">批量解析</button>
+      <button class="btn ghost">查看历史</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">凹陷按钮</div>
+    <div class="card-desc">默认嵌入，按下时弹起</div>
+    <button class="btn btn-in block" id="btnCancel">取消当前任务</button>
+    <div style="height:14px"></div>
+    <div class="submitrow">
+      <button class="btn btn-in">清空记录</button>
+      <button class="btn btn-in">重新下载</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">圆形图标按钮</div>
+    <div class="card-desc">工具栏常用形态</div>
+    <div class="iconrow">
+      <button class="iconbtn" aria-label="粘贴">📋</button>
+      <button class="iconbtn" aria-label="搜索">🔍</button>
+      <button class="iconbtn" aria-label="下载">⬇</button>
+      <button class="iconbtn" aria-label="分享">↗</button>
+      <button class="iconbtn" aria-label="设置">⚙</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">开关</div>
+    <div class="card-desc">拨动时滑块右移 + 凹陷槽</div>
+    <div class="setrow">
+      <div><div class="lab">粘贴自动解析</div><div class="sub">复制链接后自动开始</div></div>
+      <button class="nswitch on" role="switch" aria-checked="true"><span class="dot"></span><span class="knob"></span></button>
+    </div>
+    <div class="setrow">
+      <div><div class="lab">仅 WiFi 下载</div><div class="sub">省流量模式</div></div>
+      <button class="nswitch" role="switch" aria-checked="false"><span class="dot"></span><span class="knob"></span></button>
+    </div>
+    <div class="setrow">
+      <div><div class="lab">下载完成通知</div><div class="sub">推送到通知栏</div></div>
+      <button class="nswitch on" role="switch" aria-checked="true"><span class="dot"></span><span class="knob"></span></button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">分段选择器</div>
+    <div class="card-desc">选中项浮起，其余沉底</div>
+    <div class="seg" id="seg1">
+      <button class="active">解析</button><button>下载</button><button>历史</button>
+    </div>
+    <div style="height:14px"></div>
+    <div class="seg" id="seg2">
+      <button>日</button><button class="active">周</button><button>月</button><button>年</button>
+    </div>
+    <div class="card-desc" style="margin:14px 0 0" id="segTip">当前：解析 · 工时统计按周查看</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">禁用态</div>
+    <div class="card-desc">降低透明度，阴影保留</div>
+    <button class="btn block" disabled>解析中…（不可点）</button>
+    <div style="height:14px"></div>
+    <div class="setrow">
+      <div><div class="lab">夜间自动备份</div><div class="sub">功能维护中</div></div>
+      <button class="nswitch" disabled role="switch" aria-checked="false"><span class="dot"></span><span class="knob"></span></button>
+    </div>
+  </div>
+</section>
+
+<!-- ================= Tab 2 · 表单 ================= -->
+<section class="tabpage" id="tab2">
+  <div class="card">
+    <div class="card-title">凹陷输入框</div>
+    <div class="card-desc">内阴影，像刻进背景里</div>
+    <label class="flabel">视频链接</label>
+    <input class="ninput" id="linkInput" placeholder="粘贴抖音 / 快手 / 小红书链接">
+    <div style="height:12px"></div>
+    <label class="flabel">备注名称（可选）</label>
+    <input class="ninput" placeholder="给这个任务起个名字">
+  </div>
+
+  <div class="card">
+    <div class="card-title">搜索框</div>
+    <div class="card-desc">站点导航搜索</div>
+    <div class="searchbox">
+      <span class="sic">🔍</span>
+      <input class="ninput" id="siteSearch" placeholder="搜索站点：抖音、皮皮虾…">
+    </div>
+    <div class="card-desc" style="margin:14px 0 0" id="searchTip">已收录 39 个站点，输入关键词过滤</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">设置列表行</div>
+    <div class="card-desc">左文案右开关</div>
+    <div class="setrow">
+      <div><div class="lab">解析后自动下载</div><div class="sub">无水印视频直接存相册</div></div>
+      <button class="nswitch on" role="switch" aria-checked="true"><span class="dot"></span><span class="knob"></span></button>
+    </div>
+    <div class="setrow">
+      <div><div class="lab">图集多选下载</div><div class="sub">小红书图集逐张保存</div></div>
+      <button class="nswitch" role="switch" aria-checked="false"><span class="dot"></span><span class="knob"></span></button>
+    </div>
+    <div class="setrow">
+      <div><div class="lab">音频单独提取</div><div class="sub">生成 MP3 独立卡片</div></div>
+      <button class="nswitch on" role="switch" aria-checked="true"><span class="dot"></span><span class="knob"></span></button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">复选框 / 单选框</div>
+    <div class="card-desc">新拟态风选择控件</div>
+    <div class="flabel">下载内容（多选）</div>
+    <div class="checkline on"><span class="ncheck"></span>无水印视频</div>
+    <div class="checkline on"><span class="ncheck"></span>封面图</div>
+    <div class="checkline"><span class="ncheck"></span>文案文本</div>
+    <div style="height:10px"></div>
+    <div class="flabel">清晰度（单选）</div>
+    <div class="checkline on"><span class="nradio"></span>原画</div>
+    <div class="checkline"><span class="nradio"></span>高清 720p</div>
+    <div class="checkline"><span class="nradio"></span>流畅 480p</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">滑杆</div>
+    <div class="card-desc">凹陷轨道 + 浮起滑块</div>
+    <div class="flabel">同时解析任务数</div>
+    <input type="range" class="nrange" id="rgTask" min="1" max="5" value="3">
+    <div class="rangeval"><span>1 个</span><b id="rgTaskVal">3 个</b><span>5 个</span></div>
+    <div style="height:16px"></div>
+    <div class="flabel">下载画质压缩比</div>
+    <input type="range" class="nrange" id="rgQ" min="0" max="100" value="70">
+    <div class="rangeval"><span>原画</span><b id="rgQVal">70%</b><span>极致压缩</span></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">提交行</div>
+    <div class="card-desc">主操作 + 次操作并排</div>
+    <div class="submitrow">
+      <button class="btn" id="btnSubmit">开始解析</button>
+      <button class="btn btn-in" id="btnReset">重置</button>
+    </div>
+    <div class="card-desc" style="margin:14px 0 0" id="formTip">填好链接后点「开始解析」试试</div>
+  </div>
+</section>
+
+<!-- ================= Tab 3 · 展示 ================= -->
+<section class="tabpage" id="tab3">
+  <div class="card">
+    <div class="card-title">音乐播放器</div>
+    <div class="card-desc">解析出的音频可直接试听</div>
+    <div class="player">
+      <div class="cover">🎵</div>
+      <div style="flex:1">
+        <div class="ptitle">热门 BGM 合集</div>
+        <div class="partist">来自解析任务 · 无水印音频</div>
+      </div>
+      <button class="iconbtn" id="likeBtn" aria-label="收藏">♡</button>
+    </div>
+    <div class="pbar"><div class="fill" id="pFill"></div></div>
+    <div class="ptime"><span id="pCur">01:12</span><span>03:05</span></div>
+    <div class="pctrl">
+      <button class="iconbtn" aria-label="上一首">⏮</button>
+      <button class="iconbtn play" id="playBtn" aria-label="播放">▶</button>
+      <button class="iconbtn" aria-label="下一首">⏭</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">用户资料卡</div>
+    <div class="card-desc">工时打卡用户主页</div>
+    <div class="profile">
+      <div class="avatar">🦊</div>
+      <div class="pname">摸鱼打工人</div>
+      <div class="pbio">本月已打卡 18 天 · 继续保持</div>
+      <div class="pstats">
+        <div class="pstat"><b>128</b><span>解析</span></div>
+        <div class="pstat"><b>96</b><span>下载</span></div>
+        <div class="pstat"><b>18</b><span>打卡天数</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">统计数字卡</div>
+    <div class="card-desc">工时打卡 · 本月数据</div>
+    <div class="statgrid">
+      <div class="stat"><div class="ico">⏱</div><b>42.5h</b><span>本月工时</span></div>
+      <div class="stat"><div class="ico">📦</div><b>2.4G</b><span>节省流量</span></div>
+      <div class="stat"><div class="ico">🔥</div><b>12 天</b><span>连续打卡</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">进度环</div>
+    <div class="card-desc">今日免费解析配额</div>
+    <div class="ringwrap">
+      <div class="ring">
+        <svg width="96" height="96" viewBox="0 0 96 96">
+          <circle cx="48" cy="48" r="40" fill="none" stroke="#c6cfdb" stroke-width="9"/>
+          <circle cx="48" cy="48" r="40" fill="none" stroke="#4d7ca8" stroke-width="9"
+                  stroke-linecap="round" stroke-dasharray="251.3" stroke-dashoffset="70.4"
+                  transform="rotate(-90 48 48)" opacity=".9"/>
+        </svg>
+        <div class="ringtext"><b>72%</b><span>已用配额</span></div>
+      </div>
+      <div class="ringlist">
+        <div><i></i>已用 36 次</div>
+        <div><em></em>剩余 14 次</div>
+        <div style="font-size:11.5px;color:var(--text-soft);margin-top:6px">明日 0 点重置配额</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">通知卡片</div>
+    <div class="card-desc">解析与系统消息</div>
+    <div class="notif">
+      <div class="nico">✅</div>
+      <div><div class="nt">解析完成</div><div class="nd">无水印视频已就绪，点击查看下载</div><div class="ntime">2 分钟前</div></div>
+    </div>
+    <div class="notif">
+      <div class="nico">🎉</div>
+      <div><div class="nt">打卡成就</div><div class="nd">连续打卡 12 天，获得「劳模」徽章</div><div class="ntime">1 小时前</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">头像组</div>
+    <div class="card-desc">一起打卡的工友</div>
+    <div class="avgroup">
+      <div class="av">🐱</div><div class="av">🐶</div><div class="av">🐰</div>
+      <div class="av">🦁</div><div class="av more">+9</div>
+      <div class="avnote">13 位工友<br>本月都在打卡</div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= Tab 4 · 反馈 ================= -->
+<section class="tabpage" id="tab4">
+  <div class="card">
+    <div class="card-title">Toast 轻提示</div>
+    <div class="card-desc">底部浮现，2 秒自动消失</div>
+    <div class="submitrow">
+      <button class="btn" id="toastOk">解析成功提示</button>
+      <button class="btn ghost" id="toastLink">已复制链接</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">确认对话框</div>
+    <div class="card-desc">删除任务前二次确认</div>
+    <button class="btn block" id="openDialog">删除这条解析记录</button>
+  </div>
+
+  <div class="card">
+    <div class="card-title">加载动画</div>
+    <div class="card-desc">解析中状态，点击开始模拟</div>
+    <button class="btn block" id="startLoad" style="margin-bottom:16px">开始解析（模拟 3 秒）</button>
+    <div class="loader" id="loader">
+      <div class="spin"></div>
+      <div class="lt">正在去除水印，请稍候…</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">成功 / 失败提示</div>
+    <div class="card-desc">行内消息条</div>
+    <div class="submitrow">
+      <button class="btn" id="showOk">模拟成功</button>
+      <button class="btn btn-in" id="showBad">模拟失败</button>
+    </div>
+    <div class="msg ok" id="msgOk">
+      <div class="mico">✓</div>
+      <div><div class="mt">下载完成</div><div class="md">无水印视频已保存到相册，可去「下载」查看。</div></div>
+    </div>
+    <div class="msg bad" id="msgBad">
+      <div class="mico">✕</div>
+      <div><div class="mt">解析失败</div><div class="md">链接无效或站点暂不支持，换个链接再试试。</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">操作菜单</div>
+    <div class="card-desc">底部上滑动作面板</div>
+    <button class="btn block" id="openSheet">对解析结果进行操作</button>
+  </div>
+
+  <div class="card">
+    <div class="card-title">空状态</div>
+    <div class="card-desc">无数据时的占位</div>
+    <div class="empty">
+      <div class="eicon">📭</div>
+      <h4>暂无解析记录</h4>
+      <p>粘贴一条视频链接，<br>3 秒得到无水印版本</p>
+      <button class="btn" id="emptyGo">去解析</button>
+    </div>
+  </div>
+</section>
+
+</div><!-- /wrap -->
+
+<!-- 底部悬浮胶囊 Tab 栏 -->
+<nav class="tabbar">
+  <div class="pill" id="pill"></div>
+  <button class="tabbtn active" data-i="0">总览</button>
+  <button class="tabbtn" data-i="1">按钮</button>
+  <button class="tabbtn" data-i="2">表单</button>
+  <button class="tabbtn" data-i="3">展示</button>
+  <button class="tabbtn" data-i="4">反馈</button>
+</nav>
+
+<!-- Toast -->
+<div id="toast"></div>
+
+<!-- 确认对话框 -->
+<div id="overlay">
+  <div class="dialog">
+    <h3>删除这条记录？</h3>
+    <p>将删除该任务的视频、封面与文案，<br>此操作不可撤销。</p>
+    <div class="drow">
+      <button class="btn btn-in" id="dlgCancel">取消</button>
+      <button class="btn" id="dlgOk">确认删除</button>
+    </div>
+  </div>
+</div>
+
+<!-- 底部操作菜单 -->
+<div id="sheet">
+  <div class="sheetbox">
+    <div class="grab"></div>
+    <button class="sheetopt"><span class="e">💾</span>保存到相册</button>
+    <button class="sheetopt"><span class="e">🔗</span>复制无水印链接</button>
+    <button class="sheetopt"><span class="e">↗</span>分享给工友</button>
+    <button class="sheetopt" id="sheetClose"><span class="e">✕</span>取消</button>
+  </div>
+</div>
+
+<script>
+/* ---------- Tab 切换 + 滑动 pill + 深链 ---------- */
+const pages=[...document.querySelectorAll('.tabpage')];
+const btns=[...document.querySelectorAll('.tabbtn')];
+const pill=document.getElementById('pill');
+function goTab(i,push){
+  i=Math.max(0,Math.min(4,i|0));
+  pages.forEach((p,k)=>p.classList.toggle('active',k===i));
+  btns.forEach((b,k)=>b.classList.toggle('active',k===i));
+  pill.style.transform='translateX('+(i*100)+'%)';
+  if(push!==false){history.replaceState(null,'','?tab='+i);}
+  window.scrollTo({top:0});
+}
+btns.forEach(b=>b.addEventListener('click',()=>goTab(+b.dataset.i)));
+(function(){
+  const t=new URLSearchParams(location.search).get('tab');
+  goTab(t===null?0:parseInt(t,10),false);
+})();
+
+/* ---------- 开关 ---------- */
+document.querySelectorAll('.nswitch').forEach(sw=>{
+  if(sw.disabled)return;
+  sw.addEventListener('click',()=>{
+    const on=sw.classList.toggle('on');
+    sw.setAttribute('aria-checked',on);
+  });
+});
+
+/* ---------- 分段选择器 ---------- */
+function segWire(id,tipId,fmt){
+  const seg=document.getElementById(id);
+  seg.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{
+    seg.querySelectorAll('button').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');fmt(b.textContent.trim());
+  }));
+}
+let s1='解析',s2='周';
+const tip=document.getElementById('segTip');
+function updSegTip(){tip.textContent='当前：'+s1+' · 工时统计按'+s2+'查看';}
+segWire('seg1',null,t=>{s1=t;updSegTip();});
+segWire('seg2',null,t=>{s2=t;updSegTip();});
+
+/* ---------- 复选 / 单选 ---------- */
+document.querySelectorAll('.checkline').forEach(line=>{
+  line.addEventListener('click',()=>{
+    const isRadio=line.querySelector('.nradio')!==null;
+    if(isRadio){
+      line.parentElement.querySelectorAll('.checkline').forEach(x=>x.classList.remove('on'));
+      line.classList.add('on');
+    }else{
+      line.classList.toggle('on');
+    }
+  });
+});
+
+/* ---------- 滑杆 ---------- */
+function rangeWire(id,valId,fmt){
+  const r=document.getElementById(id),v=document.getElementById(valId);
+  const f=()=>{v.textContent=fmt(r.value);};
+  r.addEventListener('input',f);f();
+}
+rangeWire('rgTask','rgTaskVal',v=>v+' 个');
+rangeWire('rgQ','rgQVal',v=>v+'%');
+
+/* ---------- 表单提交 / 重置 ---------- */
+const linkInput=document.getElementById('linkInput'),formTip=document.getElementById('formTip');
+document.getElementById('btnSubmit').addEventListener('click',()=>{
+  formTip.textContent=linkInput.value.trim()
+    ?'已提交解析任务：'+linkInput.value.trim().slice(0,18)+'…'
+    :'请先粘贴一条视频链接';
+  showToast(linkInput.value.trim()?'任务已提交，解析中…':'请先粘贴链接');
+});
+document.getElementById('btnReset').addEventListener('click',()=>{
+  document.querySelectorAll('#tab2 .ninput').forEach(i=>i.value='');
+  formTip.textContent='已清空，重新填写吧';
+});
+document.getElementById('siteSearch').addEventListener('input',e=>{
+  document.getElementById('searchTip').textContent=e.target.value.trim()
+    ?'正在过滤：「'+e.target.value.trim()+'」相关站点…'
+    :'已收录 39 个站点，输入关键词过滤';
+});
+document.getElementById('btnParse').addEventListener('click',()=>{goTab(2);showToast('已跳转到表单页粘贴链接');});
+document.getElementById('btnCancel').addEventListener('click',()=>showToast('已取消当前任务'));
+
+/* ---------- 播放器 ---------- */
+const playBtn=document.getElementById('playBtn');
+let playing=false,pTick=null,pSec=72;
+const pCur=document.getElementById('pCur'),pFill=document.getElementById('pFill');
+function fmtT(s){return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');}
+playBtn.addEventListener('click',()=>{
+  playing=!playing;
+  playBtn.textContent=playing?'⏸':'▶';
+  clearInterval(pTick);
+  if(playing){pTick=setInterval(()=>{
+    pSec=(pSec+1)%186;pCur.textContent=fmtT(pSec);
+    pFill.style.width=(pSec/185*100)+'%';
+  },1000);}
+});
+document.getElementById('likeBtn').addEventListener('click',function(){
+  const liked=this.textContent==='♥';
+  this.textContent=liked?'♡':'♥';
+  this.style.color=liked?'':'#c26a6a';
+  showToast(liked?'已取消收藏':'已加入收藏');
+});
+
+/* ---------- Toast ---------- */
+const toast=document.getElementById('toast');let toastT=null;
+function showToast(msg){
+  toast.textContent=msg;toast.classList.add('show');
+  clearTimeout(toastT);toastT=setTimeout(()=>toast.classList.remove('show'),2000);
+}
+document.getElementById('toastOk').addEventListener('click',()=>showToast('✅ 解析成功，无水印视频已就绪'));
+document.getElementById('toastLink').addEventListener('click',()=>showToast('🔗 链接已复制，去粘贴吧'));
+
+/* ---------- 对话框 ---------- */
+const overlay=document.getElementById('overlay');
+document.getElementById('openDialog').addEventListener('click',()=>overlay.classList.add('show'));
+document.getElementById('dlgCancel').addEventListener('click',()=>overlay.classList.remove('show'));
+document.getElementById('dlgOk').addEventListener('click',()=>{overlay.classList.remove('show');showToast('记录已删除');});
+overlay.addEventListener('click',e=>{if(e.target===overlay)overlay.classList.remove('show');});
+
+/* ---------- 加载 ---------- */
+const loader=document.getElementById('loader'),startLoad=document.getElementById('startLoad');
+startLoad.addEventListener('click',()=>{
+  loader.classList.add('show');startLoad.disabled=true;startLoad.textContent='解析中…';
+  setTimeout(()=>{loader.classList.remove('show');startLoad.disabled=false;startLoad.textContent='开始解析（模拟 3 秒）';showToast('✅ 解析完成');},3000);
+});
+
+/* ---------- 成功 / 失败消息 ---------- */
+const msgOk=document.getElementById('msgOk'),msgBad=document.getElementById('msgBad');
+document.getElementById('showOk').addEventListener('click',()=>{msgBad.classList.remove('show');msgOk.classList.add('show');});
+document.getElementById('showBad').addEventListener('click',()=>{msgOk.classList.remove('show');msgBad.classList.add('show');});
+
+/* ---------- 操作菜单 ---------- */
+const sheet=document.getElementById('sheet');
+document.getElementById('openSheet').addEventListener('click',()=>sheet.classList.add('show'));
+document.getElementById('sheetClose').addEventListener('click',()=>sheet.classList.remove('show'));
+sheet.addEventListener('click',e=>{if(e.target===sheet)sheet.classList.remove('show');});
+sheet.querySelectorAll('.sheetopt:not(#sheetClose)').forEach(o=>o.addEventListener('click',()=>{
+  sheet.classList.remove('show');showToast(o.textContent.trim()+'成功');
+}));
+
+/* ---------- 空状态 ---------- */
+document.getElementById('emptyGo').addEventListener('click',()=>{goTab(2);showToast('去粘贴第一条链接吧');});
+</script>
+</body>
+</html>
