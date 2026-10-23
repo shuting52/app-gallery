@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>弹簧开关</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;display:flex;align-items:center;justify-content:center;background:#0e0f13;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;color:#e8eaf0;padding:20px}
+body.freeze *{transition:none!important;animation:none!important}
+.stage{width:360px;max-width:100%;text-align:center}
+h2{font-size:17px;letter-spacing:3px;margin-bottom:4px}
+.sub{font-size:12px;color:#8a8fa3;margin-bottom:20px}
+.device{cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent}
+.press{width:290px;height:350px;margin:0 auto;position:relative;border-radius:20px;background:linear-gradient(180deg,#181d29,#10141d);box-shadow:0 12px 32px rgba(0,0,0,.5);overflow:hidden}
+.plate{position:absolute;left:45px;right:45px;height:24px;border-radius:8px;background:linear-gradient(180deg,#a7aec0,#5f6678);box-shadow:0 4px 10px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.5)}
+.plate.top{top:26px}
+.plate.bot{top:262px;transition:top .65s cubic-bezier(.3,1.4,.4,1);background:linear-gradient(180deg,#e8b23a,#a8761a);cursor:pointer}
+.device.on .plate.bot{top:158px}
+.spring{position:absolute;top:50px;left:50%;width:200px;height:212px;margin-left:-100px;transform-origin:50% 0;transition:transform .65s cubic-bezier(.3,1.4,.4,1)}
+.device.on .spring{transform:scaleY(.5)}
+.lamp{position:absolute;top:30px;right:22px;width:20px;height:20px;border-radius:50%;background:#3a2126;border:2px solid #10131a;transition:all .4s}
+.device.on .lamp{background:radial-gradient(circle at 40% 35%,#d6ffe2,#2fbf71 70%);box-shadow:0 0 16px 4px rgba(60,220,130,.7)}
+.spark{position:absolute;top:150px;left:50%;width:10px;height:10px;margin-left:-5px;opacity:0;pointer-events:none}
+.spark i{position:absolute;left:0;top:0;width:10px;height:10px;background:#ffe98a;clip-path:polygon(50% 0,62% 38%,100% 50%,62% 62%,50% 100%,38% 62%,0 50%,38% 38%)}
+.device.on .spark{animation:spk .8s ease-out .35s}
+.spark.s1{--dx:-52px;--dy:-30px}.spark.s2{--dx:52px;--dy:-30px}.spark.s3{--dx:-34px;--dy:26px}.spark.s4{--dx:34px;--dy:26px}
+@keyframes spk{0%{opacity:1;transform:translate(0,0) scale(.4)}100%{opacity:0;transform:translate(var(--dx),var(--dy)) scale(1.3)}}
+.contact{position:absolute;top:150px;left:50%;width:60px;height:10px;margin-left:-30px;border-radius:5px;background:#3a3f52}
+.device.on .contact{background:#2fbf71;box-shadow:0 0 14px rgba(60,220,130,.8)}
+.press-lb{position:absolute;bottom:14px;left:0;right:0;font-size:11px;letter-spacing:3px;color:#5c6172}
+.status{margin-top:18px;font-size:14px;color:#9aa0b4}
+.status b{color:#ffd479}
+.hint{font-size:11px;color:#5c6172;margin-top:6px}
+</style>
+</head>
+<body>
+<div class="stage">
+<h2>弹簧开关</h2>
+<div class="sub">点击压下弹簧，接通触点</div>
+<div class="device" id="dev">
+<div class="press">
+<div class="plate top"></div>
+<svg class="spring" viewBox="0 0 200 212" fill="none" stroke="#cfd6e4" stroke-width="11" stroke-linecap="round" stroke-linejoin="round">
+<path d="M100,4 L170,30 L30,56 L170,82 L30,108 L170,134 L30,160 L170,186 L100,208"/>
+</svg>
+<div class="contact"></div>
+<div class="plate bot"></div>
+<div class="lamp"></div>
+<span class="spark s1"><i></i></span><span class="spark s2"><i></i></span><span class="spark s3"><i></i></span><span class="spark s4"><i></i></span>
+<div class="press-lb">按下压缩 · 松开回弹</div>
+</div>
+</div>
+<div class="status">状态：<b id="st">关 · 触点断开</b></div>
+<div class="hint">点击弹簧装置切换</div>
+</div>
+<script>
+var dev=document.getElementById('dev'),st=document.getElementById('st'),on=location.search.indexOf('s=1')>-1;
+function render(){dev.classList.toggle('on',on);st.textContent=on?'开 · 触点接通':'关 · 触点断开';}
+if(on)document.body.classList.add('freeze');
+dev.addEventListener('click',function(){on=!on;render();});
+render();
+</script>
+</body>
+</html>

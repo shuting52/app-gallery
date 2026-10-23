@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>n13 · 气泡上升 Toast</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;background:#141824;display:flex;flex-direction:column;align-items:center;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;color:#fff}
+.head{text-align:center;padding:20px 16px 12px}
+.head h1{font-size:17px;color:#8fd0ff;letter-spacing:1px}
+.head p{font-size:12px;color:#8b93a7;margin-top:6px}
+.stage{width:360px;max-width:94vw;height:480px;border-radius:18px;position:relative;overflow:hidden;background:linear-gradient(180deg,#0e1a30,#0a1220 70%);border:1px solid #24405e;box-shadow:0 12px 40px rgba(0,0,0,.4)}
+.mini{position:absolute;bottom:-40px;border-radius:50%;border:1px solid rgba(150,200,255,.35);animation:miniUp 7s linear infinite}
+.mini.m1{left:40px;width:26px;height:26px}
+.mini.m2{left:150px;width:16px;height:16px;animation-delay:2.2s}
+.mini.m3{left:270px;width:34px;height:34px;animation-delay:4.1s}
+@keyframes miniUp{to{transform:translateY(-580px)}}
+.bubble{position:absolute;left:50%;top:140px;width:230px;height:230px;margin-left:-115px;background:radial-gradient(circle at 30% 25%,rgba(255,255,255,.5),rgba(140,200,255,.15) 45%,rgba(90,150,230,.28));border:2px solid rgba(180,220,255,.5);border-radius:50%;display:flex;align-items:center;justify-content:center;text-align:center;padding:40px;color:#eaf4ff;font-size:15px;font-weight:600;line-height:1.7;opacity:0;transform:translateY(340px) scale(.7);box-shadow:inset -8px -10px 24px rgba(120,180,255,.25),0 0 30px rgba(120,180,255,.15)}
+.bubble.rise{animation:rise 1s ease-out forwards}
+.bubble.bob{animation:bob 2.2s ease-in-out infinite}
+.bubble.up{animation:up .9s ease-in forwards}
+@keyframes rise{0%{transform:translateY(340px) scale(.7);opacity:0}20%{opacity:1}50%{transform:translate(-24px,150px) scale(1)}100%{transform:translateY(0) scale(1);opacity:1}}
+@keyframes bob{0%,100%{transform:translateY(0);opacity:1}50%{transform:translateY(-14px);opacity:1}}
+@keyframes up{from{transform:translateY(0) scale(1);opacity:1}to{transform:translateY(-300px) scale(.8);opacity:0}}
+.hint{position:absolute;bottom:14px;width:100%;text-align:center;font-size:11px;color:#5c7a99}
+</style>
+</head>
+<body>
+<div class="head"><h1>n13 · 气泡上升</h1><p>通知藏在气泡里从底部上浮 → 中间停留 → 继续上浮淡出</p></div>
+<div class="stage">
+  <div class="mini m1"></div><div class="mini m2"></div><div class="mini m3"></div>
+  <div class="bubble" id="bubble"><span id="bt"></span></div>
+  <div class="hint">自动循环播放中 · 3 条通知轮播</div>
+</div>
+<script>
+const msgs=["您有 1 条新私信","订单 #20261019 已支付","粉丝 +128，继续加油！"];
+const bubble=document.getElementById('bubble'),bt=document.getElementById('bt');
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+async function show(i){
+  bt.textContent=msgs[i];
+  bubble.classList.remove('up');void bubble.offsetWidth;bubble.classList.add('rise');
+  await sleep(1050);
+  bubble.classList.remove('rise');bubble.classList.add('bob');
+  await sleep(2500);
+  bubble.classList.remove('bob');bubble.classList.add('up');
+  await sleep(950);
+  bubble.classList.remove('up');
+  await sleep(300);
+}
+(async()=>{let i=0;while(true){await show(i%msgs.length);i++;}})();
+</script>
+</body>
+</html>

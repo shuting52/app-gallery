@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>蔚屿 NOVA · 品牌自营商城</title>
+<style>
+:root{
+  --black:#111111; --black2:#1a1a1a; --gold:#c9a86a; --gold-dim:#8a744e;
+  --cream:#f7f3ec; --cream2:#efe8da; --grey:#8d8d8d; --line:#2a2a2a; --line-l:#e2d9c8;
+  --serif:"Songti SC","STSong",serif;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{background:#0c0c0c;color:var(--cream);font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;font-size:14px;line-height:1.6}
+.phone{max-width:430px;margin:0 auto;min-height:100dvh;position:relative;background:var(--black);padding-bottom:86px}
+/* ---------- 通用 ---------- */
+.page{display:none}
+.page.on{display:block;animation:fade .28s ease}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.serif{font-family:var(--serif)}
+.gold{color:var(--gold)}
+.hr{height:1px;background:linear-gradient(90deg,transparent,var(--gold-dim),transparent);opacity:.5}
+.pad{padding:0 18px}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 18px 10px}
+.logo{font-family:var(--serif);font-size:20px;letter-spacing:6px;color:var(--gold)}
+.logo small{font-size:10px;letter-spacing:3px;color:var(--grey);display:block;font-family:sans-serif}
+.icons{display:flex;gap:14px;font-size:20px}
+.icons span{position:relative;cursor:pointer}
+#bagBadge{position:absolute;top:-6px;right:-8px;background:var(--gold);color:#111;font-size:10px;min-width:16px;height:16px;border-radius:8px;display:none;align-items:center;justify-content:center;font-weight:700;padding:0 4px}
+/* ---------- Tab1 首页 ---------- */
+.hero{margin:6px 18px 0;border:1px solid var(--line);position:relative;overflow:hidden;
+  background:radial-gradient(120% 130% at 20% 0%,#2b2417 0%,#141210 45%,#0c0c0c 100%)}
+.hero::after{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 40%,rgba(201,168,106,.14) 60%,transparent 80%)}
+.hero-in{position:relative;z-index:1;padding:44px 24px 38px}
+.hero-kicker{font-size:11px;letter-spacing:5px;color:var(--gold);margin-bottom:10px}
+.hero h1{font-family:var(--serif);font-size:34px;letter-spacing:10px;color:var(--cream);font-weight:400}
+.hero h1 b{color:var(--gold);font-weight:400}
+.hero p{font-size:12px;color:#b9b2a4;margin-top:10px;letter-spacing:2px}
+.hero-cta{display:inline-block;margin-top:18px;border:1px solid var(--gold);color:var(--gold);font-size:12px;letter-spacing:4px;padding:10px 26px;cursor:pointer}
+.story{padding:26px 18px}
+.story h2,.sec-t{font-family:var(--serif);font-size:19px;letter-spacing:4px;color:var(--cream);font-weight:400;margin-bottom:8px}
+.story h2 i{font-style:normal;color:var(--gold)}
+.story p{font-size:13px;color:#b9b2a4;line-height:2;text-align:justify}
+.story .en{font-size:10px;letter-spacing:3px;color:var(--gold-dim);margin-bottom:12px}
+.hscroll{display:flex;gap:12px;overflow-x:auto;padding:6px 18px 4px;scrollbar-width:none}
+.hscroll::-webkit-scrollbar{display:none}
+.ncard{flex:0 0 150px;border:1px solid var(--line);background:var(--black2)}
+.ncard .ph{height:120px;display:flex;align-items:center;justify-content:center;font-size:44px;background:linear-gradient(135deg,#221d12,#141210)}
+.ncard .tx{padding:10px 12px}
+.ncard .tx b{display:block;font-size:12.5px;font-weight:600;letter-spacing:1px}
+.ncard .tx span{font-size:11px;color:var(--gold-dim);letter-spacing:1px}
+.ncard .tx em{font-style:normal;font-size:13px;color:var(--gold);display:block;margin-top:6px}
+.tag-new{position:absolute;top:8px;left:8px;background:var(--gold);color:#111;font-size:10px;padding:2px 8px;letter-spacing:2px}
+.pcard .ph{position:relative}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:6px 18px 10px}
+.pcard{border:1px solid var(--line);background:var(--black2)}
+.pcard .ph{height:150px;display:flex;align-items:center;justify-content:center;font-size:52px}
+.pcard .tx{padding:10px 12px 12px}
+.pcard .tx b{display:block;font-size:13px;font-weight:600}
+.pcard .tx span{font-size:11px;color:var(--grey)}
+.pcard .row{display:flex;align-items:center;justify-content:space-between;margin-top:8px}
+.price{color:var(--gold);font-size:14px;font-weight:700}
+.add{border:1px solid var(--gold);background:transparent;color:var(--gold);width:28px;height:28px;border-radius:50%;font-size:16px;line-height:1;cursor:pointer}
+.add:active{background:var(--gold);color:#111}
+/* ---------- Tab2 系列 ---------- */
+.seri-nav{display:flex;gap:8px;padding:12px 18px;overflow-x:auto;scrollbar-width:none}
+.seri-nav::-webkit-scrollbar{display:none}
+.seri-nav button{flex:0 0 auto;background:transparent;border:1px solid var(--line);color:var(--grey);font-size:12.5px;letter-spacing:3px;padding:9px 18px;cursor:pointer}
+.seri-nav button.on{border-color:var(--gold);color:var(--gold);background:rgba(201,168,106,.08)}
+.seri-desc{padding:0 18px 12px;font-size:12px;color:var(--gold-dim);letter-spacing:2px}
+.list{display:flex;flex-direction:column;gap:12px;padding:0 18px 12px}
+.lcard{display:flex;border:1px solid var(--line);background:var(--black2);overflow:hidden}
+.lcard .ph{width:108px;height:108px;flex:0 0 108px;display:flex;align-items:center;justify-content:center;font-size:40px}
+.lcard .tx{flex:1;padding:12px 12px 10px;display:flex;flex-direction:column}
+.lcard .tx b{font-size:13.5px;font-weight:600}
+.lcard .tx span{font-size:11px;color:var(--grey);margin-top:2px;flex:1}
+.lcard .row{display:flex;align-items:center;justify-content:space-between;margin-top:6px}
+/* ---------- Tab3 购物车 ---------- */
+.cart-h{padding:16px 18px;font-family:var(--serif);font-size:20px;letter-spacing:5px;color:var(--cream)}
+.ccard{display:flex;gap:12px;border:1px solid var(--line);background:var(--black2);margin:0 18px 12px;padding:12px;align-items:center}
+.chk{width:20px;height:20px;border:1px solid var(--gold-dim);border-radius:50%;flex:0 0 20px;cursor:pointer;position:relative}
+.chk.on{background:var(--gold);border-color:var(--gold)}
+.chk.on::after{content:"✓";position:absolute;inset:0;color:#111;font-size:13px;display:flex;align-items:center;justify-content:center}
+.ccard .ph{width:76px;height:76px;flex:0 0 76px;display:flex;align-items:center;justify-content:center;font-size:34px;background:linear-gradient(135deg,#221d12,#141210)}
+.ccard .tx{flex:1}
+.ccard .tx b{font-size:13px;font-weight:600;display:block}
+.ccard .tx span{font-size:11px;color:var(--grey)}
+.qty{display:flex;align-items:center;gap:10px;margin-top:8px}
+.qty button{width:24px;height:24px;border:1px solid var(--line);background:transparent;color:var(--cream);font-size:14px;cursor:pointer}
+.qty button:active{border-color:var(--gold);color:var(--gold)}
+.qty i{font-style:normal;font-size:13px;min-width:18px;text-align:center}
+.ccard .price{text-align:right;font-size:14px}
+.coupon{margin:0 18px 12px;border:1px dashed var(--gold-dim);padding:12px 14px;display:flex;justify-content:space-between;align-items:center;font-size:12.5px;color:var(--gold);cursor:pointer}
+.settle{margin:0 18px;border:1px solid var(--line);background:var(--black2);padding:14px}
+.settle .r{display:flex;justify-content:space-between;font-size:13px;color:#b9b2a4;margin-bottom:6px}
+.settle .r.total{color:var(--cream);font-size:16px;margin:8px 0 12px}
+.settle .r.total b{color:var(--gold);font-size:22px}
+.btn{display:block;width:100%;background:linear-gradient(135deg,#d8bc7e,#b8945a);color:#111;border:none;font-size:15px;letter-spacing:6px;padding:14px;cursor:pointer;font-weight:700}
+.btn:active{opacity:.85}
+/* ---------- Tab4 会员 ---------- */
+.mcard{margin:6px 18px 0;background:linear-gradient(135deg,#1d1810,#0f0e0c 60%);border:1px solid var(--gold-dim);padding:22px 20px;position:relative;overflow:hidden}
+.mcard::after{content:"NOVA";position:absolute;right:12px;bottom:-14px;font-family:var(--serif);font-size:64px;color:rgba(201,168,106,.1);letter-spacing:6px}
+.mcard .lvl{font-family:var(--serif);font-size:24px;letter-spacing:6px;color:var(--gold)}
+.mcard .no{font-size:11px;color:var(--grey);letter-spacing:2px;margin-top:6px}
+.mcard .pts{font-size:13px;color:var(--cream);margin-top:12px}
+.mcard .pts b{color:var(--gold);font-size:20px;margin:0 4px}
+.pbar{height:6px;background:#2c2c2c;border-radius:3px;margin:10px 0 6px;overflow:hidden}
+.pbar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--gold-dim),var(--gold));border-radius:3px;transition:width 1.2s cubic-bezier(.2,.7,.2,1)}
+.plabel{font-size:11px;color:var(--grey);display:flex;justify-content:space-between}
+.plabel b{color:var(--gold)}
+.lvl3{display:flex;gap:10px;padding:14px 18px}
+.lvl3 .lv{flex:1;border:1px solid var(--line);text-align:center;padding:14px 6px;background:var(--black2)}
+.lvl3 .lv.cur{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold) inset}
+.lvl3 .lv .n{font-family:var(--serif);font-size:15px;letter-spacing:2px;color:var(--cream)}
+.lvl3 .lv.cur .n{color:var(--gold)}
+.lvl3 .lv .d{font-size:10.5px;color:var(--grey);margin-top:6px;line-height:1.7}
+.perks{padding:4px 18px}
+.perk{display:flex;gap:14px;align-items:center;border-bottom:1px solid var(--line);padding:14px 2px}
+.perk .ic{width:44px;height:44px;flex:0 0 44px;border:1px solid var(--gold-dim);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--gold)}
+.perk b{font-size:13.5px;display:block}
+.perk span{font-size:11.5px;color:var(--grey)}
+/* ---------- Tab5 我的 ---------- */
+.uhead{display:flex;gap:14px;align-items:center;padding:20px 18px}
+.avatar{width:62px;height:62px;border-radius:50%;border:1px solid var(--gold);display:flex;align-items:center;justify-content:center;font-size:26px;background:radial-gradient(circle at 30% 30%,#2b2417,#141210)}
+.uhead b{font-size:16px;letter-spacing:2px}
+.uhead .vip{font-size:11px;color:var(--gold);border:1px solid var(--gold-dim);padding:2px 10px;border-radius:10px;margin-top:6px;display:inline-block;letter-spacing:2px}
+.uhead .go{margin-left:auto;color:var(--grey);font-size:18px}
+.ostat{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin:0 18px}
+.ostat div{text-align:center;padding:14px 0;font-size:11.5px;color:#b9b2a4;position:relative;cursor:pointer}
+.ostat .n{font-size:22px;display:block;margin-bottom:4px}
+.menu{margin:14px 18px 0;border:1px solid var(--line);background:var(--black2)}
+.mi{display:flex;align-items:center;gap:12px;padding:15px 14px;border-bottom:1px solid var(--line);font-size:13.5px;cursor:pointer}
+.mi:last-child{border-bottom:none}
+.mi .ic{font-size:18px;width:24px;text-align:center;color:var(--gold)}
+.mi .go{margin-left:auto;color:var(--grey)}
+.mi .sub{font-size:11px;color:var(--grey);margin-left:auto}
+.mi .go~.sub,.mi .sub~.go{display:none}
+/* ---------- 底部 Tab ---------- */
+.tabbar{position:fixed;left:50%;transform:translateX(-50%);bottom:0;width:100%;max-width:430px;background:#141414;border-top:1px solid var(--line);display:flex;z-index:50}
+.tab{flex:1;text-align:center;padding:10px 0 12px;font-size:11px;color:var(--grey);cursor:pointer;letter-spacing:2px}
+.tab .ic{font-size:20px;display:block;margin-bottom:2px}
+.tab.on{color:var(--gold)}
+/* ---------- Toast ---------- */
+#toast{position:fixed;left:50%;transform:translateX(-50%) translateY(20px);bottom:110px;background:rgba(20,20,20,.96);border:1px solid var(--gold-dim);color:var(--cream);font-size:13px;padding:12px 22px;letter-spacing:2px;opacity:0;pointer-events:none;transition:all .3s;z-index:99;max-width:86%;text-align:center}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+#toast b{color:var(--gold)}
+</style>
+</head>
+<body>
+<div class="phone">
+
+  <!-- ======== Tab 0 首页 ======== -->
+  <section class="page on" id="pg0">
+    <div class="topbar">
+      <div class="logo">蔚屿<small>NOVA · EST.2019</small></div>
+      <div class="icons"><span>🔍</span><span id="bagIcon">🛍<i id="bagBadge">0</i></span></div>
+    </div>
+    <div class="hero">
+      <div class="hero-in">
+        <div class="hero-kicker">2026 秋冬 · 旷野系列</div>
+        <h1>蔚屿 <b>NOVA</b></h1>
+        <p>旷野有风 · 屿上有光 — 全新秋冬系列登场</p>
+        <span class="hero-cta" onclick="goTab(1)">探索系列 →</span>
+      </div>
+    </div>
+    <div class="story">
+      <div class="en">OUR STORY</div>
+      <h2>一座屿，<i>一座城</i>的回响</h2>
+      <p>蔚屿创立于 2019 年，取意「岛屿之上，自成宇宙」。我们相信奢华不在喧哗，而在克制——每一瓶香水都源自格拉斯的晨雾，每一只包袋都出自佛罗伦萨匠人之手。从晨屿的清朗到夜泊的深邃，蔚屿以四个系列，收藏四种时间的质感。</p>
+    </div>
+    <div class="hr" style="margin:0 18px"></div>
+    <div style="padding:22px 0 0">
+      <div class="pad"><div class="sec-t">新品首发</div></div>
+      <div class="hscroll" id="newRow"></div>
+    </div>
+    <div style="padding:22px 0 14px">
+      <div class="pad"><div class="sec-t">经典系列</div></div>
+      <div class="grid2" id="classicRow"></div>
+    </div>
+  </section>
+
+  <!-- ======== Tab 1 系列 ======== -->
+  <section class="page" id="pg1">
+    <div class="cart-h">系列 <span style="font-size:12px;color:var(--gold-dim);letter-spacing:2px">COLLECTIONS</span></div>
+    <div class="seri-nav" id="seriNav"></div>
+    <div class="seri-desc" id="seriDesc"></div>
+    <div class="list" id="seriList"></div>
+  </section>
+
+  <!-- ======== Tab 2 购物车 ======== -->
+  <section class="page" id="pg2">
+    <div class="cart-h">购物袋 <span style="font-size:12px;color:var(--gold-dim);letter-spacing:2px">BAG</span></div>
+    <div id="cartList"></div>
+    <div class="coupon" onclick="toast('已领取 <b>满 2000 减 200</b> 会员券')">🎟 领取会员专属券 <span>满2000减200 →</span></div>
+    <div class="settle">
+      <div class="r"><span>商品小计</span><span id="subT">¥0</span></div>
+      <div class="r"><span>运费</span><span class="gold">会员免邮</span></div>
+      <div class="hr" style="margin:4px 0 10px"></div>
+      <div class="r total"><span>合计</span><b id="totT">¥0</b></div>
+      <button class="btn" onclick="checkout()">去结算</button>
+    </div>
+  </section>
+
+  <!-- ======== Tab 3 会员 ======== -->
+  <section class="page" id="pg3">
+    <div class="cart-h">蔚屿会员 <span style="font-size:12px;color:var(--gold-dim);letter-spacing:2px">MEMBERSHIP</span></div>
+    <div class="mcard">
+      <div class="lvl">金屿会员</div>
+      <div class="no">NO. NOVA 2026 0888</div>
+      <div class="pts">可用积分 <b>8,680</b> 分 · 价值 ¥86.8</div>
+      <div class="pbar"><i id="lvlBar"></i></div>
+      <div class="plabel"><span>距 <b>黑卡</b> 还差 <b>¥11,320</b></span><span>62%</span></div>
+    </div>
+    <div class="lvl3">
+      <div class="lv"><div class="n">银屿</div><div class="d">累计消费<br>¥5,000</div></div>
+      <div class="lv cur"><div class="n">金屿</div><div class="d">累计消费<br>¥20,000</div></div>
+      <div class="lv"><div class="n">黑卡</div><div class="d">累计消费<br>¥50,000</div></div>
+    </div>
+    <div class="pad" style="margin-top:6px"><div class="sec-t">专属权益</div></div>
+    <div class="perks">
+      <div class="perk"><div class="ic">🎁</div><div><b>生日礼遇</b><span>生日当月获赠专属香氛小样礼盒</span></div></div>
+      <div class="perk"><div class="ic">🚚</div><div><b>全场免邮</b><span>不限金额，顺丰包邮，港澳台亦可</span></div></div>
+      <div class="perk"><div class="ic">⚡</div><div><b>新品优先购</b><span>限量系列提前 48 小时专享通道</span></div></div>
+      <div class="perk"><div class="ic">💎</div><div><b>积分兑礼</b><span>100 积分 = ¥1，可兑换丝巾与配饰</span></div></div>
+      <div class="perk"><div class="ic">👜</div><div><b>专属顾问</b><span>一对一搭配顾问，门店 VIP 室预约</span></div></div>
+    </div>
+  </section>
+
+  <!-- ======== Tab 4 我的 ======== -->
+  <section class="page" id="pg4">
+    <div class="uhead">
+      <div class="avatar">陈</div>
+      <div><b>陈小姐</b><br><span class="vip">◆ 金屿会员</span></div>
+      <div class="go">›</div>
+    </div>
+    <div class="pad"><div class="sec-t" style="font-size:15px">我的订单</div></div>
+    <div class="ostat">
+      <div onclick="toast('待付款订单 <b>1</b> 笔')"><span class="n">💳</span>待付款</div>
+      <div onclick="toast('待发货订单 <b>2</b> 笔')"><span class="n">📦</span>待发货</div>
+      <div onclick="toast('待收货订单 <b>1</b> 笔')"><span class="n">🚚</span>待收货</div>
+      <div onclick="toast('暂无待评价订单')"><span class="n">⭐</span>待评价</div>
+    </div>
+    <div class="menu">
+      <div class="mi" onclick="toast('默认地址：上海市静安区南京西路 1266 号 8 楼')"><span class="ic">📍</span>收货地址<span class="sub">上海市静安区 ›</span></div>
+      <div class="mi" onclick="toast('已为您转接专属客服，请稍候')"><span class="ic">🎧</span>专属客服<span class="go">›</span></div>
+      <div class="mi" onclick="toast('已预约 <b>恒隆门店 VIP 室</b> · 明日 14:00')"><span class="ic">🏬</span>门店预约<span class="sub">恒隆广场店 ›</span></div>
+      <div class="mi" onclick="toast('设置已保存')"><span class="ic">⚙️</span>设置<span class="go">›</span></div>
+    </div>
+    <div class="menu">
+      <div class="mi" onclick="toast('我的收藏：<b>12</b> 件单品')"><span class="ic">🤍</span>我的收藏<span class="go">›</span></div>
+      <div class="mi" onclick="toast('优惠券：<b>3</b> 张可用')"><span class="ic">🎟</span>优惠券<span class="go">›</span></div>
+    </div>
+  </section>
+
+  <!-- 底部 Tab -->
+  <nav class="tabbar" id="tabbar">
+    <div class="tab on" data-i="0"><span class="ic">🏠</span>首页</div>
+    <div class="tab" data-i="1"><span class="ic">💠</span>系列</div>
+    <div class="tab" data-i="2"><span class="ic">🛍</span>购物袋</div>
+    <div class="tab" data-i="3"><span class="ic">👑</span>会员</div>
+    <div class="tab" data-i="4"><span class="ic">👤</span>我的</div>
+  </nav>
+  <div id="toast"></div>
+</div>
+
+<script>
+var PRODUCTS=[
+ {id:1,name:"晨屿 · 晨雾之屿香水 50ml",cat:"香水",price:1280,series:"晨屿",emoji:"🌿",bg:"linear-gradient(135deg,#23301f,#101410)",desc:"柑橘与白茶的清晨气息"},
+ {id:2,name:"夜泊 · 沉香乌木香水 50ml",cat:"香水",price:1680,series:"夜泊",emoji:"🌙",bg:"linear-gradient(135deg,#1c1a2e,#0d0c14)",desc:"乌木与琥珀的深夜低语"},
+ {id:3,name:"旷野 · 风之旷野香水 50ml",cat:"香水",price:1480,series:"旷野",emoji:"🍂",bg:"linear-gradient(135deg,#3a2c17,#161006)",desc:"鼠尾草与干草的辽阔"},
+ {id:4,name:"拾光 · 旧时拾光香水 50ml",cat:"香水",price:1380,series:"拾光",emoji:"🌅",bg:"linear-gradient(135deg,#3a2418,#140e08)",desc:"橙花与蜂蜜的旧时光"},
+ {id:5,name:"屿影托特包 · 晨屿米",cat:"包袋",price:5980,series:"晨屿",emoji:"👜",bg:"linear-gradient(135deg,#2c2620,#12100c)",desc:"头层小牛皮 · 意大利手工"},
+ {id:6,name:"夜泊链条包 · 曜石黑",cat:"包袋",price:7280,series:"夜泊",emoji:"🖤",bg:"linear-gradient(135deg,#222,#0a0a0a)",desc:"曜石黑漆皮 · 金色链条"},
+ {id:7,name:"旷野邮差包 · 沙丘棕",cat:"包袋",price:4680,series:"旷野",emoji:"💼",bg:"linear-gradient(135deg,#3a2c1a,#14100a)",desc:"植鞣革 · 做旧铜扣"},
+ {id:8,name:"拾光方巾 90cm · 晨雾印花",cat:"丝巾",price:1880,series:"晨屿",emoji:"🧣",bg:"linear-gradient(135deg,#26424a,#0e1a1c)",desc:"桑蚕丝 · 手工卷边"},
+ {id:9,name:"拾光方巾 90cm · 夜泊星图",cat:"丝巾",price:1980,series:"夜泊",emoji:"✨",bg:"linear-gradient(135deg,#1c1a30,#0c0b16)",desc:"桑蚕丝 · 星空印花"},
+ {id:10,name:"旷野丝巾 140cm · 风纹",cat:"丝巾",price:2280,series:"旷野",emoji:"🍃",bg:"linear-gradient(135deg,#2e3a1c,#11150a)",desc:"真丝斜纹 · 风纹提花"},
+ {id:11,name:"金屿手链 · 18K 鎏金",cat:"配饰",price:2680,series:"拾光",emoji:"📿",bg:"linear-gradient(135deg,#3a2f16,#141006)",desc:"18K 鎏金 · 可刻字"},
+ {id:12,name:"夜泊耳坠 · 黑曜石",cat:"配饰",price:1580,series:"夜泊",emoji:"💎",bg:"linear-gradient(135deg,#1a1a24,#0a0a10)",desc:"黑曜石 · 手工镶嵌"}
+];
+var SERIES={
+ "晨屿":"清朗澄澈 — 柑橘、白茶与晨雾的气息，适合每一个新的开始。",
+ "夜泊":"深邃静谧 — 乌木、琥珀与黑夜的低语，为深夜而生。",
+ "旷野":"辽阔自由 — 鼠尾草、干草与风的形状，致敬不羁之心。",
+ "拾光":"温柔怀旧 — 橙花、蜂蜜与旧时光，把记忆戴在身上。"
+};
+var NEW_IDS=[2,6,9,11];
+var CLASSIC_IDS=[1,5,8,12];
+var CART=[{id:2,qty:1,checked:true},{id:8,qty:1,checked:true},{id:11,qty:2,checked:false}];
+var curTab=0, bagCount=0, toastTimer=null;
+
+function $(id){return document.getElementById(id)}
+function fmt(n){return "¥"+n.toLocaleString("zh-CN")}
+function toast(html){var t=$("toast");t.innerHTML=html;t.classList.add("show");clearTimeout(toastTimer);toastTimer=setTimeout(function(){t.classList.remove("show")},2200)}
+
+function pById(id){for(var i=0;i<PRODUCTS.length;i++)if(PRODUCTS[i].id===id)return PRODUCTS[i]}
+
+function cardHTML(p,newTag){
+ return '<div class="pcard"><div class="ph" style="background:'+p.bg+'">'+(newTag?'<span class="tag-new">NEW</span>':'')+p.emoji+'</div>'+
+ '<div class="tx"><b>'+p.name+'</b><span>'+p.desc+'</span>'+
+ '<div class="row"><span class="price">'+fmt(p.price)+'</span><button class="add" onclick="addBag('+p.id+',event)">＋</button></div></div></div>';
+}
+function listHTML(p){
+ return '<div class="lcard"><div class="ph" style="background:'+p.bg+'">'+p.emoji+'</div>'+
+ '<div class="tx"><b>'+p.name+'</b><span>'+p.desc+'</span>'+
+ '<div class="row"><span class="price">'+fmt(p.price)+'</span><button class="add" onclick="addBag('+p.id+',event)">＋</button></div></div></div>';
+}
+
+/* 首页渲染 */
+$("newRow").innerHTML=NEW_IDS.map(function(id){return cardHTML(pById(id),true)}).join("");
+$("classicRow").innerHTML=CLASSIC_IDS.map(function(id){return cardHTML(pById(id),false)}).join("");
+
+/* 系列页 */
+var seriNames=Object.keys(SERIES), curSeri=0;
+function renderSeriNav(){
+ $("seriNav").innerHTML=seriNames.map(function(s,i){
+  return '<button class="'+(i===curSeri?'on':'')+'" onclick="setSeri('+i+')">'+s+'</button>';
+ }).join("");
+}
+function setSeri(i){
+ curSeri=i;renderSeriNav();
+ $("seriDesc").textContent=SERIES[seriNames[i]];
+ $("seriList").innerHTML=PRODUCTS.filter(function(p){return p.series===seriNames[i]})
+  .map(listHTML).join("");
+}
+renderSeriNav();setSeri(0);
+
+/* 购物车 */
+function renderCart(){
+ var box=$("cartList");
+ box.innerHTML=CART.map(function(c,i){
+  var p=pById(c.id);
+  return '<div class="ccard"><div class="chk'+(c.checked?' on':'')+'" onclick="toggleChk('+i+')"></div>'+
+  '<div class="ph" style="background:'+p.bg+'">'+p.emoji+'</div>'+
+  '<div class="tx"><b>'+p.name+'</b><span>'+fmt(p.price)+' / 件</span>'+
+  '<div class="qty"><button onclick="chQty('+i+',-1)">−</button><i>'+c.qty+'</i><button onclick="chQty('+i+',1)">＋</button></div></div>'+
+  '<div class="price">'+fmt(p.price*c.qty)+'</div></div>';
+ }).join("");
+ var sub=0;CART.forEach(function(c){if(c.checked)sub+=pById(c.id).price*c.qty});
+ $("subT").textContent=fmt(sub);$("totT").textContent=fmt(sub);
+}
+function toggleChk(i){CART[i].checked=!CART[i].checked;renderCart()}
+function chQty(i,d){
+ CART[i].qty+=d;
+ if(CART[i].qty<1){CART.splice(i,1);toast("已从购物袋移除")}
+ renderCart();
+}
+function checkout(){
+ var n=CART.filter(function(c){return c.checked}).length;
+ if(!n){toast("请先勾选要结算的商品");return}
+ toast("订单已提交 · <b>"+$("totT").textContent+"</b>，顺丰包邮发出 🚚");
+}
+
+/* 加入购物袋 */
+function addBag(id,ev){
+ if(ev)ev.stopPropagation();
+ bagCount++;
+ var b=$("bagBadge");b.textContent=bagCount;b.style.display="flex";
+ var p=pById(id);
+ var ex=null;CART.forEach(function(c){if(c.id===id)ex=c});
+ if(ex)ex.qty++;else CART.push({id:id,qty:1,checked:true});
+ renderCart();
+ toast("已加入购物袋 · <b>"+p.name+"</b>");
+}
+
+/* Tab 切换 + 深链 */
+function goTab(i){
+ curTab=i;
+ var pages=document.querySelectorAll(".page"),tabs=document.querySelectorAll(".tab");
+ pages.forEach(function(pg,k){pg.classList.toggle("on",k===i)});
+ tabs.forEach(function(t,k){t.classList.toggle("on",k===i)});
+ window.scrollTo(0,0);
+ if(i===3){var bar=$("lvlBar");bar.style.width="0";setTimeout(function(){bar.style.width="62%"},80)}
+ try{history.replaceState(null,"","?tab="+i)}catch(e){}
+}
+document.querySelectorAll(".tab").forEach(function(t){
+ t.addEventListener("click",function(){goTab(parseInt(t.dataset.i,10))});
+});
+$("bagIcon").addEventListener("click",function(){goTab(2)});
+
+renderCart();
+/* 初始深链 */
+(function(){
+ var m=location.search.match(/tab=(\d)/);
+ var i=m?parseInt(m[1],10):0;
+ if(i>=0&&i<=4)goTab(i);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>火箭发射 · 版本更新</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    min-height: 100vh; display: flex; align-items: center; justify-content: center;
+    background: radial-gradient(100% 90% at 50% 110%, #1b2450 0%, #0a0e20 55%, #05060f 100%);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    padding: 20px; color: #fff;
+  }
+  .modal {
+    width: 340px; background: rgba(16,20,38,.78);
+    backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+    border: 1px solid rgba(140,180,255,.18); border-radius: 26px;
+    padding: 24px; box-shadow: 0 24px 60px rgba(0,0,0,.55);
+    display: flex; flex-direction: column; align-items: center;
+  }
+  .modal.hidden { display: none; }
+  .head { width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+  .title { font-size: 18px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+  .ver { font-size: 11px; color: #9fd8ff; border: 1px solid rgba(159,216,255,.5); border-radius: 99px; padding: 3px 10px; background: rgba(159,216,255,.08); }
+  .x { background: none; border: none; color: rgba(255,255,255,.4); font-size: 24px; cursor: pointer; line-height: 1; }
+  .x:hover { color: #fff; }
+  .sub { width: 100%; font-size: 14px; color: rgba(255,255,255,.72); margin-bottom: 4px; }
+  .meta { width: 100%; font-size: 12px; color: rgba(255,255,255,.38); margin-bottom: 2px; font-variant-numeric: tabular-nums; }
+  .pct { font-size: 40px; font-weight: 800; font-variant-numeric: tabular-nums; margin: 2px 0 4px; text-shadow: 0 0 24px rgba(255,150,80,.4); }
+  .stage { position: relative; width: 220px; height: 300px; overflow: hidden; border-radius: 18px;
+    background: linear-gradient(180deg, #0b1030 0%, #131a3d 70%, #1d2450 100%);
+    border: 1px solid rgba(140,180,255,.12); }
+  .stage svg { display: block; }
+  .part { transition: transform .65s cubic-bezier(.3,1.3,.4,1), opacity .5s; }
+  #part-body { transform: translate(-170px, 50px); opacity: 0; }
+  #part-nose { transform: translate(0, -150px); opacity: 0; }
+  #part-window { transform: scale(0); opacity: 0; transform-origin: 100px 152px; }
+  #part-fins { transform: translate(0, 90px); opacity: 0; }
+  #part-body.in, #part-nose.in, #part-window.in, #part-fins.in { transform: none; opacity: 1; }
+  #part-flame { transform: scale(0); opacity: 0; transform-origin: 100px 208px; transition: transform .3s, opacity .3s; }
+  #part-flame.on { transform: scale(1); opacity: 1; }
+  #part-flame.flick { animation: flick .16s ease-in-out infinite alternate; }
+  @keyframes flick { from { transform: scale(1, 1); } to { transform: scale(.92, 1.28); } }
+  #rocketG { transition: transform 1.25s cubic-bezier(.5,0,.8,.4); }
+  #rocketG.launch { transform: translateY(-480px); }
+  .success {
+    position: absolute; inset: 0; display: flex; flex-direction: column; gap: 8px;
+    align-items: center; justify-content: center; text-align: center;
+    opacity: 0; transform: scale(.85); transition: all .5s; pointer-events: none; padding: 20px;
+  }
+  .success.show { opacity: 1; transform: scale(1); }
+  .success .big { font-size: 30px; }
+  .success .t1 { font-size: 20px; font-weight: 800; letter-spacing: 2px; color: #ffd66e; }
+  .success .t2 { font-size: 12.5px; color: rgba(255,255,255,.6); }
+  .main-btn {
+    width: 100%; margin-top: 16px; padding: 15px 0; border: none; border-radius: 99px;
+    font-size: 16px; font-weight: 600; letter-spacing: 2px; cursor: pointer;
+    background: rgba(255,255,255,.1); color: #fff; border: 1px solid rgba(255,255,255,.16);
+    transition: all .25s;
+  }
+  .main-btn:hover { background: rgba(255,255,255,.18); }
+  .main-btn.gold { background: linear-gradient(135deg, #ffb35c, #ff7a3c); color: #3a1c08; border: none; box-shadow: 0 8px 28px rgba(255,122,60,.4); }
+  .main-btn:disabled { opacity: .45; cursor: default; }
+  .replay { margin-top: 12px; background: none; border: none; cursor: pointer; color: rgba(255,255,255,.35); font-size: 12.5px; letter-spacing: 1px; }
+  .replay:hover { color: #9fd8ff; }
+  .toast {
+    position: fixed; top: 26px; left: 50%; transform: translateX(-50%) translateY(-16px);
+    background: rgba(20,22,36,.94); color: #fff; border: 1px solid rgba(255,255,255,.14);
+    padding: 10px 22px; border-radius: 99px; font-size: 14px; opacity: 0; pointer-events: none; z-index: 60;
+    transition: opacity .25s, transform .25s;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+<div class="modal" id="modal">
+  <div class="head">
+    <div class="title">🚀 火箭发射 <span class="ver">v4.0.0</span></div>
+    <button class="x" id="xBtn">×</button>
+  </div>
+  <div class="sub" id="statusText">正在组装火箭…</div>
+  <div class="meta" id="metaText">0.0MB / 156.8MB · -- MB/s</div>
+  <div class="pct" id="pctText">0%</div>
+  <div class="stage">
+    <svg width="220" height="300" viewBox="0 0 200 300">
+      <defs>
+        <linearGradient id="bodyGrad" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0" stop-color="#8a93ad"/><stop offset=".5" stop-color="#e8ecf5"/><stop offset="1" stop-color="#8a93ad"/>
+        </linearGradient>
+        <linearGradient id="flameGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#fff6c8"/><stop offset=".5" stop-color="#ffb13c"/><stop offset="1" stop-color="#ff5f2e"/>
+        </linearGradient>
+      </defs>
+      <g id="stars" fill="#aebfff">
+        <circle cx="30" cy="40" r="1.6" opacity=".7"/><circle cx="160" cy="30" r="1.2" opacity=".5"/>
+        <circle cx="60" cy="90" r="1" opacity=".4"/><circle cx="180" cy="120" r="1.5" opacity=".6"/>
+        <circle cx="20" cy="180" r="1.2" opacity=".5"/><circle cx="150" cy="200" r="1" opacity=".35"/>
+        <circle cx="90" cy="20" r="1.4" opacity=".6"/><circle cx="40" cy="250" r="1.3" opacity=".5"/>
+      </g>
+      <g id="rocketG">
+        <g class="part" id="part-body">
+          <rect x="78" y="108" width="44" height="102" rx="12" fill="url(#bodyGrad)"/>
+          <rect x="78" y="108" width="44" height="102" rx="12" fill="none" stroke="#2a3350" stroke-width="2" opacity=".4"/>
+        </g>
+        <g class="part" id="part-nose">
+          <path d="M78,112 C78,80 88,52 100,32 C112,52 122,80 122,112 Z" fill="#e2453c"/>
+          <path d="M78,112 C78,80 88,52 100,32 C112,52 122,80 122,112 Z" fill="none" stroke="#8c1f18" stroke-width="2"/>
+        </g>
+        <g class="part" id="part-fins">
+          <path d="M78,168 L50,228 L78,216 Z" fill="#e2453c" stroke="#8c1f18" stroke-width="2"/>
+          <path d="M122,168 L150,228 L122,216 Z" fill="#e2453c" stroke="#8c1f18" stroke-width="2"/>
+        </g>
+        <g class="part" id="part-window">
+          <circle cx="100" cy="152" r="14" fill="#9fd8ff" stroke="#2a3a5c" stroke-width="5"/>
+          <circle cx="95" cy="147" r="4" fill="#fff" opacity=".8"/>
+        </g>
+        <g id="part-flame">
+          <ellipse cx="100" cy="232" rx="15" ry="28" fill="url(#flameGrad)"/>
+          <ellipse cx="100" cy="224" rx="8" ry="16" fill="#fff3b0"/>
+        </g>
+      </g>
+    </svg>
+    <div class="success" id="successBox">
+      <div class="big">🚀</div>
+      <div class="t1">发射成功</div>
+      <div class="t2">v4.0.0 已送达轨道</div>
+    </div>
+  </div>
+  <button class="main-btn" id="mainBtn">取消更新</button>
+  <button class="replay" id="replayBtn">↺ 重新演示</button>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+  const pctText = document.getElementById('pctText');
+  const statusText = document.getElementById('statusText');
+  const metaText = document.getElementById('metaText');
+  const mainBtn = document.getElementById('mainBtn');
+  const modal = document.getElementById('modal');
+  const toast = document.getElementById('toast');
+  const rocketG = document.getElementById('rocketG');
+  const flame = document.getElementById('part-flame');
+  const successBox = document.getElementById('successBox');
+  const parts = {
+    body: document.getElementById('part-body'),
+    nose: document.getElementById('part-nose'),
+    window: document.getElementById('part-window'),
+    fins: document.getElementById('part-fins')
+  };
+  // 每 20% 一个部件飞入
+  const ORDER = [['body', 18], ['nose', 38], ['fins', 58], ['window', 78]];
+
+  const TOTAL = 156.8;
+  let progress = 0, state = 'downloading', timer = null, showSpeed = 0;
+
+  function render(p) {
+    ORDER.forEach(([k, th]) => parts[k].classList.toggle('in', p >= th));
+    pctText.textContent = Math.floor(p) + '%';
+    const mb = (p / 100 * TOTAL).toFixed(1);
+    metaText.textContent = mb + 'MB / ' + TOTAL + 'MB · ' + (state === 'downloading' ? showSpeed.toFixed(1) + ' MB/s' : '-- MB/s');
+  }
+  function showToast(m) { toast.textContent = m; toast.classList.add('show'); clearTimeout(showToast._t); showToast._t = setTimeout(() => toast.classList.remove('show'), 1800); }
+  function setMain(t, gold, dis) { mainBtn.textContent = t; mainBtn.classList.toggle('gold', !!gold); mainBtn.disabled = !!dis; }
+  function resetParts() {
+    Object.values(parts).forEach(el => el.classList.remove('in'));
+    flame.classList.remove('on', 'flick');
+    rocketG.classList.remove('launch');
+    successBox.classList.remove('show');
+  }
+
+  function tick() {
+    if (state !== 'downloading') return;
+    const sp = 8 * (0.6 + Math.random() * 0.8);
+    showSpeed = showSpeed * 0.7 + sp * 0.3;
+    progress += sp * 0.1 / TOTAL * 100;
+    if (progress >= 100) { progress = 100; render(progress); enterInstalling(); return; }
+    render(progress);
+  }
+  function startTimer() { clearInterval(timer); timer = setInterval(tick, 100); }
+
+  function enterDownloading(reset) {
+    if (reset) { progress = 0; showSpeed = 0; resetParts(); }
+    state = 'downloading';
+    statusText.textContent = '正在组装火箭…';
+    setMain('取消更新', false, false);
+    startTimer(); render(progress);
+  }
+  function enterCancelled() {
+    state = 'cancelled'; clearInterval(timer); resetParts();
+    statusText.textContent = '发射取消，零件已撤回';
+    setMain('重新下载', false, false);
+    showToast('已取消更新');
+  }
+  function enterInstalling() {
+    state = 'installing'; clearInterval(timer);
+    flame.classList.add('on', 'flick');
+    statusText.textContent = '点火！3…2…1…';
+    setMain('发射中…', false, true);
+    setTimeout(() => { if (state === 'installing') { rocketG.classList.add('launch'); statusText.textContent = '升空！'; } }, 1000);
+    setTimeout(() => { if (state === 'installing') enterDone(); }, 2500);
+  }
+  function enterDone() {
+    state = 'done';
+    successBox.classList.add('show');
+    statusText.textContent = '发射成功，v4.0.0 已就位';
+    setMain('立即体验', true, false);
+    showToast('已更新到 v4.0.0');
+  }
+
+  mainBtn.addEventListener('click', () => {
+    if (state === 'downloading') { progress = 0; render(0); enterCancelled(); }
+    else if (state === 'cancelled') enterDownloading(true);
+    else if (state === 'done') { modal.classList.add('hidden'); showToast('已进入 v4.0.0'); }
+  });
+  document.getElementById('xBtn').addEventListener('click', () => {
+    if (state === 'downloading') { progress = 0; render(0); enterCancelled(); }
+    else modal.classList.add('hidden');
+  });
+  document.getElementById('replayBtn').addEventListener('click', () => { modal.classList.remove('hidden'); enterDownloading(true); });
+
+  window.addEventListener('load', () => {
+    if (location.hash.includes('notrans')) { const st = document.createElement('style'); st.textContent = '*{transition:none!important;animation:none!important}'; document.head.appendChild(st); }
+    enterDownloading(false);
+    if (location.hash.includes('mid')) { clearInterval(timer); progress = 55; render(55); }
+    if (location.hash.includes('done')) { progress = 100; render(100); enterInstalling(); }
+  });
+</script>
+</body>
+</html>

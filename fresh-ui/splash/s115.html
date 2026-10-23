@@ -1,0 +1,31 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>浮空之旅</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:430px;height:900px}
+body{overflow:hidden;position:relative;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(#8fd0ff,#e8f7ff 70%,#fff);color:#fff}
+.stage{position:absolute;inset:0;overflow:hidden}
+.brand{position:absolute;left:0;right:0;top:648px;text-align:center;z-index:5;animation:brandIn 1s ease 2s both}
+.brand h1{font-size:36px;letter-spacing:10px;font-weight:800}
+.brand p{font-size:13px;letter-spacing:6px;opacity:.65;margin-top:10px}
+@keyframes brandIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.replay{position:absolute;bottom:36px;left:50%;transform:translateX(-50%);z-index:9;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.35);color:#fff;font-size:13px;padding:9px 26px;border-radius:24px;cursor:pointer;backdrop-filter:blur(6px)}
+.balloon{position:absolute;left:50%;top:200px;transform:translateX(-50%);animation:float 5s ease-in-out infinite;animation-delay:-2s}
+@keyframes float{50%{transform:translate(-50%,-34px)}}
+.env{width:150px;height:180px;background:radial-gradient(circle at 35% 30%,#ff8a7a,#e14b3a 60%,#b03226);border-radius:50%;position:relative}
+.env::after{content:"";position:absolute;inset:0;border-radius:50%;background:repeating-linear-gradient(90deg,transparent 0 26px,rgba(255,255,255,.25) 26px 34px)}
+.basket{width:56px;height:44px;background:#8a5a2b;margin:14px auto 0;border-radius:6px;position:relative}
+.basket::before,.basket::after{content:"";position:absolute;top:-16px;width:4px;height:18px;background:#6b4420}
+.basket::before{left:6px;transform:rotate(14deg)}
+.basket::after{right:6px;transform:rotate(-14deg)}
+.cloud{position:absolute;background:#fff;border-radius:40px;opacity:.9;animation:drift 16s linear infinite}
+.cloud::before{content:"";position:absolute;width:44px;height:44px;background:#fff;border-radius:50%;top:-20px;left:16px}
+.c1{width:100px;height:32px;top:480px;animation-delay:-5s}
+.c2{width:80px;height:26px;top:640px;animation-delay:-11s}
+@keyframes drift{from{transform:translateX(-130px)}to{transform:translateX(480px)}}
+</style></head><body>
+<div class="stage"><div class="balloon"><div class="env"></div><div class="basket"></div></div><div class="cloud c1"></div><div class="cloud c2"></div></div>
+<div class="brand"><h1>浮空</h1><p>BALLOON · 升空</p></div>
+<button class="replay" onclick="location.reload()">&#8635; 重新播放</button>
+</body></html>

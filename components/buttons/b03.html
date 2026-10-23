@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>果冻按压</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{height:100%;}
+  body{
+    font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+    background:radial-gradient(120% 90% at 50% 10%, #0d1f16 0%, #081009 60%, #040805 100%);
+    color:#dff5e4;display:flex;flex-direction:column;align-items:center;
+    min-height:100vh;padding:28px 16px;overflow:hidden;
+  }
+  h1{font-size:20px;font-weight:600;letter-spacing:4px;margin-bottom:6px;}
+  .sub{font-size:12px;color:#7ba889;letter-spacing:2px;margin-bottom:34px;}
+  .stage{
+    width:360px;max-width:92vw;height:420px;border-radius:20px;
+    background:rgba(255,255,255,.03);
+    border:1px solid rgba(120,255,170,.14);
+    box-shadow:inset 0 0 60px rgba(40,160,90,.12);
+    display:flex;align-items:center;justify-content:center;
+    position:relative;
+  }
+  .btn{
+    position:relative;cursor:pointer;border:none;overflow:hidden;
+    padding:20px 70px;font-size:17px;font-weight:600;letter-spacing:6px;color:#06351c;
+    border-radius:26px;
+    background:linear-gradient(180deg,#8ff5b0 0%,#3ddc7e 55%,#22b45e 100%);
+    box-shadow:0 10px 0 #157a3e, 0 16px 30px rgba(0,0,0,.4), inset 0 2px 3px rgba(255,255,255,.7);
+    transform-origin:center bottom;
+  }
+  .btn .gloss{
+    position:absolute;top:6px;left:12%;right:12%;height:38%;
+    border-radius:999px;background:linear-gradient(180deg,rgba(255,255,255,.75),rgba(255,255,255,0));
+    pointer-events:none;
+  }
+  .btn.jelly{animation:jelly .72s ease-out;}
+  .btn.jelly .gloss{animation:slosh .72s ease-out;}
+  @keyframes jelly{
+    0%{transform:scale(1,1);}
+    14%{transform:scale(1.28,.66);}
+    28%{transform:scale(.84,1.18);}
+    42%{transform:scale(1.14,.88);}
+    56%{transform:scale(.93,1.08);}
+    70%{transform:scale(1.05,.95);}
+    84%{transform:scale(.98,1.02);}
+    100%{transform:scale(1,1);}
+  }
+  @keyframes slosh{
+    0%{transform:translateX(0) skewX(0);}
+    20%{transform:translateX(-14px) skewX(-14deg);}
+    40%{transform:translateX(11px) skewX(11deg);}
+    60%{transform:translateX(-7px) skewX(-7deg);}
+    80%{transform:translateX(4px) skewX(4deg);}
+    100%{transform:translateX(0) skewX(0);}
+  }
+  .hint{margin-top:26px;font-size:12px;color:#5f7f68;letter-spacing:1px;}
+</style>
+</head>
+<body>
+  <h1>果冻按压</h1>
+  <div class="sub">压扁回弹 · 高光晃动</div>
+  <div class="stage">
+    <button class="btn" id="btn"><span class="gloss"></span>果 冻</button>
+  </div>
+  <div class="hint">点击按钮，像果冻一样被压扁再 wobble 回来</div>
+<script>
+(function(){
+  var btn = document.getElementById('btn');
+  btn.addEventListener('click', function(){
+    btn.classList.remove('jelly');
+    void btn.offsetWidth;   // 强制回流，保证每次点击重播
+    btn.classList.add('jelly');
+  });
+  btn.addEventListener('animationend', function(){ btn.classList.remove('jelly'); });
+})();
+</script>
+</body>
+</html>

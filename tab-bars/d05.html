@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>d05 · 黏土按压底栏</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{background:#10141c;display:flex;justify-content:center;align-items:center;min-height:100vh;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif}
+.phone{width:430px;height:900px;max-height:100vh;background:#e8ecf2;position:relative;overflow:hidden}
+.status{height:40px;display:flex;align-items:center;justify-content:space-between;padding:0 22px;font-size:12px;font-weight:600;color:#5a6a84}
+.nav{height:50px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:#4a5a74}
+.feed{position:absolute;top:90px;bottom:120px;left:0;right:0;overflow:hidden}
+.card{margin:12px;border-radius:20px;padding:14px;background:#eef1f6;display:flex;gap:12px;align-items:center;
+box-shadow:6px 6px 14px #c9d2e0,-6px -6px 14px #ffffff}
+.av{width:52px;height:52px;border-radius:16px;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:#fff;font-size:20px;font-weight:700;box-shadow:inset 2px 2px 5px rgba(255,255,255,.4)}
+.tt{font-size:14px;font-weight:600;color:#4a5a74}
+.dd{font-size:12px;color:#8a99b0;margin-top:4px}
+/* ---- 黏土底栏 ---- */
+.tabbar{position:absolute;left:0;right:0;bottom:0;height:104px;background:#e8ecf2;display:flex;align-items:center;justify-content:space-around;z-index:5;padding:0 10px;box-shadow:0 -4px 16px rgba(160,175,200,.35)}
+.tab{width:76px;height:76px;border-radius:24px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:#8a99b0;font-size:10px;cursor:pointer;background:#eef1f6;
+box-shadow:5px 5px 12px #c6cfdd,-5px -5px 12px #ffffff;
+transition:box-shadow .3s,color .3s}
+.tab .ic{font-size:24px;transition:transform .3s cubic-bezier(.34,1.56,.64,1)}
+.tab.on{color:#ff7a59;
+box-shadow:inset 5px 5px 12px #c6cfdd,inset -5px -5px 12px #ffffff}
+.tab.on .ic{transform:translateY(-4px) scale(1.18)}
+.tab.on .lbl{font-weight:700}
+</style>
+</head>
+<body>
+<div class="phone">
+<div class="status"><span>21:56</span><span>5G 🔋</span></div>
+<div class="nav">黏土按压 · 底栏演示</div>
+<div class="feed" id="feed"></div>
+<div class="tabbar">
+<div class="tab on"><span class="ic">🏠</span><span class="lbl">首页</span></div>
+<div class="tab"><span class="ic">🧭</span><span class="lbl">发现</span></div>
+<div class="tab"><span class="ic">✉️</span><span class="lbl">消息</span></div>
+<div class="tab"><span class="ic">👤</span><span class="lbl">我</span></div>
+</div>
+</div>
+<script>
+var rows=[["橡皮泥","马卡龙色混色","#ffb3c7","泥"],["黏土熊","小熊挂件教程","#c7a17a","熊"],["多肉","黏土多肉盆栽","#7fd6a4","肉"],["甜甜圈","仿真甜甜圈","#f5a3c7","圈"],["蘑菇","森林蘑菇摆件","#ff8a7a","菇"],["云朵","绵绵云朵灯","#a3c7f5","云"],["猫爪","猫爪捏捏","#f5c7a3","爪"]];
+var h="";
+for(var i=0;i<rows.length;i++){h+='<div class="card"><div class="av" style="background:linear-gradient(135deg,'+rows[i][2]+','+rows[i][2]+'bb)">'+rows[i][3]+'</div><div><div class="tt">'+rows[i][0]+'</div><div class="dd">'+rows[i][1]+'</div></div></div>';}
+document.getElementById('feed').innerHTML=h;
+var tabs=document.querySelectorAll('.tab');
+function go(n){for(var i=0;i<tabs.length;i++){tabs[i].classList.toggle('on',i===n);}}
+for(var i=0;i<tabs.length;i++){(function(k){tabs[k].addEventListener('click',function(){go(k);});})(i);}
+try{var q=new URLSearchParams(location.search).get('tab');if(q!==null&&+q>=0&&+q<4){go(+q);}}catch(e){}
+</script>
+</body>
+</html>

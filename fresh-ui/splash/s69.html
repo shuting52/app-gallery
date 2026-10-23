@@ -1,0 +1,40 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>一飞冲天</title><style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{width:430px;height:900px;margin:0 auto;position:relative;overflow:hidden;
+font-family:-apple-system,"PingFang SC","Microsoft YaHei","Noto Sans CJK SC",sans-serif;
+background:linear-gradient(180deg,#0b1e4b 0%,#2a5db0 55%,#7db9e8 100%);color:#fff}
+.scene{position:absolute;inset:0}
+
+.cld{position:absolute;background:rgba(255,255,255,.85);border-radius:40px;animation:drift linear infinite}
+@keyframes drift{from{transform:translateX(-180px)}to{transform:translateX(480px)}}
+.rk{position:absolute;left:50%;bottom:300px;transform:translateX(-50%);animation:hover 3.4s ease-in-out infinite}
+@keyframes hover{50%{transform:translate(-50%,-34px)}}
+.rbody{width:76px;height:172px;margin:0 auto;background:linear-gradient(90deg,#d7dfe9,#ffffff 45%,#c3cfdd);border-radius:50% 50% 46% 46%/40% 40% 28% 28%;position:relative}
+.win{position:absolute;top:54px;left:50%;transform:translateX(-50%);width:36px;height:36px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#aee0ff,#2a6fb0);border:5px solid #8a97a8}
+.fin{position:absolute;bottom:8px;width:32px;height:62px;background:#e14b4b}
+.fin.l{left:-25px;clip-path:polygon(100% 0,100% 100%,0 100%)}
+.fin.r{right:-25px;clip-path:polygon(0 0,0 100%,100% 100%)}
+.flame{width:36px;height:74px;margin:3px auto 0;background:linear-gradient(#ffe27a,#ff9d3c 60%,rgba(255,120,40,0));border-radius:50% 50% 50% 50%/28% 28% 72% 72%;animation:flick .18s ease-in-out infinite alternate;transform-origin:top center}
+@keyframes flick{to{transform:scaleY(1.28) scaleX(.9)}}
+.sm{position:absolute;border-radius:50%;background:rgba(255,255,255,.8);filter:blur(7px);animation:smRise 2.8s ease-out infinite}
+@keyframes smRise{from{transform:translateY(0) scale(.55);opacity:.9}to{transform:translateY(-170px) scale(1.7);opacity:0}}
+
+.brand{position:absolute;left:0;right:0;bottom:118px;text-align:center;z-index:5;
+color:#fff;opacity:0;animation:brandIn 1s ease 2.2s both}
+.brand h1{font-size:34px;letter-spacing:8px;font-weight:800;text-shadow:0 2px 14px rgba(0,0,0,.35)}
+.brand p{font-size:13px;letter-spacing:3px;margin-top:10px;opacity:.85;text-shadow:0 1px 10px rgba(0,0,0,.35)}
+@keyframes brandIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.replay{position:absolute;left:50%;bottom:44px;transform:translateX(-50%);z-index:6;
+padding:10px 28px;border-radius:24px;border:1px solid rgba(255,255,255,.45);
+background:rgba(255,255,255,.14);color:#fff;font-size:14px;letter-spacing:2px;cursor:pointer}
+</style></head><body>
+<div class="scene"><div class="cld" style="top:140px;width:110px;height:34px;animation-duration:30s"></div>
+<div class="cld" style="top:640px;width:140px;height:40px;animation-duration:38s;animation-delay:-14s"></div>
+<i class="sm" style="left:150px;bottom:180px;width:46px;height:46px;animation-delay:-0.4s"></i><i class="sm" style="left:200px;bottom:160px;width:60px;height:60px;animation-delay:-1.2s"></i><i class="sm" style="left:250px;bottom:180px;width:52px;height:52px;animation-delay:-2s"></i><i class="sm" style="left:180px;bottom:150px;width:66px;height:66px;animation-delay:-1.8s"></i><i class="sm" style="left:230px;bottom:165px;width:44px;height:44px;animation-delay:-0.8s"></i>
+<div class="rk"><div class="rbody"><div class="win"></div><div class="fin l"></div><div class="fin r"></div></div><div class="flame"></div></div></div>
+<div class="brand"><h1>一飞冲天</h1><p>心怀山海 眼有星辰</p></div>
+<button class="replay" onclick="location.reload()">重新播放</button>
+</body></html>

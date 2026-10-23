@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>墨黑波纹</title>
+<style>*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sans-serif;background:#07090d;display:flex;justify-content:center;color:#eef2f8}
+.phone{width:430px;height:900px;position:relative;overflow:hidden;background:var(--bg,#0d1117)}
+.hd{padding:54px 22px 10px;background:linear-gradient(180deg,var(--hd1,rgba(255,255,255,.08)),transparent)}
+.hd h1{font-size:22px;letter-spacing:2px}
+.hd p{font-size:12px;opacity:.55;margin-top:6px;letter-spacing:1px}
+.bd{padding:16px 18px;display:flex;flex-direction:column;gap:14px}
+.cardx{border-radius:16px;padding:16px;background:var(--cx,rgba(255,255,255,.05));border:1px solid var(--cb,rgba(255,255,255,.08))}
+.sk{height:12px;border-radius:6px;background:linear-gradient(90deg,var(--s1,rgba(255,255,255,.14)),var(--s2,rgba(255,255,255,.05)));margin:8px 0}
+.sk.w60{width:60%}.sk.w80{width:80%}
+.tabbar{position:absolute;left:0;right:0;bottom:0;display:flex;background:linear-gradient(115deg,var(--t1),var(--t2),var(--t1));background-size:200% 200%;animation:liq 8s ease-in-out infinite;animation-delay:-4s;backdrop-filter:blur(24px) saturate(1.7);-webkit-backdrop-filter:blur(24px) saturate(1.7);border-top:1px solid var(--tbd,rgba(255,255,255,.08));padding:12px 6px calc(22px + env(safe-area-inset-bottom));box-shadow:inset 0 -14px 26px rgba(255,255,255,.05)}
+.tabbar::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.8),transparent)}
+.tabbar::after{content:'';position:absolute;inset:0;background:linear-gradient(115deg,transparent 35%,rgba(255,255,255,.12) 48%,transparent 62%);animation:sheen 7s ease-in-out infinite;animation-delay:-3.5s;pointer-events:none}
+@keyframes liq{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+@keyframes sheen{0%,100%{transform:translateX(-16%)}50%{transform:translateX(16%)}}
+.tab{flex:1;background:none;border:0;color:var(--tc,#8b93a5);display:flex;flex-direction:column;align-items:center;gap:5px;font-size:11px;cursor:pointer;font-family:inherit;position:relative;padding:6px 0;z-index:1}
+.tab .ic{width:26px;height:26px;display:block}
+.tab .ic svg{width:100%;height:100%;display:block}
+.tab.on{color:var(--ac,#ffd479)}
+.tab .bdg{display:block;position:absolute;top:2px;right:calc(50% - 26px);min-width:18px;height:18px;border-radius:9px;background:#ef4444;color:#fff;font-size:10px;line-height:18px;text-align:center;padding:0 5px;box-shadow:0 2px 8px rgba(239,68,68,.5)}
+.g18 .tab{padding-bottom:14px}
+.g18 .wv{display:block;position:absolute;bottom:1px;left:50%;margin-left:-32px;width:64px;height:12px;opacity:0;transition:opacity .3s}
+.g18 .wv path{fill:none;stroke:#67e8f9;stroke-width:2.2;stroke-dasharray:200 60;animation:wv 2.6s linear infinite;animation-delay:-1.3s;filter:drop-shadow(0 0 5px rgba(103,232,249,1))}
+@keyframes wv{to{stroke-dashoffset:-260}}
+.g18 .tab.on .wv{opacity:1}
+.g18 .tab.on .ic svg{filter:drop-shadow(0 0 9px rgba(249,250,251,.85))}</style></head>
+<body class="g18"><div class="phone" style="--bg:#000000;--hd1:rgba(255,255,255,.06);--cx:rgba(255,255,255,.04);--cb:rgba(255,255,255,.1);--t1:rgba(10,10,12,.78);--t2:rgba(22,24,28,.78);--tbd:rgba(255,255,255,.22);--tc:#6b7280;--ac:#f9fafb">
+<div class="hd"><h1>新鲜 UI 画廊</h1><p>FRESH · BOTTOMBAR · 墨黑波纹</p></div>
+<div class="bd">
+<div class="cardx"><div class="sk w60"></div><div class="sk"></div><div class="sk w80"></div></div>
+<div class="cardx"><div class="sk w80"></div><div class="sk w60"></div></div>
+<div class="cardx"><div class="sk"></div><div class="sk w60"></div><div class="sk w80"></div></div>
+<div class="cardx"><div class="sk"></div><div class="sk w80"></div><div class="sk w60"></div></div>
+</div>
+<nav class="tabbar"></nav>
+<script>
+const nav=document.querySelector('.tabbar');
+const LBL={home:'首页',find:'发现',msg:'消息',me:'我的'};
+const IC={home:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11l8-7 8 7v9h-5v-5h-6v5H4z"/></svg>',find:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="8"/><path d="M15.5 8.5l-2.2 4.8-4.8 2.2 2.2-4.8z"/></svg>',msg:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16v10H9l-5 4z"/></svg>',me:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c1.2-4 4.2-6 8-6s6.8 2 8 6"/></svg>'};
+Object.keys(LBL).forEach(k=>{const b=document.createElement('button');b.className='tab';
+b.innerHTML='<span class="ic">'+IC[k]+'</span><span>'+LBL[k]+'</span>';nav.appendChild(b);});
+const tabs=[...document.querySelectorAll('.tab')];
+const svgNS='http://www.w3.org/2000/svg';
+(function(){const b=document.createElement('i');b.className='bdg';b.textContent='3';tabs[2].appendChild(b);})();
+tabs.forEach(t=>{const s=document.createElementNS(svgNS,'svg');s.setAttribute('class','wv');s.setAttribute('viewBox','0 0 40 12');const pp=document.createElementNS(svgNS,'path');pp.setAttribute('d','M0 6 Q5 0 10 6 T20 6 T30 6 T40 6');s.appendChild(pp);t.appendChild(s);});
+function act(i){tabs.forEach((t,j)=>t.classList.toggle('on',i===j));
+try{history.replaceState(null,'','?tab='+i);}catch(e){}}
+tabs.forEach((t,i)=>t.addEventListener('click',()=>act(i)));
+(function(){const n=+new URLSearchParams(location.search).get('tab');
+act(Number.isInteger(n)&&n>=0&&n<tabs.length?n:0);})();
+</script>
+</div></body></html>

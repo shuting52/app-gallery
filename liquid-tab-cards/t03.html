@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>深海极光 · 液态页签卡片</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{font-family:-apple-system,"PingFang SC","HarmonyOS Sans SC","Microsoft YaHei",sans-serif;background:#040a16;color:#eaf2ff;overflow-x:hidden;min-height:100%}
+.wrap{width:430px;max-width:100%;margin:0 auto;position:relative;min-height:100%;padding-bottom:150px}
+
+/* ---------- 液态流体背景 ---------- */
+.bg{position:fixed;inset:0;overflow:hidden;z-index:0;pointer-events:none}
+.bg i{position:absolute;border-radius:50%;filter:blur(70px);opacity:.75;animation:drift 22s ease-in-out infinite alternate}
+.bg i:nth-child(1){width:340px;height:340px;left:-90px;top:-70px;background:radial-gradient(circle at 35% 35%,#22d3ee,#0e7490 70%);animation-delay:-4s}
+.bg i:nth-child(2){width:300px;height:300px;right:-80px;top:120px;background:radial-gradient(circle at 60% 40%,#818cf8,#3730a3 70%);animation-delay:-11s;animation-duration:26s}
+.bg i:nth-child(3){width:380px;height:380px;left:-110px;top:430px;background:radial-gradient(circle at 40% 60%,#0ea5e9,#0c2a5e 72%);animation-delay:-17s;animation-duration:30s}
+.bg i:nth-child(4){width:260px;height:260px;right:-70px;top:620px;background:radial-gradient(circle at 50% 50%,#c084fc,#5b21b6 70%);animation-delay:-8s;animation-duration:24s}
+.bg i:nth-child(5){width:220px;height:220px;left:110px;bottom:-60px;background:radial-gradient(circle at 50% 50%,#2dd4bf,#134e4a 70%);animation-delay:-20s;animation-duration:28s}
+@keyframes drift{from{transform:translate(0,0) rotate(0deg) scale(1)}to{transform:translate(60px,46px) rotate(40deg) scale(1.15)}}
+.grain{position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.5;background:radial-gradient(circle at 50% 0%,rgba(255,255,255,.06),transparent 55%)}
+
+/* ---------- 顶部 ---------- */
+.top{position:sticky;top:0;z-index:20;padding:14px 18px 10px;background:linear-gradient(180deg,rgba(4,10,22,.85),rgba(4,10,22,0));backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.status{display:flex;justify-content:space-between;align-items:center;font-size:13px;font-weight:600;color:#cfe6ff;margin-bottom:10px}
+.status .sic{letter-spacing:4px;font-size:12px}
+.titlerow{display:flex;align-items:center;justify-content:space-between}
+.titlerow h1{font-size:24px;font-weight:800;letter-spacing:.06em;background:linear-gradient(100deg,#a5f3fc,#818cf8 55%,#e9d5ff);-webkit-background-clip:text;background-clip:text;color:transparent}
+.titlerow h1 small{display:block;font-size:11px;font-weight:400;letter-spacing:.28em;color:#8fb4dd;-webkit-text-fill-color:#8fb4dd;margin-top:3px}
+.tbtns{display:flex;gap:10px}
+.tbtn{width:38px;height:38px;border-radius:50%;border:1px solid rgba(255,255,255,.22);background:rgba(255,255,255,.08);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);color:#eaf6ff;font-size:17px;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:inset 0 1px 0 rgba(255,255,255,.25)}
+.tbtn:active{transform:scale(.9)}
+
+/* ---------- 页签分组卡片 ---------- */
+.cards{position:relative;z-index:5;padding:6px 16px 0;display:flex;flex-direction:column;gap:14px}
+.card{position:relative;border-radius:26px;border:1.5px solid transparent;
+ background:linear-gradient(rgba(11,20,38,.78),rgba(11,20,38,.78)) padding-box,
+ linear-gradient(135deg,#22d3ee,#3b82f6,#a855f7,#22d3ee) border-box;
+ background-size:100% 100%,320% 320%;animation:edgeFlow 9s ease infinite;
+ backdrop-filter:blur(20px) saturate(1.5);-webkit-backdrop-filter:blur(20px) saturate(1.5);
+ box-shadow:inset 0 1px 0 rgba(255,255,255,.22),0 14px 34px rgba(2,8,20,.5);overflow:hidden}
+@keyframes edgeFlow{0%,100%{background-position:0 0,0% 20%}50%{background-position:0 0,100% 80%}}
+.card::after{content:"";position:absolute;top:0;left:8%;right:8%;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.55),transparent);pointer-events:none}
+.ghead{display:flex;align-items:center;gap:10px;padding:14px 14px 10px;cursor:pointer;user-select:none}
+.ghead .dot{width:9px;height:9px;border-radius:50%;background:var(--c,#22d3ee);box-shadow:0 0 10px var(--c,#22d3ee);flex-shrink:0}
+.ghead h2{font-size:15px;font-weight:700;letter-spacing:.04em}
+.ghead .cnt{font-size:11px;color:#9fc0e8;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.14);padding:2px 9px;border-radius:11px}
+.ghead .chev{margin-left:auto;font-size:13px;color:#9fc0e8;transition:transform .5s cubic-bezier(.34,1.9,.4,1)}
+.card.open .ghead .chev{transform:rotate(180deg)}
+.astack{margin-left:2px;display:flex;align-items:center;cursor:pointer}
+.astack .rail{display:flex;transition:transform .55s cubic-bezier(.34,1.9,.4,1)}
+.astack.slide .rail{transform:translateX(-30px)}
+.av{width:30px;height:30px;border-radius:50%;border:2px solid rgba(11,20,38,.9);margin-left:-9px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0}
+.av:first-child{margin-left:0}
+.a1{background:linear-gradient(135deg,#22d3ee,#0e7490)}.a2{background:linear-gradient(135deg,#818cf8,#4c1d95)}
+.a3{background:linear-gradient(135deg,#f0abfc,#a855f7)}.a4{background:linear-gradient(135deg,#5eead4,#0f766e)}
+.a5{background:linear-gradient(135deg,#93c5fd,#1d4ed8)}.a6{background:linear-gradient(135deg,#fda4af,#be123c)}
+.rows{display:grid;grid-template-rows:0fr;transition:grid-template-rows .6s cubic-bezier(.34,1.9,.4,1)}
+.card.open .rows{grid-template-rows:1fr}
+.rows>div{overflow:hidden}
+.row{display:flex;align-items:center;gap:12px;padding:9px 14px;cursor:pointer;border-radius:16px;transition:transform .18s,background .18s}
+.row:active{transform:scale(.96)}
+.row:hover{background:rgba(255,255,255,.05)}
+.pf{width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:800;color:#fff;flex-shrink:0;box-shadow:inset 0 2px 4px rgba(255,255,255,.35),0 4px 12px rgba(0,0,0,.35)}
+.mid{flex:1;min-width:0}
+.mid .nm{font-size:14.5px;font-weight:600;display:flex;align-items:center;gap:6px}
+.mid .pv{font-size:12px;color:#93aed6;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.right{text-align:right;flex-shrink:0;display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+.tm{font-size:11px;color:#7d9cc9}
+.bdg{min-width:20px;height:20px;padding:0 6px;border-radius:11px;background:linear-gradient(135deg,#fb7185,#e11d48);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;box-shadow:0 0 12px rgba(251,113,133,.7)}
+.bdg.dot{width:9px;min-width:9px;height:9px;padding:0;border-radius:50%}
+.card .pad{height:8px}
+
+/* ---------- 日历条 + seam 胶囊导航 ---------- */
+.bottom{position:fixed;left:50%;transform:translateX(-50%);bottom:0;width:430px;max-width:100%;z-index:30;padding:26px 18px 20px;background:linear-gradient(180deg,transparent,rgba(4,10,22,.88) 45%)}
+.week{display:flex;justify-content:space-between;padding:0 26px;margin-bottom:10px}
+.week span{font-size:11px;color:#7d9cc9;width:30px;height:30px;display:flex;align-items:center;justify-content:center;border-radius:50%}
+.week span.today{background:linear-gradient(135deg,#22d3ee,#818cf8);color:#04101f;font-weight:800;box-shadow:0 0 14px rgba(34,211,238,.6)}
+.seam{display:flex;align-items:center;justify-content:space-around;background:rgba(8,15,30,.72);backdrop-filter:blur(24px) saturate(1.6);-webkit-backdrop-filter:blur(24px) saturate(1.6);border:1px solid rgba(255,255,255,.14);border-radius:30px;padding:10px 8px;box-shadow:inset 0 1px 0 rgba(255,255,255,.2),0 12px 32px rgba(0,0,0,.55)}
+.nitem{display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:0;color:#7d9cc9;font-size:10px;cursor:pointer;padding:4px 10px;position:relative;transition:color .2s}
+.nitem .ic{font-size:21px;line-height:1;transition:transform .35s cubic-bezier(.34,1.9,.4,1)}
+.nitem.on{color:#a5f3fc}
+.nitem.on .ic{transform:translateY(-2px) scale(1.18);filter:drop-shadow(0 0 8px rgba(34,211,238,.9))}
+.nitem .drop{position:absolute;bottom:-7px;width:6px;height:8px;border-radius:50% 50% 50% 50%/60% 60% 40% 40%;background:linear-gradient(180deg,#a5f3fc,#22d3ee);opacity:0;transform:scale(0);transition:all .4s cubic-bezier(.34,1.9,.4,1);box-shadow:0 0 8px rgba(34,211,238,.9)}
+.nitem.on .drop{opacity:1;transform:scale(1)}
+.fab{width:58px;height:58px;border-radius:50%;border:0;margin-top:-30px;background:linear-gradient(135deg,#22d3ee,#6366f1 60%,#a855f7);color:#fff;font-size:30px;font-weight:300;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 26px rgba(56,130,246,.65),inset 0 2px 5px rgba(255,255,255,.5);transition:transform .3s cubic-bezier(.34,1.9,.4,1)}
+.fab:active{transform:scale(.88) rotate(90deg)}
+</style>
+</head>
+<body>
+<div class="bg"><i></i><i></i><i></i><i></i><i></i></div>
+<div class="grain"></div>
+<div class="wrap">
+
+<div class="top">
+  <div class="status"><span>9:41</span><span class="sic">5G ▂▄▆ 100</span></div>
+  <div class="titlerow">
+    <h1>深海极光<small>DEEP AURORA</small></h1>
+    <div class="tbtns"><button class="tbtn" onclick="tip('搜索会话')">⌕</button><button class="tbtn" onclick="tip('发起新会话')">＋</button></div>
+  </div>
+</div>
+
+<div class="cards">
+
+<!-- 卡1 星标好友 -->
+<section class="card open" style="--c:#22d3ee">
+  <div class="ghead" onclick="toggleCard(this)">
+    <span class="dot"></span><h2>星标好友</h2><span class="cnt">3</span>
+    <div class="astack" onclick="slideAv(event,this)"><div class="rail">
+      <span class="av a1">沈</span><span class="av a2">陆</span><span class="av a3">顾</span><span class="av a4">白</span><span class="av a5">苏</span><span class="av a6">＋</span>
+    </div></div>
+    <span class="chev">▾</span>
+  </div>
+  <div class="rows"><div>
+    <div class="row" onclick="press(this)"><div class="pf a1">沈</div><div class="mid"><div class="nm">沈知遥</div><div class="pv">极光预报说今晚有大爆发，带上相机！</div></div><div class="right"><span class="tm">21:07</span><span class="bdg">3</span></div></div>
+    <div class="row" onclick="press(this)"><div class="pf a2">陆</div><div class="mid"><div class="nm">陆燃</div><div class="pv">新混的深海白噪音，发你试听版</div></div><div class="right"><span class="tm">19:42</span><span class="bdg dot"></span></div></div>
+    <div class="row" onclick="press(this)"><div class="pf a3">顾</div><div class="mid"><div class="nm">顾晚舟</div><div class="pv">潜水证下来了，周末去试第一潜？</div></div><div class="right"><span class="tm">昨天</span></div></div>
+  </div></div><div class="pad"></div>
+</section>
+
+<!-- 卡2 深蓝小队 -->
+<section class="card open" style="--c:#818cf8">
+  <div class="ghead" onclick="toggleCard(this)">
+    <span class="dot"></span><h2>深蓝小队</h2><span class="cnt">4</span>
+    <div class="astack" onclick="slideAv(event,this)"><div class="rail">
+      <span class="av a5">周</span><span class="av a1">林</span><span class="av a4">何</span><span class="av a2">岑</span><span class="av a3">＋</span>
+    </div></div>
+    <span class="chev">▾</span>
+  </div>
+  <div class="rows"><div>
+    <div class="row" onclick="press(this)"><div class="pf a5">周</div><div class="mid"><div class="nm">周牧</div><div class="pv">原型第三版已同步，记得看动效标注</div></div><div class="right"><span class="tm">18:20</span><span class="bdg">12</span></div></div>
+    <div class="row" onclick="press(this)"><div class="pf a1">林</div><div class="mid"><div class="nm">林小满</div><div class="pv">配色我按极光那套重调了一版</div></div><div class="right"><span class="tm">17:55</span></div></div>
+    <div class="row" onclick="press(this)"><div class="pf a4">何</div><div class="mid"><div class="nm">何其正</div><div class="pv">明早十点评审，材料都齐了</div></div><div class="right"><span class="tm">16:03</span><span class="bdg dot"></span></div></div>
+  </div></div><div class="pad"></div>
+</section>
+
+<!-- 卡3 家人群 -->
+<section class="card" style="--c:#5eead4">
+  <div class="ghead" onclick="toggleCard(this)">
+    <span class="dot"></span><h2>海风一家人</h2><span class="cnt">3</span>
+    <div class="astack" onclick="slideAv(event,this)"><div class="rail">
+      <span class="av a4">妈</span><span class="av a5">爸</span><span class="av a3">棠</span><span class="av a1">＋</span>
+    </div></div>
+    <span class="chev">▾</span>
+  </div>
+  <div class="rows"><div>
+    <div class="row" onclick="press(this)"><div class="pf a4">妈</div><div class="mid"><div class="nm">妈妈</div><div class="pv">天冷了，记得把那件厚外套带上</div></div><div class="right"><span class="tm">12:10</span><span class="bdg">2</span></div></div>
+    <div class="row" onclick="press(this)"><div class="pf a5">爸</div><div class="mid"><div class="nm">爸爸</div><div class="pv">[分享了一条海钓视频]</div></div><div class="right"><span class="tm">09:26</span></div></div>
+    <div class="row" onclick="press(this)"><div class="pf a3">棠</div><div class="mid"><div class="nm">妹妹小棠</div><div class="pv">姐！我的贝壳手链编好啦，给你看</div></div><div class="right"><span class="tm">昨天</span></div></div>
+  </div></div><div class="pad"></div>
+</section>
+
+<!-- 卡4 极光电台 -->
+<section class="card" style="--c:#c084fc">
+  <div class="ghead" onclick="toggleCard(this)">
+    <span class="dot"></span><h2>极光电台</h2><span class="cnt">2</span>
+    <div class="astack" onclick="slideAv(event,this)"><div class="rail">
+      <span class="av a2">夜</span><span class="av a6">邮</span><span class="av a1">＋</span>
+    </div></div>
+    <span class="chev">▾</span>
+  </div>
+  <div class="rows"><div>
+    <div class="row" onclick="press(this)"><div class="pf a2">夜</div><div class="mid"><div class="nm">夜航电台</div><div class="pv">今晚十点：给失眠者的深海频率</div></div><div class="right"><span class="tm">20:00</span><span class="bdg dot"></span></div></div>
+    <div class="row" onclick="press(this)"><div class="pf a6">邮</div><div class="mid"><div class="nm">深海邮局</div><div class="pv">你的漂流瓶被三个人捡到了</div></div><div class="right"><span class="tm">周一</span></div></div>
+  </div></div><div class="pad"></div>
+</section>
+
+<!-- 卡5 游戏搭子 -->
+<section class="card" style="--c:#f0abfc">
+  <div class="ghead" onclick="toggleCard(this)">
+    <span class="dot"></span><h2>游戏搭子</h2><span class="cnt">2</span>
+    <div class="astack" onclick="slideAv(event,this)"><div class="rail">
+      <span class="av a1">昼</span><span class="av a3">桃</span><span class="av a5">＋</span>
+    </div></div>
+    <span class="chev">▾</span>
+  </div>
+  <div class="rows"><div>
+    <div class="row" onclick="press(this)"><div class="pf a1">昼</div><div class="mid"><div class="nm">阿昼</div><div class="pv">排位缺一，来不来？就差你了</div></div><div class="right"><span class="tm">21:30</span><span class="bdg">5</span></div></div>
+    <div class="row" onclick="press(this)"><div class="pf a3">桃</div><div class="mid"><div class="nm">桃子汽水</div><div class="pv">我开到限定皮肤了，羡慕吧哈哈</div></div><div class="right"><span class="tm">21:12</span></div></div>
+  </div></div><div class="pad"></div>
+</section>
+
+</div><!-- /cards -->
+
+<div class="bottom">
+  <div class="week"><span>日</span><span>一</span><span class="today">二</span><span>三</span><span>四</span><span>五</span><span>六</span></div>
+  <nav class="seam">
+    <button class="nitem on" onclick="navGo(this)"><span class="ic">⌂</span>首页<span class="drop"></span></button>
+    <button class="nitem" onclick="navGo(this)"><span class="ic">✉</span>消息<span class="drop"></span></button>
+    <button class="fab" onclick="tip('发布新动态')">＋</button>
+    <button class="nitem" onclick="navGo(this)"><span class="ic">◉</span>发现<span class="drop"></span></button>
+    <button class="nitem" onclick="navGo(this)"><span class="ic">◍</span>我的<span class="drop"></span></button>
+  </nav>
+</div>
+
+</div>
+<script>
+function toggleCard(h){h.closest('.card').classList.toggle('open')}
+function slideAv(e,st){e.stopPropagation();st.classList.toggle('slide')}
+function press(r){r.style.transform='scale(.93)';setTimeout(()=>r.style.transform='',220)}
+function navGo(b){document.querySelectorAll('.nitem').forEach(x=>x.classList.remove('on'));b.classList.add('on')}
+function tip(t){var d=document.createElement('div');d.textContent=t;d.style.cssText='position:fixed;left:50%;top:44%;transform:translateX(-50%);background:rgba(8,15,30,.9);border:1px solid rgba(34,211,238,.4);color:#a5f3fc;padding:10px 22px;border-radius:20px;font-size:13px;z-index:99;backdrop-filter:blur(10px)';document.body.appendChild(d);setTimeout(()=>d.remove(),1200)}
+</script>
+</body>
+</html>

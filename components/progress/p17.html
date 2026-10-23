@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>蛋糕切分 · 进度指示</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    min-height:100vh; background:#0b1020; color:#e8ecf5;
+    display:flex; align-items:center; justify-content:center;
+    font-family:"PingFang SC","Microsoft YaHei",sans-serif; padding:16px;
+  }
+  .stage { width:360px; max-width:100%; }
+  .head { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:10px; }
+  .head h2 { font-size:16px; font-weight:600; letter-spacing:2px; }
+  .head .pct { font-size:26px; font-weight:700; color:#ffb3c7; font-variant-numeric:tabular-nums; }
+  .scene {
+    position:relative; width:100%; height:340px; border-radius:16px; overflow:hidden;
+    background:linear-gradient(180deg,#1a1230 0%,#241a3d 60%,#2c2145 100%);
+    border:1px solid #4a3a6e;
+  }
+  .caption {
+    position:absolute; left:0; right:0; bottom:14px; text-align:center;
+    font-size:13px; color:#d9c8ee; letter-spacing:1px;
+  }
+  #cake g { transform-box:fill-box; transform-origin:center; }
+  .hint { margin-top:8px; font-size:11px; color:#5b6b8f; text-align:center; }
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="head"><h2>🍰 蛋糕切分</h2><div class="pct" id="pct">0%</div></div>
+  <div class="scene">
+    <svg id="svg" viewBox="0 0 360 300" width="100%" height="300">
+      <!-- 桌布 -->
+      <ellipse cx="180" cy="285" rx="170" ry="16" fill="#171029"/>
+      <!-- 盘子 -->
+      <ellipse cx="288" cy="238" rx="58" ry="17" fill="#3b3260" stroke="#8f86c9" stroke-width="2"/>
+      <ellipse cx="288" cy="234" rx="46" ry="12" fill="#2b2450"/>
+      <!-- 蛋糕托盘 -->
+      <ellipse cx="104" cy="222" rx="92" ry="20" fill="#4a3a6e" stroke="#8f86c9" stroke-width="2"/>
+      <g id="cake"></g>
+    </svg>
+    <div class="caption" id="caption">已切 0 / 10 块</div>
+  </div>
+  <div class="hint">每 10% 切下一块 · 飞到右侧盘子</div>
+</div>
+<script>
+(function(){
+  var pct = document.getElementById('pct');
+  var caption = document.getElementById('caption');
+  var cake = document.getElementById('cake');
+  var NS = 'http://www.w3.org/2000/svg';
+  var cx = 104, cy = 196, r = 78, N = 10;
+  var fills = ['#f7c1cf','#f4a3b8','#f7c1cf','#f4a3b8','#f7c1cf','#f4a3b8','#f7c1cf','#f4a3b8','#f7c1cf','#f4a3b8'];
+  var slices = [];
+  function pt(a){ var r2 = a*Math.PI/180; return [cx + r*Math.cos(r2), cy + r*Math.sin(r2)]; }
+  for (var i = 0; i < N; i++){
+    var a0 = i * 36 - 90, a1 = a0 + 36;
+    var p0 = pt(a0), p1 = pt(a1);
+    var g = document.createElementNS(NS, 'g');
+    var path = document.createElementNS(NS, 'path');
+    path.setAttribute('d', 'M' + cx + ' ' + cy + ' L' + p0[0].toFixed(1) + ' ' + p0[1].toFixed(1) +
+      ' A' + r + ' ' + r + ' 0 0 1 ' + p1[0].toFixed(1) + ' ' + p1[1].toFixed(1) + ' Z');
+    path.setAttribute('fill', fills[i]);
+    path.setAttribute('stroke', '#7a4a5a');
+    path.setAttribute('stroke-width', '2');
+    // 顶部樱桃
+    var mid = (a0 + 18) * Math.PI / 180;
+    var chx = cx + (r*0.72)*Math.cos(mid), chy = cy + (r*0.72)*Math.sin(mid);
+    var cherry = document.createElementNS(NS, 'circle');
+    cherry.setAttribute('cx', chx.toFixed(1)); cherry.setAttribute('cy', chy.toFixed(1));
+    cherry.setAttribute('r', '5'); cherry.setAttribute('fill', '#e23b5e');
+    g.appendChild(path); g.appendChild(cherry);
+    cake.appendChild(g);
+    slices.push(g);
+  }
+  // 盘子落点：相对蛋糕中心的位移与旋转
+  var targets = [];
+  for (var j = 0; j < N; j++){
+    targets.push({
+      tx: 184 - 40 + (j % 3) * 22,
+      ty: 40 - j * 3,
+      rot: (j * 37) % 60 - 30
+    });
+  }
+  var p = 0;
+  function render(){
+    pct.textContent = Math.round(p) + '%';
+    var moved = Math.min(N, Math.floor(p / 10));
+    caption.textContent = '已切 ' + moved + ' / 10 块';
+    slices.forEach(function(g, i){
+      if (i < moved) {
+        var t = targets[i];
+        g.style.transform = 'translate(' + t.tx + 'px,' + t.ty + 'px) rotate(' + t.rot + 'deg)';
+        g.style.opacity = '1';
+      } else {
+        g.style.transform = 'translate(0px,0px) rotate(0deg)';
+        g.style.opacity = '1';
+      }
+    });
+  }
+  if (location.hash === '#mid') { p = 55; render(); return; }
+  render();
+  var step = 100 / (7000 / 70), hold = false;
+  setInterval(function(){
+    if (hold) return;
+    p += step;
+    if (p >= 100) {
+      p = 100; render(); hold = true;
+      setTimeout(function(){ p = 0; hold = false; render(); }, 1000);
+      return;
+    }
+    render();
+  }, 70);
+})();
+</script>
+</body>
+</html>

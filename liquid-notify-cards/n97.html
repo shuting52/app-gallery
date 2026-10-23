@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>瓷上冰裂</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{min-height:100%}
+body{
+  position:relative;
+  padding:48px 18px 64px;
+  color:#ffffff;
+  font:15px/1.45 -apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sans-serif;
+  background:linear-gradient(150deg,#0f1a18,#182826 60%,#0a1413);
+  background-attachment:fixed;
+  overflow-x:hidden;
+}
+.bg{
+  position:fixed;inset:-6%;z-index:0;pointer-events:none;
+  background:radial-gradient(ellipse 42% 32% at 20% 24%, rgba(120,180,165,.4), transparent 70%),radial-gradient(ellipse 40% 30% at 82% 32%, rgba(90,140,150,.36), transparent 70%),radial-gradient(ellipse 52% 38% at 55% 86%, rgba(35,60,58,.85), transparent 70%);
+  animation:drift 30s ease-in-out infinite alternate;
+  animation-delay:-15s;
+}
+@keyframes drift{
+  from{transform:translate3d(-1.5%,-1%,0) scale(1.03) rotate(0deg)}
+  to{transform:translate3d(1.5%,1.5%,0) scale(1.07) rotate(1.5deg)}
+}
+main{position:relative;z-index:1;width:min(440px,100%);margin:0 auto;display:grid;gap:18px}
+.heading{padding:4px 6px 8px}
+.eyebrow{margin:0 0 8px;color:rgba(255,255,255,.68);font-size:11px;letter-spacing:.18em}
+h1{margin:0;font-size:30px;letter-spacing:-.02em;color:#ffffff}
+.hint{margin:7px 0 0;color:rgba(255,255,255,.68)}
+.card{
+  position:relative;isolation:isolate;overflow:hidden;
+  padding:18px;border-radius:28px;
+  border:1px solid rgba(255,255,255,.28);
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cg stroke='%23ffffff' stroke-opacity='0.16' fill='none' stroke-width='1'%3E%3Cpath d='M12 24 L64 74 L58 134 L104 186'/%3E%3Cpath d='M64 74 L124 64 L174 104'/%3E%3Cpath d='M58 134 L22 176'/%3E%3Cpath d='M124 64 L144 12 L196 44'/%3E%3Cpath d='M174 104 L150 160 L190 200'/%3E%3C/g%3E%3C/svg%3E"),linear-gradient(135deg, rgba(220,240,235,.14), rgba(220,240,235,.06) 48%, rgba(140,180,170,.10));
+  -webkit-backdrop-filter:blur(24px) saturate(175%);
+  backdrop-filter:blur(24px) saturate(175%);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.42),
+    inset 0 -1px 0 rgba(0,0,0,.06),
+    0 20px 48px rgba(4,10,9,.45);
+  transition:transform .25s ease,border-color .25s ease;
+}
+.card::before{
+  content:"";position:absolute;z-index:0;inset:0;border-radius:inherit;pointer-events:none;
+  background:
+    linear-gradient(118deg,
+      rgba(235,250,245,.30) 0%,
+      rgba(235,250,245,.07) 18%,
+      transparent 42%,
+      transparent 72%,
+      rgba(150,200,190,.15) 100%);
+  opacity:.8;
+  animation:sheen 9s ease-in-out infinite alternate;
+  animation-delay:-4s;
+}
+@keyframes sheen{from{opacity:.55}to{opacity:.95}}
+.card::after{
+  content:"";position:absolute;z-index:0;
+  top:-56px;right:-38px;width:180px;height:126px;
+  border:1px solid rgba(255,255,255,.22);border-radius:50%;
+  background:radial-gradient(ellipse,rgba(220,245,238,.18),transparent 68%);
+  filter:blur(2px);transform:rotate(-38pxot);pointer-events:none;
+}
+.card>*{position:relative;z-index:1}
+.card:hover{transform:translateY(-3px);border-color:rgba(255,255,255,.46)}
+.top,.title-line{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.top{margin-bottom:15px}
+.pill{
+  padding:6px 12px;border:1px solid rgba(255,255,255,.30);border-radius:999px;
+  background:rgba(255,255,255,.10);color:rgba(255,255,255,.94);font-size:12px;
+  box-shadow:inset 0 1px rgba(255,255,255,.42);white-space:nowrap;
+}
+.avatars{display:flex;align-items:center;padding-left:8px}
+.avatar{
+  display:grid;width:29px;height:29px;margin-left:-8px;place-items:center;
+  border:1px solid rgba(255,255,255,.55);border-radius:50%;
+  background:linear-gradient(135deg,#8a7a6a,#5d5a72 70%,#3f4456);
+  color:#fff;font-size:11px;font-style:normal;
+  box-shadow:0 3px 10px rgba(10,8,18,.25);
+}
+.more{margin-left:7px;color:rgba(255,255,255,.68);font-size:12px}
+.row{display:flex;align-items:center;gap:12px;min-width:0}
+.face{
+  display:grid;flex:0 0 48px;height:48px;place-items:center;
+  border:1px solid rgba(255,255,255,.45);border-radius:50%;
+  background:#6a7285;color:#fff;font-size:19px;font-weight:650;
+  box-shadow:inset 0 1px 5px rgba(255,255,255,.45),0 5px 15px rgba(10,8,20,.22);
+}
+.copy{flex:1;min-width:0}
+.title-line{margin-bottom:5px}
+.title-line strong{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#ffffff}
+time,.preview{color:rgba(255,255,255,.68);font-size:12px}
+.preview{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.unread{flex:0 0 auto;color:#e6dcff;font-size:12px;font-weight:600;white-space:nowrap}
+.dot{flex:0 0 auto;width:9px;height:9px;border-radius:50%;background:#9ad8c8;box-shadow:0 0 8px #9ad8c8}
+.actions{display:flex;gap:10px;margin-top:14px}
+.btn{
+  flex:1;padding:10px 0;text-align:center;border-radius:14px;font-size:13px;cursor:pointer;
+  border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.08);color:rgba(255,255,255,.92);
+  box-shadow:inset 0 1px rgba(255,255,255,.42);
+}
+.btn.pri{background:linear-gradient(135deg,#4e8a80,#2e5a54);border-color:rgba(150,200,190,.5);color:#fff}
+.prog{height:8px;border-radius:5px;background:rgba(255,255,255,.10);margin-top:12px;overflow:hidden}
+.prog i{display:block;height:100%;width:0%;border-radius:5px;background:linear-gradient(90deg,#8ac0b4,#4e8a80)}
+.pmeta{display:flex;justify-content:space-between;margin-top:6px;font-size:11px;color:rgba(255,255,255,.68)}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+  .card{background:rgba(30,26,44,.92)}
+}
+@media (prefers-reduced-motion:reduce){.card,.bg,.card::before{animation:none;transition:none}}
+</style>
+</head>
+<body>
+<div class="bg"></div>
+<main>
+<header class="heading">
+<p class="eyebrow">LIQUID GLASS · 瓷</p>
+<h1>瓷上冰裂</h1>
+<p class="hint">开片有声，消息如冰裂般清脆。</p>
+</header>
+
+<section class="card">
+  <div class="top">
+    <span class="pill">拍卖</span>
+    <div class="avatars" aria-label="members"><i class="avatar">嘉</i></div>
+  </div>
+  <div class="row">
+    <div class="face" style="background:linear-gradient(145deg,#5a8a80,#3a5a54 60%,#283c38)">嘉</div>
+    <div class="copy">
+      <div class="title-line"><strong>嘉德拍卖</strong><time>14:00</time></div>
+      <div class="preview">您关注的南宋哥窑盘口瓶即将开拍</div>
+    </div>
+    <span class="unread"></span>
+  </div>
+  <div class="actions"><span class="btn pri">进入直播</span></div>
+</section>
+
+<section class="card">
+  <div class="top">
+    <span class="pill">订单</span>
+    <div class="avatars" aria-label="members"><i class="avatar">窑</i></div>
+  </div>
+  <div class="row">
+    <div class="face" style="background:linear-gradient(145deg,#6a9a90,#465e5a 60%,#323e3c)">窑</div>
+    <div class="copy">
+      <div class="title-line"><strong>景德镇</strong><time>11:26</time></div>
+      <div class="preview">您拍下的青瓷茶盏已发货</div>
+    </div>
+    <span class="unread"></span>
+  </div>
+  
+</section>
+
+<section class="card">
+  <div class="top">
+    <span class="pill">群聊</span>
+    <div class="avatars" aria-label="members"><i class="avatar">陈</i></div>
+  </div>
+  <div class="row">
+    <div class="face" style="background:linear-gradient(145deg,#4e7a72,#324e4a 60%,#233532)">陈</div>
+    <div class="copy">
+      <div class="title-line"><strong>瓷器雅集</strong><time>昨天</time></div>
+      <div class="preview">老陈分享了一件开片冰裂纹笔洗</div>
+    </div>
+    <span class="unread">6 条未读</span>
+  </div>
+  
+</section>
+</main>
+</body>
+</html>

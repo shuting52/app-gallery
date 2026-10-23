@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>旋涡星门</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{display:flex;align-items:center;justify-content:center;background:#1b1b22;
+font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans CJK SC",sans-serif}
+.phone{width:430px;height:900px;border-radius:48px;overflow:hidden;position:relative;
+display:flex;flex-direction:column;background:radial-gradient(120% 90% at 50% 0%,#12122b 0%,#07070f 55%,#030308 100%);
+box-shadow:0 30px 80px rgba(0,0,0,.6);color:#e8e8f2}
+/* starfield */
+.stars{position:absolute;inset:0;pointer-events:none}
+.stars i{position:absolute;display:block;border-radius:50%;background:#fff;animation:tw 3s ease-in-out infinite}
+.stars i:nth-child(1){width:2px;height:2px;left:12%;top:8%;animation-delay:-1s}
+.stars i:nth-child(2){width:3px;height:3px;left:30%;top:16%;animation-delay:-2.2s}
+.stars i:nth-child(3){width:2px;height:2px;left:55%;top:6%;animation-delay:-.4s}
+.stars i:nth-child(4){width:2px;height:2px;left:72%;top:20%;animation-delay:-1.6s}
+.stars i:nth-child(5){width:3px;height:3px;left:88%;top:10%;animation-delay:-2.8s}
+.stars i:nth-child(6){width:2px;height:2px;left:45%;top:28%;animation-delay:-.9s}
+.stars i:nth-child(7){width:2px;height:2px;left:20%;top:32%;animation-delay:-2.5s}
+.stars i:nth-child(8){width:2px;height:2px;left:64%;top:36%;animation-delay:-1.3s}
+@keyframes tw{0%,100%{opacity:.25}50%{opacity:1}}
+.content{flex:1;padding:56px 28px 20px;position:relative;z-index:1}
+.content .tag{display:inline-block;font-size:12px;letter-spacing:4px;color:#22d3ee;margin-bottom:14px}
+.content h1{font-size:44px;font-weight:800;letter-spacing:2px;margin-bottom:26px}
+.card{height:150px;border-radius:20px;margin-bottom:18px;position:relative;overflow:hidden;
+background:linear-gradient(135deg,rgba(34,211,238,.14),rgba(167,139,250,.10));
+border:1px solid rgba(255,255,255,.08)}
+.card::after{content:"";position:absolute;left:22px;right:60px;top:28px;height:14px;border-radius:7px;
+background:rgba(255,255,255,.16)}
+.card::before{content:"";position:absolute;left:22px;right:120px;top:58px;height:10px;border-radius:5px;
+background:rgba(255,255,255,.09)}
+/* tabbar */
+.tabbar{position:relative;height:88px;display:flex;flex:0 0 auto;
+background:rgba(10,10,20,.72);border-top:1px solid rgba(255,255,255,.07);z-index:2}
+/* vortex rings, positioned by JS behind the active icon */
+.vortex{position:absolute;top:30px;width:76px;height:76px;margin:-38px 0 0 -38px;pointer-events:none;
+transition:left .45s cubic-bezier(.4,0,.2,1)}
+.vortex .core{position:absolute;inset:22px;border-radius:50%;
+background:radial-gradient(circle,rgba(34,211,238,.35),transparent 70%)}
+.vortex .r1,.vortex .r2{position:absolute;border-radius:50%}
+.vortex .r1{inset:0;background:conic-gradient(from 0deg,transparent 0 28%,rgba(34,211,238,.55) 42%,transparent 56%,transparent 68%,rgba(167,139,250,.45) 82%,transparent 94%);
+filter:blur(1.5px);animation:spin 7s linear infinite;animation-delay:-3.2s}
+.vortex .r2{inset:12px;background:conic-gradient(from 90deg,transparent 0 35%,rgba(167,139,250,.6) 48%,transparent 60%,transparent 78%,rgba(34,211,238,.35) 88%,transparent 96%);
+filter:blur(1px);animation:spin 4.5s linear infinite reverse;animation-delay:-1.8s}
+@keyframes spin{to{transform:rotate(360deg)}}
+.tab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;
+background:none;border:0;cursor:pointer;color:#6b6b80;position:relative;z-index:1;padding-top:8px}
+.tab svg{width:26px;height:26px;transition:transform .3s,color .3s,filter .3s}
+.tab .lb{font-size:11px;letter-spacing:1px;transition:color .3s}
+.tab.active{color:#a5f3fc}
+.tab.active svg{transform:scale(1.28);color:#fff;filter:drop-shadow(0 0 10px rgba(34,211,238,.9)) drop-shadow(0 0 22px rgba(167,139,250,.5))}
+.tab.active .lb{color:#22d3ee;font-weight:600}
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="stars"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+  <div class="content">
+    <span class="tag">STAR GATE</span>
+    <h1 id="t">星港</h1>
+    <div class="card"></div><div class="card"></div><div class="card"></div>
+  </div>
+  <nav class="tabbar" id="bar">
+    <div class="vortex" id="vx"><div class="r1"></div><div class="r2"></div><div class="core"></div></div>
+    <button class="tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M10 21v-6h4v6"/></svg><span class="lb">星港</span></button>
+    <button class="tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2 5-5 2 2-5z"/></svg><span class="lb">星图</span></button>
+    <button class="tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg><span class="lb">跃迁</span></button>
+    <button class="tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 8-3 8h18s-3-1-3-8"/><path d="M10.3 21a2 2 0 0 0 3.4 0"/></svg><span class="lb">信号</span></button>
+    <button class="tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/></svg><span class="lb">舰长</span></button>
+  </nav>
+</div>
+<script>
+var names=["星港","星图","跃迁","信号","舰长"];
+var tabs=[].slice.call(document.querySelectorAll(".tab"));
+var vx=document.getElementById("vx");
+var cur=0;
+function place(el){vx.style.left=(el.offsetLeft+el.offsetWidth/2)+"px";}
+function activate(k){
+  cur=k;
+  tabs.forEach(function(b,i){b.classList.toggle("active",i===k);});
+  place(tabs[k]);
+  document.getElementById("t").textContent=names[k];
+  try{history.replaceState(null,"","?tab="+k);}catch(e){}
+}
+var q=parseInt(new URLSearchParams(location.search).get("tab"),10);
+if(isNaN(q)||q<0||q>4)q=0;
+tabs.forEach(function(b,i){b.addEventListener("click",function(){activate(i);});});
+requestAnimationFrame(function(){activate(q);});
+</script>
+</body>
+</html>

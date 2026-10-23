@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>蜜桃气泡 · 液态页签卡片</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --ink:#4a2a22;
+  --ink2:#9c6f5c;
+  --peach:#ff9e7d;
+  --peach2:#ffb59e;
+  --pink:#ff8fa3;
+  --gold:#ffc98b;
+  --red:#ff5d5d;
+  --jelly:cubic-bezier(.34,1.9,.4,1);
+}
+html,body{height:100%}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  background:#2b1a16;
+  display:flex;align-items:center;justify-content:center;
+  color:var(--ink);
+}
+.phone{
+  position:relative;
+  width:min(430px,100vw);
+  height:min(900px,100vh);
+  overflow:hidden;
+  background:linear-gradient(165deg,#fff7ec 0%,#ffe9d4 42%,#ffdee0 78%,#ffd9c2 100%);
+  box-shadow:0 30px 80px rgba(0,0,0,.45);
+}
+/* ---------- 液态流体背景 ---------- */
+.bg{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.blob{position:absolute;border-radius:50%;filter:blur(38px);opacity:.85;will-change:transform}
+.b1{width:340px;height:340px;left:-90px;top:-70px;background:radial-gradient(circle at 35% 35%,#ffd9a8,#ff9e7d 70%);animation:drift1 17s ease-in-out -4s infinite alternate}
+.b2{width:300px;height:300px;right:-80px;top:120px;background:radial-gradient(circle at 40% 40%,#ffc4d6,#ff8fa3 72%);animation:drift2 21s ease-in-out -9s infinite alternate}
+.b3{width:260px;height:260px;left:-60px;top:430px;background:radial-gradient(circle at 40% 35%,#ffe9b8,#ffb59e 72%);animation:drift3 19s ease-in-out -2s infinite alternate}
+.b4{width:290px;height:290px;right:-70px;bottom:-60px;background:radial-gradient(circle at 38% 38%,#ffb59e,#ff7e67 74%);animation:drift1 23s ease-in-out -12s infinite alternate-reverse}
+.b5{width:170px;height:170px;left:120px;top:250px;background:radial-gradient(circle at 40% 40%,#fff3d6,#ffc98b 75%);opacity:.7;animation:drift2 15s ease-in-out -6s infinite alternate-reverse}
+@keyframes drift1{from{transform:translate(0,0) scale(1) rotate(0deg)}to{transform:translate(52px,38px) scale(1.14) rotate(24deg)}}
+@keyframes drift2{from{transform:translate(0,0) scale(1.05)}to{transform:translate(-46px,54px) scale(.92)}}
+@keyframes drift3{from{transform:translate(0,0) scale(.95) rotate(0deg)}to{transform:translate(58px,-30px) scale(1.12) rotate(-18deg)}}
+/* 上浮气泡 */
+.bub{position:absolute;bottom:-30px;border-radius:50%;
+  background:radial-gradient(circle at 32% 30%,rgba(255,255,255,.95),rgba(255,255,255,.18) 55%,rgba(255,158,125,.12));
+  border:1px solid rgba(255,255,255,.75);
+  box-shadow:inset -2px -3px 6px rgba(255,143,163,.25);
+  animation:rise linear infinite;will-change:transform,opacity}
+@keyframes rise{
+  0%{transform:translateY(0) translateX(0);opacity:0}
+  10%{opacity:.9}
+  55%{transform:translateY(-480px) translateX(10px)}
+  92%{opacity:.75}
+  100%{transform:translateY(-960px) translateX(-8px);opacity:0}
+}
+/* ---------- 滚动内容 ---------- */
+.content{position:relative;z-index:2;height:100%;overflow-y:auto;padding:0 16px 132px;scrollbar-width:none}
+.content::-webkit-scrollbar{display:none}
+/* 状态栏 */
+.status{display:flex;justify-content:space-between;align-items:center;padding:14px 6px 2px;font-size:13.5px;font-weight:600;color:#5a3428}
+.status .sic{display:flex;align-items:center;gap:6px}
+.bars{display:flex;align-items:flex-end;gap:1.6px}
+.bars i{display:block;width:3px;border-radius:2px;background:#5a3428}
+.bars i:nth-child(1){height:4px}.bars i:nth-child(2){height:6px}.bars i:nth-child(3){height:8px}.bars i:nth-child(4){height:10px;opacity:.35}
+.batt{width:23px;height:11.5px;border:1.4px solid rgba(90,52,40,.55);border-radius:3.5px;position:relative}
+.batt::before{content:"";position:absolute;left:1.5px;top:1.5px;bottom:1.5px;width:68%;border-radius:2px;background:#5a3428}
+.batt::after{content:"";position:absolute;right:-4.5px;top:3px;width:2.5px;height:5px;border-radius:0 2px 2px 0;background:rgba(90,52,40,.55)}
+/* 标题行 */
+.titlerow{display:flex;align-items:center;justify-content:space-between;padding:10px 2px 4px}
+.titlerow h1{font-size:27px;font-weight:800;letter-spacing:.5px;
+  background:linear-gradient(92deg,#e85d3d,#ff7e67 45%,#ff8fa3);
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.titlerow .sub{font-size:10.5px;letter-spacing:.32em;color:var(--ink2);margin-top:3px;font-weight:600}
+.tbtns{display:flex;gap:10px}
+.tbtn{width:38px;height:38px;border-radius:50%;border:1px solid rgba(255,255,255,.85);
+  background:linear-gradient(150deg,rgba(255,255,255,.75),rgba(255,255,255,.3));
+  backdrop-filter:blur(10px) saturate(160%);-webkit-backdrop-filter:blur(10px) saturate(160%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.95),0 6px 14px rgba(255,126,103,.22);
+  display:flex;align-items:center;justify-content:center;cursor:pointer;color:#c4502f;
+  transition:transform .35s var(--jelly)}
+.tbtn:active{transform:scale(.86)}
+.tbtn svg{width:18px;height:18px}
+/* 一周日历条 */
+.week{display:flex;gap:7px;margin:12px 0 14px;padding:10px 10px;border-radius:20px;
+  border:1px solid rgba(255,255,255,.7);
+  background:linear-gradient(150deg,rgba(255,255,255,.5),rgba(255,255,255,.2));
+  backdrop-filter:blur(12px) saturate(150%);-webkit-backdrop-filter:blur(12px) saturate(150%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.85),0 8px 20px rgba(255,126,103,.14)}
+.wd{flex:1;text-align:center;padding:5px 0 6px;border-radius:13px;color:var(--ink2)}
+.wd .w{font-size:11px;font-weight:600}
+.wd .d{font-size:15.5px;font-weight:700;margin-top:2px;color:var(--ink)}
+.wd.today{background:linear-gradient(150deg,#ff9e7d,#ff7e67 55%,#ff8fa3);color:#fff;
+  box-shadow:0 6px 14px rgba(255,126,103,.4),inset 0 1px 0 rgba(255,255,255,.5)}
+.wd.today .w,.wd.today .d{color:#fff}
+/* ---------- 页签分组卡片 ---------- */
+.card{position:relative;border-radius:26px;margin-bottom:14px;padding:13px 14px 8px;
+  border:1.6px solid transparent;
+  background:
+    linear-gradient(155deg,rgba(255,255,255,.66),rgba(255,255,255,.30)) padding-box,
+    linear-gradient(115deg,#ffb59e,#ff8fa3,#ffd9a0,#ff9e7d,#ffb59e) border-box;
+  background-size:100% 100%,320% 320%;
+  animation:rimflow 7s ease-in-out infinite alternate;
+  backdrop-filter:blur(16px) saturate(170%);-webkit-backdrop-filter:blur(16px) saturate(170%);
+  box-shadow:inset 0 1.5px 0 rgba(255,255,255,.9),inset 0 -8px 18px rgba(255,158,125,.10),0 14px 30px rgba(214,110,72,.20);
+}
+@keyframes rimflow{from{background-position:0 0,0% 40%}to{background-position:0 0,100% 60%}}
+.card.duang{animation:rimflow 7s ease-in-out infinite alternate,duang .55s var(--jelly)}
+@keyframes duang{0%{transform:scale(1)}35%{transform:scale(.972)}70%{transform:scale(1.008)}100%{transform:scale(1)}}
+.ghead{display:flex;align-items:center;gap:8px;cursor:pointer;padding:2px 2px 9px;user-select:none}
+.ghead .gt{flex:1;min-width:0}
+.ghead h3{font-size:16.5px;font-weight:800;letter-spacing:.3px;white-space:nowrap}
+.ghead .cnt{font-size:11px;color:var(--ink2);font-weight:600;margin-top:1px}
+.chev{width:22px;height:22px;flex:none;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  background:rgba(255,255,255,.55);border:1px solid rgba(255,255,255,.8);color:#c4502f;
+  transition:transform .5s var(--jelly)}
+.chev svg{width:12px;height:12px}
+.card.closed .chev{transform:rotate(-90deg)}
+/* 头像排 */
+.avstrip{width:133px;flex:none;overflow:hidden;border-radius:20px;cursor:pointer;padding:2px 0}
+.avtrack{display:flex;transition:transform .55s var(--jelly);will-change:transform}
+.avstrip.slid .avtrack{transform:translateX(-25px)}
+.av{flex:none;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;
+  border:2px solid rgba(255,255,255,.92);box-shadow:0 3px 8px rgba(214,110,72,.28),inset 0 1.5px 2px rgba(255,255,255,.55)}
+.av.s{width:33px;height:33px;font-size:12.5px;margin-left:-8px}
+.av.s:first-child{margin-left:2px}
+.av.b{width:46px;height:46px;font-size:17px;border-width:2.5px}
+.a1{background:linear-gradient(140deg,#ffb59e,#ff7e67)}
+.a2{background:linear-gradient(140deg,#ffc4d6,#ff8fa3)}
+.a3{background:linear-gradient(140deg,#ffd9a0,#ffab5e)}
+.a4{background:linear-gradient(140deg,#ff9e7d,#f2668b)}
+.a5{background:linear-gradient(140deg,#ffe3ae,#ffb59e)}
+.a6{background:linear-gradient(140deg,#f7a8b8,#e85d3d)}
+/* 会话行 */
+.rows{display:grid;grid-template-rows:1fr;transition:grid-template-rows .55s var(--jelly)}
+.card.closed .rows{grid-template-rows:0fr}
+.rows-in{overflow:hidden;min-height:0}
+.row{display:flex;align-items:center;gap:11px;padding:8px 6px;border-radius:17px;cursor:pointer;
+  transition:transform .4s var(--jelly),background .2s}
+.row:active{transform:scale(.955);background:rgba(255,255,255,.4)}
+.row + .row{border-top:1px solid rgba(255,255,255,.45)}
+.rmid{flex:1;min-width:0}
+.rname{font-size:15px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rmsg{font-size:12.5px;color:var(--ink2);margin-top:2.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rright{flex:none;text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:5px}
+.rtime{font-size:10.5px;color:#b0826d;font-weight:600}
+.badge{min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:linear-gradient(140deg,#ff6b6b,#ff4757);
+  color:#fff;font-size:10.5px;font-weight:800;display:flex;align-items:center;justify-content:center;
+  box-shadow:0 3px 8px rgba(255,71,87,.4)}
+.dot{width:9px;height:9px;border-radius:50%;background:var(--red);box-shadow:0 2px 6px rgba(255,71,87,.5)}
+.mute{font-size:10px;color:#c09a85}
+/* ---------- seam 胶囊导航 ---------- */
+.nav{position:absolute;left:50%;bottom:20px;transform:translateX(-50%);z-index:10;
+  display:flex;align-items:center;gap:4px;padding:9px 12px;border-radius:34px;
+  background:linear-gradient(160deg,rgba(64,36,28,.88),rgba(43,24,19,.92));
+  border:1px solid rgba(255,205,178,.35);
+  backdrop-filter:blur(18px) saturate(150%);-webkit-backdrop-filter:blur(18px) saturate(150%);
+  box-shadow:inset 0 1.5px 0 rgba(255,220,195,.35),inset 0 -6px 14px rgba(0,0,0,.35),0 18px 36px rgba(120,50,25,.4)}
+.nbtn{position:relative;width:47px;height:47px;border-radius:50%;border:0;background:transparent;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;color:#c99a83;
+  transition:transform .4s var(--jelly),color .25s}
+.nbtn svg{width:22px;height:22px}
+.nbtn:active{transform:scale(.85)}
+.nbtn .drop{position:absolute;left:50%;bottom:3.5px;width:6px;height:8.5px;transform:translateX(-50%) scale(0);
+  background:linear-gradient(160deg,#ffc98b,#ff7e67);border-radius:50% 50% 50% 50%/62% 62% 38% 38%;
+  transition:transform .5s var(--jelly)}
+.nbtn.on{color:#ffe9d9}
+.nbtn.on .drop{transform:translateX(-50%) scale(1)}
+.nbtn.main{width:56px;height:56px;margin:-22px 3px 0;border-radius:50%;
+  background:linear-gradient(150deg,#ffc98b,#ff9e7d 45%,#ff7e67);
+  color:#fff;border:1.5px solid rgba(255,255,255,.65);
+  box-shadow:0 12px 24px rgba(255,126,103,.5),inset 0 2px 3px rgba(255,255,255,.7),inset 0 -5px 10px rgba(214,80,40,.35)}
+.nbtn.main svg{width:25px;height:25px}
+.nbtn.main:active{transform:scale(.9)}
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="bg">
+    <div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div><div class="blob b4"></div><div class="blob b5"></div>
+    <span class="bub" style="left:38px;width:13px;height:13px;animation-duration:11s;animation-delay:-3s"></span>
+    <span class="bub" style="left:96px;width:8px;height:8px;animation-duration:9s;animation-delay:-6.5s"></span>
+    <span class="bub" style="left:170px;width:16px;height:16px;animation-duration:13s;animation-delay:-1.5s"></span>
+    <span class="bub" style="left:238px;width:9px;height:9px;animation-duration:10s;animation-delay:-8s"></span>
+    <span class="bub" style="left:305px;width:14px;height:14px;animation-duration:12s;animation-delay:-4.6s"></span>
+    <span class="bub" style="left:362px;width:7px;height:7px;animation-duration:8.5s;animation-delay:-2.2s"></span>
+    <span class="bub" style="left:395px;width:11px;height:11px;animation-duration:11.5s;animation-delay:-9.4s"></span>
+    <span class="bub" style="left:140px;width:6px;height:6px;animation-duration:8s;animation-delay:-5.2s"></span>
+  </div>
+
+  <div class="content">
+    <div class="status">
+      <span>9:41</span>
+      <span class="sic">
+        <span class="bars"><i></i><i></i><i></i><i></i></span>
+        <span style="font-size:11.5px">5G</span>
+        <span class="batt"></span>
+      </span>
+    </div>
+
+    <div class="titlerow">
+      <div>
+        <h1>蜜桃气泡</h1>
+        <div class="sub">PEACH SODA</div>
+      </div>
+      <div class="tbtns">
+        <span class="tbtn" title="搜索"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 21 21"/></svg></span>
+        <span class="tbtn" title="新建"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span>
+      </div>
+    </div>
+
+    <div class="week">
+      <div class="wd"><div class="w">日</div><div class="d">18</div></div>
+      <div class="wd"><div class="w">一</div><div class="d">19</div></div>
+      <div class="wd today"><div class="w">二</div><div class="d">20</div></div>
+      <div class="wd"><div class="w">三</div><div class="d">21</div></div>
+      <div class="wd"><div class="w">四</div><div class="d">22</div></div>
+      <div class="wd"><div class="w">五</div><div class="d">23</div></div>
+      <div class="wd"><div class="w">六</div><div class="d">24</div></div>
+    </div>
+
+    <!-- 卡片 1 -->
+    <section class="card">
+      <header class="ghead">
+        <div class="gt"><h3>桃子闺蜜团</h3><div class="cnt">6 个会话 · 2 条未读</div></div>
+        <div class="avstrip"><div class="avtrack">
+          <span class="av s a1">满</span><span class="av s a2">果</span><span class="av s a3">沐</span><span class="av s a4">桃</span><span class="av s a5">柚</span><span class="av s a6">梨</span>
+        </div></div>
+        <span class="chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round"><path d="M5 9l7 7 7-7"/></svg></span>
+      </header>
+      <div class="rows"><div class="rows-in">
+        <div class="row"><span class="av b a1">满</span><div class="rmid"><div class="rname">林小满</div><div class="rmsg">新出的蜜桃冰茶好好喝，周末一起去打卡</div></div><div class="rright"><span class="rtime">09:12</span><span class="badge">3</span></div></div>
+        <div class="row"><span class="av b a2">果</span><div class="rmid"><div class="rname">唐果果</div><div class="rmsg">[图片] 你看这件裙子，桃子色绝绝子</div></div><div class="rright"><span class="rtime">08:47</span><span class="dot"></span></div></div>
+        <div class="row"><span class="av b a3">沐</span><div class="rmid"><div class="rname">许沐沐</div><div class="rmsg">生日会的气球我订好啦，粉橙配色</div></div><div class="rright"><span class="rtime">昨天</span><span class="mute">已读</span></div></div>
+      </div></div>
+    </section>
+
+    <!-- 卡片 2 -->
+    <section class="card">
+      <header class="ghead">
+        <div class="gt"><h3>一家人</h3><div class="cnt">4 个会话</div></div>
+        <div class="avstrip"><div class="avtrack">
+          <span class="av s a3">爸</span><span class="av s a2">妈</span><span class="av s a4">默</span><span class="av s a1">姨</span><span class="av s a5">姑</span><span class="av s a6">舅</span>
+        </div></div>
+        <span class="chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round"><path d="M5 9l7 7 7-7"/></svg></span>
+      </header>
+      <div class="rows"><div class="rows-in">
+        <div class="row"><span class="av b a2">妈</span><div class="rmid"><div class="rname">妈妈</div><div class="rmsg">天冷了，记得把秋裤找出来穿上</div></div><div class="rright"><span class="rtime">08:05</span><span class="badge">1</span></div></div>
+        <div class="row"><span class="av b a3">爸</span><div class="rmid"><div class="rname">爸爸</div><div class="rmsg">阳台的水蜜桃熟了，回来摘</div></div><div class="rright"><span class="rtime">昨天</span><span class="mute">已读</span></div></div>
+        <div class="row"><span class="av b a4">默</span><div class="rmid"><div class="rname">表弟陈默</div><div class="rmsg">姐，我的游戏皮肤借你玩两天</div></div><div class="rright"><span class="rtime">周一</span><span class="mute">已读</span></div></div>
+      </div></div>
+    </section>
+
+    <!-- 卡片 3 -->
+    <section class="card">
+      <header class="ghead">
+        <div class="gt"><h3>干饭小分队</h3><div class="cnt">5 个会话 · 1 条未读</div></div>
+        <div class="avstrip"><div class="avtrack">
+          <span class="av s a4">舟</span><span class="av s a5">可</span><span class="av s a1">桐</span><span class="av s a2">辣</span><span class="av s a3">饭</span><span class="av s a6">汤</span>
+        </div></div>
+        <span class="chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round"><path d="M5 9l7 7 7-7"/></svg></span>
+      </header>
+      <div class="rows"><div class="rows-in">
+        <div class="row"><span class="av b a4">舟</span><div class="rmid"><div class="rname">赵一舟</div><div class="rmsg">楼下新开的烤肉店，中午拼单吗</div></div><div class="rright"><span class="rtime">11:26</span><span class="badge">5</span></div></div>
+        <div class="row"><span class="av b a5">可</span><div class="rmid"><div class="rname">周可可</div><div class="rmsg">我带了自制桃子果酱，分你们尝尝</div></div><div class="rright"><span class="rtime">10:03</span><span class="mute">已读</span></div></div>
+      </div></div>
+    </section>
+
+    <!-- 卡片 4 -->
+    <section class="card">
+      <header class="ghead">
+        <div class="gt"><h3>插画同好会</h3><div class="cnt">8 个会话</div></div>
+        <div class="avstrip"><div class="avtrack">
+          <span class="av s a2">禾</span><span class="av s a6">拾</span><span class="av s a1">鹭</span><span class="av s a3">墨</span><span class="av s a4">岚</span><span class="av s a5">砂</span>
+        </div></div>
+        <span class="chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round"><path d="M5 9l7 7 7-7"/></svg></span>
+      </header>
+      <div class="rows"><div class="rows-in">
+        <div class="row"><span class="av b a2">禾</span><div class="rmid"><div class="rname">沈青禾</div><div class="rmsg">新画的水彩桃子，求大佬们点评</div></div><div class="rright"><span class="rtime">09:58</span><span class="dot"></span></div></div>
+        <div class="row"><span class="av b a6">拾</span><div class="rmid"><div class="rname">陆拾</div><div class="rmsg">下期速写打卡主题：夏天的尾巴</div></div><div class="rright"><span class="rtime">周日</span><span class="mute">已读</span></div></div>
+        <div class="row"><span class="av b a1">鹭</span><div class="rmid"><div class="rname">白鹭</div><div class="rmsg">颜料团购链接发群里啦，自取</div></div><div class="rright"><span class="rtime">周六</span><span class="mute">已读</span></div></div>
+      </div></div>
+    </section>
+
+    <!-- 卡片 5 -->
+    <section class="card">
+      <header class="ghead">
+        <div class="gt"><h3>羽毛球约局</h3><div class="cnt">3 个会话 · 1 条未读</div></div>
+        <div class="avstrip"><div class="avtrack">
+          <span class="av s a1">翔</span><span class="av s a3">楠</span><span class="av s a5">拍</span><span class="av s a2">羽</span><span class="av s a4">风</span><span class="av s a6">跃</span>
+        </div></div>
+        <span class="chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round"><path d="M5 9l7 7 7-7"/></svg></span>
+      </header>
+      <div class="rows"><div class="rows-in">
+        <div class="row"><span class="av b a1">翔</span><div class="rmid"><div class="rname">高翔</div><div class="rmsg">周六下午三点，老场地，还差一个人</div></div><div class="rright"><span class="rtime">07:40</span><span class="badge">2</span></div></div>
+        <div class="row"><span class="av b a3">楠</span><div class="rmid"><div class="rname">郑楠楠</div><div class="rmsg">我带新球拍，顺便请大家喝气泡水</div></div><div class="rright"><span class="rtime">昨天</span><span class="mute">已读</span></div></div>
+      </div></div>
+    </section>
+  </div>
+
+  <!-- seam 胶囊导航 -->
+  <nav class="nav">
+    <button class="nbtn on" data-nav><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11.5 12 4l8 7.5"/><path d="M6.5 10v9h11v-9"/></svg><span class="drop"></span></button>
+    <button class="nbtn" data-nav><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 1 1-3.2-6.4L20 5l-.7 3.2c.45 1.16.7 2.44.7 3.8Z"/><path d="M8.5 11h.01M12 11h.01M15.5 11h.01" stroke-width="2.8"/></svg><span class="drop"></span></button>
+    <button class="nbtn main" data-nav-main><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button>
+    <button class="nbtn" data-nav><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="m15.5 8.5-2 5-5 2 2-5z"/></svg><span class="drop"></span></button>
+    <button class="nbtn" data-nav><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8.2" r="3.6"/><path d="M5 19.5c1.4-3.2 4-4.6 7-4.6s5.6 1.4 7 4.6"/></svg><span class="drop"></span></button>
+  </nav>
+</div>
+
+<script>
+document.querySelectorAll('.card').forEach(function(card){
+  var head = card.querySelector('.ghead');
+  var strip = card.querySelector('.avstrip');
+  strip.addEventListener('click', function(e){
+    e.stopPropagation();
+    strip.classList.toggle('slid');
+  });
+  head.addEventListener('click', function(){
+    card.classList.toggle('closed');
+    card.classList.remove('duang');
+    void card.offsetWidth;
+    card.classList.add('duang');
+  });
+});
+var navBtns = document.querySelectorAll('[data-nav]');
+navBtns.forEach(function(btn){
+  btn.addEventListener('click', function(){
+    navBtns.forEach(function(b){ b.classList.remove('on'); });
+    btn.classList.add('on');
+  });
+});
+</script>
+</body>
+</html>

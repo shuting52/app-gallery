@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>纸鹤归巢</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{display:flex;align-items:center;justify-content:center;background:#d8d2c4;
+font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans CJK SC",sans-serif}
+.phone{width:430px;height:900px;border-radius:48px;overflow:hidden;position:relative;
+display:flex;flex-direction:column;color:#3a3428;
+background:
+  repeating-linear-gradient(0deg,transparent 0 34px,rgba(120,100,70,.05) 34px 35px),
+  repeating-linear-gradient(90deg,transparent 0 34px,rgba(120,100,70,.05) 34px 35px),
+  linear-gradient(160deg,#fbf7ec,#f3ecdc);
+box-shadow:0 30px 80px rgba(90,70,40,.35)}
+.content{flex:1;padding:56px 28px 20px;position:relative;z-index:1}
+.content .tag{display:inline-block;font-size:12px;letter-spacing:4px;color:#c2503f;margin-bottom:14px}
+.content h1{font-size:44px;font-weight:800;letter-spacing:2px;margin-bottom:26px}
+.card{height:150px;border-radius:18px;margin-bottom:18px;position:relative;overflow:hidden;
+background:#fffdf7;border:1px solid rgba(120,100,70,.18);box-shadow:0 4px 14px rgba(120,100,70,.10)}
+.card::after{content:"";position:absolute;left:22px;right:60px;top:28px;height:14px;border-radius:7px;background:rgba(120,100,70,.18)}
+.card::before{content:"";position:absolute;left:22px;right:120px;top:58px;height:10px;border-radius:5px;background:rgba(120,100,70,.10)}
+/* tabbar */
+.barwrap{position:relative;flex:0 0 auto;z-index:2}
+.tabbar{position:relative;height:88px;display:flex;background:rgba(255,253,247,.92);
+border-top:1px dashed rgba(120,100,70,.35)}
+/* flight stage above tabbar */
+.stage{position:absolute;left:0;right:0;top:-70px;bottom:0;pointer-events:none;overflow:visible;z-index:5}
+.stage svg.trail{position:absolute;left:0;top:0;width:100%;height:100%;overflow:visible}
+.stage svg.trail path{fill:none;stroke:#c2503f;stroke-width:2;stroke-dasharray:7 7;stroke-linecap:round;
+opacity:0;transition:opacity .8s}
+.crane{position:absolute;width:44px;height:44px;transition:offset-distance .6s cubic-bezier(.45,0,.3,1)}
+.crane svg{width:44px;height:44px;display:block;filter:drop-shadow(0 6px 6px rgba(120,100,70,.25))}
+.tab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;
+background:none;border:0;cursor:pointer;color:#a89a80;position:relative;z-index:1;padding-top:8px}
+.tab svg{width:26px;height:26px;transition:transform .3s,color .3s}
+.tab .lb{font-size:11px;letter-spacing:1px;transition:color .3s}
+.tab.active{color:#c2503f}
+.tab.active svg{transform:scale(1.18)}
+.tab.active .lb{font-weight:700;color:#c2503f}
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="content">
+    <span class="tag">PAPER CRANE</span>
+    <h1 id="t">信纸</h1>
+    <div class="card"></div><div class="card"></div><div class="card"></div>
+  </div>
+  <div class="barwrap">
+    <div class="stage" id="stage">
+      <svg class="trail" id="trailsvg" preserveAspectRatio="none"><path id="trailpath" d=""/></svg>
+      <div class="crane" id="crane">
+        <svg viewBox="0 0 64 64" fill="#fffdf7" stroke="#8a7a5c" stroke-width="2" stroke-linejoin="round">
+          <path d="M32 40 12 20l14 6 6-2z"/>
+          <path d="M32 40l20-20-14 6-6-2z"/>
+          <path d="M32 40 26 52l6-4 6 4z"/>
+          <path d="M32 40l10-14 8-10-4 12z" fill="#f3e9d2"/>
+          <path d="M32 40l-10-14-8-10 4 12z" fill="#f3e9d2"/>
+          <circle cx="50" cy="16" r="1.6" fill="#c2503f" stroke="none"/>
+        </svg>
+      </div>
+    </div>
+    <nav class="tabbar" id="bar">
+      <button class="tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M10 21v-6h4v6"/></svg><span class="lb">信纸</span></button>
+      <button class="tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2 5-5 2 2-5z"/></svg><span class="lb">远方</span></button>
+      <button class="tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg><span class="lb">折叠</span></button>
+      <button class="tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 8-3 8h18s-3-1-3-8"/><path d="M10.3 21a2 2 0 0 0 3.4 0"/></svg><span class="lb">风声</span></button>
+      <button class="tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/></svg><span class="lb">归巢</span></button>
+    </nav>
+  </div>
+</div>
+<script>
+var names=["信纸","远方","折叠","风声","归巢"];
+var tabs=[].slice.call(document.querySelectorAll(".tab"));
+var crane=document.getElementById("crane");
+var trail=document.getElementById("trailpath");
+var trailsvg=document.getElementById("trailsvg");
+var cur=-1;
+function cxOf(el){return el.offsetLeft+el.offsetWidth/2;}
+function rest(k){
+  crane.style.offsetPath="none";
+  crane.style.offsetDistance="0%";
+  crane.style.left=(cxOf(tabs[k])-22)+"px";
+  crane.style.top="18px";
+}
+function activate(k,fly){
+  if(k===cur)return;
+  var from=cur;
+  cur=k;
+  tabs.forEach(function(b,i){b.classList.toggle("active",i===k);});
+  document.getElementById("t").textContent=names[k];
+  var x2=cxOf(tabs[k]);
+  if(fly&&from>=0){
+    var x1=cxOf(tabs[from]),y=40,mx=(x1+x2)/2;
+    var d="M"+x1+","+y+" Q"+mx+",-34 "+x2+","+y;
+    trail.setAttribute("d",d);
+    trail.style.opacity="1";
+    crane.style.left="0px";crane.style.top="0px";
+    crane.style.offsetPath='path("'+d+'")';
+    crane.style.offsetDistance="0%";
+    crane.style.offsetAnchor="center";
+    void crane.offsetWidth;
+    crane.style.offsetDistance="100%";
+    setTimeout(function(){
+      trail.style.opacity="0";
+      rest(k);
+    },700);
+  }else{
+    rest(k);
+  }
+  try{history.replaceState(null,"","?tab="+k);}catch(e){}
+}
+var q=parseInt(new URLSearchParams(location.search).get("tab"),10);
+if(isNaN(q)||q<0||q>4)q=0;
+tabs.forEach(function(b,i){b.addEventListener("click",function(){activate(i,true);});});
+requestAnimationFrame(function(){activate(q,false);});
+</script>
+</body>
+</html>

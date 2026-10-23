@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>蒸汽齿轮 · 底部栏</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{display:flex;align-items:center;justify-content:center;background:#0d0b08;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans CJK SC",sans-serif}
+.phone{width:430px;height:900px;max-width:100vw;max-height:100vh;border-radius:44px;overflow:hidden;position:relative;display:flex;flex-direction:column;background:linear-gradient(180deg,#2b2013 0%,#1c1410 60%,#14100b 100%)}
+.pipe{position:absolute;top:0;bottom:0;width:26px;background:linear-gradient(90deg,#3a2c1c,#57432a 45%,#3a2c1c);opacity:.8;pointer-events:none}
+.pipe.p1{left:34px}.pipe.p2{right:34px}
+.content{flex:1;padding:64px 26px 20px;position:relative;z-index:1}
+.kicker{font-size:12px;letter-spacing:4px;color:#a07c3f;margin-bottom:10px}
+h1{font-size:32px;font-weight:700;color:#ecd9ae;margin-bottom:24px}
+.card{background:rgba(70,52,28,.45);border:1px solid rgba(190,150,80,.3);border-radius:18px;min-height:112px;margin-bottom:14px;display:flex;align-items:center;justify-content:center;color:#c8a86a;font-size:14px;letter-spacing:2px;box-shadow:inset 0 2px 8px rgba(0,0,0,.4)}
+.tabbar{position:relative;display:flex;height:100px;padding:12px 6px 24px;background:#191008;border-top:2px solid #8a6a2f;box-shadow:0 -4px 18px rgba(0,0,0,.6);z-index:2;overflow:hidden}
+.bggear{position:absolute;color:#6b5427;opacity:.28;pointer-events:none}
+.bggear.g1{width:110px;height:110px;left:-34px;top:-38px;animation:spin 46s linear infinite;animation-delay:-20s}
+.bggear.g2{width:84px;height:84px;right:-20px;top:-30px;animation:spin 34s linear infinite reverse;animation-delay:-12s}
+.bggear.g3{width:64px;height:64px;left:46%;top:-24px;animation:spin 28s linear infinite;animation-delay:-7s}
+@keyframes spin{to{transform:rotate(360deg)}}
+.tab{flex:1;position:relative;background:none;border:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;color:#8a6f42;font-family:inherit;transition:color .3s;z-index:1}
+.tab svg{width:28px;height:28px;display:block;animation:spin 18s linear infinite}
+.tab:nth-child(2) svg{animation-delay:-5s}
+.tab:nth-child(3) svg{animation-delay:-9s}
+.tab:nth-child(4) svg{animation-delay:-13s}
+.tab:nth-child(5) svg{animation-delay:-3s}
+.tab span{font-size:11px;display:block;letter-spacing:1px}
+.tab.active{color:#f0be55}
+.tab.active svg{animation-duration:1.1s;filter:drop-shadow(0 0 6px rgba(240,190,85,.7))}
+.steam{position:absolute;top:4px;left:50%;transform:translateX(-50%);display:flex;gap:5px;opacity:0;transition:opacity .35s;pointer-events:none}
+.tab.active .steam{opacity:1}
+.steam i{display:block;width:5px;height:5px;border-radius:50%;background:rgba(235,224,200,.9);animation:rise 1.5s ease-out infinite;animation-delay:-.4s}
+.steam i:nth-child(2){animation-delay:-.9s}
+.steam i:nth-child(3){animation-delay:-1.3s}
+@keyframes rise{0%{transform:translateY(8px) scale(.6);opacity:0}30%{opacity:.95}100%{transform:translateY(-18px) scale(1.2);opacity:0}}
+.rivet{position:absolute;width:8px;height:8px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#c9a45e,#5c4a22);top:6px}
+.rivet.r1{left:14px}.rivet.r2{right:14px}
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="pipe p1"></div><div class="pipe p2"></div>
+  <div class="content">
+    <div class="kicker">STEAM WORKS</div>
+    <h1 id="ctitle">动力车间</h1>
+    <div class="card">黄铜 · 占位卡片一</div>
+    <div class="card">铆钉 · 占位卡片二</div>
+    <div class="card">锅炉 · 占位卡片三</div>
+  </div>
+  <nav class="tabbar" id="bar">
+    <svg class="bggear g1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="12" cy="12" r="6.2"/><circle cx="12" cy="12" r="2.2"/><path d="M12 2.8v2.6M12 18.6v2.6M2.8 12h2.6M18.6 12h2.6M5.5 5.5l1.8 1.8M16.7 16.7l1.8 1.8M18.5 5.5l-1.8 1.8M7.3 16.7l-1.8 1.8"/></svg>
+    <svg class="bggear g2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="12" cy="12" r="6.2"/><circle cx="12" cy="12" r="2.2"/><path d="M12 2.8v2.6M12 18.6v2.6M2.8 12h2.6M18.6 12h2.6M5.5 5.5l1.8 1.8M16.7 16.7l1.8 1.8M18.5 5.5l-1.8 1.8M7.3 16.7l-1.8 1.8"/></svg>
+    <svg class="bggear g3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="12" cy="12" r="6.2"/><circle cx="12" cy="12" r="2.2"/><path d="M12 2.8v2.6M12 18.6v2.6M2.8 12h2.6M18.6 12h2.6M5.5 5.5l1.8 1.8M16.7 16.7l1.8 1.8M18.5 5.5l-1.8 1.8M7.3 16.7l-1.8 1.8"/></svg>
+    <i class="rivet r1"></i><i class="rivet r2"></i>
+    <button class="tab"><i class="steam"><i></i><i></i><i></i></i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="12" r="6.2"/><circle cx="12" cy="12" r="2.2"/><path d="M12 2.8v2.6M12 18.6v2.6M2.8 12h2.6M18.6 12h2.6M5.5 5.5l1.8 1.8M16.7 16.7l1.8 1.8M18.5 5.5l-1.8 1.8M7.3 16.7l-1.8 1.8"/></svg><span>首页</span></button>
+    <button class="tab"><i class="steam"><i></i><i></i><i></i></i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="12" r="6.2"/><circle cx="12" cy="12" r="2.2"/><path d="M12 2.8v2.6M12 18.6v2.6M2.8 12h2.6M18.6 12h2.6M5.5 5.5l1.8 1.8M16.7 16.7l1.8 1.8M18.5 5.5l-1.8 1.8M7.3 16.7l-1.8 1.8"/></svg><span>工坊</span></button>
+    <button class="tab"><i class="steam"><i></i><i></i><i></i></i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="12" r="6.2"/><circle cx="12" cy="12" r="2.2"/><path d="M12 2.8v2.6M12 18.6v2.6M2.8 12h2.6M18.6 12h2.6M5.5 5.5l1.8 1.8M16.7 16.7l1.8 1.8M18.5 5.5l-1.8 1.8M7.3 16.7l-1.8 1.8"/></svg><span>熔炉</span></button>
+    <button class="tab"><i class="steam"><i></i><i></i><i></i></i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="12" r="6.2"/><circle cx="12" cy="12" r="2.2"/><path d="M12 2.8v2.6M12 18.6v2.6M2.8 12h2.6M18.6 12h2.6M5.5 5.5l1.8 1.8M16.7 16.7l1.8 1.8M18.5 5.5l-1.8 1.8M7.3 16.7l-1.8 1.8"/></svg><span>消息</span></button>
+    <button class="tab"><i class="steam"><i></i><i></i><i></i></i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="12" r="6.2"/><circle cx="12" cy="12" r="2.2"/><path d="M12 2.8v2.6M12 18.6v2.6M2.8 12h2.6M18.6 12h2.6M5.5 5.5l1.8 1.8M16.7 16.7l1.8 1.8M18.5 5.5l-1.8 1.8M7.3 16.7l-1.8 1.8"/></svg><span>我的</span></button>
+  </nav>
+</div>
+<script>
+const T=[{t:'首页',h:'动力车间'},{t:'工坊',h:'齿轮工坊'},{t:'熔炉',h:'熔炉点火'},{t:'消息',h:'电报消息'},{t:'我的',h:'机长室'}];
+const btns=[...document.querySelectorAll('.tab')];
+const h1=document.getElementById('ctitle');
+function act(k){
+  k=Math.max(0,Math.min(T.length-1,k));
+  btns.forEach((b,i)=>b.classList.toggle('active',i===k));
+  h1.textContent=T[k].h;
+  try{history.replaceState(null,'','?tab='+k)}catch(e){}
+}
+btns.forEach((b,i)=>b.addEventListener('click',()=>act(i)));
+let k=parseInt(new URLSearchParams(location.search).get('tab'),10);
+if(isNaN(k))k=0;
+act(k);
+</script>
+</body>
+</html>

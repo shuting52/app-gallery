@@ -1,0 +1,81 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>寿星礼</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sans-serif;background:#04060a;color:#eef2f7;display:flex;justify-content:center;min-height:100vh}
+.phone{width:430px;height:900px;position:relative;overflow:hidden;background:linear-gradient(160deg,#1c1026,#0e0912)}
+/* ---- mock app ---- */
+.mk{padding:54px 20px 0;opacity:.85}
+.sb{display:flex;justify-content:space-between;font-size:13px;color:#cfd6e2;margin-bottom:14px}
+.mknav{font-size:22px;font-weight:800;margin:2px 0 16px}
+.mkbanner{height:110px;border-radius:16px;background:linear-gradient(120deg,#2a3350,#3c2a50);margin-bottom:14px}
+.mkrow{display:flex;gap:12px;align-items:center;background:rgba(255,255,255,.05);border-radius:14px;padding:12px;margin-bottom:10px}
+.mkav{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#4a5a80,#2c3650);flex-shrink:0}
+.mkln{height:10px;border-radius:5px;background:rgba(255,255,255,.12);margin:5px 0}
+.mkgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.mkcard{border-radius:14px;background:rgba(255,255,255,.05);padding:10px}
+.mkph{height:80px;border-radius:10px;background:linear-gradient(135deg,#33405e,#232c46);margin-bottom:8px}
+.mksearch{height:42px;border-radius:21px;background:rgba(255,255,255,.08);margin-bottom:16px}
+.mkalbum{height:230px;border-radius:18px;background:linear-gradient(135deg,#3b2a5e,#1f2a4e);margin-bottom:14px}
+.mkbar{height:6px;border-radius:3px;background:rgba(255,255,255,.12);margin:14px 0 6px;position:relative}
+.mkbar i{display:block;position:absolute;left:0;top:0;bottom:0;width:38%;border-radius:3px;background:#7ab8ff}
+.mkctl{display:flex;justify-content:center;gap:26px;margin-top:14px}
+.mkctl i{display:block;width:46px;height:46px;border-radius:50%;background:rgba(255,255,255,.1)}
+/* ---- overlay / modal ---- */
+.ov{position:absolute;inset:0;z-index:30;display:flex;align-items:center;justify-content:center;background:rgba(5,8,13,.52);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.ov.hide{display:none}
+.modal{position:relative;width:340px;border-radius:24px;padding:28px 24px 22px;text-align:center;background:linear-gradient(165deg,#33203f,#1d1226);--ac:#ff9a6a;--ds:#d8bce8;--tc:#fff;border:1px solid rgba(255,154,106,.35);overflow:hidden;animation:ePop .6s cubic-bezier(.2,.9,.28,1.18) both;box-shadow:0 24px 70px rgba(0,0,0,.5)}
+.x{position:absolute;top:10px;right:12px;width:30px;height:30px;border-radius:50%;border:0;background:rgba(255,255,255,.14);color:#fff;font-size:17px;cursor:pointer;line-height:30px;padding:0}
+.btn{display:block;width:100%;border:0;border-radius:14px;padding:14px;font-size:16px;font-weight:700;cursor:pointer;margin-top:18px;background:var(--ac,#ffd479);color:#1a1405;transition:transform .15s}
+.btn:active{transform:scale(.96)}
+.btn.off{opacity:.35;pointer-events:none}
+.ghost{background:none;border:0;color:var(--ds,#9aa3b2);font-size:13px;margin-top:12px;cursor:pointer;width:100%}
+.rp{position:absolute;left:50%;bottom:22px;transform:translateX(-50%);z-index:40;border:1px solid rgba(255,255,255,.28);background:rgba(8,12,18,.72);color:#fff;border-radius:999px;padding:10px 24px;font-size:13px;cursor:pointer;backdrop-filter:blur(6px);white-space:nowrap}
+h2.tt{font-size:21px;margin:12px 0 8px;letter-spacing:2px;color:var(--tc,#fff)}
+p.ds{font-size:13.5px;line-height:1.75;color:var(--ds,#aeb6c2)}
+@keyframes ePop{from{opacity:0;transform:scale(.62) translateY(46px)}to{opacity:1;transform:none}}
+@keyframes eUp{from{opacity:0;transform:translateY(130px)}to{opacity:1;transform:none}}
+@keyframes eFlip{from{opacity:0;transform:perspective(700px) rotateX(-72deg)}to{opacity:1;transform:none}}
+@keyframes eLeft{from{opacity:0;transform:translateX(-170px) rotate(-7deg)}to{opacity:1;transform:none}}
+@keyframes eBlur{from{opacity:0;transform:scale(1.16);filter:blur(16px)}to{opacity:1;transform:none;filter:blur(0)}}
+@keyframes eDrop{0%{opacity:0;transform:translateY(-280px)}62%{opacity:1;transform:translateY(14px)}80%{transform:translateY(-7px)}100%{opacity:1;transform:none}}
+.cake{width:150px;margin:0 auto;position:relative;padding-top:44px}
+.candle{width:12px;height:40px;margin:0 auto;background:repeating-linear-gradient(45deg,#ff6a9a,#ff6a9a 6px,#fff 6px,#fff 12px);border-radius:4px;position:relative;z-index:2}
+.flame{width:18px;height:26px;margin:0 auto 2px;background:radial-gradient(circle at 50% 75%,#fff8d0 0 22%,#ffc93c 40%,#ff7a2b 70%,transparent 72%);border-radius:50% 50% 50% 50%/60% 60% 40% 40%;transform-origin:50% 100%;animation:flick .5s ease-in-out infinite alternate;position:relative;z-index:3}
+@keyframes flick{from{transform:scale(1) rotate(-4deg)}to{transform:scale(1.12,1.2) rotate(4deg)}}
+.l3,.l2,.l1{border-radius:10px;margin:0 auto;position:relative}
+.l3{width:70px;height:26px;background:linear-gradient(180deg,#ff9ac8,#e05e9a);z-index:1}
+.l2{width:104px;height:30px;background:linear-gradient(180deg,#c8a2ff,#9a6ae0);margin-top:-6px}
+.l1{width:138px;height:34px;background:linear-gradient(180deg,#8fd0ff,#4a8fe0);margin-top:-6px}
+.cf{display:block;position:absolute;top:-16px;width:10px;height:14px;border-radius:2px;animation:fall 3s linear infinite;opacity:.9}
+.f1{left:8%;background:#ff6a9a;animation-delay:-0.4s}.f2{left:26%;background:#ffd479;animation-delay:-1.6s}
+.f3{left:52%;background:#5ec8ff;animation-delay:-2.4s}.f4{left:74%;background:#b06aff;animation-delay:-1s}
+.f5{left:90%;background:#3ddc84;animation-delay:-2s}
+@keyframes fall{0%{transform:translateY(0) rotate(0)}100%{transform:translateY(420px) rotate(340deg)}}
+</style></head><body>
+<div class="phone">
+<div class="mk"><div class="sb"><span>9:41</span><span>●●●</span></div>
+<div class="mknav">首页</div><div class="mkbanner"></div>
+<div class="mkrow"><div class="mkav" style="border-radius:12px"></div><div style="flex:1"><div class="mkln" style="width:60%"></div></div></div>
+<div class="mkrow"><div class="mkav" style="border-radius:12px"></div><div style="flex:1"><div class="mkln" style="width:45%"></div></div></div>
+<div class="mkrow"><div class="mkav" style="border-radius:12px"></div><div style="flex:1"><div class="mkln" style="width:70%"></div></div></div>
+<div class="mkrow"><div class="mkav" style="border-radius:12px"></div><div style="flex:1"><div class="mkln" style="width:50%"></div></div></div></div>
+<div class="ov" id="ov"><div class="modal" id="md">
+<button class="x" id="cx" aria-label="关闭">×</button>
+<div class="cake"><div class="flame"></div><div class="candle"></div><div class="l3"></div><div class="l2"></div><div class="l1"></div></div>
+<h2 class="tt">生日快乐</h2><p class="ds">听说今天是你的生日<br>一份蛋糕券 + 神秘礼物已备好</p>
+<button class="btn" id="go">许个愿 · 领礼物</button><button class="ghost" id="no">不是今天</button>
+<span class="cf f1"></span><span class="cf f2"></span><span class="cf f3"></span><span class="cf f4"></span><span class="cf f5"></span>
+</div></div>
+<button class="rp" id="rp">↻ 重新弹出</button>
+</div>
+<script>
+var ov=document.getElementById('ov'),md=document.getElementById('md');
+document.getElementById('cx').onclick=function(){ov.classList.add('hide')};
+ov.addEventListener('click',function(e){if(e.target===ov)ov.classList.add('hide')});
+document.getElementById('rp').onclick=function(){ov.classList.remove('hide');md.style.animation='none';void md.offsetWidth;md.style.animation=''};
+document.getElementById('go').onclick=function(){this.textContent='愿望收到 ✓ 礼物已发放';this.classList.add('off')};
+document.getElementById('no').onclick=function(){ov.classList.add('hide')};
+</script>
+</body></html>

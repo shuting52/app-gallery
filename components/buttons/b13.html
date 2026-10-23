@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>全息 · 按钮特效</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;display:flex;flex-direction:column;align-items:center;
+ background:radial-gradient(120% 90% at 50% 0%,#0b1c2e 0%,#060f1c 55%,#03070d 100%);
+ font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;color:#e8fbff;padding:30px 16px 40px}
+h1{font-size:15px;letter-spacing:8px;color:#8df3ff;font-weight:600;margin-bottom:6px}
+.sub{font-size:12px;color:#4f7386;letter-spacing:2px;margin-bottom:26px}
+.stage{width:360px;max-width:100%;height:440px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:26px;
+ background:rgba(140,240,255,.04);border:1px solid rgba(141,243,255,.16);border-radius:22px;
+ box-shadow:inset 0 0 60px rgba(40,160,200,.1)}
+.btn{position:relative;width:210px;height:66px;border:1px solid rgba(160,240,255,.35);border-radius:14px;cursor:pointer;overflow:hidden;
+ background:linear-gradient(160deg,#16283c,#0a141f);color:#c8f4ff;font-size:17px;letter-spacing:6px;font-weight:600}
+.btn .holo{position:absolute;inset:-45%;z-index:2;opacity:0;mix-blend-mode:screen;pointer-events:none;
+ background:linear-gradient(105deg,transparent 22%,rgba(255,0,140,.55) 33%,rgba(255,190,0,.55) 43%,
+ rgba(0,255,170,.55) 53%,rgba(0,160,255,.55) 63%,rgba(170,0,255,.55) 73%,transparent 84%);
+ transform:translateX(-60%)}
+.btn .scan{position:absolute;inset:0;z-index:3;opacity:0;pointer-events:none;
+ background:repeating-linear-gradient(180deg,rgba(255,255,255,.12) 0 2px,transparent 2px 7px)}
+.btn .blabel{position:relative;z-index:1}
+.btn.go .holo{animation:sweep 1.4s ease-in-out}
+.btn.go .scan{animation:scanmove 1.4s linear}
+.btn.go .blabel{animation:disperse 1.4s ease-in-out}
+.btn.go{animation:holoedge 1.4s ease-in-out}
+@keyframes sweep{0%{opacity:0;transform:translateX(-60%)}14%{opacity:1}
+ 86%{opacity:1}100%{opacity:0;transform:translateX(60%)}}
+@keyframes scanmove{0%{opacity:0;background-position:0 0}14%{opacity:1}
+ 86%{opacity:1}100%{opacity:0;background-position:0 70px}}
+@keyframes disperse{0%,10%{text-shadow:none}30%{text-shadow:-3px 0 rgba(255,0,120,.85),3px 0 rgba(0,255,255,.85)}
+ 70%{text-shadow:-3px 0 rgba(255,0,120,.85),3px 0 rgba(0,255,255,.85)}100%{text-shadow:none}}
+@keyframes holoedge{0%,100%{box-shadow:none}30%,70%{box-shadow:0 0 26px rgba(0,220,255,.55),
+ 0 0 60px rgba(170,0,255,.3),inset 0 0 18px rgba(0,220,255,.25)}}
+.hint{font-size:12px;color:#4f7386;letter-spacing:3px}
+</style>
+</head>
+<body>
+<h1>全息</h1>
+<div class="sub">b13 · 点击按钮触发</div>
+<div class="stage">
+  <button class="btn" id="btn" type="button">
+    <span class="blabel">全 息 扫 描</span>
+    <span class="holo"></span><span class="scan"></span>
+  </button>
+  <div class="hint">点 击 按 钮 扫 过 彩 虹 光</div>
+</div>
+<script>
+var btn=document.getElementById('btn');
+btn.addEventListener('click',function(){
+  btn.classList.remove('go');
+  void btn.offsetWidth;
+  btn.classList.add('go');
+});
+</script>
+</body>
+</html>

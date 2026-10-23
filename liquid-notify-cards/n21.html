@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>会议倒计时</title>
+<style>
+*{box-sizing:border-box}
+body{min-height:100vh;margin:0;padding:48px 18px;color:#fff;
+font:15px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+background:radial-gradient(ellipse at 18% 12%, rgba(56,120,255,.85), transparent 36%),radial-gradient(ellipse at 85% 30%, rgba(20,60,140,.9), transparent 38%),radial-gradient(ellipse at 50% 92%, rgba(90,40,180,.75), transparent 40%),linear-gradient(150deg,#0b1e4a,#101a3a 55%,#141b38);background-attachment:fixed}
+main{width:min(440px,100%);margin:0 auto;display:grid;gap:18px}
+.heading{padding:4px 6px 8px}
+.eyebrow{margin:0 0 8px;color:rgba(190,215,255,.68);font-size:11px;letter-spacing:.18em}
+h1{margin:0;font-size:30px;letter-spacing:-.04em}
+.hint{margin:7px 0 0;color:rgba(190,215,255,.68)}
+.card{position:relative;isolation:isolate;overflow:hidden;padding:18px;
+border:1px solid rgba(140,180,255,.32);border-radius:28px;
+background:linear-gradient(135deg,rgba(120,170,255,.22),rgba(255,255,255,.07) 48%,rgba(120,150,255,.14));
+-webkit-backdrop-filter:blur(28px) saturate(160%);
+backdrop-filter:blur(28px) saturate(160%);
+box-shadow:inset 0 1px 0 rgba(255,255,255,.42),inset 0 -1px 0 rgba(255,255,255,.08),0 20px 48px rgba(8,8,24,.28)}
+.card::before{content:"";position:absolute;z-index:0;inset:0;border-radius:inherit;pointer-events:none;
+background:linear-gradient(118deg,rgba(255,255,255,.34) 0%,rgba(255,255,255,.08) 18%,transparent 42%,transparent 72%,rgba(150,200,255,.18) 100%);opacity:.8}
+.card::after{content:"";position:absolute;z-index:0;top:-58px;right:-42px;width:190px;height:130px;
+border:1px solid rgba(255,255,255,.22);border-radius:50%;
+background:radial-gradient(ellipse,rgba(255,255,255,.22),transparent 68%);filter:blur(2px);
+transform:rotate(-20deg);pointer-events:none}
+.card>*{position:relative;z-index:1}
+.top,.title-line{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.top{margin-bottom:17px}
+.pill{padding:6px 12px;border:1px solid rgba(255,255,255,.30);border-radius:999px;
+background:rgba(255,255,255,.10);color:rgba(255,255,255,.94);font-size:12px;
+box-shadow:inset 0 1px rgba(255,255,255,.18)}
+.avatars{display:flex;align-items:center;padding-left:8px}
+.avatar{display:grid;width:29px;height:29px;margin-left:-8px;place-items:center;
+border:1px solid rgba(255,255,255,.55);border-radius:50%;background:linear-gradient(135deg,#7fb2ff,#4a6fe0 70%,#2b3fa0);color:#fff;
+font-size:11px;box-shadow:0 3px 10px rgba(18,12,36,.2)}
+.more{margin-left:7px;color:rgba(255,255,255,.72);font-size:12px}
+.row{display:flex;align-items:center;gap:12px;min-width:0}
+.face{display:grid;flex:0 0 48px;height:48px;place-items:center;
+border:1px solid rgba(255,255,255,.45);border-radius:50%;background:linear-gradient(135deg,#7fb2ff,#4a6fe0 70%,#2b3fa0);color:#fff;
+font-size:19px;font-weight:650;box-shadow:inset 0 1px 5px rgba(255,255,255,.5),0 5px 15px rgba(15,12,35,.2)}
+.face.sq{border-radius:16px}
+.copy{flex:1;min-width:0}
+.title-line{margin-bottom:5px}
+.title-line strong{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+time,.preview{color:rgba(255,255,255,.72);font-size:12px}
+.preview{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.unread{flex:0 0 auto;color:#d8d2ff;font-size:12px;font-weight:600}
+/* 专属组件 */
+.cd{display:flex;gap:8px;align-items:baseline;margin:2px 0 4px}
+.cd b{font-size:38px;font-weight:700;letter-spacing:.04em;font-variant-numeric:tabular-nums}
+.cd span{font-size:12px;color:rgba(255,255,255,.66)}
+.cal{flex:0 0 54px;height:60px;border-radius:14px;display:grid;place-content:center;
+border:1px solid rgba(255,255,255,.4);background:rgba(255,255,255,.12);
+box-shadow:inset 0 1px 0 rgba(255,255,255,.3)}
+.cal b{font-size:22px;line-height:1}
+.cal i{font-style:normal;font-size:10px;color:rgba(255,255,255,.7);white-space:nowrap}
+.btns{display:flex;gap:10px;margin-top:14px}
+.btn{flex:1;padding:11px 0;border-radius:14px;border:1px solid rgba(255,255,255,.35);
+background:rgba(255,255,255,.12);color:#fff;font-size:13px;cursor:pointer;font-family:inherit}
+.btn.solid{background:linear-gradient(135deg,#5aa2ff,#7a5cff);border-color:transparent;font-weight:700;
+box-shadow:0 6px 18px rgba(10,10,30,.35)}
+.prog{height:10px;border-radius:6px;background:rgba(255,255,255,.14);margin-top:14px;overflow:hidden}
+.prog i{display:block;height:100%;border-radius:6px;background:linear-gradient(90deg,#5aa2ff,#7a5cff)}
+.progtxt{display:flex;justify-content:space-between;font-size:12px;color:rgba(255,255,255,.72);margin-top:6px}
+.sw{position:relative;width:52px;height:30px;flex:0 0 auto}
+.sw input{position:absolute;opacity:0;inset:0;margin:0;cursor:pointer}
+.sw em{position:absolute;inset:0;border-radius:999px;background:rgba(255,255,255,.18);
+border:1px solid rgba(255,255,255,.35);transition:.25s}
+.sw em::after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;
+background:#fff;transition:.25s;box-shadow:0 2px 6px rgba(0,0,0,.3)}
+.sw input:checked+em{background:linear-gradient(135deg,#5aa2ff,#7a5cff)}
+.sw input:checked+em::after{left:25px}
+.chk{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.10);
+font-size:13px}
+.chk:last-child{border-bottom:0}
+.chk .box{flex:0 0 20px;height:20px;border-radius:7px;border:1.5px solid rgba(255,255,255,.5);
+display:grid;place-items:center;font-size:13px;color:#fff}
+.chk.done .box{background:linear-gradient(135deg,#5aa2ff,#7a5cff);border-color:transparent}
+.chk.done span{color:rgba(255,255,255,.5);text-decoration:line-through}
+.ringwrap{display:flex;align-items:center;gap:14px}
+.ringwrap svg{flex:0 0 auto}
+.bigtime{font-size:52px;font-weight:700;letter-spacing:.02em;font-variant-numeric:tabular-nums;line-height:1.1}
+.sub{font-size:12px;color:rgba(255,255,255,.68)}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.card{background:rgba(43,35,68,.88)}}
+@media (prefers-reduced-motion:reduce){.card{transition:none}}
+</style>
+</head>
+<body class="nc21">
+<main>
+<header class="heading"><p class="eyebrow">LIQUID GLASS · MEETING</p><h1>会议提醒</h1><p class="hint">重要的会，一场都别错过。</p></header>
+
+<section class="card"><div class="top"><span class="pill">会议 · 10:30</span>
+<div class="avatars"><i class="avatar">陈</i><i class="avatar">沈</i><i class="avatar">陆</i><span class="more">+5</span></div></div>
+<div class="cd"><b>02</b><span>时</span><b>14</b><span>分</span><b>52</b><span>秒</span></div>
+<div class="row"><div class="face">审</div><div class="copy">
+<div class="title-line"><strong>新品评审会</strong><time>会议室 A · 3F</time></div>
+<div class="preview">请提前准备好原型演示稿</div></div></div>
+<div class="btns"><button class="btn">稍后提醒</button><button class="btn solid">加入会议</button></div></section>
+<section class="card"><div class="top"><span class="pill">例会 · 明天</span><time>09:00</time></div>
+<div class="row"><div class="face">例</div><div class="copy">
+<div class="title-line"><strong>团队周例会</strong><time>线上</time></div>
+<div class="preview">各组同步本周进展与风险项</div></div>
+<span class="unread">距今 21 小时</span></div></section>
+</main>
+</body>
+</html>

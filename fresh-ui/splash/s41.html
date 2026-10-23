@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>星火篝火</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{background:#070a12;display:flex;align-items:center;justify-content:center;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;overflow:hidden}
+.stage{position:relative;width:430px;height:900px;flex:none;overflow:hidden}
+.stage i{display:block;position:absolute}
+.brand{position:absolute;left:0;right:0;bottom:104px;text-align:center;z-index:50;animation:brandIn 1s .9s both}
+.brand h1{font-size:32px;letter-spacing:10px;text-indent:10px;color:#fff;font-weight:700;text-shadow:0 2px 24px rgba(0,0,0,.45)}
+.brand p{margin-top:10px;font-size:11px;letter-spacing:5px;color:rgba(255,255,255,.62)}
+@keyframes brandIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.replay{position:absolute;bottom:30px;left:50%;transform:translateX(-50%);z-index:60;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.35);color:#fff;font-size:12px;letter-spacing:2px;padding:9px 24px;border-radius:20px;cursor:pointer;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.shade{position:absolute;left:0;right:0;bottom:0;height:360px;background:linear-gradient(transparent,rgba(8,6,18,.78));z-index:40;pointer-events:none}
+
+.stage{background:linear-gradient(#090e1e,#151b32 68%,#0a0d16)}
+
+.star{width:4px;height:4px;border-radius:50%;background:#cfe0ff;animation:tw 2.4s ease-in-out infinite alternate}
+.a1{left:60px;top:140px}.a2{left:360px;top:100px;animation-delay:-.8s}.a3{left:200px;top:60px;animation-delay:-1.6s}.a4{left:300px;top:300px;animation-delay:-.4s}
+@keyframes tw{to{opacity:.2}}
+.glow{width:340px;height:340px;left:45px;top:330px;border-radius:50%;background:radial-gradient(circle at 50% 50%,rgba(255,150,60,.4),transparent 68%);animation:flick2 1.8s ease-in-out infinite alternate}
+@keyframes flick2{to{transform:scale(1.08);opacity:.85}}
+.log{width:170px;height:26px;left:130px;top:640px;border-radius:13px;background:linear-gradient(#6b4426,#4a2c17);z-index:6}
+.l1{transform:rotate(11deg)}.l2{transform:rotate(-11deg)}
+.fl{left:50%;bottom:250px;border-radius:8px 50% 50% 50%;transform:rotate(45deg);transform-origin:50% 100%;z-index:5}
+.f1{width:118px;height:118px;margin-left:-59px;background:linear-gradient(135deg,#ff7b2d,#ff3d00);animation:flick .55s ease-in-out infinite alternate;filter:blur(1px)}
+.f2{width:80px;height:80px;margin-left:-40px;background:linear-gradient(135deg,#ffc53d,#ff8a00);animation:flick .45s -.15s ease-in-out infinite alternate}
+.f3{width:44px;height:44px;margin-left:-22px;background:linear-gradient(135deg,#fff3b0,#ffd23d);animation:flick .38s -.3s ease-in-out infinite alternate}
+@keyframes flick{from{transform:rotate(45deg) scale(.96,1.02)}to{transform:rotate(45deg) scale(1.05,1.15)}}
+.emb{width:7px;height:7px;border-radius:50%;background:#ffcf6e;box-shadow:0 0 10px 3px rgba(255,180,80,.8);animation:rise 3.4s linear infinite;opacity:0}
+.e1{left:180px;top:560px;animation-delay:-.4s}.e2{left:215px;top:540px;animation-delay:-1.5s;animation-duration:2.8s}
+.e3{left:250px;top:570px;animation-delay:-2.4s}.e4{left:195px;top:590px;animation-delay:-3s;animation-duration:4.2s}
+@keyframes rise{0%{transform:translate(0,0);opacity:0}14%{opacity:1}100%{transform:translate(36px,-420px);opacity:0}}
+
+</style></head><body>
+<div class="stage" id="stage">
+
+<i class="star a1"></i><i class="star a2"></i><i class="star a3"></i><i class="star a4"></i>
+<i class="glow"></i>
+<i class="fl f1"></i><i class="fl f2"></i><i class="fl f3"></i>
+<i class="log l1"></i><i class="log l2"></i>
+<i class="emb e1"></i><i class="emb e2"></i><i class="emb e3"></i><i class="emb e4"></i>
+
+<div class="shade"></div>
+<div class="brand"><h1>篝火</h1><p>BONFIRE</p></div>
+<button class="replay" onclick="var s=document.getElementById('stage');s.replaceWith(s.cloneNode(true))">重新播放</button>
+</div>
+</body></html>

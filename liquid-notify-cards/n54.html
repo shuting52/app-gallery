@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>地铁延误</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      min-height: 100vh; margin: 0; padding: 48px 18px; color: #fff;
+      font: 15px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(ellipse at 80% 15%, rgba(220,90,60,.7), transparent 36%),
+        radial-gradient(ellipse at 15% 50%, rgba(150,60,40,.75), transparent 38%),
+        radial-gradient(ellipse at 55% 90%, rgba(90,40,30,.6), transparent 40%),
+        linear-gradient(150deg, #1c0f0c, #2e1a12 55%, #120a08);
+      background-attachment: fixed;
+    }
+    main { width: min(440px, 100%); margin: 0 auto; display: grid; gap: 18px; }
+    .heading { padding: 4px 6px 8px; }
+    .eyebrow { margin: 0 0 8px; color: rgba(255,255,255,.68); font-size: 11px; letter-spacing: .18em; }
+    h1 { margin: 0; font-size: 30px; letter-spacing: -.04em; }
+    .hint { margin: 7px 0 0; color: rgba(255,255,255,.68); }
+    .card {
+      position: relative; isolation: isolate; overflow: hidden; padding: 18px;
+      border: 1px solid rgba(255,255,255,.28); border-radius: 28px;
+      background: linear-gradient(135deg, rgba(255,170,130,.18), rgba(255,170,130,.06) 48%, rgba(230,120,80,.12));
+      -webkit-backdrop-filter: blur(24px) saturate(175%);
+      backdrop-filter: blur(24px) saturate(175%);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.42), inset 0 -1px 0 rgba(255,255,255,.08), 0 20px 48px rgba(8,8,24,.28);
+      transition: transform .25s ease, border-color .25s ease;
+    }
+    .card::before {
+      content: ""; position: absolute; z-index: 0; inset: 0; border-radius: inherit; pointer-events: none;
+      background: linear-gradient(118deg, rgba(255,200,170,.32) 0%, rgba(255,200,170,.08) 18%, transparent 42%, transparent 72%, rgba(255,160,120,.15) 100%);
+      opacity: .8;
+    }
+    .card::after {
+      content: ""; position: absolute; z-index: 0; top:-58px;right:-42px;;
+      width: 190px; height: 130px; border: 1px solid rgba(255,255,255,.22); border-radius: 50%;
+      background: radial-gradient(ellipse, rgba(255,255,255,.22), transparent 68%);
+      filter: blur(2px); transform: rotate(-20deg); pointer-events: none;
+    }
+    .card > * { position: relative; z-index: 1; }
+    .card:hover { transform: translateY(-3px); border-color: rgba(255,255,255,.46); }
+    .top, .title-line { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .top { margin-bottom: 15px; }
+    .pill { padding: 6px 12px; border: 1px solid rgba(255,255,255,.30); border-radius: 999px;
+      background: rgba(255,255,255,.10); color: rgba(255,255,255,.94); font-size: 12px;
+      box-shadow: inset 0 1px rgba(255,255,255,.18); white-space: nowrap; }
+    .pill.hot { background: linear-gradient(135deg,#ff9a5c,#ff5f3d); border-color: transparent; font-weight: 700; }
+    .row { display: flex; align-items: center; gap: 12px; min-width: 0; }
+    .face { display: grid; flex: 0 0 52px; width: 52px; height: 52px; place-items: center;
+      border: 1px solid rgba(255,255,255,.45); border-radius: 18px;
+      background: linear-gradient(145deg, #d97a4a, #a34e28 60%, #6e3018); color: #fff;
+      box-shadow: inset 0 1px 5px rgba(255,255,255,.5), 0 5px 15px rgba(15,12,35,.2); }
+    .face svg { width: 30px; height: 30px; display: block; }
+    .copy { flex: 1; min-width: 0; }
+    .title-line { margin-bottom: 5px; }
+    .title-line strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 16px; }
+    time, .preview { color: rgba(255,255,255,.72); font-size: 12px; }
+    .preview { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .unread { flex: 0 0 auto; color: #ffd9a8; font-size: 12px; font-weight: 700; }
+    .big { font-size: 34px; font-weight: 800; letter-spacing: -.02em; line-height: 1.1; }
+    .big small { font-size: 14px; font-weight: 400; opacity: .7; }
+    .sub { color: rgba(255,255,255,.72); font-size: 12px; margin-top: 4px; }
+    .bar { height: 8px; border-radius: 4px; background: rgba(255,255,255,.14); margin-top: 12px; overflow: hidden; }
+    .bar i { display: block; height: 100%; border-radius: 4px; background: linear-gradient(135deg,#ff9a5c,#ff5f3d); width: 40%; }
+    .tl { display: flex; align-items: center; gap: 0; margin-top: 14px; }
+    .tl .st { text-align: center; flex: 0 0 auto; }
+    .tl .st b { display: block; font-size: 17px; }
+    .tl .st span { font-size: 11px; color: rgba(255,255,255,.65); }
+    .tl .ln { flex: 1; height: 2px; background: rgba(255,255,255,.2); margin: 0 10px; position: relative; border-radius: 2px; }
+    .tl .ln i { position: absolute; left: 0; top: 0; bottom: 0; width: 30%; border-radius: 2px; background: linear-gradient(135deg,#ff9a5c,#ff5f3d); }
+    .btns { display: flex; gap: 10px; margin-top: 14px; }
+    .btn { flex: 1; text-align: center; padding: 10px 0; border-radius: 14px; font-size: 13px; font-weight: 700;
+      border: 1px solid rgba(255,255,255,.3); background: rgba(255,255,255,.10); color: #fff; }
+    .btn.pri { background: linear-gradient(135deg,#ff9a5c,#ff5f3d); border-color: transparent; }
+    .chips { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+    .chip { font-size: 11px; padding: 5px 10px; border-radius: 999px; background: rgba(255,255,255,.12);
+      border: 1px solid rgba(255,255,255,.2); color: rgba(255,255,255,.85); }
+    .dot { width: 8px; height: 8px; border-radius: 50%; background: #ff5f56; box-shadow: 0 0 8px #ff5f56; display: inline-block; margin-right: 6px; }
+    @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+      .card { background: rgba(43,35,68,.88); }
+    }
+    
+
+  </style>
+</head>
+<body>
+  <main>
+    <header class="heading">
+      <p class="eyebrow">LIQUID GLASS · 出行</p>
+      <h1>地铁延误</h1>
+      <p class="hint">2号线突发延误，已为您规划绕行。</p>
+    </header>
+
+    <section class="card">
+      <div class="top">
+        <span class="pill hot">运营公告</span>
+        <span class="unread"><span class="dot"></span>延误</span>
+      </div>
+      <div class="row">
+        <div class="face"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="3" width="12" height="13" rx="3"/><path d="M6 10h12M9 20l-2 2M15 20l2 2"/><circle cx="9.5" cy="13.5" r="1" fill="#fff"/><circle cx="14.5" cy="13.5" r="1" fill="#fff"/></svg></div>
+        <div class="copy">
+          <div class="title-line"><strong>2号线 · 延误 15 分钟</strong><time>08:52</time></div>
+          <div class="preview">中山公园站信号故障，列车限速运行</div>
+        </div>
+        <span class="unread">拥挤</span>
+      </div>
+      <div class="chips"><span class="chip">绕行：3号线</span><span class="chip">多预留 20 分钟</span></div>
+    </section>
+
+    <section class="card">
+      <div class="top">
+        <span class="pill">换乘建议</span>
+        <time>刚刚</time>
+      </div>
+      <div class="row">
+        <div class="face"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7v5l3.5 2"/></svg></div>
+        <div class="copy">
+          <div class="title-line"><strong>推荐路线 · 省 12 分钟</strong><time>08:53</time></div>
+          <div class="preview">中山公园换乘 3 号线 → 虹桥路换乘 10 号线</div>
+        </div>
+      </div>
+      <div class="btns"><span class="btn pri">开始导航</span><span class="btn">忽略</span></div>
+    </section>
+  </main>
+</body>
+</html>

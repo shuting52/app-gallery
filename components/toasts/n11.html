@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>n11 · 纸条 Toast</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;background:#141824;display:flex;flex-direction:column;align-items:center;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;color:#fff}
+.head{text-align:center;padding:20px 16px 12px}
+.head h1{font-size:17px;color:#ffd97a;letter-spacing:1px}
+.head p{font-size:12px;color:#8b93a7;margin-top:6px}
+.stage{width:360px;max-width:94vw;height:480px;border-radius:18px;position:relative;overflow:hidden;background:linear-gradient(160deg,#232a3f,#141824 70%);border:1px solid #2c3550;box-shadow:0 12px 40px rgba(0,0,0,.4)}
+.note{position:absolute;left:50%;top:70px;width:250px;background:linear-gradient(180deg,#fff6ad,#ffe36e);color:#6b5312;padding:46px 20px 20px;border-radius:3px;box-shadow:0 10px 24px rgba(0,0,0,.45);transform:translate(-50%,-460px) rotate(8deg);opacity:0;transform-origin:50% -12px}
+.note .pin{position:absolute;top:-13px;left:50%;margin-left:-11px;width:22px;height:22px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#ff9d9d,#cf2f2f 70%);box-shadow:0 4px 6px rgba(0,0,0,.4)}
+.note .pin::after{content:"";position:absolute;left:50%;top:20px;width:5px;height:9px;margin-left:-2.5px;background:#8f96a3;clip-path:polygon(0 0,100% 0,50% 100%)}
+.note .t{font-size:15px;font-weight:700;line-height:1.6}
+.note .d{font-size:12px;margin-top:8px;opacity:.75}
+.note.drop{animation:drop .65s cubic-bezier(.2,.9,.3,1.15) forwards}
+.note.sway{animation:sway 2.4s ease-in-out infinite}
+.note.tear{animation:tear .55s ease-in forwards}
+@keyframes drop{0%{transform:translate(-50%,-460px) rotate(10deg);opacity:0}55%{opacity:1}75%{transform:translate(-50%,6px) rotate(-4deg)}100%{transform:translate(-50%,0) rotate(-3deg);opacity:1}}
+@keyframes sway{0%,100%{transform:translate(-50%,0) rotate(-3deg);opacity:1}50%{transform:translate(-50%,0) rotate(3deg);opacity:1}}
+@keyframes tear{from{transform:translate(-50%,0) rotate(3deg);opacity:1}to{transform:translate(140px,-300px) rotate(55deg);opacity:0}}
+.hint{position:absolute;bottom:14px;width:100%;text-align:center;font-size:11px;color:#5c657d}
+</style>
+</head>
+<body>
+<div class="head"><h1>n11 · 纸条</h1><p>便利贴从上方飘落被图钉钉住 → 轻微摇摆 → 撕下飞走</p></div>
+<div class="stage">
+  <div class="note" id="note"><div class="pin"></div><div class="t" id="t"></div><div class="d" id="d"></div></div>
+  <div class="hint">自动循环播放中 · 3 条通知轮播</div>
+</div>
+<script>
+const msgs=[
+  ["下午 3 点前回复客户询价单","来自：销售小李 · 2 分钟前"],
+  ["快递已寄出：SF1234567890","点击查看物流详情"],
+  ["今晚 8 点直播，别忘了开播！","直播间：好物严选"]
+];
+const note=document.getElementById('note'),t=document.getElementById('t'),d=document.getElementById('d');
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+async function show(i){
+  t.textContent=msgs[i][0];d.textContent=msgs[i][1];
+  note.classList.remove('tear');void note.offsetWidth;note.classList.add('drop');
+  await sleep(680);
+  note.classList.remove('drop');note.classList.add('sway');
+  await sleep(2500);
+  note.classList.remove('sway');note.classList.add('tear');
+  await sleep(580);
+  note.classList.remove('tear');
+  await sleep(350);
+}
+(async()=>{let i=0;while(true){await show(i%msgs.length);i++;}})();
+</script>
+</body>
+</html>

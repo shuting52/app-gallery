@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>p07 书法笔锋 · 进度指示</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0b0e14;color:#e8ecf4;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+.stage{width:360px;max-width:94vw;background:#141926;border:1px solid #232c3f;border-radius:18px;padding:18px 16px 20px;box-shadow:0 10px 40px rgba(0,0,0,.5)}
+.title{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:14px}
+.title h3{font-size:16px;font-weight:600;letter-spacing:2px}
+.title .pct{font-size:22px;font-weight:700;color:#ffd166;font-variant-numeric:tabular-nums}
+.scene{position:relative;height:392px;border-radius:12px;overflow:hidden;border:1px solid #2a2419;
+background:
+ radial-gradient(circle at 20% 25%,rgba(255,255,255,.05),transparent 45%),
+ radial-gradient(circle at 82% 72%,rgba(255,255,255,.04),transparent 40%),
+ repeating-linear-gradient(0deg,rgba(255,255,255,.016) 0 2px,transparent 2px 5px),
+ repeating-linear-gradient(90deg,rgba(255,255,255,.016) 0 2px,transparent 2px 5px),
+ #1a1510}
+.gridlines{position:absolute;inset:14px 14px 54px 14px;pointer-events:none;opacity:.5}
+.gridlines:before,.gridlines:after{content:"";position:absolute;background:rgba(240,230,200,.10)}
+.gridlines:before{left:50%;top:0;bottom:0;width:0;border-left:1px dashed rgba(240,230,200,.22)}
+.gridlines:after{top:50%;left:0;right:0;height:0;border-top:1px dashed rgba(240,230,200,.22)}
+#brush{position:absolute;left:14px;top:14px;width:300px;height:300px}
+#brush path{stroke:#f2ead8;stroke-width:7;stroke-linecap:round;fill:none}
+#tip{position:absolute;width:34px;height:46px;border-radius:50% 50% 50% 50%/64% 64% 36% 36%;
+background:linear-gradient(to bottom,#241708 0 30%,#6b4a2a 30% 56%,#2a1a0c 56% 80%,#0d0904 80%);
+transform:rotate(-16deg);box-shadow:2px 3px 8px rgba(0,0,0,.6);pointer-events:none}
+#seal{position:absolute;right:20px;bottom:56px;width:46px;height:46px;border-radius:7px;background:#b3322a;color:#f5e9d0;
+font-size:27px;font-weight:700;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 10px rgba(0,0,0,.5)}
+.cap{position:absolute;left:0;right:0;bottom:0;height:44px;display:flex;align-items:center;justify-content:center;font-size:13px;color:#c9bfa8;letter-spacing:2px}
+.cap b{color:#ffd166}
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="title"><h3>书法笔锋</h3><span class="pct" id="pct">0%</span></div>
+  <div class="scene" id="scene">
+    <div class="gridlines"></div>
+    <svg id="brush" viewBox="0 0 200 200">
+      <path id="s0" d="M101,32 q5,3 3,9"/>
+      <path id="s1" d="M56,56 q32,-4 64,-1 q18,1 26,5"/>
+      <path id="s2" d="M103,56 q-2,52 -1,100"/>
+      <path id="s3" d="M102,156 q0,9 -7,11 q-7,2 -13,-5"/>
+      <path id="s4" d="M96,160 q-22,-8 -40,-18 q-9,-5 -17,-13"/>
+      <path id="s5" d="M98,86 q-20,18 -36,34 q-12,12 -23,25"/>
+      <path id="s6" d="M94,108 q-9,9 -17,18"/>
+      <path id="s7" d="M98,106 q24,18 46,36 q17,13 33,29"/>
+    </svg>
+    <div id="tip"></div>
+    <div id="seal">永</div>
+    <div class="cap" id="cap"></div>
+  </div>
+</div>
+<script>
+var pctEl=document.getElementById('pct');
+var scene=document.getElementById('scene');
+var svg=document.getElementById('brush');
+var tip=document.getElementById('tip');
+var seal=document.getElementById('seal');
+var cap=document.getElementById('cap');
+var paths=[],lens=[];
+var nodes=svg.querySelectorAll('path');
+for(var i=0;i<nodes.length;i++){
+  paths.push(nodes[i]);
+  var L=nodes[i].getTotalLength();
+  nodes[i].style.strokeDasharray=L;
+  nodes[i].style.strokeDashoffset=L;
+  lens.push(L);
+}
+var names=['点','横','竖','钩','提','长撇','短撇','捺'];
+var p=0;
+function render(){
+  pctEl.textContent=Math.round(p)+'%';
+  var total=p/100*8;
+  var cur=-1,curSp=0;
+  for(var i=0;i<8;i++){
+    var sp=total-i;
+    if(sp<0)sp=0; if(sp>1)sp=1;
+    paths[i].style.strokeDashoffset=lens[i]*(1-sp);
+    if(sp<1&&cur<0){cur=i;curSp=sp;}
+  }
+  if(p>0&&p<100&&cur>=0){
+    var pt=paths[cur].getPointAtLength(lens[cur]*curSp);
+    var r=svg.getBoundingClientRect(),sr=scene.getBoundingClientRect();
+    tip.style.display='block';
+    tip.style.left=(r.left-sr.left+pt.x/200*r.width-17)+'px';
+    tip.style.top=(r.top-sr.top+pt.y/200*r.height-38)+'px';
+    cap.innerHTML='第 <b>'+(cur+1)+'</b> 笔 · '+names[cur];
+  }else{
+    tip.style.display='none';
+    cap.innerHTML=p>=100?'书写完成 · 永字八法':'提笔待书';
+  }
+  seal.style.opacity=p>=100?'1':'0';
+}
+var DUR=7000;
+function startLoop(){
+  var t0=performance.now();
+  function tick(now){
+    var el=now-t0;
+    if(el>=DUR){p=100;render();setTimeout(startLoop,1000);return;}
+    p=el/DUR*100;
+    render();
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+}
+if(location.hash==='#mid'){p=55;render();}
+else{startLoop();}
+</script>
+</body>
+</html>

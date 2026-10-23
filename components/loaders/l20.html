@@ -1,0 +1,20 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>彩虹桥 · 加载动画</title><style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;background:radial-gradient(600px 400px at 50% 100%,#1b1440,#070512 75%);display:flex;flex-direction:column;align-items:center;justify-content:center;
+font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;color:#e8eaf0;padding:24px 12px}
+h1{font-size:15px;font-weight:600;letter-spacing:4px;color:#facc15;margin-bottom:6px}
+.sub{font-size:11px;color:#8a90a6;margin-bottom:30px;letter-spacing:3px}
+.stage{width:360px;max-width:94vw;height:300px;position:relative;display:flex;align-items:center;justify-content:center}
+.rb{width:320px;height:200px;position:relative;overflow:hidden}
+.arc{position:absolute;display:block;bottom:-148px;left:50%;transform:translateX(-50%);border-radius:50%;
+border:13px solid transparent;opacity:0;animation:arc 4.5s ease-out infinite}
+@keyframes arc{0%{opacity:0;transform:translateX(-50%) scale(.6)}25%{opacity:1}70%{opacity:1;transform:translateX(-50%) scale(1)}
+100%{opacity:0;transform:translateX(-50%) scale(1)}}
+.tw{position:absolute;bottom:0;left:50%;width:300px;height:150px;margin-left:-150px;transform-origin:50% 100%;animation:spn 4.5s linear infinite}
+@keyframes spn{to{transform:rotate(180deg)}}
+.td{position:absolute;display:block;top:-7px;left:50%;width:14px;height:14px;margin-left:-7px;border-radius:50%;
+background:#fff;box-shadow:0 0 16px #fff,0 0 34px #fde68a}
+.gnd{position:absolute;bottom:0;left:30px;right:30px;height:3px;background:rgba(255,255,255,.25);border-radius:2px}
+</style></head><body><h1>彩虹桥</h1><div class="sub">LOADING · 加载中</div><div class="stage"><div class="rb"><i class="arc" style="width:300px;height:300px;border-top-color:#ef4444;animation-delay:-0.00s"></i><i class="arc" style="width:270px;height:270px;border-top-color:#f97316;animation-delay:-0.22s"></i><i class="arc" style="width:240px;height:240px;border-top-color:#facc15;animation-delay:-0.44s"></i><i class="arc" style="width:210px;height:210px;border-top-color:#22c55e;animation-delay:-0.66s"></i><i class="arc" style="width:180px;height:180px;border-top-color:#38bdf8;animation-delay:-0.88s"></i><i class="arc" style="width:150px;height:150px;border-top-color:#a78bfa;animation-delay:-1.10s"></i><div class="tw"><i class="td"></i></div><div class="gnd"></div></div></div></body></html>

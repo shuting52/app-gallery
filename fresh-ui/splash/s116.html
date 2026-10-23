@@ -1,0 +1,25 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>熔岩苏醒</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:430px;height:900px}
+body{overflow:hidden;position:relative;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(#050510,#1a0e1e 70%,#2b1420);color:#fff}
+.stage{position:absolute;inset:0;overflow:hidden}
+.brand{position:absolute;left:0;right:0;top:648px;text-align:center;z-index:5;animation:brandIn 1s ease 2s both}
+.brand h1{font-size:36px;letter-spacing:10px;font-weight:800}
+.brand p{font-size:13px;letter-spacing:6px;opacity:.65;margin-top:10px}
+@keyframes brandIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.replay{position:absolute;bottom:36px;left:50%;transform:translateX(-50%);z-index:9;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.35);color:#fff;font-size:13px;padding:9px 26px;border-radius:24px;cursor:pointer;backdrop-filter:blur(6px)}
+.volc{position:absolute;bottom:120px;left:50%;transform:translateX(-50%);width:340px;height:300px;background:linear-gradient(#2a1a2e,#120a18);clip-path:polygon(38% 0,62% 0,100% 100%,0 100%)}
+.crater{position:absolute;bottom:392px;left:50%;transform:translateX(-50%);width:88px;height:26px;background:radial-gradient(circle at 50% 50%,#ffd93d,#ff5d2e 70%,transparent);border-radius:50%;animation:glow 1.6s ease-in-out infinite}
+@keyframes glow{50%{transform:translateX(-50%) scale(1.25);filter:brightness(1.4)}}
+.lava{position:absolute;bottom:400px;left:50%;width:8px;height:8px;border-radius:50%;background:#ffb84d;box-shadow:0 0 12px #ff7a2e;animation:erupt 2.2s ease-out infinite}
+@keyframes erupt{0%{transform:translate(0,0);opacity:1}100%{transform:translate(var(--dx),-420px);opacity:0}}
+.flow{position:absolute;bottom:120px;left:50%;transform:translateX(-50%);width:26px;height:300px;background:linear-gradient(#ffd93d,#ff5d2e,transparent);filter:blur(4px);animation:flowdn 2.6s ease-in infinite}
+@keyframes flowdn{from{transform:translateX(-50%) scaleY(0);transform-origin:top}to{transform:translateX(-50%) scaleY(1);transform-origin:top}}
+</style></head><body>
+<div class="stage"><div class="volc"></div><div class="crater"></div><div class="flow" style="animation-delay:-1s"></div><div class="lava" style="--dx:-90px;animation-delay:-0.00s;margin-left:-30px"></div><div class="lava" style="--dx:-67px;animation-delay:-0.32s;margin-left:-17px"></div><div class="lava" style="--dx:-44px;animation-delay:-0.64s;margin-left:-4px"></div><div class="lava" style="--dx:-21px;animation-delay:-0.96s;margin-left:9px"></div><div class="lava" style="--dx:2px;animation-delay:-1.28s;margin-left:22px"></div><div class="lava" style="--dx:25px;animation-delay:-1.60s;margin-left:-25px"></div><div class="lava" style="--dx:48px;animation-delay:-1.92s;margin-left:-12px"></div><div class="lava" style="--dx:71px;animation-delay:-2.24s;margin-left:1px"></div><div class="lava" style="--dx:-86px;animation-delay:-2.56s;margin-left:14px"></div><div class="lava" style="--dx:-63px;animation-delay:-2.88s;margin-left:27px"></div><div class="lava" style="--dx:-40px;animation-delay:-3.20s;margin-left:-20px"></div><div class="lava" style="--dx:-17px;animation-delay:-3.52s;margin-left:-7px"></div><div class="lava" style="--dx:6px;animation-delay:-3.84s;margin-left:6px"></div><div class="lava" style="--dx:29px;animation-delay:-4.16s;margin-left:19px"></div></div>
+<div class="brand"><h1>熔岩</h1><p>VOLCANO · 苏醒</p></div>
+<button class="replay" onclick="location.reload()">&#8635; 重新播放</button>
+</body></html>

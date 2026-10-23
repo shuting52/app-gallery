@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>n18 · 窗口抖动 Toast</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;background:#141824;display:flex;flex-direction:column;align-items:center;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;color:#fff}
+.head{text-align:center;padding:20px 16px 12px}
+.head h1{font-size:17px;color:#ff9d9d;letter-spacing:1px}
+.head p{font-size:12px;color:#8b93a7;margin-top:6px}
+.stage{width:360px;max-width:94vw;height:480px;border-radius:18px;position:relative;overflow:hidden;background:linear-gradient(160deg,#2a1f24,#141014 70%);border:1px solid #4a2f36;box-shadow:0 12px 40px rgba(0,0,0,.4)}
+.win{position:absolute;left:50%;top:130px;transform:translateX(-50%);width:290px;background:#20263a;border:1px solid #3a4560;border-radius:12px;overflow:hidden;box-shadow:0 12px 30px rgba(0,0,0,.55);opacity:0}
+.win .bar{background:#2c3550;padding:10px 14px;font-size:13px;font-weight:700;display:flex;justify-content:space-between;align-items:center;color:#dfe6f5}
+.win .bar .dots{display:flex;gap:6px}
+.win .bar .dots i{width:10px;height:10px;border-radius:50%;background:#5a6480}
+.win .body{padding:20px 16px;font-size:14px;color:#ffd2d2;line-height:1.7;font-weight:600}
+.win.in{animation:shakeIn .55s forwards}
+.win.out{animation:shakeOut .5s forwards}
+@keyframes shakeIn{0%{opacity:0;transform:translateX(-50%)}10%{opacity:1;transform:translate(calc(-50% - 12px),0)}25%{transform:translate(calc(-50% + 10px),0)}40%{transform:translate(calc(-50% - 8px),0)}55%{transform:translate(calc(-50% + 6px),0)}70%{transform:translate(calc(-50% - 3px),0)}100%{transform:translateX(-50%);opacity:1}}
+@keyframes shakeOut{0%{transform:translateX(-50%);opacity:1}30%{transform:translate(calc(-50% - 10px),0)}60%{transform:translate(calc(-50% + 10px),0)}100%{transform:translateX(-50%);opacity:0}}
+.hint{position:absolute;bottom:14px;width:100%;text-align:center;font-size:11px;color:#7a5f66}
+</style>
+</head>
+<body>
+<div class="head"><h1>n18 · 窗口抖动</h1><p>通知窗像输错密码一样左右抖动几次定住 → 收起再抖一次</p></div>
+<div class="stage">
+  <div class="win" id="win">
+    <div class="bar"><span id="wt">系统提示</span><span class="dots"><i></i><i></i><i></i></span></div>
+    <div class="body" id="wb"></div>
+  </div>
+  <div class="hint">自动循环播放中 · 3 条通知轮播</div>
+</div>
+<script>
+const msgs=[
+  ["登录提示","密码错误，请重试"],
+  ["网络状态","网络异常，请检查连接"],
+  ["验证码","验证码已发送，注意查收"]
+];
+const win=document.getElementById('win'),wt=document.getElementById('wt'),wb=document.getElementById('wb');
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+async function show(i){
+  wt.textContent=msgs[i][0];wb.textContent=msgs[i][1];
+  win.classList.remove('out');void win.offsetWidth;win.classList.add('in');
+  await sleep(600);
+  await sleep(2500);
+  win.classList.remove('in');win.classList.add('out');
+  await sleep(550);
+  win.classList.remove('out');
+  await sleep(300);
+}
+(async()=>{let i=0;while(true){await show(i%msgs.length);i++;}})();
+</script>
+</body>
+</html>

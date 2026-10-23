@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>桃子育儿 · 育儿记录</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  :root{
+    --cream:#FFF9F3; --cream2:#FFF3EA; --card:#FFFFFF;
+    --coral:#FF7E6B; --coral-deep:#F25E4C; --peach:#FFB48A; --peach-soft:#FFE3CC;
+    --ink:#4A3B34; --ink-soft:#8A7568; --line:#F5E7DA;
+    --green:#7BC98A; --amber:#F5B45E; --gray:#C9C2BB;
+  }
+  html{ background:#EFE3D8; }
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+    background:var(--cream); color:var(--ink); min-height:100vh;
+  }
+  .phone{ max-width:430px; margin:0 auto; min-height:100vh; background:var(--cream); position:relative; padding-bottom:96px; }
+  /* 顶部栏 */
+  .header{
+    background:linear-gradient(135deg,#FF9E85 0%,#FF7E6B 60%,#F25E4C 100%);
+    padding:22px 20px 34px; border-radius:0 0 30px 30px; color:#fff; position:relative; overflow:hidden;
+  }
+  .header::after{
+    content:""; position:absolute; right:-40px; top:-40px; width:150px; height:150px;
+    background:rgba(255,255,255,.16); border-radius:50%;
+  }
+  .header::before{
+    content:""; position:absolute; right:40px; bottom:-60px; width:110px; height:110px;
+    background:rgba(255,255,255,.10); border-radius:50%;
+  }
+  .header h1{ font-size:21px; font-weight:700; letter-spacing:1px; position:relative; z-index:1; }
+  .header p{ font-size:12px; opacity:.92; margin-top:6px; position:relative; z-index:1; }
+  /* 宝宝概览卡 */
+  .baby-card{
+    background:var(--card); border-radius:22px; margin:-22px 16px 0; padding:18px;
+    box-shadow:0 8px 24px rgba(242,94,76,.10); position:relative; z-index:2;
+    display:flex; align-items:center; gap:14px;
+  }
+  .avatar{
+    width:64px; height:64px; border-radius:50%; flex:none;
+    background:linear-gradient(135deg,var(--peach),var(--coral));
+    display:flex; align-items:center; justify-content:center; font-size:30px;
+    border:3px solid var(--peach-soft);
+  }
+  .baby-info{ flex:1; }
+  .baby-info .name{ font-size:17px; font-weight:700; }
+  .baby-info .age{ font-size:12px; color:var(--ink-soft); margin-top:3px; }
+  .age-tag{
+    display:inline-block; background:var(--peach-soft); color:var(--coral-deep);
+    font-size:11px; padding:3px 10px; border-radius:20px; margin-top:6px; font-weight:600;
+  }
+  /* 今日统计条 */
+  .stats{ display:flex; gap:10px; margin:14px 16px 0; }
+  .stat{ flex:1; background:var(--card); border-radius:16px; padding:12px 6px; text-align:center;
+    box-shadow:0 4px 14px rgba(242,94,76,.07); }
+  .stat .num{ font-size:17px; font-weight:800; color:var(--coral-deep); }
+  .stat .lbl{ font-size:11px; color:var(--ink-soft); margin-top:4px; }
+  /* 区块标题 */
+  .sec-title{ font-size:15px; font-weight:700; margin:20px 20px 10px; display:flex; align-items:center; gap:8px; }
+  .sec-title::before{ content:""; width:6px; height:16px; border-radius:4px; background:linear-gradient(var(--peach),var(--coral)); }
+  /* 快捷记录 */
+  .quick{ display:grid; grid-template-columns:repeat(5,1fr); gap:10px; margin:0 16px; }
+  .quick button{
+    border:none; background:var(--card); border-radius:16px; padding:12px 4px; cursor:pointer;
+    box-shadow:0 4px 14px rgba(242,94,76,.07); display:flex; flex-direction:column; align-items:center; gap:6px;
+    font-size:11px; color:var(--ink); font-weight:600; transition:transform .15s;
+  }
+  .quick button:active{ transform:scale(.93); }
+  .quick .ic{
+    width:38px; height:38px; border-radius:14px; display:flex; align-items:center; justify-content:center; font-size:20px;
+  }
+  .ic.milk{ background:#FFE9E3; } .ic.food{ background:#FFF1DC; } .ic.sleep{ background:#E7ECFF; }
+  .ic.diaper{ background:#E2F6E8; } .ic.temp{ background:#FDE8EE; }
+  /* 时间线 */
+  .timeline{ margin:0 16px; background:var(--card); border-radius:20px; padding:6px 16px 10px;
+    box-shadow:0 4px 14px rgba(242,94,76,.07); }
+  .tl-item{ display:flex; gap:12px; padding:12px 0; border-bottom:1px dashed var(--line); align-items:flex-start; }
+  .tl-item:last-child{ border-bottom:none; }
+  .tl-time{ font-size:12px; color:var(--ink-soft); width:44px; flex:none; padding-top:2px; font-weight:600; }
+  .tl-dot{ width:12px; height:12px; border-radius:50%; margin-top:4px; flex:none; }
+  .tl-body{ flex:1; }
+  .tl-body .t{ font-size:14px; font-weight:700; }
+  .tl-body .d{ font-size:12px; color:var(--ink-soft); margin-top:2px; }
+  .toast{
+    position:fixed; left:50%; bottom:110px; transform:translateX(-50%) translateY(20px);
+    background:rgba(74,59,52,.92); color:#fff; font-size:13px; padding:10px 20px; border-radius:30px;
+    opacity:0; pointer-events:none; transition:all .3s; z-index:99; white-space:nowrap;
+  }
+  .toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
+  /* 成长曲线 */
+  .chart-card{ background:var(--card); border-radius:20px; margin:0 16px; padding:16px;
+    box-shadow:0 4px 14px rgba(242,94,76,.07); }
+  .legend{ display:flex; gap:16px; justify-content:center; margin-bottom:8px; font-size:12px; color:var(--ink-soft); }
+  .legend i{ display:inline-block; width:18px; height:4px; border-radius:2px; margin-right:5px; vertical-align:middle; }
+  .grow-info{ display:flex; gap:10px; margin:12px 16px 0; }
+  .grow-info .stat .num{ color:var(--coral); }
+  /* 里程碑 */
+  .miles{ margin:0 16px; padding-left:8px; position:relative; }
+  .miles::before{ content:""; position:absolute; left:15px; top:8px; bottom:8px; width:3px;
+    background:linear-gradient(var(--peach),var(--coral)); border-radius:2px; }
+  .mile{ position:relative; padding:10px 0 10px 34px; }
+  .mile .dot{
+    position:absolute; left:0; top:14px; width:17px; height:17px; border-radius:50%;
+    background:var(--card); border:4px solid var(--coral); box-shadow:0 2px 8px rgba(242,94,76,.25);
+  }
+  .mile.done .dot{ border-color:var(--green); }
+  .mile .card{ background:var(--card); border-radius:16px; padding:12px 14px;
+    box-shadow:0 4px 14px rgba(242,94,76,.07); }
+  .mile .card .t{ font-size:14px; font-weight:700; }
+  .mile .card .d{ font-size:12px; color:var(--ink-soft); margin-top:3px; }
+  .mile .when{ font-size:11px; color:var(--coral-deep); font-weight:700; margin-top:6px;
+    display:inline-block; background:var(--peach-soft); padding:2px 10px; border-radius:12px; }
+  /* 提醒 */
+  .vac{ background:var(--card); border-radius:20px; margin:0 16px 10px; padding:14px 16px;
+    box-shadow:0 4px 14px rgba(242,94,76,.07); display:flex; align-items:center; gap:12px; }
+  .vac .ic{ width:44px; height:44px; border-radius:16px; background:var(--cream2);
+    display:flex; align-items:center; justify-content:center; font-size:22px; flex:none; }
+  .vac .info{ flex:1; }
+  .vac .info .t{ font-size:14px; font-weight:700; }
+  .vac .info .d{ font-size:12px; color:var(--ink-soft); margin-top:2px; }
+  .chip{ font-size:11px; font-weight:700; padding:5px 12px; border-radius:20px; flex:none; }
+  .chip.ok{ background:#E4F6E8; color:#3E9B55; }
+  .chip.wait{ background:#FFF0D9; color:#D08A1D; }
+  /* 开关 */
+  .rem-item{ background:var(--card); border-radius:20px; margin:0 16px 10px; padding:14px 16px;
+    box-shadow:0 4px 14px rgba(242,94,76,.07); display:flex; align-items:center; gap:12px; }
+  .rem-item .ic{ width:44px; height:44px; border-radius:16px; display:flex; align-items:center;
+    justify-content:center; font-size:22px; flex:none; }
+  .rem-item .info{ flex:1; }
+  .rem-item .info .t{ font-size:14px; font-weight:700; }
+  .rem-item .info .d{ font-size:12px; color:var(--ink-soft); margin-top:2px; }
+  .switch{ position:relative; width:50px; height:30px; flex:none; cursor:pointer; }
+  .switch input{ display:none; }
+  .switch .track{ position:absolute; inset:0; background:#E5DCD3; border-radius:20px; transition:.25s; }
+  .switch .track::after{
+    content:""; position:absolute; left:3px; top:3px; width:24px; height:24px; border-radius:50%;
+    background:#fff; box-shadow:0 2px 6px rgba(0,0,0,.18); transition:.25s;
+  }
+  .switch input:checked + .track{ background:linear-gradient(135deg,var(--peach),var(--coral)); }
+  .switch input:checked + .track::after{ left:23px; }
+  /* 我的 */
+  .profile{ background:linear-gradient(135deg,#FF9E85,#F25E4C); border-radius:22px; margin:0 16px; padding:18px;
+    color:#fff; display:flex; align-items:center; gap:14px; box-shadow:0 8px 24px rgba(242,94,76,.25); }
+  .profile .avatar{ border-color:rgba(255,255,255,.4); }
+  .profile .name{ font-size:18px; font-weight:800; }
+  .profile .meta{ font-size:12px; opacity:.92; margin-top:5px; line-height:1.7; }
+  .fam{ display:flex; gap:10px; margin:0 16px; }
+  .fam .mem{ flex:1; background:var(--card); border-radius:16px; padding:14px 6px; text-align:center;
+    box-shadow:0 4px 14px rgba(242,94,76,.07); }
+  .fam .mem .face{ font-size:30px; }
+  .fam .mem .n{ font-size:13px; font-weight:700; margin-top:6px; }
+  .fam .mem .r{ font-size:11px; color:var(--ink-soft); margin-top:2px; }
+  .menu{ background:var(--card); border-radius:20px; margin:0 16px; overflow:hidden;
+    box-shadow:0 4px 14px rgba(242,94,76,.07); }
+  .menu a{ display:flex; align-items:center; gap:12px; padding:15px 16px; text-decoration:none;
+    color:var(--ink); font-size:14px; font-weight:600; border-bottom:1px solid var(--line); cursor:pointer; }
+  .menu a:last-child{ border-bottom:none; }
+  .menu a .mi{ width:36px; height:36px; border-radius:12px; background:var(--cream2);
+    display:flex; align-items:center; justify-content:center; font-size:18px; flex:none; }
+  .menu a .go{ margin-left:auto; color:var(--gray); font-size:16px; }
+  /* Tab 栏 */
+  .tabbar{
+    position:fixed; bottom:0; left:50%; transform:translateX(-50%); width:100%; max-width:430px;
+    background:rgba(255,255,255,.97); backdrop-filter:blur(10px);
+    border-top:1px solid var(--line); display:flex; padding:8px 0 calc(8px + env(safe-area-inset-bottom)); z-index:50;
+  }
+  .tabbar button{
+    flex:1; border:none; background:none; cursor:pointer; display:flex; flex-direction:column;
+    align-items:center; gap:3px; font-size:11px; color:var(--ink-soft); font-weight:600;
+  }
+  .tabbar button .ti{ font-size:22px; filter:grayscale(1); opacity:.6; transition:.2s; }
+  .tabbar button.active{ color:var(--coral-deep); }
+  .tabbar button.active .ti{ filter:none; opacity:1; transform:scale(1.12); }
+  .page{ display:none; }
+  .page.active{ display:block; animation:fadeIn .25s; }
+  @keyframes fadeIn{ from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:none;} }
+</style>
+</head>
+<body>
+<div class="phone">
+
+  <!-- ============ 记录 ============ -->
+  <section class="page active" id="page-0">
+    <div class="header">
+      <h1>🍑 今日记录</h1>
+      <p>10月19日 星期一 · 宝宝 2岁3个月11天</p>
+    </div>
+    <div class="baby-card">
+      <div class="avatar">👧</div>
+      <div class="baby-info">
+        <div class="name">小桃子</div>
+        <div class="age">2024年7月8日出生 · O型血</div>
+        <span class="age-tag">🌱 成长第 833 天</span>
+      </div>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="num" id="st-milk">390ml</div><div class="lbl">今日奶量</div></div>
+      <div class="stat"><div class="num" id="st-sleep">2.0h</div><div class="lbl">睡眠时长</div></div>
+      <div class="stat"><div class="num" id="st-diaper">3次</div><div class="lbl">换尿布</div></div>
+      <div class="stat"><div class="num" id="st-meal">1餐</div><div class="lbl">辅食</div></div>
+    </div>
+    <div class="sec-title">快捷记录</div>
+    <div class="quick">
+      <button data-k="milk"><span class="ic milk">🍼</span>喂奶</button>
+      <button data-k="food"><span class="ic food">🥣</span>辅食</button>
+      <button data-k="sleep"><span class="ic sleep">😴</span>睡眠</button>
+      <button data-k="diaper"><span class="ic diaper">🧷</span>换尿布</button>
+      <button data-k="temp"><span class="ic temp">🌡️</span>体温</button>
+    </div>
+    <div class="sec-title">今日时间线</div>
+    <div class="timeline" id="timeline"></div>
+    <div style="height:12px"></div>
+  </section>
+
+  <!-- ============ 成长 ============ -->
+  <section class="page" id="page-1">
+    <div class="header">
+      <h1>📈 成长曲线</h1>
+      <p>记录每一个长高的瞬间</p>
+    </div>
+    <div class="grow-info">
+      <div class="stat"><div class="num">89.5cm</div><div class="lbl">当前身高</div></div>
+      <div class="stat"><div class="num">12.8kg</div><div class="lbl">当前体重</div></div>
+      <div class="stat"><div class="num">47.5cm</div><div class="lbl">头围</div></div>
+    </div>
+    <div class="sec-title">身高 / 体重趋势（近12个月）</div>
+    <div class="chart-card">
+      <div class="legend"><span><i style="background:#FF7E6B"></i>身高(cm)</span><span><i style="background:#FFB48A"></i>体重(kg)</span></div>
+      <svg id="chart" viewBox="0 0 360 200" width="100%" style="display:block"></svg>
+    </div>
+    <div class="sec-title">成长里程碑</div>
+    <div class="miles" id="miles"></div>
+    <div style="height:12px"></div>
+  </section>
+
+  <!-- ============ 提醒 ============ -->
+  <section class="page" id="page-2">
+    <div class="header">
+      <h1>⏰ 智能提醒</h1>
+      <p>疫苗 · 喂养 · 体检，一个都不落下</p>
+    </div>
+    <div class="sec-title">疫苗接种计划</div>
+    <div id="vaccines"></div>
+    <div class="sec-title">日常提醒</div>
+    <div id="reminders"></div>
+    <div style="height:12px"></div>
+  </section>
+
+  <!-- ============ 我的 ============ -->
+  <section class="page" id="page-3">
+    <div class="header">
+      <h1>👨‍👩‍👧 我的家庭</h1>
+      <p>宝宝档案与家庭管理</p>
+    </div>
+    <div style="height:14px"></div>
+    <div class="profile">
+      <div class="avatar">👧</div>
+      <div>
+        <div class="name">小桃子</div>
+        <div class="meta">女 · 2024年7月8日出生<br>O型血 · 2岁3个月 · 89.5cm / 12.8kg</div>
+      </div>
+    </div>
+    <div class="sec-title">家庭成员</div>
+    <div class="fam">
+      <div class="mem"><div class="face">👩</div><div class="n">妈妈</div><div class="r">主要照料人</div></div>
+      <div class="mem"><div class="face">👨</div><div class="n">爸爸</div><div class="r">周末奶爸</div></div>
+      <div class="mem"><div class="face">👵</div><div class="n">奶奶</div><div class="r">日常协助</div></div>
+    </div>
+    <div class="sec-title">数据与设置</div>
+    <div class="menu">
+      <a id="btn-export"><span class="mi">📥</span>导出成长数据<span class="go">›</span></a>
+      <a id="btn-backup"><span class="mi">☁️</span>云端备份<span class="go">›</span></a>
+      <a id="btn-notify"><span class="mi">🔔</span>消息通知设置<span class="go">›</span></a>
+      <a id="btn-night"><span class="mi">🌙</span>夜间模式<span class="go">›</span></a>
+      <a id="btn-about"><span class="mi">ℹ️</span>关于桃子育儿 v1.0.0<span class="go">›</span></a>
+    </div>
+    <div style="height:12px"></div>
+  </section>
+
+  <nav class="tabbar" id="tabbar">
+    <button class="active" data-t="0"><span class="ti">📝</span>记录</button>
+    <button data-t="1"><span class="ti">📈</span>成长</button>
+    <button data-t="2"><span class="ti">⏰</span>提醒</button>
+    <button data-t="3"><span class="ti">👤</span>我的</button>
+  </nav>
+  <div class="toast" id="toast"></div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------- Tab 切换 + 深链 ---------- */
+  var tabs = Array.prototype.slice.call(document.querySelectorAll("#tabbar button"));
+  var pages = Array.prototype.slice.call(document.querySelectorAll(".page"));
+  function goTab(i){
+    if(i < 0 || i > 3) i = 0;
+    tabs.forEach(function(b, k){ b.classList.toggle("active", k === i); });
+    pages.forEach(function(p, k){ p.classList.toggle("active", k === i); });
+    window.scrollTo(0, 0);
+  }
+  tabs.forEach(function(b){
+    b.addEventListener("click", function(){ goTab(parseInt(b.dataset.t, 10)); });
+  });
+  var m = /[?&]tab=(\d)/.exec(location.search);
+  goTab(m ? parseInt(m[1], 10) : 0);
+
+  /* ---------- toast ---------- */
+  var toastEl = document.getElementById("toast"), toastTimer = null;
+  function toast(msg){
+    toastEl.textContent = msg;
+    toastEl.classList.add("show");
+    if(toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ toastEl.classList.remove("show"); }, 1800);
+  }
+
+  /* ---------- 记录页：时间线 ---------- */
+  var dotColor = { milk:"#FF9E85", food:"#F5B45E", sleep:"#8B9CF0", diaper:"#7BC98A", temp:"#F2739B" };
+  var tlNames = { milk:"🍼 喂奶", food:"🥣 辅食", sleep:"😴 睡眠", diaper:"🧷 换尿布", temp:"🌡️ 体温" };
+  var records = [
+    { k:"milk",   time:"08:30", title:"🍼 喂奶",   desc:"配方奶 210ml · 一次喝完，胃口不错" },
+    { k:"diaper", time:"10:15", title:"🧷 换尿布", desc:"小便 · 尿布干爽更换" },
+    { k:"food",   time:"12:00", title:"🥣 辅食",   desc:"菠菜肉末粥一小碗 + 半根香蕉" },
+    { k:"sleep",  time:"13:00", title:"😴 睡眠",   desc:"午睡 2小时 · 自己入睡" },
+    { k:"milk",   time:"15:40", title:"🍼 喂奶",   desc:"配方奶 180ml" }
+  ];
+  var tl = document.getElementById("timeline");
+  function renderItem(r, prepend){
+    var div = document.createElement("div");
+    div.className = "tl-item";
+    var dot = document.createElement("div");
+    dot.className = "tl-dot";
+    dot.style.background = dotColor[r.k] || "#FF9E85";
+    var tm = document.createElement("div");
+    tm.className = "tl-time"; tm.textContent = r.time;
+    var body = document.createElement("div");
+    body.className = "tl-body";
+    var t = document.createElement("div"); t.className = "t"; t.textContent = r.title;
+    var d = document.createElement("div"); d.className = "d"; d.textContent = r.desc;
+    body.appendChild(t); body.appendChild(d);
+    div.appendChild(tm); div.appendChild(dot); div.appendChild(body);
+    if(prepend && tl.firstChild) tl.insertBefore(div, tl.firstChild);
+    else tl.appendChild(div);
+  }
+  records.forEach(function(r){ renderItem(r, false); });
+
+  var now = function(){
+    var d = new Date();
+    var h = d.getHours(), mi = d.getMinutes();
+    return (h < 10 ? "0" + h : "" + h) + ":" + (mi < 10 ? "0" + mi : "" + mi);
+  };
+  var quickCount = { milk:0, food:0, sleep:0, diaper:0, temp:0 };
+  var quickDesc = {
+    milk:  ["配方奶 200ml · 一次喝完", "母乳亲喂 15分钟", "配方奶 180ml · 剩了20ml"],
+    food:  ["南瓜小米粥一小碗", "西红柿鸡蛋面半碗", "苹果泥 + 磨牙饼干"],
+    sleep: ["午睡开始 · 哄睡中", "夜间睡眠开始", "小睡 40分钟"],
+    diaper:["小便 · 已更换", "大便 · 已清洗更换", "小便 · 尿布疹膏已涂"],
+    temp:  ["36.8℃ · 体温正常", "37.1℃ · 体温正常", "36.5℃ · 体温正常"]
+  };
+  var statMilk = 390, statSleep = 2.0, statDiaper = 3, statMeal = 1;
+  function refreshStats(){
+    document.getElementById("st-milk").textContent = statMilk + "ml";
+    document.getElementById("st-sleep").textContent = statSleep.toFixed(1) + "h";
+    document.getElementById("st-diaper").textContent = statDiaper + "次";
+    document.getElementById("st-meal").textContent = statMeal + "餐";
+  }
+  Array.prototype.forEach.call(document.querySelectorAll(".quick button"), function(btn){
+    btn.addEventListener("click", function(){
+      var k = btn.dataset.k;
+      var idx = quickCount[k] % quickDesc[k].length;
+      quickCount[k]++;
+      var desc = quickDesc[k][idx];
+      renderItem({ k:k, time:now(), title:tlNames[k], desc:desc }, true);
+      if(k === "milk") statMilk += 200;
+      if(k === "food") statMeal += 1;
+      if(k === "diaper") statDiaper += 1;
+      refreshStats();
+      toast(tlNames[k] + " 已记录 ✓");
+    });
+  });
+
+  /* ---------- 成长页：SVG 折线图 ---------- */
+  var months = ["11月","12月","1月","2月","3月","4月","5月","6月","7月","8月","9月","10月"];
+  var heights = [74.2,75.8,77.1,78.6,80.0,81.3,82.8,84.1,85.6,86.9,88.2,89.5];
+  var weights = [9.1,9.5,9.9,10.3,10.7,11.1,11.5,11.8,12.1,12.3,12.6,12.8];
+  function drawChart(){
+    var svg = document.getElementById("chart");
+    var W = 360, H = 200, padL = 34, padR = 34, padT = 12, padB = 26;
+    var iw = W - padL - padR, ih = H - padT - padB;
+    function x(i){ return padL + iw * i / (months.length - 1); }
+    var hMin = 73, hMax = 91, wMin = 8.5, wMax = 13.5;
+    function yh(v){ return padT + ih * (1 - (v - hMin) / (hMax - hMin)); }
+    function yw(v){ return padT + ih * (1 - (v - wMin) / (wMax - wMin)); }
+    var ns = "http://www.w3.org/2000/svg";
+    function el(tag, attrs){
+      var e = document.createElementNS(ns, tag);
+      for(var k in attrs) e.setAttribute(k, attrs[k]);
+      return e;
+    }
+    // 网格线
+    for(var g = 0; g <= 4; g++){
+      var gy = padT + ih * g / 4;
+      svg.appendChild(el("line", { x1:padL, y1:gy, x2:W - padR, y2:gy, stroke:"#F5E7DA", "stroke-width":1 }));
+    }
+    // X 轴月份（隔一个显示）
+    months.forEach(function(mn, i){
+      if(i % 2 === 1) return;
+      var t = el("text", { x:x(i), y:H - 8, "text-anchor":"middle", "font-size":9, fill:"#8A7568" });
+      t.textContent = mn;
+      svg.appendChild(t);
+    });
+    function path(vals, fn){
+      var d = vals.map(function(v, i){ return (i === 0 ? "M" : "L") + x(i).toFixed(1) + "," + fn(v).toFixed(1); }).join(" ");
+      return d;
+    }
+    svg.appendChild(el("path", { d:path(heights, yh), fill:"none", stroke:"#FF7E6B", "stroke-width":2.5, "stroke-linecap":"round", "stroke-linejoin":"round" }));
+    svg.appendChild(el("path", { d:path(weights, yw), fill:"none", stroke:"#FFB48A", "stroke-width":2.5, "stroke-dasharray":"6,4", "stroke-linecap":"round" }));
+    heights.forEach(function(v, i){
+      svg.appendChild(el("circle", { cx:x(i), cy:yh(v), r:3.2, fill:"#fff", stroke:"#FF7E6B", "stroke-width":2 }));
+    });
+    weights.forEach(function(v, i){
+      svg.appendChild(el("circle", { cx:x(i), cy:yw(v), r:3.2, fill:"#fff", stroke:"#FFB48A", "stroke-width":2 }));
+    });
+    // 左右轴标注
+    var lt = el("text", { x:6, y:padT + 4, "font-size":9, fill:"#FF7E6B", "font-weight":"bold" });
+    lt.textContent = "cm"; svg.appendChild(lt);
+    var rt = el("text", { x:W - 24, y:padT + 4, "font-size":9, fill:"#E09A5A", "font-weight":"bold" });
+    rt.textContent = "kg"; svg.appendChild(rt);
+    // 最新值标注
+    var last = el("text", { x:x(11) + 4, y:yh(heights[11]) - 6, "font-size":10, fill:"#F25E4C", "font-weight":"bold" });
+    last.textContent = "89.5"; svg.appendChild(last);
+  }
+  drawChart();
+
+  var miles = [
+    { t:"第一次翻身", d:"从仰卧翻到俯卧，小胳膊撑得稳稳的", when:"2024年10月 · 3个月", done:true },
+    { t:"长出第一颗牙", d:"下门牙冒头，口水多到要戴口水巾", when:"2025年1月 · 6个月", done:true },
+    { t:"独自坐稳", d:"不用扶就能坐着玩积木了", when:"2025年3月 · 8个月", done:true },
+    { t:"扶着家具走路", d:"扶着沙发横着挪步，胆子越来越大", when:"2025年7月 · 12个月", done:true },
+    { t:"第一次叫妈妈", d:"含糊不清的一声「妈妈」，全家都哭了", when:"2025年10月 · 15个月", done:true },
+    { t:"独立行走", d:"松开手能走十几步，摇摇晃晃超可爱", when:"2026年1月 · 18个月", done:true },
+    { t:"会说简单短句", d:"「妈妈抱」「要吃吃」，小话痨上线", when:"2026年6月 · 23个月", done:true },
+    { t:"自己用勺子吃饭", d:"虽然洒一半吃一半，但坚持自己来", when:"2026年9月 · 26个月", done:true }
+  ];
+  var milesEl = document.getElementById("miles");
+  miles.forEach(function(mm){
+    var div = document.createElement("div");
+    div.className = "mile" + (mm.done ? " done" : "");
+    var dot = document.createElement("div"); dot.className = "dot";
+    var card = document.createElement("div"); card.className = "card";
+    var t = document.createElement("div"); t.className = "t"; t.textContent = (mm.done ? "✓ " : "") + mm.t;
+    var d = document.createElement("div"); d.className = "d"; d.textContent = mm.d;
+    var w = document.createElement("span"); w.className = "when"; w.textContent = mm.when;
+    card.appendChild(t); card.appendChild(d); card.appendChild(w);
+    div.appendChild(dot); div.appendChild(card);
+    milesEl.appendChild(div);
+  });
+
+  /* ---------- 提醒页 ---------- */
+  var vaccines = [
+    { n:"卡介苗", d:"出生24小时内 · 第1剂", s:"ok", sTxt:"已接种" },
+    { n:"乙肝疫苗", d:"出生/1月龄/6月龄 · 共3剂", s:"ok", sTxt:"已接种" },
+    { n:"脊髓灰质炎疫苗", d:"2/3/4月龄 · 共3剂", s:"ok", sTxt:"已接种" },
+    { n:"百白破疫苗", d:"3/4/5月龄/18月龄 · 共4剂", s:"ok", sTxt:"已接种" },
+    { n:"乙脑减毒活疫苗", d:"8月龄第1剂 · 2岁第2剂", s:"wait", sTxt:"待接种" },
+    { n:"水痘减毒活疫苗", d:"12月龄第1剂 · 4岁第2剂", s:"wait", sTxt:"待接种" },
+    { n:"A群流脑多糖疫苗", d:"6/9月龄 · 共2剂", s:"ok", sTxt:"已接种" },
+    { n:"甲肝减毒活疫苗", d:"18月龄 · 第1剂", s:"ok", sTxt:"已接种" }
+  ];
+  var vacEl = document.getElementById("vaccines");
+  vaccines.forEach(function(v, i){
+    var div = document.createElement("div"); div.className = "vac";
+    var ic = document.createElement("div"); ic.className = "ic"; ic.textContent = v.s === "ok" ? "💉" : "📅";
+    var info = document.createElement("div"); info.className = "info";
+    var t = document.createElement("div"); t.className = "t"; t.textContent = v.n;
+    var d = document.createElement("div"); d.className = "d"; d.textContent = v.d;
+    info.appendChild(t); info.appendChild(d);
+    var chip = document.createElement("span"); chip.className = "chip " + v.s; chip.textContent = v.sTxt;
+    div.appendChild(ic); div.appendChild(info); div.appendChild(chip);
+    vacEl.appendChild(div);
+  });
+
+  var rems = [
+    { ic:"🍼", bg:"#FFE9E3", t:"喂奶提醒", d:"每 3 小时提醒一次", on:true },
+    { ic:"😴", bg:"#E7ECFF", t:"午睡提醒", d:"每天 13:00", on:true },
+    { ic:"☀️", bg:"#FFF1DC", t:"维生素D补充", d:"每天 18:00 · 400IU", on:true },
+    { ic:"🏥", bg:"#E2F6E8", t:"体检提醒", d:"3岁体检 · 2027年7月", on:false },
+    { ic:"💉", bg:"#FDE8EE", t:"疫苗接种提醒", d:"提前 3 天推送", on:true }
+  ];
+  var remEl = document.getElementById("reminders");
+  rems.forEach(function(r){
+    var div = document.createElement("div"); div.className = "rem-item";
+    var ic = document.createElement("div"); ic.className = "ic"; ic.style.background = r.bg; ic.textContent = r.ic;
+    var info = document.createElement("div"); info.className = "info";
+    var t = document.createElement("div"); t.className = "t"; t.textContent = r.t;
+    var d = document.createElement("div"); d.className = "d"; d.textContent = r.d;
+    info.appendChild(t); info.appendChild(d);
+    var sw = document.createElement("label"); sw.className = "switch";
+    var inp = document.createElement("input");
+    inp.type = "checkbox"; inp.checked = r.on;
+    var track = document.createElement("span"); track.className = "track";
+    sw.appendChild(inp); sw.appendChild(track);
+    inp.addEventListener("change", function(){
+      toast(r.t + (inp.checked ? " 已开启" : " 已关闭"));
+    });
+    div.appendChild(ic); div.appendChild(info); div.appendChild(sw);
+    remEl.appendChild(div);
+  });
+
+  /* ---------- 我的页 ---------- */
+  function csvExport(){
+    var rows = [["时间","类型","内容"]];
+    records.forEach(function(r){ rows.push([r.time, r.title, r.desc]); });
+    var csv = "﻿" + rows.map(function(row){
+      return row.map(function(c){ return '"' + String(c).replace(/"/g, '""') + '"'; }).join(",");
+    }).join("\r\n");
+    var blob = new Blob([csv], { type:"text/csv;charset=utf-8" });
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "小桃子-今日记录.csv";
+    document.body.appendChild(a); a.click();
+    setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 500);
+    toast("成长数据已导出 ✓");
+  }
+  document.getElementById("btn-export").addEventListener("click", csvExport);
+  document.getElementById("btn-backup").addEventListener("click", function(){ toast("云端备份完成 · 数据很安全 ☁️"); });
+  document.getElementById("btn-notify").addEventListener("click", function(){ toast("通知设置：喂奶/疫苗/体检提醒均已开启"); });
+  document.getElementById("btn-night").addEventListener("click", function(){ toast("夜间模式开发中，敬请期待 🌙"); });
+  document.getElementById("btn-about").addEventListener("click", function(){ toast("桃子育儿 v1.0.0 · 陪伴宝宝每一天 🍑"); });
+
+})();
+</script>
+</body>
+</html>

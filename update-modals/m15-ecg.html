@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>版本更新 · 心电苏醒</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    min-height: 100vh; display: flex; align-items: center; justify-content: center;
+    font-family: -apple-system, "PingFang SC", "Microsoft YaHei", "Segoe UI", Roboto, sans-serif;
+    background: radial-gradient(120% 120% at 50% 0%, #0b1a12 0%, #050807 70%);
+    padding: 24px 16px;
+  }
+  .scrim { position: fixed; inset: 0; background: rgba(0,0,0,.45); pointer-events: none; }
+  .modal {
+    position: relative; z-index: 2; width: 340px; max-width: 100%;
+    background: #0a0f0c; border: 1px solid rgba(57,255,110,.25); border-radius: 18px;
+    box-shadow: 0 24px 60px rgba(0,0,0,.6), 0 0 40px rgba(57,255,110,.06);
+    padding: 24px 22px; color: #d7ffe2;
+  }
+  .modal.hidden { display: none; }
+  .header { display: flex; justify-content: space-between; align-items: center; }
+  .title { font-size: 16px; font-weight: 600; letter-spacing: .12em; }
+  .title .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #39ff6e;
+    box-shadow: 0 0 10px #39ff6e; margin-right: 8px; animation: blink 1.6s infinite; vertical-align: 1px; }
+  @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: .35; } }
+  .close { background: none; border: none; font-size: 20px; color: #5a6b60; cursor: pointer; line-height: 1; padding: 4px; }
+  .close:hover { color: #d7ffe2; }
+  .status { font-size: 13px; color: #9fd8b4; margin: 12px 0 4px; letter-spacing: .06em; }
+  .meta { font-size: 12px; color: #5a6b60; margin-bottom: 16px; font-variant-numeric: tabular-nums; }
+  .ecgwrap { position: relative; border: 1px solid rgba(57,255,110,.18); border-radius: 12px; overflow: hidden; background: #07130c; }
+  canvas { display: block; width: 100%; height: 150px; }
+  .bpm {
+    position: absolute; right: 10px; top: 8px; font-size: 12px; color: #39ff6e;
+    font-variant-numeric: tabular-nums; letter-spacing: .1em; opacity: .9;
+  }
+  .bignum { font-size: 44px; font-weight: 700; color: #39ff6e; font-variant-numeric: tabular-nums;
+    margin: 14px 0 2px; text-shadow: 0 0 22px rgba(57,255,110,.4); }
+  .bignum small { font-size: 18px; font-weight: 400; }
+  .mainbtn { width: 100%; padding: 13px; border-radius: 12px; font-size: 15px; letter-spacing: .25em; text-indent: .25em;
+    background: #39ff6e; color: #06120b; border: none; font-weight: 700; cursor: pointer; margin-top: 14px; }
+  .mainbtn:disabled { opacity: .45; cursor: default; }
+  .mainbtn.ghost { background: transparent; color: #9fd8b4; border: 1px solid rgba(57,255,110,.4); }
+  .replay { display: block; margin: 12px auto 0; background: none; border: none; color: #5a6b60; font-size: 12px; letter-spacing: .12em; cursor: pointer; }
+  .replay:hover { color: #39ff6e; }
+  .toast { position: fixed; top: 24px; left: 50%; transform: translateX(-50%) translateY(-12px);
+    background: #0e1a12; border: 1px solid rgba(57,255,110,.4); color: #d7ffe2;
+    font-size: 13px; padding: 10px 22px; border-radius: 99px; opacity: 0; pointer-events: none;
+    transition: opacity .25s, transform .25s; z-index: 10; }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+<div class="scrim"></div>
+<div class="modal" id="modal">
+  <div class="header">
+    <div class="title"><span class="dot"></span>版本更新 · 心电苏醒</div>
+    <button class="close" id="closeBtn">×</button>
+  </div>
+  <div class="status" id="statusText">正在唤醒 v4.0.0</div>
+  <div class="meta" id="metaText">0.0MB / 156.8MB · -- MB/s</div>
+  <div class="ecgwrap">
+    <canvas id="ecg" width="600" height="300"></canvas>
+    <div class="bpm"><span id="bpmText">32</span> BPM</div>
+  </div>
+  <div class="bignum"><span id="pctText">0</span><small>%</small></div>
+  <button class="mainbtn ghost" id="mainBtn">取消更新</button>
+  <button class="replay" id="replayBtn">↺ 重新演示</button>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+  const TOTAL_MB = 156.8;
+  let progress = 0, state = 'downloading', timer = null, showSpeed = 0, dimF = 1;
+  const modal = document.getElementById('modal');
+  const statusText = document.getElementById('statusText');
+  const metaText = document.getElementById('metaText');
+  const pctText = document.getElementById('pctText');
+  const bpmText = document.getElementById('bpmText');
+  const mainBtn = document.getElementById('mainBtn');
+  const toast = document.getElementById('toast');
+
+  // ---------- 心电 canvas ----------
+  const cv = document.getElementById('ecg'), ctx = cv.getContext('2d');
+  const W = 600, H = 300, MID = 150;
+  const grid = document.createElement('canvas'); grid.width = W; grid.height = H;
+  (function () {
+    const g = grid.getContext('2d');
+    g.fillStyle = '#07130c'; g.fillRect(0, 0, W, H);
+    g.strokeStyle = 'rgba(57,255,110,.08)'; g.lineWidth = 1;
+    for (let x = 0; x <= W; x += 30) { g.beginPath(); g.moveTo(x, 0); g.lineTo(x, H); g.stroke(); }
+    for (let y = 0; y <= H; y += 30) { g.beginPath(); g.moveTo(0, y); g.lineTo(W, y); g.stroke(); }
+  })();
+  const buf = new Array(W).fill(MID);
+  let phase = 0;
+  function gauss(x, c, w) { const d = (x - c) / w; return Math.exp(-d * d / 2); }
+  function ecgWave(ph) {
+    return gauss(ph, .14, .035) * .14 - gauss(ph, .22, .012) * .10
+         + gauss(ph, .26, .009) * 1.0 - gauss(ph, .305, .013) * .28
+         + gauss(ph, .50, .045) * .30;
+  }
+  // 心电推进（由下载tick驱动，与rAF解耦，虚拟时间下也确定性推进）
+  function advanceEcg(n) {
+    const p = progress / 100;
+    const bpm = state === 'installing' ? 120 : (32 + 48 * p);
+    const amp = (0.06 + 0.94 * p) * 105;
+    for (let k = 0; k < n; k++) {
+      phase += bpm / 3600;
+      const y = MID - ecgWave(phase % 1) * amp + (Math.random() - .5) * 5 * (1 - p * .7);
+      buf.push(y); buf.shift();
+    }
+  }
+  function drawEcg() {
+    ctx.drawImage(grid, 0, 0);
+    ctx.save();
+    ctx.globalAlpha = dimF;
+    ctx.strokeStyle = '#39ff6e'; ctx.lineWidth = 3.5; ctx.lineJoin = 'round';
+    ctx.shadowColor = '#39ff6e'; ctx.shadowBlur = 14;
+    ctx.beginPath();
+    for (let x = 0; x < W; x++) { const y = buf[x]; x === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y); }
+    ctx.stroke();
+    ctx.restore();
+    // 扫描头亮点
+    const hy = buf[W - 1];
+    ctx.fillStyle = '#d6ffe2'; ctx.shadowColor = '#39ff6e'; ctx.shadowBlur = 18;
+    ctx.beginPath(); ctx.arc(W - 2, hy, 6, 0, 7); ctx.fill();
+    ctx.shadowBlur = 0;
+    requestAnimationFrame(drawEcg);
+  }
+
+  // ---------- 通用 ----------
+  function showToast(msg) {
+    toast.textContent = msg; toast.classList.add('show');
+    clearTimeout(showToast._t);
+    showToast._t = setTimeout(() => toast.classList.remove('show'), 1800);
+  }
+  function render() {
+    const d = Math.floor(progress);
+    pctText.textContent = d;
+    bpmText.textContent = Math.round(32 + 48 * (progress / 100));
+    const mb = (progress / 100 * TOTAL_MB).toFixed(1);
+    metaText.textContent = mb + 'MB / ' + TOTAL_MB + 'MB · ' +
+      (state === 'downloading' ? showSpeed.toFixed(1) + ' MB/s' : '-- MB/s');
+  }
+  function setMain(label, ghost, disabled) {
+    mainBtn.textContent = label;
+    mainBtn.classList.toggle('ghost', !!ghost);
+    mainBtn.disabled = !!disabled;
+  }
+  function tick() {
+    if (state !== 'downloading') return;
+    const sp = 8 * (0.6 + Math.random() * 0.8);
+    showSpeed = showSpeed * 0.7 + sp * 0.3;
+    progress += sp * 0.1 / TOTAL_MB * 100;
+    advanceEcg(6);
+    if (progress >= 100) { progress = 100; render(); enterInstalling(); return; }
+    render();
+  }
+  function enterDownloading(reset) {
+    if (reset) { progress = 0; showSpeed = 0; dimF = 1; }
+    state = 'downloading'; dimF = 1;
+    statusText.textContent = '正在唤醒 v4.0.0';
+    setMain('取消更新', true, false);
+    clearInterval(timer); timer = setInterval(tick, 100); render();
+  }
+  function enterCancelled() {
+    state = 'cancelled'; clearInterval(timer); dimF = 0.3;
+    statusText.textContent = '信号中断，心跳已冻结';
+    setMain('重新下载', true, false);
+    showToast('已取消更新'); render();
+  }
+  function enterInstalling() {
+    state = 'installing'; clearInterval(timer);
+    statusText.textContent = '正在安装… 心率加速';
+    setMain('安装中…', true, true);
+    setTimeout(() => { if (state === 'installing') enterDone(); }, 2000);
+    render();
+  }
+  function enterDone() {
+    state = 'done'; dimF = 1;
+    statusText.textContent = '新版本已苏醒 ✚';
+    setMain('立即体验', false, false);
+    showToast('已更新到 v4.0.0'); render();
+  }
+  mainBtn.addEventListener('click', () => {
+    if (state === 'downloading') enterCancelled();
+    else if (state === 'cancelled') enterDownloading(true);
+    else if (state === 'done') { modal.classList.add('hidden'); showToast('已进入 v4.0.0'); }
+  });
+  document.getElementById('closeBtn').addEventListener('click', () => {
+    if (state === 'downloading') enterCancelled();
+    else modal.classList.add('hidden');
+  });
+  document.getElementById('replayBtn').addEventListener('click', () => {
+    modal.classList.remove('hidden'); enterDownloading(true);
+  });
+  window.addEventListener('load', () => {
+    requestAnimationFrame(drawEcg);
+    if (location.hash === '#mid') { progress = 55; advanceEcg(600); }
+    else if (location.hash === '#done') { progress = 100; advanceEcg(600); render(); enterInstalling(); setTimeout(() => enterDone(), 500); return; }
+    enterDownloading(false);
+  });
+</script>
+</body>
+</html>

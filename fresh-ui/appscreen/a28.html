@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>光影暗房</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{background:#000;display:flex;align-items:center;justify-content:center;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sans-serif;color:#f2e8e8;min-height:100vh}
+.phone{width:430px;height:900px;border-radius:44px;overflow:hidden;position:relative;background:#0a0505;box-shadow:0 30px 80px rgba(0,0,0,.8),0 0 0 10px #0c0a0a,0 0 0 12px #3a2626,0 0 70px rgba(255,40,40,.12)}
+.lamp{position:absolute;top:-40px;left:50%;transform:translateX(-50%);width:560px;height:260px;background:radial-gradient(closest-side,rgba(255,60,50,.16),transparent 70%);pointer-events:none}
+.screen{position:absolute;inset:0;display:flex;flex-direction:column;padding:22px 20px 0;z-index:2}
+@keyframes rise{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+.rise{animation:rise .8s cubic-bezier(.2,.8,.25,1) both}
+.topbar{display:flex;align-items:center;justify-content:space-between}
+.topbar .t{font-size:17px;font-weight:800;letter-spacing:3px;color:#ff6b5e}
+.topbar .t small{display:block;font-size:10px;letter-spacing:5px;color:#7a5a58;font-weight:400;margin-top:2px}
+.tbtn{height:36px;padding:0 16px;border-radius:18px;border:1px solid #5a3434;background:rgba(255,80,60,.08);color:#ff8a7a;font-size:13px;cursor:pointer;font-family:inherit}
+.photo{margin-top:16px;border-radius:20px;overflow:hidden;position:relative;border:1px solid #3a2424;box-shadow:0 18px 40px rgba(0,0,0,.6);transition:filter .35s}
+.photo .art{height:330px;position:relative;overflow:hidden}
+.sky{position:absolute;inset:0;background:linear-gradient(180deg,#2b0f1e 0%,#7a2030 34%,#e0703a 58%,#f5b060 72%,#3a1a2a 100%)}
+.sun{position:absolute;left:50%;top:150px;width:110px;height:110px;transform:translateX(-50%);border-radius:50%;background:radial-gradient(circle,#ffe9a8 0%,#ff9a4a 45%,rgba(255,120,60,0) 72%);box-shadow:0 0 60px 24px rgba(255,150,70,.5)}
+.mtn1{position:absolute;bottom:96px;left:-30px;width:260px;height:170px;background:linear-gradient(160deg,#3a1420,#160810);clip-path:polygon(0 100%,50% 0,100% 100%)}
+.mtn2{position:absolute;bottom:96px;right:-40px;width:300px;height:200px;background:linear-gradient(200deg,#4a1a26,#1c0a10);clip-path:polygon(0 100%,55% 0,100% 100%)}
+.snow{position:absolute;bottom:236px;left:82px;width:0;height:0;border-left:26px solid transparent;border-right:26px solid transparent;border-bottom:34px solid rgba(255,220,200,.35)}
+.lake{position:absolute;left:0;right:0;bottom:0;height:96px;background:linear-gradient(180deg,#8a4030 0%,#3a1620 60%,#14060c 100%)}
+.refl{position:absolute;left:50%;top:6px;width:76px;height:84px;transform:translateX(-50%);background:linear-gradient(180deg,rgba(255,170,90,.55),rgba(255,120,60,0));border-radius:50%;filter:blur(3px)}
+.ripple{position:absolute;left:10%;right:10%;height:2px;background:rgba(255,190,140,.35);border-radius:2px}
+.bird{position:absolute;width:22px;height:10px;border-top:3px solid #1c0a10;border-radius:50% 50% 0 0}
+.photo .tag{position:absolute;left:14px;bottom:12px;font-size:11px;letter-spacing:2px;color:#ffd9c9;background:rgba(20,6,6,.55);padding:5px 12px;border-radius:12px;border:1px solid rgba(255,150,120,.3)}
+.photo.f-warm{filter:sepia(.45) saturate(1.5) hue-rotate(-12deg)}
+.photo.f-teal{filter:saturate(1.25) hue-rotate(38deg) contrast(1.08)}
+.photo.f-bw{filter:grayscale(1) contrast(1.15)}
+.photo.f-noir{filter:grayscale(.9) contrast(1.5) brightness(.82)}
+.sec{margin:20px 2px 10px;font-size:14px;font-weight:700;letter-spacing:2px;color:#ff8a7a}
+.film{display:flex;gap:10px;overflow-x:auto;padding:4px 2px 8px;scrollbar-width:none}
+.film::-webkit-scrollbar{display:none}
+.fchip{flex-shrink:0;width:88px;cursor:pointer;border:2px solid transparent;border-radius:14px;overflow:hidden;background:#160b0b;transition:border-color .2s,transform .2s;padding:0;font-family:inherit}
+.fchip.on{border-color:#ff6b5e;transform:translateY(-3px)}
+.fchip .sw{height:56px}
+.fchip span{display:block;font-size:11px;color:#d8b8b4;padding:6px 0 8px;text-align:center}
+.sw-orig{background:linear-gradient(140deg,#7a2030,#e0703a)}
+.sw-warm{background:linear-gradient(140deg,#a04a1a,#ffcf7a);filter:sepia(.4) saturate(1.5)}
+.sw-teal{background:linear-gradient(140deg,#0e4a52,#e08a3a);filter:hue-rotate(35deg)}
+.sw-bw{background:linear-gradient(140deg,#333,#ddd);filter:grayscale(1)}
+.sw-noir{background:linear-gradient(140deg,#0a0a0a,#777);filter:grayscale(1) contrast(1.6) brightness(.8)}
+.sliders{margin-top:6px;display:flex;flex-direction:column;gap:14px;background:rgba(255,80,60,.05);border:1px solid #3a2424;border-radius:16px;padding:16px}
+.srow{display:flex;align-items:center;gap:12px}
+.srow label{font-size:13px;color:#d8b8b4;width:44px;flex-shrink:0}
+.srow output{font-size:12px;color:#ff8a7a;width:44px;text-align:right;font-variant-numeric:tabular-nums}
+input[type=range]{flex:1;-webkit-appearance:none;appearance:none;height:6px;border-radius:3px;background:linear-gradient(90deg,#ff3b30,#7a1a1a);outline:none;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:radial-gradient(circle at 34% 30%,#ffb3a8,#ff6b5e 65%,#b32b22);border:2px solid #ffd9d2;box-shadow:0 0 12px rgba(255,80,60,.7)}
+input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:#ff6b5e;border:2px solid #ffd9d2}
+.tabbar{margin-top:auto;height:86px;background:rgba(14,7,7,.94);backdrop-filter:blur(12px);border-top:1px solid #3a2424;display:flex;margin-left:-20px;margin-right:-20px;padding:0 10px}
+.tab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:11px;color:#7a5a58;cursor:pointer;border:none;background:none;font-family:inherit}
+.tab .ic{display:block;width:26px;height:26px;font-size:21px;line-height:26px;text-align:center;transition:transform .2s}
+.tab.on{color:#ff6b5e;font-weight:700}
+.tab.on .ic{transform:translateY(-2px) scale(1.1)}
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="lamp"></div>
+  <div class="screen">
+    <div class="topbar rise" style="animation-delay:-.7s">
+      <div class="t">光影暗房<small>显影进行中</small></div>
+      <div><button class="tbtn" onclick="resetAll()">重置</button> <button class="tbtn" onclick="saveTip(this)">导出</button></div>
+    </div>
+    <div class="photo rise" style="animation-delay:-.55s" id="photo">
+      <div class="art">
+        <div class="sky"></div><div class="sun"></div>
+        <div class="bird" style="left:22%;top:22%"></div>
+        <div class="bird" style="left:30%;top:17%;transform:scale(.7)"></div>
+        <div class="bird" style="left:66%;top:26%;transform:scale(.85)"></div>
+        <div class="mtn1"></div><div class="snow"></div><div class="mtn2"></div>
+        <div class="lake"><div class="refl"></div>
+          <div class="ripple" style="top:22px"></div><div class="ripple" style="top:44px;left:30%;right:20%"></div><div class="ripple" style="top:66px;left:18%;right:32%"></div>
+        </div>
+      </div>
+      <div class="tag">黄昏山湖 · 未命名 042</div>
+    </div>
+    <div class="sec rise" style="animation-delay:-.42s">滤镜胶片</div>
+    <div class="film rise" style="animation-delay:-.36s" id="film">
+      <button class="fchip on" data-f="" onclick="pickF(this)"><div class="sw sw-orig"></div><span>原片</span></button>
+      <button class="fchip" data-f="f-warm" onclick="pickF(this)"><div class="sw sw-warm"></div><span>暖阳</span></button>
+      <button class="fchip" data-f="f-teal" onclick="pickF(this)"><div class="sw sw-teal"></div><span>青橙</span></button>
+      <button class="fchip" data-f="f-bw" onclick="pickF(this)"><div class="sw sw-bw"></div><span>银盐</span></button>
+      <button class="fchip" data-f="f-noir" onclick="pickF(this)"><div class="sw sw-noir"></div><span>暗夜</span></button>
+    </div>
+    <div class="sliders rise" style="animation-delay:-.28s">
+      <div class="srow"><label>曝光</label><input type="range" min="50" max="150" value="100" oninput="adj(this,'exp')"><output id="o-exp">100</output></div>
+      <div class="srow"><label>对比</label><input type="range" min="50" max="150" value="100" oninput="adj(this,'con')"><output id="o-con">100</output></div>
+    </div>
+    <div class="tabbar">
+      <button class="tab on" onclick="setTab(this)"><span class="ic">🖼️</span>修图</button>
+      <button class="tab" onclick="setTab(this)"><span class="ic">🎞️</span>胶片</button>
+      <button class="tab" onclick="setTab(this)"><span class="ic">✨</span>特效</button>
+      <button class="tab" onclick="setTab(this)"><span class="ic">👤</span>我的</button>
+    </div>
+  </div>
+</div>
+<script>
+var photo=document.getElementById('photo'),baseF='',exp=100,con=100;
+var fmap={'':'','f-warm':'sepia(.45) saturate(1.5) hue-rotate(-12deg)','f-teal':'saturate(1.25) hue-rotate(38deg) contrast(1.08)','f-bw':'grayscale(1) contrast(1.15)','f-noir':'grayscale(.9) contrast(1.5) brightness(.82)'};
+function applyAll(){
+  photo.className='photo rise';
+  if(baseF)photo.classList.add(baseF);
+  photo.style.filter=(fmap[baseF]?fmap[baseF]+' ':'')+'brightness('+(exp/100)+') contrast('+(con/100)+')';
+}
+function pickF(el){
+  document.querySelectorAll('.fchip').forEach(function(c){c.classList.remove('on')});
+  el.classList.add('on');baseF=el.dataset.f;applyAll();
+}
+function adj(el,k){
+  document.getElementById('o-'+k).textContent=el.value;
+  if(k==='exp')exp=+el.value;else con=+el.value;applyAll();
+}
+function resetAll(){baseF='';exp=100;con=100;
+  document.querySelectorAll('.fchip').forEach(function(c,i){c.classList.toggle('on',i===0)});
+  document.querySelectorAll('input[type=range]').forEach(function(r){r.value=100});
+  document.getElementById('o-exp').textContent='100';document.getElementById('o-con').textContent='100';applyAll();}
+function saveTip(el){var t=el.textContent;el.textContent='已保存 ✓';setTimeout(function(){el.textContent=t;},1500);}
+function setTab(el){document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('on')});el.classList.add('on');}
+</script>
+</body>
+</html>

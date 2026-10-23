@@ -1,0 +1,26 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>冰雪纷飞</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:430px;height:900px}
+body{overflow:hidden;position:relative;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(#a8c6e8,#dfeefb 65%,#f4fafd);color:#fff}
+.stage{position:absolute;inset:0;overflow:hidden}
+.brand{position:absolute;left:0;right:0;top:648px;text-align:center;z-index:5;animation:brandIn 1s ease 2s both}
+.brand h1{font-size:36px;letter-spacing:10px;font-weight:800}
+.brand p{font-size:13px;letter-spacing:6px;opacity:.65;margin-top:10px}
+@keyframes brandIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.replay{position:absolute;bottom:36px;left:50%;transform:translateX(-50%);z-index:9;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.35);color:#fff;font-size:13px;padding:9px 26px;border-radius:24px;cursor:pointer;backdrop-filter:blur(6px)}
+.flake{position:absolute;top:-20px;background:#fff;border-radius:50%;opacity:.9;animation:snow linear infinite}
+@keyframes snow{to{transform:translateY(940px) translateX(40px)}}
+.bigsnow{position:absolute;left:50%;top:300px;width:150px;height:150px;transform:translate(-50%,-50%);animation:spin 24s linear infinite}
+@keyframes spin{to{transform:translate(-50%,-50%) rotate(360deg)}}
+.hill{position:absolute;bottom:0;left:-10%;width:120%;height:220px;background:#fff;border-radius:50% 50% 0 0;opacity:.9}
+</style></head><body>
+<div class="stage"><svg class="bigsnow" viewBox="0 0 100 100"><g stroke="#5b8fd6" stroke-width="5" stroke-linecap="round">
+<line x1="50" y1="8" x2="50" y2="92"/><line x1="14" y1="29" x2="86" y2="71"/><line x1="86" y1="29" x2="14" y2="71"/>
+<path d="M38 16l12 8 12-8M38 84l12-8 12 8" fill="none"/></g><circle cx="50" cy="50" r="10" fill="#5b8fd6"/></svg>
+<div class="hill"></div><div class="flake" style="left:0px;width:4px;height:4px;animation-duration:5s;animation-delay:-0.0s"></div><div class="flake" style="left:47px;width:7px;height:7px;animation-duration:6s;animation-delay:-0.7s"></div><div class="flake" style="left:94px;width:10px;height:10px;animation-duration:7s;animation-delay:-1.4s"></div><div class="flake" style="left:141px;width:4px;height:4px;animation-duration:8s;animation-delay:-2.0999999999999996s"></div><div class="flake" style="left:188px;width:7px;height:7px;animation-duration:5s;animation-delay:-2.8s"></div><div class="flake" style="left:235px;width:10px;height:10px;animation-duration:6s;animation-delay:-3.5s"></div><div class="flake" style="left:282px;width:4px;height:4px;animation-duration:7s;animation-delay:-4.199999999999999s"></div><div class="flake" style="left:329px;width:7px;height:7px;animation-duration:8s;animation-delay:-4.8999999999999995s"></div><div class="flake" style="left:376px;width:10px;height:10px;animation-duration:5s;animation-delay:-5.6s"></div><div class="flake" style="left:3px;width:4px;height:4px;animation-duration:6s;animation-delay:-6.3s"></div><div class="flake" style="left:50px;width:7px;height:7px;animation-duration:7s;animation-delay:-7.0s"></div><div class="flake" style="left:97px;width:10px;height:10px;animation-duration:8s;animation-delay:-7.699999999999999s"></div><div class="flake" style="left:144px;width:4px;height:4px;animation-duration:5s;animation-delay:-8.399999999999999s"></div><div class="flake" style="left:191px;width:7px;height:7px;animation-duration:6s;animation-delay:-9.1s"></div><div class="flake" style="left:238px;width:10px;height:10px;animation-duration:7s;animation-delay:-9.799999999999999s"></div><div class="flake" style="left:285px;width:4px;height:4px;animation-duration:8s;animation-delay:-10.5s"></div><div class="flake" style="left:332px;width:7px;height:7px;animation-duration:5s;animation-delay:-11.2s"></div><div class="flake" style="left:379px;width:10px;height:10px;animation-duration:6s;animation-delay:-11.899999999999999s"></div><div class="flake" style="left:6px;width:4px;height:4px;animation-duration:7s;animation-delay:-12.6s"></div><div class="flake" style="left:53px;width:7px;height:7px;animation-duration:8s;animation-delay:-13.299999999999999s"></div><div class="flake" style="left:100px;width:10px;height:10px;animation-duration:5s;animation-delay:-14.0s"></div><div class="flake" style="left:147px;width:4px;height:4px;animation-duration:6s;animation-delay:-14.7s"></div><div class="flake" style="left:194px;width:7px;height:7px;animation-duration:7s;animation-delay:-15.399999999999999s"></div><div class="flake" style="left:241px;width:10px;height:10px;animation-duration:8s;animation-delay:-16.099999999999998s"></div></div>
+<div class="brand"><h1>雪境</h1><p>SNOWFALL · 纯白</p></div>
+<button class="replay" onclick="location.reload()">&#8635; 重新播放</button>
+</body></html>

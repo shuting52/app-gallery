@@ -1,0 +1,31 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>心愿灯</title><style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{width:430px;height:900px;margin:0 auto;position:relative;overflow:hidden;
+font-family:-apple-system,"PingFang SC","Microsoft YaHei","Noto Sans CJK SC",sans-serif;
+background:linear-gradient(180deg,#050818 0%,#0e1a3f 65%,#1a2c5e 100%);color:#fff}
+.scene{position:absolute;inset:0}
+
+.stars3{position:absolute;inset:0;background-image:radial-gradient(circle,#fff 1.1px,transparent 1.6px);background-size:110px 120px;animation:tw 3.4s ease-in-out infinite alternate}
+@keyframes tw{to{opacity:.4}}
+.ln{position:absolute;bottom:-100px;animation-name:rise;animation-timing-function:linear;animation-iteration-count:infinite}
+@keyframes rise{to{transform:translateY(-1090px)}}
+.lbody{background:radial-gradient(circle at 50% 32%,#ffedbb,#ff9d4d 68%,#dd7c2c);border-radius:46% 46% 48% 48%/38% 38% 62% 62%;box-shadow:0 0 34px 10px rgba(255,170,80,.5);position:relative;animation:sway2 3.2s ease-in-out infinite alternate}
+@keyframes sway2{to{transform:translateX(30px)}}
+.lbody::before{content:"";position:absolute;top:-9px;left:50%;transform:translateX(-50%);width:60%;height:11px;background:#8a5a2a;border-radius:5px}
+
+.brand{position:absolute;left:0;right:0;bottom:118px;text-align:center;z-index:5;
+color:#ffe9c8;opacity:0;animation:brandIn 1s ease 2.2s both}
+.brand h1{font-size:34px;letter-spacing:8px;font-weight:800;text-shadow:0 2px 14px rgba(0,0,0,.35)}
+.brand p{font-size:13px;letter-spacing:3px;margin-top:10px;opacity:.85;text-shadow:0 1px 10px rgba(0,0,0,.35)}
+@keyframes brandIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.replay{position:absolute;left:50%;bottom:44px;transform:translateX(-50%);z-index:6;
+padding:10px 28px;border-radius:24px;border:1px solid rgba(255,255,255,.45);
+background:rgba(255,255,255,.14);color:#ffe9c8;font-size:14px;letter-spacing:2px;cursor:pointer}
+</style></head><body>
+<div class="scene"><div class="stars3"></div><div class="ln" style="left:40px;animation-duration:12s;animation-delay:-2s"><div class="lbody" style="width:52px;height:62px;animation-delay:-0.5s"></div></div><div class="ln" style="left:120px;animation-duration:14s;animation-delay:-7s"><div class="lbody" style="width:64px;height:76px;animation-delay:-1.8s"></div></div><div class="ln" style="left:210px;animation-duration:11s;animation-delay:-4s"><div class="lbody" style="width:48px;height:56px;animation-delay:-1s"></div></div><div class="ln" style="left:300px;animation-duration:15s;animation-delay:-9s"><div class="lbody" style="width:70px;height:84px;animation-delay:-2.4s"></div></div><div class="ln" style="left:370px;animation-duration:12s;animation-delay:-6s"><div class="lbody" style="width:54px;height:64px;animation-delay:-0.9s"></div></div><div class="ln" style="left:170px;animation-duration:16s;animation-delay:-11s"><div class="lbody" style="width:60px;height:72px;animation-delay:-2.9s"></div></div><div class="ln" style="left:260px;animation-duration:13s;animation-delay:-3s"><div class="lbody" style="width:46px;height:54px;animation-delay:-1.5s"></div></div><div class="ln" style="left:80px;animation-duration:15s;animation-delay:-8s"><div class="lbody" style="width:58px;height:68px;animation-delay:-2.1s"></div></div></div>
+<div class="brand"><h1>心愿灯</h1><p>一盏心愿 直上青云</p></div>
+<button class="replay" onclick="location.reload()">重新播放</button>
+</body></html>

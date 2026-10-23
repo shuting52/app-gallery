@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>樱落缤纷</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;overflow:hidden}
+.stage{position:fixed;inset:0;overflow:hidden}
+.brand{position:absolute;left:0;right:0;top:60%;text-align:center;z-index:30;animation:brandIn 1.1s cubic-bezier(.2,.7,.3,1.2) 1.7s both}
+.brand h1{font-size:44px;letter-spacing:14px;text-indent:14px;font-weight:800}
+.brand p{margin-top:12px;font-size:13px;letter-spacing:5px;opacity:.72}
+@keyframes brandIn{from{opacity:0;transform:translateY(26px) scale(.94)}to{opacity:1;transform:none}}
+.replay{position:absolute;left:50%;bottom:52px;transform:translateX(-50%);z-index:40;border:1px solid rgba(255,255,255,.4);background:rgba(255,255,255,.14);color:#fff;border-radius:999px;padding:10px 28px;font-size:13px;letter-spacing:3px;cursor:pointer;backdrop-filter:blur(6px)}
+.replay.dk{border-color:rgba(0,0,0,.25);background:rgba(0,0,0,.08);color:#2a2a2a}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes rise{from{transform:translateY(0);opacity:0}12%{opacity:1}to{transform:translateY(-340px) translateX(var(--dx,0px));opacity:0}}
+@keyframes fall{to{transform:translateY(960px)}}
+@keyframes sway{from{transform:rotate(-9deg)}to{transform:rotate(9deg)}}
+@keyframes hover{0%,100%{transform:translateY(0)}50%{transform:translateY(-16px)}}
+@keyframes ringX{from{transform:translateX(-50%) scale(.5);opacity:.8}to{transform:translateX(-50%) scale(1.5);opacity:0}}
+@keyframes tw{0%,100%{opacity:.15}50%{opacity:1}}
+
+.stage{background:linear-gradient(#ffeef4,#ffd9e8 60%,#f6b4cd)}
+ .brand h1{color:#2b2b33}.brand p{color:#5a5a66}
+.br{position:absolute;top:9%;left:-46px;width:230px;height:26px;background:#5a3a44;border-radius:50%;transform:rotate(-16deg)}
+.bl{position:absolute;border-radius:50%;background:radial-gradient(circle at 35% 35%,#ffd6e7,#f78fb8);box-shadow:0 0 8px rgba(247,143,184,.6)}
+.pet{position:absolute;top:-30px;width:16px;height:22px;background:radial-gradient(circle at 35% 35%,#ffdcec,#f78fb8);border-radius:60% 40% 60% 40%;opacity:.95;animation:pfall linear infinite}
+@keyframes pfall{to{transform:translateY(980px) rotate(680deg)}}
+</style></head>
+<body><div class="stage">
+<div class="br"></div>
+<span class="bl" style="left:8%;top:10%;width:26px;height:26px"></span>
+<span class="bl" style="left:16%;top:7%;width:20px;height:20px"></span>
+<span class="bl" style="left:24%;top:12%;width:24px;height:24px"></span>
+<span class="bl" style="left:4%;top:16%;width:18px;height:18px"></span>
+<span class="bl" style="left:30%;top:8%;width:16px;height:16px"></span>
+<span class="pet" style="left:26%;animation-delay:-7.8s;animation-duration:10.7s"></span>
+<span class="pet" style="left:39%;animation-delay:-1.5s;animation-duration:8.5s"></span>
+<span class="pet" style="left:72%;animation-delay:-3.8s;animation-duration:7.4s"></span>
+<span class="pet" style="left:96%;animation-delay:-5.3s;animation-duration:12.2s"></span>
+<span class="pet" style="left:47%;animation-delay:-4.6s;animation-duration:7.5s"></span>
+<span class="pet" style="left:83%;animation-delay:-7.4s;animation-duration:9.4s"></span>
+<span class="pet" style="left:52%;animation-delay:-5.6s;animation-duration:12.2s"></span>
+<span class="pet" style="left:6%;animation-delay:-9.1s;animation-duration:7.4s"></span>
+<span class="pet" style="left:28%;animation-delay:-8.8s;animation-duration:12.7s"></span>
+<span class="pet" style="left:90%;animation-delay:-7.9s;animation-duration:7.2s"></span>
+<span class="pet" style="left:59%;animation-delay:-0.3s;animation-duration:9.9s"></span>
+<span class="pet" style="left:9%;animation-delay:-10.4s;animation-duration:8.0s"></span>
+<span class="pet" style="left:94%;animation-delay:-1.7s;animation-duration:12.7s"></span>
+<span class="pet" style="left:41%;animation-delay:-0.4s;animation-duration:11.3s"></span>
+<span class="pet" style="left:66%;animation-delay:-3.9s;animation-duration:7.0s"></span>
+<span class="pet" style="left:82%;animation-delay:-7.3s;animation-duration:11.5s"></span>
+<span class="pet" style="left:84%;animation-delay:-6.1s;animation-duration:8.5s"></span>
+<span class="pet" style="left:46%;animation-delay:-8.7s;animation-duration:10.9s"></span>
+<span class="pet" style="left:52%;animation-delay:-2.8s;animation-duration:12.5s"></span>
+<span class="pet" style="left:68%;animation-delay:-6.7s;animation-duration:13.0s"></span>
+<span class="pet" style="left:89%;animation-delay:-3.3s;animation-duration:9.5s"></span>
+<span class="pet" style="left:28%;animation-delay:-9.0s;animation-duration:12.7s"></span>
+<span class="pet" style="left:42%;animation-delay:-9.3s;animation-duration:7.2s"></span>
+<span class="pet" style="left:14%;animation-delay:-3.0s;animation-duration:12.8s"></span>
+<div class="brand"><h1>樱语</h1><p>花开一瞬 落英缤纷</p></div>
+<button class="replay dk">重新播放</button>
+<script>
+var tpl=document.body.innerHTML;
+function bind(){document.querySelector('.replay').onclick=function(){document.body.innerHTML=tpl;bind();};}
+bind();
+</script>
+</div></body></html>

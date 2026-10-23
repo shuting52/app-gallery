@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>MERCURY UI · 水银流体</title>
+<style>
+/* ============ MERCURY UI · 设计语言（水银流体） ============
+   银灰镜面 · 液态金属 · 表面张力：铬面高光、水银珠、黏性聚合 */
+:root{
+  --bg:#e4e8ed;
+  --ink:#22252b;
+  --ink2:#3b4048;
+  --muted:#7d8692;
+  --line:rgba(34,37,43,.13);
+  --line2:rgba(34,37,43,.22);
+  --card:rgba(255,255,255,.68);
+  --card-solid:#eef1f4;
+  --steel:#5b7ea6;
+  --steel-d:#3e5c7e;
+  --danger:#cf4444;
+  --chrome:linear-gradient(165deg,#ffffff 0%,#dde2e9 27%,#a4aeb9 49%,#eef1f5 53%,#8d97a3 76%,#ccd3dc 100%);
+  --chrome-h:linear-gradient(100deg,#fafcfe 0%,#ccd3dc 28%,#95a1af 49%,#eef1f5 54%,#a3adb9 79%,#dde2e9 100%);
+  --sphere:radial-gradient(circle at 32% 28%,#ffffff 0 9%,#e3e8ee 24%,#9aa5b3 50%,#e9edf2 58%,#767f8b 80%,#c3cbd4 100%);
+  --r:1.1rem;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{
+  margin:0;color:var(--ink);
+  font-family:system-ui,-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;
+  background:#c9cfd7 radial-gradient(1200px 700px at 20% -10%,#eef1f5,transparent 60%),
+    radial-gradient(1000px 800px at 110% 110%,#aeb6c1,transparent 55%);
+  display:flex;align-items:center;justify-content:center;
+}
+/* App 外壳 */
+.phone{
+  position:relative;width:100%;max-width:430px;height:100dvh;
+  background:linear-gradient(168deg,#eef1f5 0%,#dde2e9 46%,#ccd3dc 100%);
+  overflow:hidden;display:flex;flex-direction:column;
+}
+.phone::before{ /* 底部洼地里的一滩水银 */
+  content:"";position:absolute;left:-70px;right:-70px;bottom:-120px;height:230px;z-index:0;
+  background:radial-gradient(50% 100% at 50% 100%,rgba(122,133,148,.5),rgba(122,133,148,0) 70%);
+  pointer-events:none;
+}
+@media(min-width:520px){
+  body{padding:24px}
+  .phone{height:min(880px,94dvh);border:1px solid rgba(34,37,43,.35);border-radius:2.4rem;
+    box-shadow:0 0 0 6px #f4f6f9,0 0 0 7px rgba(34,37,43,.25),0 34px 80px rgba(30,36,46,.45)}
+}
+/* 顶部栏 */
+.appbar{
+  flex:0 0 auto;display:flex;align-items:center;gap:.7rem;position:relative;z-index:5;
+  padding:calc(.85rem + env(safe-area-inset-top)) 1.1rem .85rem;
+  background:rgba(244,246,249,.55);backdrop-filter:blur(14px) saturate(1.3);-webkit-backdrop-filter:blur(14px) saturate(1.3);
+  border-bottom:1px solid rgba(255,255,255,.65);
+  box-shadow:0 1px 0 rgba(34,37,43,.06),0 10px 24px -18px rgba(34,37,43,.35);
+}
+.appbar .logo{width:36px;height:36px;flex:0 0 auto;border-radius:50%;background:var(--sphere);
+  box-shadow:inset 0 -6px 10px rgba(52,60,72,.45),inset 0 4px 6px rgba(255,255,255,.9),0 4px 10px rgba(40,48,60,.35);
+  animation:bob 5s ease-in-out -2s infinite alternate}
+@keyframes bob{from{transform:translateY(-1.5px)}to{transform:translateY(2.5px)}}
+.appbar h1{margin:0;font-size:1.04rem;letter-spacing:.04em}
+.appbar h1 small{display:block;font-size:.66rem;font-weight:400;color:var(--muted);letter-spacing:.14em;margin-top:.1rem}
+.appbar .sp{flex:1}
+/* 页面滚动区 */
+.screens{flex:1;position:relative;overflow:hidden;z-index:1}
+.screen{position:absolute;inset:0;overflow-y:auto;padding:1.1rem 1.1rem 1.5rem;display:none;scrollbar-width:none}
+.screen::-webkit-scrollbar{display:none}
+.screen.active{display:block;animation:screen-in .25s ease}
+@keyframes screen-in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.sec{margin:0 0 1.6rem}
+.sec-t{display:flex;align-items:center;gap:.55rem;margin:0 0 .8rem;font-size:.8rem;letter-spacing:.14em;color:var(--ink2);font-weight:700}
+.sec-t::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--line2),transparent)}
+.sec-t .n{background:var(--chrome);border:1px solid var(--line2);color:var(--ink);font-size:.66rem;min-width:1.3rem;height:1.3rem;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;padding:0 .3rem;box-shadow:inset 0 1px 0 #fff}
+/* 底部 Tab 栏 · 悬浮玻璃胶囊 + 水银 pill */
+.tabbar{
+  position:relative;flex:0 0 auto;display:flex;z-index:5;
+  background:rgba(243,245,248,.6);backdrop-filter:blur(16px) saturate(1.4);-webkit-backdrop-filter:blur(16px) saturate(1.4);
+  border:1px solid rgba(255,255,255,.7);border-radius:2rem;
+  margin:.55rem .9rem calc(.75rem + env(safe-area-inset-bottom));
+  padding:.35rem;box-shadow:inset 0 1px 0 #fff,0 14px 30px -12px rgba(34,40,52,.45);
+}
+.tab-pill{
+  position:absolute;top:.35rem;bottom:.35rem;left:.35rem;width:60px;border-radius:1.5rem;
+  background:var(--chrome);border:1px solid rgba(34,37,43,.22);
+  box-shadow:inset 0 1px 0 #fff,inset 0 -6px 10px rgba(60,70,84,.28),0 4px 10px rgba(40,48,60,.3);
+  transition:left .38s cubic-bezier(.6,1.35,.4,1),width .3s ease;z-index:0;
+}
+.tab{flex:1;border:0;background:none;color:var(--muted);font-family:inherit;cursor:pointer;
+  display:flex;flex-direction:column;align-items:center;gap:.16rem;
+  font-size:.62rem;font-weight:500;padding:.45rem 0 .32rem;border-radius:1.2rem;position:relative;z-index:1;transition:color .2s}
+.tab svg{width:22px;height:22px}
+.tab.on{color:var(--ink);font-weight:700}
+/* ============ 按钮 ============ */
+.btn{
+  --pad:.72rem 1.3rem;--fs:.95rem;
+  position:relative;display:inline-flex;align-items:center;justify-content:center;gap:.45rem;
+  font-family:inherit;font-size:var(--fs);font-weight:600;line-height:1;
+  padding:var(--pad);border-radius:999px;border:1px solid transparent;cursor:pointer;
+  transition:transform .16s ease,box-shadow .2s ease,background-position .5s ease,filter .2s;
+  overflow:hidden;white-space:nowrap;
+}
+.btn:active{transform:scale(.955)}
+.btn:focus-visible{outline:2px dashed var(--steel);outline-offset:3px}
+.btn .rip{position:absolute;border-radius:50%;background:rgba(255,255,255,.55);transform:translate(-50%,-50%) scale(0);pointer-events:none;animation:rip .55s ease-out forwards}
+@keyframes rip{to{transform:translate(-50%,-50%) scale(1);opacity:0}}
+/* 镜面主按钮：流光铬面 */
+.btn-chrome{
+  background:var(--chrome-h);background-size:220% 100%;background-position:0% 0;color:var(--ink);
+  border-color:rgba(34,37,43,.25);
+  box-shadow:inset 0 1px 0 #fff,inset 0 -9px 15px rgba(64,74,88,.32),inset 0 3px 5px rgba(255,255,255,.65),0 8px 18px -6px rgba(40,48,60,.5);
+}
+.btn-chrome:hover{background-position:95% 0}
+.btn-chrome:active{border-radius:46% 54% 52% 48%/58% 55% 45% 42%} /* 按压时表面张力变形 */
+.btn-graphite{background:linear-gradient(180deg,#454b54,#26292f);color:#e8ecf1;border-color:rgba(0,0,0,.5);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.28),inset 0 -8px 13px rgba(0,0,0,.5),0 8px 16px -6px rgba(20,24,30,.55)}
+.btn-ghost{background:rgba(255,255,255,.25);color:var(--ink2);border:1.5px solid var(--line2);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.7)}
+.btn-ghost:hover{background:rgba(255,255,255,.55)}
+.btn-danger{background:linear-gradient(165deg,#ffe3e3 0%,#ef9d9d 30%,#d84f4f 52%,#f3b1b1 55%,#b93232 100%);color:#fff;border-color:rgba(120,20,20,.4);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.8),inset 0 -9px 14px rgba(110,15,15,.4),0 8px 16px -6px rgba(150,40,40,.5);text-shadow:0 1px 2px rgba(110,15,15,.45)}
+.btn[disabled]{cursor:not-allowed;filter:grayscale(.85) opacity(.55);pointer-events:none}
+.btn.sm{--pad:.5rem .95rem;--fs:.82rem}
+.btn.lg{--pad:.95rem 1.8rem;--fs:1.08rem}
+.btn.block{width:100%}
+/* 液态注入按钮：水银自下而上漫过 */
+.btn-liquid{background:rgba(250,251,253,.85);color:var(--ink);border:1.5px solid var(--line2);z-index:0;
+  box-shadow:inset 0 1px 0 #fff,0 6px 14px -6px rgba(40,48,60,.35)}
+.btn-liquid i.fill{position:absolute;left:50%;top:112%;width:230px;height:230px;margin-left:-115px;z-index:-1;
+  background:linear-gradient(160deg,#d5dce4,#8d97a4 70%,#aeb7c2);
+  border-radius:44% 56% 53% 47%/52% 45% 55% 48%;
+  animation:liqspin 7s linear infinite;transition:top .55s cubic-bezier(.55,.06,.3,1)}
+@keyframes liqspin{to{transform:rotate(360deg)}}
+.btn-liquid:hover i.fill,.btn-liquid.on i.fill{top:12%}
+.btn-liquid:active{transform:scale(.97)}
+/* 加载按钮 */
+.spin-drop{width:17px;height:17px;flex:0 0 auto;border-radius:50%;
+  background:conic-gradient(from 0deg,rgba(34,37,43,0) 8%,var(--ink) 88%);
+  -webkit-mask:radial-gradient(circle,transparent 0 5.5px,#000 6px);mask:radial-gradient(circle,transparent 0 5.5px,#000 6px);
+  animation:rot .8s linear infinite}
+@keyframes rot{to{transform:rotate(360deg)}}
+/* 图标按钮 · 水银珠 */
+.icobtn{
+  width:46px;height:46px;border-radius:50%;border:1px solid rgba(34,37,43,.22);cursor:pointer;
+  background:var(--chrome);color:var(--ink2);display:inline-flex;align-items:center;justify-content:center;
+  box-shadow:inset 0 1px 0 #fff,inset 0 -6px 10px rgba(60,70,84,.3),0 5px 12px -3px rgba(40,48,60,.4);
+  font-family:inherit;transition:transform .15s,border-radius .25s;
+}
+.icobtn svg{width:20px;height:20px}
+.icobtn:hover{border-radius:44% 56% 52% 48%/55% 46% 54% 45%}
+.icobtn:active{transform:scale(.9)}
+.icobtn.dark{background:linear-gradient(180deg,#454b54,#26292f);color:#e8ecf1;border-color:rgba(0,0,0,.5)}
+.icobtn.sm{width:38px;height:38px}
+.icobtn.sm svg{width:17px;height:17px}
+/* 磁吸演示区 */
+.magnet-zone{position:relative;border:1.5px dashed var(--line2);border-radius:var(--r);padding:1.6rem .5rem;
+  display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.3)}
+#magnetBtn{transition:transform .25s cubic-bezier(.4,1.6,.4,1)}
+</style>
+<style>
+/* ============ 表单 ============ */
+.field{margin-bottom:1rem}
+.field label{display:block;font-size:.78rem;font-weight:700;margin-bottom:.45rem;letter-spacing:.05em;color:var(--ink2)}
+.field label small{color:var(--muted);font-weight:400}
+.inp,textarea.inp,select.inp{
+  width:100%;background:rgba(255,255,255,.62);border:1.5px solid var(--line2);border-radius:.85rem;
+  color:var(--ink);font-family:inherit;font-size:.92rem;padding:.75rem .9rem;outline:none;
+  box-shadow:inset 0 2px 6px rgba(60,70,84,.14),inset 0 1px 0 #fff;transition:box-shadow .18s,border-color .18s;
+}
+.inp::placeholder{color:#9aa3ae}
+.inp:focus{border-color:var(--steel);box-shadow:inset 0 2px 6px rgba(60,70,84,.1),0 0 0 3px rgba(91,126,166,.28)}
+textarea.inp{min-height:84px;resize:vertical}
+.selwrap{position:relative}
+.selwrap::after{content:"";position:absolute;right:1rem;top:50%;width:9px;height:9px;pointer-events:none;
+  border-right:2px solid var(--ink2);border-bottom:2px solid var(--ink2);transform:translateY(-70%) rotate(45deg)}
+.selwrap select{-webkit-appearance:none;appearance:none;padding-right:2.4rem;cursor:pointer;
+  background:var(--chrome-h);background-size:200% 100%}
+.selwrap select:focus{background-position:90% 0}
+.searchbar{display:flex;align-items:center;gap:.6rem;background:rgba(255,255,255,.62);
+  border:1.5px solid var(--line2);border-radius:999px;padding:.68rem 1rem;
+  box-shadow:inset 0 2px 6px rgba(60,70,84,.12)}
+.searchbar:focus-within{border-color:var(--steel);box-shadow:inset 0 2px 6px rgba(60,70,84,.08),0 0 0 3px rgba(91,126,166,.25)}
+.searchbar svg{width:18px;height:18px;color:var(--muted);flex:0 0 auto}
+.searchbar input{flex:1;background:none;border:0;outline:none;color:var(--ink);font-family:inherit;font-size:.9rem;min-width:0}
+/* 水银开关：液滴滑动 + 拉伸 */
+.switch{position:relative;display:inline-flex;align-items:center;cursor:pointer}
+.switch input{position:absolute;opacity:0;inset:0;cursor:pointer;margin:0}
+.switch .tr{width:58px;height:32px;flex:0 0 auto;border-radius:999px;border:1.5px solid var(--line2);
+  background:linear-gradient(180deg,#c6ccd5,#aeb6c1);position:relative;
+  box-shadow:inset 0 2px 6px rgba(40,48,60,.3),inset 0 -1px 0 rgba(255,255,255,.6);transition:background .2s}
+.switch .knob{position:absolute;top:3px;left:4px;width:24px;height:24px;border-radius:50%;
+  background:var(--sphere);
+  box-shadow:inset 0 -4px 6px rgba(52,60,72,.5),inset 0 3px 4px rgba(255,255,255,.9),0 2px 5px rgba(40,48,60,.4);
+  transition:left .26s cubic-bezier(.55,1.5,.4,1),width .26s cubic-bezier(.55,1.5,.4,1),margin-left .26s cubic-bezier(.55,1.5,.4,1)}
+.switch input:checked~.tr{background:linear-gradient(180deg,#7d99bb,#5b7ea6)}
+.switch input:checked~.tr .knob{left:29px;width:29px;margin-left:-5px} /* 拨动时拉伸成液滴 */
+.switch input:focus-visible~.tr{outline:2px dashed var(--steel);outline-offset:3px}
+.switch.lb{gap:.7rem;font-size:.9rem;font-weight:500;color:var(--ink2)}
+/* 复选 / 单选 */
+.check{display:flex;align-items:center;gap:.7rem;padding:.6rem .2rem;cursor:pointer;font-size:.9rem;color:var(--ink2);position:relative}
+.check input{position:absolute;opacity:0;margin:0}
+.check .box{width:26px;height:26px;border-radius:.6rem;border:1.5px solid var(--line2);background:var(--chrome);
+  background-size:200% 100%;display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;
+  box-shadow:inset 0 1px 0 #fff,0 2px 5px rgba(40,48,60,.25);transition:all .15s}
+.check .box svg{width:14px;height:14px;color:#fff;opacity:0;transform:scale(.4);transition:all .16s}
+.check input:checked+.box{background:linear-gradient(180deg,#6f8cb3,#47688e);border-color:rgba(40,60,85,.5)}
+.check input:checked+.box svg{opacity:1;transform:scale(1)}
+.check .box.radio{border-radius:50%}
+.check .box.radio::before{content:"";width:10px;height:10px;border-radius:50%;background:#fff;opacity:0;transform:scale(.3);transition:all .16s;box-shadow:0 1px 3px rgba(0,0,0,.4)}
+.check input:checked+.box.radio{background:linear-gradient(180deg,#6f8cb3,#47688e)}
+.check input:checked+.box.radio::before{opacity:1;transform:scale(1)}
+/* 滑杆 */
+.slider-row{display:flex;align-items:center;gap:.8rem}
+input[type=range].slider{flex:1;-webkit-appearance:none;appearance:none;height:12px;border-radius:999px;
+  border:1px solid var(--line2);
+  background:linear-gradient(to right,#8f99a6 var(--v,50%),rgba(255,255,255,.5) var(--v,50%));
+  box-shadow:inset 0 2px 5px rgba(40,48,60,.28),inset 0 1px 0 #fff;outline-offset:4px;cursor:pointer}
+input[type=range].slider::-webkit-slider-thumb{-webkit-appearance:none;width:28px;height:28px;border-radius:50%;
+  background:var(--sphere);border:1px solid rgba(34,37,43,.25);cursor:pointer;
+  box-shadow:inset 0 -5px 8px rgba(52,60,72,.45),inset 0 3px 4px rgba(255,255,255,.95),0 4px 9px rgba(40,48,60,.4)}
+input[type=range].slider::-moz-range-thumb{width:26px;height:26px;border-radius:50%;background:var(--sphere);border:1px solid rgba(34,37,43,.25);cursor:pointer}
+.slider-val{min-width:3.2rem;text-align:center;font-weight:700;font-variant-numeric:tabular-nums;
+  background:var(--chrome);border:1px solid var(--line2);border-radius:.65rem;padding:.32rem .4rem;font-size:.8rem;
+  box-shadow:inset 0 1px 0 #fff}
+/* 步进器 */
+.stepper{display:inline-flex;align-items:center;gap:.15rem;background:var(--card);
+  border:1.5px solid var(--line2);border-radius:999px;padding:.25rem;box-shadow:inset 0 1px 0 #fff,0 4px 10px -4px rgba(40,48,60,.35)}
+.stepper button{width:36px;height:36px;border-radius:50%;border:1px solid rgba(34,37,43,.2);cursor:pointer;
+  background:var(--chrome);color:var(--ink);font-size:1.1rem;font-weight:700;font-family:inherit;line-height:1;
+  box-shadow:inset 0 1px 0 #fff;transition:transform .12s}
+.stepper button:active{transform:scale(.88)}
+.stepper b{min-width:2.4rem;text-align:center;font-size:1rem;font-variant-numeric:tabular-nums}
+/* 分段选择 */
+.segmented{display:flex;background:rgba(255,255,255,.45);border:1.5px solid var(--line2);border-radius:999px;
+  padding:.25rem;gap:.25rem;box-shadow:inset 0 2px 6px rgba(60,70,84,.14)}
+.segmented button{flex:1;border:0;background:none;color:var(--muted);font-family:inherit;font-weight:500;
+  font-size:.85rem;padding:.62rem 0;border-radius:999px;cursor:pointer;transition:all .18s}
+.segmented button.on{background:var(--chrome);color:var(--ink);font-weight:700;
+  box-shadow:inset 0 1px 0 #fff,0 3px 8px rgba(40,48,60,.3);border:1px solid rgba(34,37,43,.16)}
+/* 评分水滴 */
+.rating{display:flex;gap:.5rem}
+.rating button{border:0;background:none;cursor:pointer;padding:2px;width:46px;height:52px;transition:transform .14s}
+.rating button i{display:block;width:38px;height:38px;margin:0 auto;background:linear-gradient(180deg,#d4d9e0,#b6bec8);
+  border:1px solid var(--line2);border-radius:50% 50% 50% 4px;transform:rotate(45deg);transition:all .18s;
+  box-shadow:inset 2px 2px 4px rgba(255,255,255,.8),inset -3px -3px 6px rgba(60,70,84,.25)}
+.rating button.lit i{background:var(--sphere);border-color:rgba(34,37,43,.22);
+  box-shadow:inset 0 -5px 8px rgba(52,60,72,.45),inset 0 3px 5px rgba(255,255,255,.95),0 4px 10px rgba(40,48,60,.35)}
+.rating button:active{transform:scale(1.18)}
+/* 上传 */
+.dropzone{border:2px dashed var(--line2);border-radius:var(--r);padding:1.6rem 1rem;text-align:center;
+  background:rgba(255,255,255,.32);cursor:pointer;transition:all .2s;color:var(--muted)}
+.dropzone:hover{background:rgba(255,255,255,.55);border-color:var(--steel)}
+.dropzone .drop{width:52px;height:52px;margin:0 auto .6rem;border-radius:50% 50% 50% 6px;transform:rotate(45deg);
+  background:var(--sphere);box-shadow:inset 0 -6px 10px rgba(52,60,72,.45),inset 0 4px 6px rgba(255,255,255,.9),0 6px 12px rgba(40,48,60,.3);
+  animation:bob 3.4s ease-in-out -1.5s infinite alternate}
+.dropzone b{display:block;color:var(--ink2);font-size:.9rem;margin-bottom:.25rem}
+.dropzone small{font-size:.75rem}
+/* ============ 展示 ============ */
+.card{
+  background:var(--card);border:1px solid rgba(255,255,255,.75);border-radius:var(--r);
+  padding:1rem;position:relative;overflow:hidden;
+  box-shadow:inset 0 1px 0 #fff,0 12px 28px -12px rgba(34,40,52,.35);
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+}
+.card.solid{background:var(--card-solid)}
+.card h3{margin:.2rem 0 .4rem;font-size:1rem}
+.card p{margin:0;color:var(--muted);font-size:.85rem;line-height:1.6}
+.card .media{height:110px;border-radius:.75rem;margin:-.2rem -.2rem .8rem;position:relative;overflow:hidden;
+  background:linear-gradient(135deg,#8d97a3,#c8cfd8 45%,#79828e 70%,#aeb7c2);
+  border:1px solid rgba(34,37,43,.18)}
+.card .media::after{content:"";position:absolute;top:-40%;bottom:-40%;left:-30%;width:45%;transform:rotate(18deg);
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.55),transparent);animation:sheen 4.5s ease-in-out -2s infinite}
+@keyframes sheen{0%,55%{left:-45%}90%,100%{left:130%}}
+.card .media .orb{position:absolute;right:18px;top:50%;width:74px;height:74px;margin-top:-37px;border-radius:50%;
+  background:var(--sphere);box-shadow:inset 0 -9px 14px rgba(52,60,72,.5),inset 0 5px 8px rgba(255,255,255,.95),0 8px 18px rgba(30,36,46,.4);
+  animation:bob 4s ease-in-out -1s infinite alternate}
+.badge{position:absolute;left:.7rem;top:.7rem;background:rgba(34,37,43,.85);color:#eef1f5;font-size:.68rem;font-weight:600;
+  padding:.28rem .65rem;border-radius:999px;box-shadow:0 3px 8px rgba(0,0,0,.25)}
+.chip{
+  border:1.5px solid var(--line2);background:rgba(255,255,255,.5);color:var(--ink2);font-family:inherit;font-weight:500;
+  font-size:.78rem;padding:.42rem .9rem;border-radius:999px;cursor:pointer;transition:all .16s;box-shadow:inset 0 1px 0 #fff}
+.chip.on{background:linear-gradient(180deg,#454b54,#26292f);color:#eef1f5;border-color:rgba(0,0,0,.4);font-weight:600;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.25)}
+.tag{display:inline-flex;align-items:center;gap:.35rem;font-size:.7rem;font-weight:700;
+  padding:.3rem .65rem;border-radius:999px;border:1px solid var(--line2);background:rgba(255,255,255,.55);color:var(--ink2)}
+.tag.steel{background:linear-gradient(180deg,#6f8cb3,#47688e);color:#fff;border-color:rgba(40,60,85,.45)}
+.tag.dark{background:linear-gradient(180deg,#454b54,#26292f);color:#eef1f5;border-color:rgba(0,0,0,.4)}
+.tag .dot{width:.5rem;height:.5rem;border-radius:50%;background:currentColor}
+/* 头像 */
+.avatar{width:52px;height:52px;border-radius:50%;border:2px solid rgba(255,255,255,.9);flex:0 0 auto;
+  display:inline-flex;align-items:center;justify-content:center;font-weight:700;color:var(--ink);font-size:1.02rem;
+  background:var(--chrome);box-shadow:inset 0 -5px 8px rgba(60,70,84,.35),0 4px 10px rgba(40,48,60,.3)}
+.avatar.stack{margin-left:-14px}
+.avatar.dark{background:linear-gradient(180deg,#454b54,#26292f);color:#eef1f5}
+/* 列表行 */
+.rows{background:var(--card);border:1px solid rgba(255,255,255,.7);border-radius:var(--r);overflow:hidden;
+  box-shadow:inset 0 1px 0 #fff,0 10px 24px -12px rgba(34,40,52,.3);
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.row-it{display:flex;align-items:center;gap:.85rem;padding:.85rem 1rem;border:0;width:100%;
+  background:none;color:var(--ink);font-family:inherit;text-align:left;cursor:pointer;font-size:.92rem}
+.row-it+.row-it{border-top:1px solid var(--line)}
+.row-it .ri{width:40px;height:40px;border-radius:50%;flex:0 0 auto;background:var(--chrome);
+  border:1px solid rgba(34,37,43,.18);display:flex;align-items:center;justify-content:center;color:var(--ink2);
+  box-shadow:inset 0 1px 0 #fff}
+.row-it .ri svg{width:19px;height:19px}
+.row-it .tx{flex:1;min-width:0}
+.row-it .tx b{display:block;font-size:.9rem;font-weight:600}
+.row-it .tx small{color:var(--muted);font-size:.74rem}
+.row-it>svg{width:18px;height:18px;color:var(--muted);flex:0 0 auto}
+.row-it:active{background:rgba(255,255,255,.5)}
+/* 手风琴 */
+.acc{background:var(--card);border:1px solid rgba(255,255,255,.7);border-radius:var(--r);overflow:hidden;
+  box-shadow:inset 0 1px 0 #fff,0 8px 20px -12px rgba(34,40,52,.3);margin-bottom:.7rem}
+.acc>button{width:100%;display:flex;align-items:center;gap:.6rem;padding:.9rem 1rem;background:none;border:0;
+  color:var(--ink);font-family:inherit;font-size:.92rem;font-weight:600;cursor:pointer;text-align:left}
+.acc>button svg{margin-left:auto;width:18px;height:18px;transition:transform .22s;color:var(--steel);flex:0 0 auto}
+.acc.open>button svg{transform:rotate(180deg)}
+.acc .body{max-height:0;overflow:hidden;transition:max-height .26s ease}
+.acc .body p{margin:0;padding:0 1rem 1rem;color:var(--muted);font-size:.85rem;line-height:1.65}
+/* 顶部页签 */
+.ttabs{display:flex;gap:.5rem;margin-bottom:.9rem}
+.ttabs button{flex:1;border:1.5px solid var(--line2);background:rgba(255,255,255,.45);color:var(--muted);font-family:inherit;
+  font-weight:600;font-size:.82rem;padding:.62rem 0;border-radius:.9rem;cursor:pointer;transition:all .16s}
+.ttabs button.on{background:var(--chrome);color:var(--ink);border-color:rgba(34,37,43,.2);box-shadow:inset 0 1px 0 #fff,0 4px 10px rgba(40,48,60,.25)}
+/* 轮播 */
+.carousel{position:relative;border-radius:var(--r);overflow:hidden;border:1px solid rgba(34,37,43,.16);
+  box-shadow:0 12px 26px -12px rgba(34,40,52,.4)}
+.carousel .track{display:flex;transition:transform .45s cubic-bezier(.55,.06,.35,1)}
+.carousel .slide{flex:0 0 100%;height:150px;display:flex;align-items:center;justify-content:center;
+  color:#fff;font-weight:700;font-size:1.05rem;letter-spacing:.06em;text-shadow:0 2px 8px rgba(0,0,0,.35);position:relative;overflow:hidden}
+.carousel .slide::after{content:"";position:absolute;top:-40%;bottom:-40%;left:-30%;width:40%;transform:rotate(18deg);
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.4),transparent)}
+.carousel .s1{background:linear-gradient(135deg,#6d7b8c,#3c434d)}
+.carousel .s2{background:linear-gradient(135deg,#7d99bb,#47688e)}
+.carousel .s3{background:linear-gradient(135deg,#aeb7c2,#79828e)}
+.carousel .dots{position:absolute;left:0;right:0;bottom:.6rem;display:flex;gap:.4rem;justify-content:center}
+.carousel .dots i{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.45);cursor:pointer;transition:all .2s}
+.carousel .dots i.on{width:24px;border-radius:99px;background:#fff}
+.carousel .nav{position:absolute;top:50%;transform:translateY(-50%);width:32px;height:32px;border-radius:50%;border:1px solid rgba(255,255,255,.6);
+  background:rgba(255,255,255,.35);backdrop-filter:blur(6px);color:var(--ink);cursor:pointer;display:flex;align-items:center;justify-content:center}
+.carousel .nav svg{width:15px;height:15px}
+.carousel .nav.prev{left:.6rem}.carousel .nav.next{right:.6rem}
+/* 表格 */
+.tbl{width:100%;border-collapse:collapse;font-size:.83rem;background:var(--card);border-radius:var(--r);overflow:hidden;
+  border:1px solid rgba(255,255,255,.7);box-shadow:inset 0 1px 0 #fff}
+.tbl th{background:var(--chrome);text-align:left;padding:.65rem .8rem;font-size:.74rem;letter-spacing:.06em;color:var(--ink2);
+  border-bottom:1px solid var(--line2)}
+.tbl td{padding:.65rem .8rem;border-bottom:1px solid var(--line);color:var(--ink2)}
+.tbl tr:last-child td{border-bottom:0}
+.tbl td b{color:var(--ink)}
+/* 骨架屏 */
+.skel{border-radius:.6rem;background:linear-gradient(90deg,#d7dce2 25%,#f2f4f7 50%,#d7dce2 75%);
+  background-size:200% 100%;animation:sk 1.3s infinite}
+@keyframes sk{to{background-position:-200% 0}}
+/* 空状态 */
+.empty{text-align:center;padding:2rem 1rem}
+.empty .blob{position:relative;width:104px;height:104px;margin:0 auto 1rem;
+  background:var(--sphere);box-shadow:inset 0 -12px 18px rgba(52,60,72,.5),inset 0 7px 10px rgba(255,255,255,.95),0 12px 24px rgba(40,48,60,.35);
+  border-radius:52% 48% 55% 45%/48% 54% 46% 52%;
+  animation:blobmorph 6s ease-in-out -2s infinite alternate}
+@keyframes blobmorph{
+  0%{border-radius:52% 48% 55% 45%/48% 54% 46% 52%}
+  50%{border-radius:45% 55% 48% 52%/55% 45% 55% 45%}
+  100%{border-radius:58% 42% 50% 50%/45% 52% 48% 55%}}
+.empty .blob::after{content:"◌";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  font-size:2.2rem;color:rgba(60,68,80,.55)}
+.empty p{color:var(--muted);font-size:.85rem;margin:.3rem 0 1.1rem}
+/* ============ 反馈 ============ */
+.scrim{position:absolute;inset:0;background:rgba(30,34,42,.42);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);
+  opacity:0;pointer-events:none;transition:opacity .22s;z-index:20}
+.scrim.show{opacity:1;pointer-events:auto}
+.modal{position:absolute;left:1.1rem;right:1.1rem;top:50%;z-index:21;
+  background:rgba(246,248,250,.88);backdrop-filter:blur(18px) saturate(1.4);-webkit-backdrop-filter:blur(18px) saturate(1.4);
+  border:1px solid rgba(255,255,255,.8);border-radius:1.3rem;padding:1.3rem;
+  box-shadow:inset 0 1px 0 #fff,0 24px 60px -12px rgba(30,36,46,.5);
+  transform:translateY(-46%) scale(.92);opacity:0;pointer-events:none;transition:all .24s cubic-bezier(.5,1.4,.5,1)}
+.modal.show{transform:translateY(-50%) scale(1);opacity:1;pointer-events:auto}
+.modal .morb{width:58px;height:58px;margin:-2.5rem auto .6rem;border-radius:50%;background:var(--sphere);
+  box-shadow:inset 0 -8px 12px rgba(52,60,72,.5),inset 0 4px 7px rgba(255,255,255,.95),0 10px 20px rgba(30,36,46,.4);
+  display:flex;align-items:center;justify-content:center;font-size:1.5rem;color:var(--ink2)}
+.modal h3{margin:.2rem 0 .5rem;text-align:center}
+.modal p{text-align:center;color:var(--muted);font-size:.85rem;line-height:1.65;margin:0 0 1.1rem}
+.modal .mrow{display:flex;gap:.7rem}
+.modal .mrow .btn{flex:1}
+/* 右侧抽屉 */
+.drawer{position:absolute;top:0;right:0;bottom:0;width:76%;max-width:300px;z-index:21;
+  background:rgba(240,243,246,.92);backdrop-filter:blur(20px) saturate(1.4);-webkit-backdrop-filter:blur(20px) saturate(1.4);
+  border-left:1px solid rgba(255,255,255,.8);box-shadow:-20px 0 50px -20px rgba(30,36,46,.45);
+  transform:translateX(106%);transition:transform .3s cubic-bezier(.55,.06,.35,1);padding:1.2rem 1rem;display:flex;flex-direction:column}
+.drawer.show{transform:none}
+.drawer h3{margin:0 0 .8rem;font-size:1rem}
+.drawer .drow{display:flex;align-items:center;gap:.75rem;width:100%;padding:.8rem .5rem;background:none;border:0;
+  color:var(--ink);font-family:inherit;font-size:.9rem;cursor:pointer;border-radius:.7rem;text-align:left}
+.drawer .drow:active{background:rgba(255,255,255,.6)}
+.drawer .drow .ri{width:36px;height:36px;border-radius:50%;flex:0 0 auto;background:var(--chrome);
+  border:1px solid rgba(34,37,43,.18);display:flex;align-items:center;justify-content:center;color:var(--ink2);
+  box-shadow:inset 0 1px 0 #fff}
+.drawer .drow .ri svg{width:17px;height:17px}
+.drawer .sp{flex:1}
+/* Toast · 水银珠 */
+.toast{position:absolute;left:50%;bottom:6.4rem;transform:translate(-50%,16px) scale(.94);z-index:22;
+  background:rgba(34,38,44,.92);color:#eef1f5;border:1px solid rgba(255,255,255,.25);border-radius:999px;
+  padding:.62rem 1.15rem .62rem .8rem;font-size:.84rem;font-weight:500;display:flex;align-items:center;gap:.55rem;
+  box-shadow:0 12px 28px rgba(20,24,30,.45);opacity:0;pointer-events:none;transition:all .26s cubic-bezier(.5,1.4,.5,1);
+  white-space:nowrap;max-width:92%;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.toast.show{opacity:1;transform:translate(-50%,0) scale(1)}
+.toast .drop{width:16px;height:16px;flex:0 0 auto;border-radius:50% 50% 50% 5px;transform:rotate(45deg);
+  background:radial-gradient(circle at 35% 32%,#fff 0 18%,#b9c2cd 45%,#79828e 100%);
+  box-shadow:0 1px 3px rgba(0,0,0,.4)}
+/* 液态进度条 */
+.progress{height:20px;border:1px solid var(--line2);border-radius:999px;background:rgba(255,255,255,.45);
+  box-shadow:inset 0 2px 6px rgba(40,48,60,.22);overflow:hidden;position:relative}
+.progress i{display:block;height:100%;border-radius:999px;background:var(--chrome-h);background-size:220% 100%;
+  box-shadow:inset 0 2px 4px rgba(255,255,255,.8),inset 0 -5px 8px rgba(60,70,84,.35);
+  animation:flowsheen 2.4s linear -1s infinite;transition:width .45s ease}
+@keyframes flowsheen{from{background-position:0% 0}to{background-position:220% 0}}
+/* 加载动画 */
+.loader-row{display:flex;gap:1rem;align-items:center;justify-content:center;padding:1.2rem .5rem;
+  background:var(--card);border:1px solid rgba(255,255,255,.7);border-radius:var(--r)}
+/* 黏性水银 goo */
+.goo{position:relative;width:150px;height:64px;background:#f7f9fb;border-radius:1rem;overflow:hidden;
+  filter:blur(5px) contrast(18);flex:0 0 auto}
+.goo i{position:absolute;top:50%;width:26px;height:26px;margin:-13px 0 0 -13px;border-radius:50%;background:#39404a}
+.goo i.c{left:50%}
+.goo i.l{left:50%;animation:gool 2.1s ease-in-out -1s infinite alternate}
+.goo i.r{left:50%;animation:goor 2.1s ease-in-out -2s infinite alternate}
+@keyframes gool{from{transform:translateX(-52px)}to{transform:translateX(-6px)}}
+@keyframes goor{from{transform:translateX(52px)}to{transform:translateX(6px)}}
+/* 铬环旋转 */
+.ringspin{width:46px;height:46px;flex:0 0 auto;border-radius:50%;
+  background:conic-gradient(from 0deg,#39404a,#c8cfd8 40%,#39404a 60%,#eef1f5 85%,#39404a);
+  -webkit-mask:radial-gradient(circle,transparent 0 15px,#000 16px);mask:radial-gradient(circle,transparent 0 15px,#000 16px);
+  animation:rot 1.1s linear infinite}
+/* 气泡提示 */
+.tipwrap{position:relative;display:inline-block}
+.tip{position:absolute;bottom:calc(100% + 12px);left:50%;transform:translate(-50%,6px) scale(.94);
+  background:rgba(34,38,44,.94);color:#eef1f5;font-size:.78rem;padding:.55rem .85rem;border-radius:.8rem;
+  white-space:nowrap;opacity:0;pointer-events:none;transition:all .2s;box-shadow:0 10px 24px rgba(20,24,30,.4)}
+.tip::after{content:"";position:absolute;top:100%;left:50%;width:12px;height:12px;margin:-6px 0 0 -6px;
+  background:rgba(34,38,44,.94);transform:rotate(45deg);border-radius:2px}
+.tip::before{content:"";position:absolute;left:50%;top:-4px;width:10px;height:10px;margin-left:-5px;
+  border-radius:50% 50% 50% 5px;transform:rotate(45deg);
+  background:radial-gradient(circle at 35% 32%,#fff 0 20%,#b9c2cd 50%,#79828e 100%)}
+.tipwrap:hover .tip,.tipwrap.show .tip{opacity:1;transform:translate(-50%,0) scale(1)}
+/* 结果页 */
+.result{text-align:center;padding:1.6rem 1rem}
+.result .orb{width:84px;height:84px;margin:0 auto .9rem;border-radius:50%;background:var(--sphere);
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:inset 0 -11px 16px rgba(52,60,72,.5),inset 0 6px 9px rgba(255,255,255,.95),0 14px 28px rgba(40,48,60,.4);
+  animation:pop .5s cubic-bezier(.5,1.6,.5,1) both}
+@keyframes pop{from{transform:scale(.4);opacity:0}to{transform:scale(1);opacity:1}}
+.result .orb svg{width:36px;height:36px;color:var(--ink2)}
+.result p{color:var(--muted);font-size:.86rem;margin:.3rem 0 1.1rem}
+/* 总览页 */
+.hero{position:relative;overflow:hidden;text-align:center;padding:2rem 1.2rem 1.7rem;
+  background:rgba(246,248,250,.6);border:1px solid rgba(255,255,255,.75);border-radius:1.3rem;
+  box-shadow:inset 0 1px 0 #fff,0 18px 40px -16px rgba(34,40,52,.4);margin-bottom:1.4rem;
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.hero .orb{position:relative;width:118px;height:118px;margin:0 auto 1rem;border-radius:50%;background:var(--sphere);
+  box-shadow:inset 0 -16px 24px rgba(52,60,72,.5),inset 0 9px 14px rgba(255,255,255,.95),0 20px 40px rgba(40,48,60,.4);
+  animation:bob 4.5s ease-in-out -2s infinite alternate}
+.hero .orb::after{content:"";position:absolute;left:-16px;top:-16px;width:26px;height:26px;border-radius:50%;
+  background:radial-gradient(circle at 35% 32%,#fff 0 20%,#b9c2cd 50%,#79828e 100%);
+  box-shadow:0 4px 8px rgba(40,48,60,.3);animation:orbit 7s linear infinite;transform-origin:74px 74px}
+@keyframes orbit{to{transform:rotate(360deg)}}
+.hero h2{position:relative;margin:0 0 .35rem;font-size:1.75rem;letter-spacing:.06em;
+  background:linear-gradient(175deg,#3a4048 20%,#79828e 45%,#2b2f36 55%,#9aa5b3 80%);
+  -webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{position:relative;color:var(--muted);font-size:.84rem;line-height:1.7;margin:0 0 1.2rem}
+.swatches{display:grid;grid-template-columns:repeat(3,1fr);gap:.7rem}
+.sw{border:1px solid var(--line2);border-radius:.85rem;overflow:hidden;cursor:pointer;background:var(--card);
+  box-shadow:inset 0 1px 0 #fff,0 6px 14px -8px rgba(40,48,60,.35);transition:transform .14s}
+.sw:active{transform:scale(.95)}
+.sw i{display:block;height:52px}
+.sw span{display:block;font-size:.66rem;padding:.4rem .5rem 0;color:var(--muted)}
+.sw b{display:block;font-size:.7rem;color:var(--ink);padding:0 .5rem .5rem;font-weight:700;font-variant-numeric:tabular-nums}
+.type-row{padding:.55rem 0;border-bottom:1px dashed var(--line)}
+.type-row:last-child{border:0}
+.type-row small{display:block;color:var(--muted);font-size:.68rem;margin-bottom:.15rem;letter-spacing:.06em}
+.idx{display:flex;align-items:center;gap:.85rem;width:100%;padding:.85rem .4rem;background:none;border:0;
+  color:var(--ink);font-family:inherit;cursor:pointer;text-align:left;border-bottom:1px solid var(--line);font-size:.9rem}
+.idx:last-child{border-bottom:0}
+.idx .n{width:34px;height:34px;border-radius:50%;flex:0 0 auto;background:var(--chrome);
+  border:1px solid rgba(34,37,43,.2);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.8rem;
+  box-shadow:inset 0 1px 0 #fff}
+.idx small{display:block;color:var(--muted);font-size:.72rem;font-weight:400}
+.idx>svg{margin-left:auto;width:18px;height:18px;color:var(--muted)}
+.demo-row{display:flex;flex-wrap:wrap;gap:.8rem;align-items:center;margin-bottom:1rem}
+.demo-row.center{justify-content:center;padding:1.2rem .5rem;background:rgba(255,255,255,.35);
+  border:1.5px dashed var(--line2);border-radius:var(--r)}
+.note{font-size:.75rem;color:var(--muted);line-height:1.65}
+code.k{font-family:ui-monospace,monospace;font-size:.72rem;background:rgba(34,37,43,.85);color:#e8ecf1;
+  padding:.15rem .45rem;border-radius:.4rem}
+.upfile{display:none}
+.upchip{display:none;align-items:center;gap:.6rem;margin-top:.7rem;background:var(--card);
+  border:1px solid var(--line2);border-radius:.8rem;padding:.6rem .8rem;font-size:.82rem}
+.upchip .bar{flex:1;height:8px;border-radius:99px;background:rgba(60,70,84,.15);overflow:hidden}
+.upchip .bar i{display:block;height:100%;width:0;background:var(--chrome-h);border-radius:99px;transition:width .2s}
+</style>
+</head>
+<body>
+<div class="phone">
+  <header class="appbar">
+    <span class="logo" aria-hidden="true"></span>
+    <h1>MERCURY UI<small>水银流体 · v1.0</small></h1>
+    <span class="sp"></span>
+    <button class="icobtn sm" onclick="toast('v1.0 · 纯手写 CSS，零外部资源')" aria-label="关于">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M12 11v5"/></svg>
+    </button>
+  </header>
+
+  <main class="screens">
+    <!-- ============ 总览 ============ -->
+    <section class="screen active" data-screen="home">
+      <div class="hero">
+        <div class="orb" aria-hidden="true"></div>
+        <h2>MERCURY UI</h2>
+        <p>一套「水银流体」App 组件库<br>镜面铬光 · 液滴张力 · 黏性聚合 · 表面流光</p>
+        <button class="btn btn-chrome" data-goto="buttons"><span>开始浏览组件</span></button>
+      </div>
+
+      <div class="sec">
+        <h4 class="sec-t">设计 TOKENS</h4>
+        <div class="swatches">
+          <div class="sw" data-hex="#C9D1DB"><i style="background:linear-gradient(165deg,#f4f6f9,#c9d1db 55%,#9aa5b3)"></i><span>镜面银</span><b>#C9D1DB</b></div>
+          <div class="sw" data-hex="#9AA5B3"><i style="background:linear-gradient(165deg,#c9d1db,#9aa5b3 60%,#79828e)"></i><span>液态银</span><b>#9AA5B3</b></div>
+          <div class="sw" data-hex="#2E3238"><i style="background:linear-gradient(165deg,#4a505a,#2e3238)"></i><span>石墨芯</span><b>#2E3238</b></div>
+          <div class="sw" data-hex="#17191D"><i style="background:#17191d"></i><span>深空灰</span><b>#17191D</b></div>
+          <div class="sw" data-hex="#F2F4F7"><i style="background:#f2f4f7"></i><span>霜雾白</span><b>#F2F4F7</b></div>
+          <div class="sw" data-hex="#5B7EA6"><i style="background:linear-gradient(165deg,#8aa5c4,#5b7ea6 60%,#3e5c7e)"></i><span>钢蓝</span><b>#5B7EA6</b></div>
+        </div>
+        <p class="note" style="margin-top:.6rem">点色卡复制色值 · 招牌技：铬面高光 <code class="k">--chrome</code> / 水银球 <code class="k">--sphere</code> / 黏性 goo 滤镜</p>
+      </div>
+
+      <div class="sec">
+        <h4 class="sec-t">字阶</h4>
+        <div class="card solid">
+          <div class="type-row"><small>DISPLAY / 700</small><span style="font-size:1.7rem;font-weight:700">液态金属之诗</span></div>
+          <div class="type-row"><small>TITLE / 600</small><span style="font-size:1.15rem;font-weight:600">组件全览 Demo</span></div>
+          <div class="type-row"><small>BODY / 400</small><span style="font-size:.9rem">每一颗水银珠都会呼吸，聚合又分离。</span></div>
+          <div class="type-row"><small>CAPTION / 500</small><span style="font-size:.72rem;color:var(--muted)">高光在上 · 投影在下 · 边缘一圈霜</span></div>
+        </div>
+      </div>
+
+      <div class="sec">
+        <h4 class="sec-t">组件索引</h4>
+        <div class="rows">
+          <button class="idx" data-goto="buttons"><span class="n">◍</span><span>按钮 Buttons<small>镜面主按钮 · 液态注入 · 磁吸 · 加载态</small></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></button>
+          <button class="idx" data-goto="forms"><span class="n">✎</span><span>表单 Forms<small>输入框 · 水银开关 · 水滴评分 · 滑杆</small></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></button>
+          <button class="idx" data-goto="showcase"><span class="n">▦</span><span>展示 Display<small>卡片 · 芯片 · 头像 · 轮播 · 骨架</small></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></button>
+          <button class="idx" data-goto="feedback"><span class="n">◉</span><span>反馈 Feedback<small>水银 Toast · 弹窗 · 抽屉 · goo 加载</small></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 按钮 ============ -->
+    <section class="screen" data-screen="buttons">
+      <div class="sec">
+        <h4 class="sec-t"><span class="n">6</span>镜面主按钮</h4>
+        <div class="demo-row center">
+          <button class="btn btn-chrome"><span>镜面主按钮</span></button>
+        </div>
+        <p class="note">悬停：铬面流光扫过 · 按下：表面张力让按钮微微"液化"变形</p>
+      </div>
+      <div class="sec">
+        <h4 class="sec-t">变体</h4>
+        <div class="demo-row">
+          <button class="btn btn-graphite"><span>石墨次按钮</span></button>
+          <button class="btn btn-ghost"><span>幽灵按钮</span></button>
+        </div>
+        <div class="demo-row">
+          <button class="btn btn-danger"><span>危险操作</span></button>
+          <button class="btn btn-chrome" disabled><span>禁用态</span></button>
+        </div>
+        <div class="demo-row">
+          <button class="btn btn-chrome" id="loadBtn"><span class="spin-drop" style="display:none"></span><span class="lt">点击加载</span></button>
+        </div>
+      </div>
+      <div class="sec">
+        <h4 class="sec-t">液态注入 · 磁吸</h4>
+        <div class="demo-row">
+          <button class="btn btn-liquid"><i class="fill"></i><span>液态注入（悬停/点击）</span></button>
+          <button class="btn btn-liquid on"><i class="fill"></i><span>已注入态</span></button>
+        </div>
+        <div class="magnet-zone" id="magnetZone">
+          <button class="btn btn-chrome" id="magnetBtn"><span>磁吸按钮 · 鼠标靠近我</span></button>
+        </div>
+        <p class="note" style="margin-top:.5rem">液态注入：水银自下而上漫过按钮（点击可切换） · 磁吸：按钮会被指针轻轻吸住</p>
+      </div>
+      <div class="sec">
+        <h4 class="sec-t">尺寸</h4>
+        <div class="demo-row">
+          <button class="btn btn-chrome sm"><span>小号 Small</span></button>
+          <button class="btn btn-chrome"><span>中号</span></button>
+          <button class="btn btn-chrome lg"><span>大号 Large</span></button>
+        </div>
+        <button class="btn btn-graphite block"><span>通栏按钮 Block</span></button>
+      </div>
+      <div class="sec">
+        <h4 class="sec-t">水银珠图标按钮</h4>
+        <div class="demo-row">
+          <button class="icobtn" aria-label="搜索"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></button>
+          <button class="icobtn dark" aria-label="收藏"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-4.5-9.5-9C.8 8.6 2.6 5 6 5c2 0 3.4 1.1 4 2.2C10.6 6.1 12 5 14 5c3.4 0 5.2 3.6 3.5 7-2.5 4.5-9.5 9-9.5 9z"/></svg></button>
+          <button class="icobtn" aria-label="播放"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></button>
+          <button class="icobtn dark" aria-label="设置"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 0 0-.1-1.2l2-1.6-2-3.4-2.4 1a7 7 0 0 0-2-1.2L14 3h-4l-.5 2.6a7 7 0 0 0-2 1.2l-2.4-1-2 3.4 2 1.6A7 7 0 0 0 5 12c0 .4 0 .8.1 1.2l-2 1.6 2 3.4 2.4-1a7 7 0 0 0 2 1.2L10 21h4l.5-2.6a7 7 0 0 0 2-1.2l2.4 1 2-3.4-2-1.6c.1-.4.1-.8.1-1.2z"/></svg></button>
+        </div>
+        <p class="note">用法：<code class="k">.btn-chrome</code> 镜面流光 · <code class="k">.btn-liquid</code> 液态注入（<code class="k">.on</code> 保持注入） · 悬停水银珠会轻轻液化</p>
+      </div>
+    </section>
+
+    <!-- ============ 表单 ============ -->
+    <section class="screen" data-screen="forms">
+      <div class="sec">
+        <h4 class="sec-t">输入</h4>
+        <div class="field">
+          <label>代号 <small>· 聚焦试试钢蓝光环</small></label>
+          <input class="inp" placeholder="给这颗水银珠起个名字">
+        </div>
+        <div class="field">
+          <label>搜索</label>
+          <div class="searchbar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+            <input placeholder="搜索组件、色值、用法…">
+          </div>
+        </div>
+        <div class="field">
+          <label>备注</label>
+          <textarea class="inp" placeholder="多行文本，带着金属的凉意…"></textarea>
+        </div>
+        <div class="field">
+          <label>实验体</label>
+          <div class="selwrap">
+            <select class="inp">
+              <option>α-1 · 标准水银珠</option>
+              <option>β-2 · 高纯度镜面体</option>
+              <option>γ-3 · 黏性聚合体</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="sec">
+        <h4 class="sec-t">水银开关 · 复选 · 单选</h4>
+        <div class="demo-row">
+          <label class="switch lb"><input type="checkbox" checked><span class="tr"><span class="knob"></span></span>表面张力</label>
+        </div>
+        <div class="demo-row">
+          <label class="switch lb"><input type="checkbox"><span class="tr"><span class="knob"></span></span>夜间冷凝</label>
+        </div>
+        <p class="note" style="margin-bottom:.8rem">拨动时，珠子会被拉成一滴水银再弹回</p>
+        <div class="card solid" style="margin-top:.4rem">
+          <label class="check"><input type="checkbox" checked><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span>记住这颗珠子</label>
+          <label class="check"><input type="checkbox"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span>接收聚合提醒</label>
+          <label class="check"><input type="radio" name="hg" checked><span class="box radio"></span>标准纯度</label>
+          <label class="check"><input type="radio" name="hg"><span class="box radio"></span>镜面纯度</label>
+        </div>
+      </div>
+      <div class="sec">
+        <h4 class="sec-t">滑杆 · 步进器 · 分段</h4>
+        <div class="field">
+          <label>黏度 <small id="viscLabel">· 50%</small></label>
+          <div class="slider-row">
+            <input type="range" class="slider" min="0" max="100" value="50" id="visc">
+            <span class="slider-val" id="viscVal">50%</span>
+          </div>
+        </div>
+        <div class="field">
+          <label>珠子数量</label>
+          <div class="stepper">
+            <button id="stepMinus" aria-label="减少">−</button><b id="stepNum">1</b><button id="stepPlus" aria-label="增加">＋</button>
+          </div>
+        </div>
+        <div class="segmented" id="segDemo">
+          <button class="on">液态</button><button>固态</button><button>气态</button>
+        </div>
+      </div>
+      <div class="sec">
+        <h4 class="sec-t">水滴评分</h4>
+        <div class="demo-row center">
+          <div class="rating" id="ratingDemo" role="radiogroup" aria-label="评分">
+            <button aria-label="1滴"><i></i></button><button aria-label="2滴"><i></i></button><button aria-label="3滴"><i></i></button><button aria-label="4滴"><i></i></button><button aria-label="5滴"><i></i></button>
+          </div>
+        </div>
+        <p class="note" style="text-align:center" id="ratingTip">点一点水滴试试</p>
+      </div>
+      <div class="sec">
+        <h4 class="sec-t">上传</h4>
+        <div class="dropzone" id="dropzone">
+          <div class="drop"></div>
+          <b>把样本滴进来</b><br><small>点击模拟上传 · 支持任意格式的想象</small>
+          <div class="upchip" id="upchip"><span>样本.hg</span><span class="bar"><i id="upbar"></i></span><b id="uppct">0%</b></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 展示 ============ -->
+    <section class="screen" data-screen="showcase">
+      <div class="sec">
+        <h4 class="sec-t">卡片</h4>
+        <div class="card" style="margin-bottom:.9rem">
+          <span class="tag steel" style="margin-bottom:.5rem"><span class="dot"></span>LIQUID</span>
+          <h3>玻璃拟态卡片</h3>
+          <p>毛玻璃底 + 顶部一圈霜边高光，像隔着水膜看世界。</p>
+        </div>
+        <div class="card" style="margin-bottom:.9rem" onclick="toast('你按了一张卡片')">
+          <div class="media"><span class="badge">◍ HOT</span><span class="orb"></span></div>
+          <h3>流光封面卡片 · 可点</h3>
+          <p>封面里有一颗悬浮的水银球，每 4.5 秒扫过一道流光。</p>
+        </div>
+      </div>
+      <div class="sec">
+        <h4 class="sec-t">芯片 · 徽标 · 头像</h4>
+        <div class="demo-row" id="chipRow">
+          <button class="chip on">全部</button><button class="chip">液态</button><button class="chip">镜面</button><button class="chip">黏性</button>
+        </div>
+        <div class="demo-row">
+          <span class="tag steel"><span class="dot"></span>聚合中</span>
+          <span class="tag dark">v1.0</span>
+          <span class="tag">实验体</span>
+        </div>
+        <div class="demo-row">
+          <span class="avatar">陈</span>
+          <span class="avatar stack">淑</span>
+          <span class="avatar stack dark">婷</span>
+          <span class="avatar stack dark">+9</span>
+        </div>
+      </div>
+      <div class="sec">
+        <h4 class="sec-t">液态进度条</h4>
+        <div class="field"><label>冷凝进度 · 72%</label><div class="progress"><i style="width:72%"></i></div></div>
+        <div class="field"><label>聚合进度 · <span id="aggLabel">12%</span></label><div class="progress"><i id="aggBar" style="width:12%"></i></div></div>
+        <button class="btn btn-chrome sm" id="aggBtn"><span>开始聚合</span></button>
+      </div>
+      <div class="sec">
+        <h4 class="sec-t">轮播</h4>
+        <div class="carousel" id="carousel">
+          <div class="track" id="carTrack">
+            <div class="slide s1">镜面 · MIRROR</div>
+            <div class="slide s2">钢蓝 · STEEL</div>
+            <div class="slide s3">霜雾 · FROST</div>
+          </div>
+          <button class="nav prev" id="carPrev" aria-label="上一张"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 6l-6 6 6 6"/></svg></button>
+          <button class="nav next" id="carNext" aria-label="下一张"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 6l6 6-6 6"/></svg></button>
+          <div class="dots" id="carDots"><i class="on"></i><i></i><i></i></div>
+        </div>
+      </div>
+      <div class="sec">
+        <h4 class="sec-t">列表行</h4>
+        <div class="rows">
+          <button class="row-it" onclick="toast('打开：我的珠子')"><span class="ri"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"/><circle cx="9.5" cy="9.5" r="2" fill="currentColor" stroke="none"/></svg></span><span class="tx"><b>我的珠子</b><small>128 颗已收藏</small></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></button>
+          <button class="row-it" onclick="toast('打开：聚合记录')"><span class="ri"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v5l3 2"/><circle cx="12" cy="12" r="9"/></svg></span><span class="tx"><b>聚合记录</b><small>上次聚合在 3 分钟前</small></span><span class="tag steel">NEW</span></button>
+          <button class="row-it" onclick="toast('打开：设置')"><span class="ri"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9L17 7M7 17l-2.1 2.1"/></svg></span><span class="tx"><b>设置</b><small>黏度 · 温度 · 关于</small></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></button>
+        </div>
+      </div>
+      <div class="sec">
+        <h4 class="sec-t">手风琴 · 顶部页签</h4>
+        <div class="acc open">
+          <button>水银为什么是液态的？<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></button>
+          <div class="body"><p>汞的 6s 电子惰性让金属键特别弱，熔点低至 -38.8℃，所以在室温下保持着液态的优雅。</p></div>
+        </div>
+        <div class="acc">
+          <button>goo 滤镜是什么原理？<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></button>
+          <div class="body"><p>blur 把边缘糊开，contrast 把中间值一刀切，两个圆靠近时边缘就"黏"在了一起，像极了水银。</p></div>
+        </div>
+        <div class="ttabs" id="ttabsDemo" style="margin-top:1rem">
+          <button class="on">说明</button><button>参数</button><button>代码</button>
+        </div>
+        <div class="card solid" id="ttabPanel"><p>页签内容面板：点上面切换。这里是「说明」。</p></div>
+      </div>
+      <div class="sec">
+        <h4 class="sec-t">表格</h4>
+        <table class="tbl">
+          <thead><tr><th>令牌</th><th>色值</th><th>用途</th></tr></thead>
+          <tbody>
+            <tr><td><b>--chrome</b></td><td>#C9D1DB</td><td>镜面高光</td></tr>
+            <tr><td><b>--sphere</b></td><td>radial</td><td>水银球体</td></tr>
+            <tr><td><b>--steel</b></td><td>#5B7EA6</td><td>功能强调</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="sec">
+        <h4 class="sec-t">骨架屏 · 空状态</h4>
+        <div class="card solid" style="margin-bottom:.9rem">
+          <div class="skel" style="height:18px;width:55%;margin-bottom:.7rem"></div>
+          <div class="skel" style="height:14px;width:90%;margin-bottom:.5rem"></div>
+          <div class="skel" style="height:14px;width:75%"></div>
+        </div>
+        <div class="card">
+          <div class="empty">
+            <div class="blob"></div>
+            <h3 style="margin:.2rem 0">还没有珠子</h3>
+            <p>去按钮页捡一颗，把它带回家吧</p>
+            <button class="btn btn-chrome sm" data-goto="buttons"><span>去逛逛</span></button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 反馈 ============ -->
+    <section class="screen" data-screen="feedback">
+      <div class="sec">
+        <h4 class="sec-t">弹层演示</h4>
+        <div class="demo-row">
+          <button class="btn btn-chrome sm" id="openModal"><span>打开弹窗</span></button>
+          <button class="btn btn-graphite sm" id="openConfirm"><span>确认对话框</span></button>
+        </div>
+        <div class="demo-row">
+          <button class="btn btn-ghost sm" id="openDrawer"><span>右侧抽屉</span></button>
+          <button class="btn btn-chrome sm" id="showToast"><span>水银 Toast</span></button>
+        </div>
+        <p class="note">弹窗带水银球顶饰 · 抽屉从右侧滑入 · Toast 是一颗滴落的水银珠，2 秒后消失</p>
+      </div>
+      <div class="sec">
+        <h4 class="sec-t">进度条 · 加载动画</h4>
+        <div class="field"><label>冷凝进度 · <span id="cdLabel">30%</span></label><div class="progress"><i id="cdBar" style="width:30%"></i></div></div>
+        <div class="demo-row">
+          <button class="btn btn-chrome sm" id="cdBtn"><span>开始冷凝</span></button>
+        </div>
+        <div class="loader-row">
+          <div class="goo"><i class="c"></i><i class="l"></i><i class="r"></i></div>
+          <div class="ringspin"></div>
+        </div>
+        <p class="note">左：黏性水银聚合（blur + contrast 滤镜） · 右：铬环旋转</p>
+      </div>
+      <div class="sec">
+        <h4 class="sec-t">气泡提示</h4>
+        <div class="demo-row center">
+          <span class="tipwrap" id="tipWrap">
+            <span class="tip">水银的表面张力是水的 6 倍</span>
+            <button class="btn btn-chrome sm" id="tipBtn"><span>点我 / 悬停我</span></button>
+          </span>
+        </div>
+      </div>
+      <div class="sec">
+        <h4 class="sec-t">结果页</h4>
+        <div class="card">
+          <div class="result">
+            <div class="orb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M5 13l4 4L19 7"/></svg></div>
+            <h3 style="margin:.2rem 0">聚合完成</h3>
+            <p>3 颗水银珠已合成为一颗完美的镜面球体</p>
+            <button class="btn btn-chrome sm" onclick="toast('已返回')"><span>完成</span></button>
+          </div>
+        </div>
+      </div>
+      <div class="sec">
+        <h4 class="sec-t">使用说明</h4>
+        <div class="card solid">
+          <p>整套组件只用 <code class="k">2</code> 套渐变 + <code class="k">1</code> 个球体公式拼出来：</p>
+          <p style="margin-top:.6rem">① <code class="k">--chrome</code> 流光铬面 = 所有按钮与徽标的高光<br>② <code class="k">--sphere</code> 水银球 = 开关旋钮 / 头像 / 顶饰<br>③ <code class="k">blur+contrast</code> = 黏性聚合加载动画<br>④ 按下时 <code class="k">border-radius</code> 液化 = 表面张力</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- 底部 Tab -->
+  <nav class="tabbar" id="tabbar">
+    <span class="tab-pill" id="tabPill"></span>
+    <button class="tab on" data-tab="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>总览</button>
+    <button class="tab" data-tab="buttons"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"/><circle cx="9.5" cy="9.5" r="2" fill="currentColor" stroke="none"/></svg>按钮</button>
+    <button class="tab" data-tab="forms"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 8h10M18 8h2M4 16h2M10 16h10"/><circle cx="16" cy="8" r="2.2"/><circle cx="8" cy="16" r="2.2"/></svg>表单</button>
+    <button class="tab" data-tab="showcase"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18"/></svg>展示</button>
+    <button class="tab" data-tab="feedback"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 8-3 8h18s-3-1-3-8"/><path d="M10.3 21a2 2 0 0 0 3.4 0"/></svg>反馈</button>
+  </nav>
+
+  <!-- 弹层 -->
+  <div class="scrim" id="scrim"></div>
+  <div class="modal" id="modal" role="dialog" aria-modal="true">
+    <div class="morb">◍</div>
+    <h3 id="modalTitle">水银弹窗</h3>
+    <p id="modalMsg">毛玻璃底 + 水银球顶饰。点遮罩或取消可关闭。</p>
+    <div class="mrow">
+      <button class="btn btn-ghost sm" data-close><span>取消</span></button>
+      <button class="btn btn-chrome sm" data-close onclick="toast('已确认，珠子归位')"><span>确认</span></button>
+    </div>
+  </div>
+  <aside class="drawer" id="drawer" aria-label="抽屉">
+    <h3>水银抽屉</h3>
+    <button class="drow" data-close onclick="toast('打开：我的珠子')"><span class="ri"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"/></svg></span>我的珠子</button>
+    <button class="drow" data-close onclick="toast('打开：聚合记录')"><span class="ri"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v5l3 2"/><circle cx="12" cy="12" r="9"/></svg></span>聚合记录</button>
+    <button class="drow" data-close onclick="toast('打开：实验室')"><span class="ri"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 3h6M10 3v6l-5.5 9.5A2 2 0 0 0 6.2 21h11.6a2 2 0 0 0 1.7-2.5L14 9V3"/></svg></span>实验室</button>
+    <span class="sp"></span>
+    <button class="btn btn-graphite block sm" data-close><span>关闭抽屉</span></button>
+  </aside>
+  <div class="toast" id="toast"><span class="drop"></span><span id="toastMsg"></span></div>
+</div>
+
+<script>
+/* Tab 切换 + ?tab= 深链 */
+const tabs=[...document.querySelectorAll('#tabbar .tab')];
+const screens=[...document.querySelectorAll('.screen')];
+const tabPill=document.getElementById('tabPill');
+function movePill(){
+  const t=document.querySelector('#tabbar .tab.on');if(!t||!tabPill)return;
+  tabPill.style.left=t.offsetLeft+'px';tabPill.style.width=t.offsetWidth+'px';
+}
+function goto(name){
+  tabs.forEach(t=>t.classList.toggle('on',t.dataset.tab===name));
+  screens.forEach(s=>s.classList.toggle('active',s.dataset.screen===name));
+  const sc=document.querySelector('.screen.active');if(sc)sc.scrollTop=0;
+  movePill();
+}
+tabs.forEach(t=>t.addEventListener('click',()=>goto(t.dataset.tab)));
+document.querySelectorAll('[data-goto]').forEach(b=>b.addEventListener('click',()=>goto(b.dataset.goto)));
+const qtab=new URLSearchParams(location.search).get('tab');
+if(qtab&&document.querySelector('[data-tab="'+qtab+'"]'))goto(qtab);
+movePill();
+window.addEventListener('resize',movePill);
+window.addEventListener('load',movePill);
+
+/* Toast */
+let toastTimer;
+function toast(msg){
+  const el=document.getElementById('toast');
+  document.getElementById('toastMsg').textContent=msg;
+  el.classList.add('show');clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>el.classList.remove('show'),2000);
+}
+/* 弹层 */
+const scrim=document.getElementById('scrim'),
+      modal=document.getElementById('modal'),
+      drawer=document.getElementById('drawer');
+function openLayer(el){scrim.classList.add('show');el.classList.add('show')}
+function closeLayers(){scrim.classList.remove('show');modal.classList.remove('show');drawer.classList.remove('show')}
+document.getElementById('openModal').onclick=()=>{
+  document.getElementById('modalTitle').textContent='水银弹窗';
+  document.getElementById('modalMsg').textContent='毛玻璃底 + 水银球顶饰。点遮罩或取消可关闭。';
+  openLayer(modal)};
+document.getElementById('openConfirm').onclick=()=>{
+  document.getElementById('modalTitle').textContent='要把珠子倒掉吗？';
+  document.getElementById('modalMsg').textContent='水银一旦洒落就很难再聚拢，此操作不可撤销。';
+  openLayer(modal)};
+document.getElementById('openDrawer').onclick=()=>openLayer(drawer);
+document.getElementById('showToast').onclick=()=>toast('一颗水银珠滴落，2 秒后蒸发');
+scrim.onclick=closeLayers;
+document.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click',closeLayers));
+
+/* 水纹波纹 */
+document.querySelectorAll('.btn').forEach(b=>{
+  b.addEventListener('click',e=>{
+    const r=b.getBoundingClientRect(),rip=document.createElement('span');
+    rip.className='rip';const sz=Math.max(r.width,r.height)*1.1;
+    rip.style.width=rip.style.height=sz+'px';
+    rip.style.left=(e.clientX-r.left)+'px';rip.style.top=(e.clientY-r.top)+'px';
+    b.appendChild(rip);setTimeout(()=>rip.remove(),600);
+  });
+});
+/* 液态注入按钮点击切换 */
+document.querySelectorAll('.btn-liquid').forEach(b=>{
+  b.addEventListener('click',()=>{b.classList.toggle('on');toast(b.classList.contains('on')?'水银已注入':'水银已排出')});
+});
+/* 磁吸按钮 */
+const mzone=document.getElementById('magnetZone'),mbtn=document.getElementById('magnetBtn');
+mzone.addEventListener('mousemove',e=>{
+  const r=mbtn.getBoundingClientRect(),c=mzone.getBoundingClientRect();
+  const dx=e.clientX-(r.left+r.width/2),dy=e.clientY-(r.top+r.height/2);
+  const d=Math.hypot(dx,dy),pull=Math.min(d*.28,44),a=Math.atan2(dy,dx);
+  mbtn.style.transform='translate('+(Math.cos(a)*pull)+'px,'+(Math.sin(a)*pull)+'px)';
+});
+mzone.addEventListener('mouseleave',()=>{mbtn.style.transform=''});
+/* 加载按钮 */
+document.getElementById('loadBtn').onclick=function(){
+  const sp=this.querySelector('.spin-drop'),lt=this.querySelector('.lt');
+  sp.style.display='block';lt.textContent='聚合中…';this.disabled=true;
+  setTimeout(()=>{sp.style.display='none';lt.textContent='点击加载';this.disabled=false;toast('聚合完成')},2200);
+};
+/* 芯片单选 */
+document.getElementById('chipRow').addEventListener('click',e=>{
+  const c=e.target.closest('.chip');if(!c)return;
+  document.querySelectorAll('#chipRow .chip').forEach(x=>x.classList.remove('on'));
+  c.classList.add('on');toast('筛选：'+c.textContent);
+});
+/* 分段 */
+document.getElementById('segDemo').addEventListener('click',e=>{
+  const b=e.target.closest('button');if(!b)return;
+  document.querySelectorAll('#segDemo button').forEach(x=>x.classList.remove('on'));
+  b.classList.add('on');
+});
+/* 顶部页签 */
+const tpanels={0:'页签内容面板：点上面切换。这里是「说明」。',1:'参数：--chrome 镜面渐变 · --sphere 水银球 · --steel #5B7EA6 · 圆角 999px 起。',2:'代码：<code class="k">filter:blur(6px) contrast(20)</code> 即得黏性聚合。'};
+document.getElementById('ttabsDemo').addEventListener('click',e=>{
+  const b=e.target.closest('button');if(!b)return;
+  const bs=[...document.querySelectorAll('#ttabsDemo button')];
+  bs.forEach(x=>x.classList.remove('on'));b.classList.add('on');
+  document.getElementById('ttabPanel').innerHTML='<p>'+tpanels[bs.indexOf(b)]+'</p>';
+});
+/* 手风琴 */
+document.querySelectorAll('.acc>button').forEach(btn=>{
+  const acc=btn.parentElement,body=acc.querySelector('.body');
+  const sync=()=>{body.style.maxHeight=acc.classList.contains('open')?body.scrollHeight+'px':'0px'};
+  btn.addEventListener('click',()=>{acc.classList.toggle('open');sync()});
+  sync();window.addEventListener('load',sync);
+});
+/* 滑杆 */
+const visc=document.getElementById('visc');
+visc.addEventListener('input',()=>{
+  visc.style.setProperty('--v',visc.value+'%');
+  document.getElementById('viscVal').textContent=visc.value+'%';
+  document.getElementById('viscLabel').textContent='· '+visc.value+'%';
+});
+visc.style.setProperty('--v','50%');
+/* 步进器 */
+let stepN=1;const stepNum=document.getElementById('stepNum');
+document.getElementById('stepPlus').onclick=()=>{stepN=Math.min(99,stepN+1);stepNum.textContent=stepN};
+document.getElementById('stepMinus').onclick=()=>{stepN=Math.max(1,stepN-1);stepNum.textContent=stepN};
+/* 水滴评分 */
+const rbs=[...document.querySelectorAll('#ratingDemo button')];
+rbs.forEach((b,i)=>b.addEventListener('click',()=>{
+  rbs.forEach((x,j)=>x.classList.toggle('lit',j<=i));
+  const n=i+1;
+  document.getElementById('ratingTip').textContent=n+' 滴 · '+(n>=4?'镜面级纯度！':n>=2?'不错的流动性':'还可以更圆润');
+  for(let k=0;k<=i;k++)rbs[k].classList.remove('lit'),void rbs[k].offsetWidth,rbs[k].classList.add('lit');
+}));
+rbs.forEach((b,i)=>{if(i<3)b.classList.add('lit')});
+/* 轮播 */
+let carI=0;const carTrack=document.getElementById('carTrack'),carDots=[...document.querySelectorAll('#carDots i')];
+function carGo(i){
+  carI=(i+3)%3;carTrack.style.transform='translateX(-'+carI*100+'%)';
+  carDots.forEach((d,j)=>d.classList.toggle('on',j===carI));
+}
+document.getElementById('carPrev').onclick=()=>carGo(carI-1);
+document.getElementById('carNext').onclick=()=>carGo(carI+1);
+carDots.forEach((d,i)=>d.onclick=()=>carGo(i));
+/* 聚合进度 */
+document.getElementById('aggBtn').onclick=function(){
+  const bar=document.getElementById('aggBar'),lb=document.getElementById('aggLabel');let v=12;
+  this.disabled=true;bar.style.width='12%';
+  const t=setInterval(()=>{v+=7;if(v>=100){v=100;clearInterval(t);this.disabled=false;toast('聚合完成：一颗大珠子')}},280);
+  const u=setInterval(()=>{bar.style.width=v+'%';lb.textContent=v+'%';if(v>=100)clearInterval(u)},280);
+};
+/* 冷凝进度 */
+document.getElementById('cdBtn').onclick=function(){
+  const bar=document.getElementById('cdBar'),lb=document.getElementById('cdLabel');let v=30;
+  this.disabled=true;
+  const t=setInterval(()=>{v+=10;bar.style.width=v+'%';lb.textContent=v+'%';if(v>=100){clearInterval(t);this.disabled=false;toast('冷凝完成')}},260);
+};
+/* 气泡提示 */
+document.getElementById('tipBtn').onclick=e=>{e.stopPropagation();document.getElementById('tipWrap').classList.toggle('show')};
+document.addEventListener('click',()=>document.getElementById('tipWrap').classList.remove('show'));
+/* 色卡复制 */
+document.querySelectorAll('.sw').forEach(sw=>sw.addEventListener('click',()=>{
+  const hex=sw.dataset.hex;
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(hex).catch(()=>{})}
+  toast('已复制 '+hex);
+}));
+/* 上传模拟 */
+document.getElementById('dropzone').onclick=function(){
+  const chip=document.getElementById('upchip'),bar=document.getElementById('upbar'),pct=document.getElementById('uppct');
+  if(chip.dataset.busy)return;chip.dataset.busy='1';chip.style.display='flex';
+  let v=0;bar.style.width='0%';pct.textContent='0%';
+  const t=setInterval(()=>{v+=12;bar.style.width=v+'%';pct.textContent=v+'%';
+    if(v>=100){clearInterval(t);delete chip.dataset.busy;toast('样本上传完成')}},200);
+};
+</script>
+</body>
+</html>

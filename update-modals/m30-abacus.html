@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>算盘更新 · v4.0.0</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    min-height: 100vh; color: #3a2c1c;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    display: flex; align-items: center; justify-content: center; padding: 24px 16px;
+    background: linear-gradient(160deg, #e8dcc0 0%, #d9c69c 100%);
+  }
+  body.notrans * { transition: none !important; animation: none !important; }
+  .modal {
+    width: 340px; background: #f7f0dd;
+    border: 1px solid #d8c69a; border-radius: 22px;
+    padding: 24px 22px; display: flex; flex-direction: column; align-items: center;
+    box-shadow: 0 24px 60px rgba(120,90,40,.3);
+  }
+  .modal.hidden { display: none; }
+  .m-head { width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+  .m-title { font-size: 17px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+  .ver { font-size: 11px; color: #a33; border: 1px solid rgba(170,51,51,.45); border-radius: 99px; padding: 3px 10px; background: rgba(170,51,51,.07); }
+  .x { background: none; border: none; color: #b39a6d; font-size: 24px; cursor: pointer; line-height: 1; }
+  .m-sub { width: 100%; font-size: 14px; color: #6b573a; margin-bottom: 4px; text-align: left; }
+  .m-meta { width: 100%; font-size: 12px; color: #a68d5f; margin-bottom: 10px; text-align: left; font-variant-numeric: tabular-nums; }
+  .stage { position: relative; width: 308px; }
+  .abacus {
+    position: relative; width: 308px; height: 196px; border-radius: 14px;
+    background: linear-gradient(180deg, #8a5a2b, #6e421f);
+    box-shadow: inset 0 2px 6px rgba(0,0,0,.4), 0 6px 18px rgba(110,66,31,.4);
+    padding: 12px 10px;
+  }
+  .abacus-inner { position: relative; width: 100%; height: 100%; background: #f3e9d2; border-radius: 8px; overflow: hidden; }
+  .beam {
+    position: absolute; left: 0; right: 0; top: 44px; height: 10px;
+    background: linear-gradient(180deg, #9a6732, #6e421f);
+    box-shadow: 0 2px 4px rgba(0,0,0,.35); z-index: 3;
+  }
+  .cols { position: absolute; inset: 0; display: flex; }
+  .acol { position: relative; flex: 1; }
+  .rod {
+    position: absolute; left: 50%; top: 6px; bottom: 6px; width: 3px; margin-left: -1.5px;
+    background: #8f8574; border-radius: 2px; z-index: 1;
+  }
+  .bead {
+    --ty: 0px;
+    position: absolute; left: 50%; bottom: 8px; width: 27px; height: 23px;
+    margin-left: -13.5px; z-index: 2;
+    border-radius: 50% / 46%;
+    background: radial-gradient(circle at 50% 32%, #f2c66d 0%, #dd9a35 45%, #a86e1c 100%);
+    box-shadow: 0 3px 6px rgba(0,0,0,.35), inset 0 -3px 5px rgba(120,70,10,.5);
+    transform: translateY(var(--ty));
+    transition: transform .5s cubic-bezier(.2,1.45,.4,1);
+  }
+  .bead::after {
+    content: ''; position: absolute; left: 50%; top: 50%; width: 7px; height: 7px;
+    margin: -3.5px 0 0 -3.5px; border-radius: 50%; background: #6e4a14;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,.6);
+  }
+  .bead.up { --ty: -104px; }
+  .bead.nudge { --ty: -118px; }
+  .bead.pop { animation: pop .35s; }
+  @keyframes pop { 0% { scale: 1; } 40% { scale: 1.22; } 100% { scale: 1; } }
+  .ripple {
+    position: absolute; left: 50%; width: 34px; height: 34px; margin-left: -17px;
+    border: 2px solid #c98f2e; border-radius: 50%; pointer-events: none; z-index: 4;
+    animation: rip .55s ease-out forwards;
+  }
+  @keyframes rip { from { transform: scale(.4); opacity: .9; } to { transform: scale(1.5); opacity: 0; } }
+  .counter {
+    margin-top: 12px; font-size: 14px; color: #6b573a; letter-spacing: 1px;
+    font-variant-numeric: tabular-nums;
+  }
+  .counter b { color: #a33; font-size: 19px; }
+  .counter.flash { animation: cflash .3s; }
+  @keyframes cflash { 0% { transform: scale(1); } 40% { transform: scale(1.18); } 100% { transform: scale(1); } }
+  .seal {
+    position: absolute; left: 50%; top: 44%; width: 72px; height: 72px;
+    margin: -36px 0 0 -36px; border-radius: 10px;
+    background: rgba(178,44,36,.92); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 26px; font-weight: 900; letter-spacing: 2px;
+    transform: scale(2.8) rotate(-20deg); opacity: 0; z-index: 5;
+    box-shadow: 0 6px 18px rgba(178,44,36,.5);
+    transition: transform .38s cubic-bezier(.2,1.5,.4,1), opacity .25s;
+  }
+  .seal.show { transform: scale(1) rotate(-8deg); opacity: .94; }
+  .main-btn {
+    width: 100%; margin-top: 16px; padding: 14px 0; border-radius: 99px; border: none;
+    font-size: 16px; font-weight: 600; cursor: pointer;
+    background: rgba(110,66,31,.1); color: #6e421f; transition: all .25s;
+  }
+  .main-btn:hover { background: rgba(110,66,31,.18); }
+  .main-btn.gold { background: linear-gradient(135deg, #c0392b, #96281b); color: #fff; box-shadow: 0 8px 26px rgba(150,40,27,.4); }
+  .main-btn:disabled { opacity: .45; cursor: default; }
+  .replay { margin-top: 12px; background: none; border: none; cursor: pointer; color: #b39a6d; font-size: 12.5px; }
+  .replay:hover { color: #a33; }
+  .toast {
+    position: fixed; top: 26px; left: 50%; transform: translateX(-50%) translateY(-16px);
+    background: rgba(58,44,28,.94); color: #fff; padding: 10px 22px; border-radius: 99px;
+    font-size: 14px; opacity: 0; pointer-events: none; transition: opacity .25s, transform .25s; z-index: 60;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+
+<div class="modal" id="modal">
+  <div class="m-head">
+    <div class="m-title">🧮 算盘更新 <span class="ver">v4.0.0</span></div>
+    <button class="x" id="xBtn">×</button>
+  </div>
+  <div class="m-sub" id="statusText">正在拨珠…</div>
+  <div class="m-meta" id="metaText">0.0MB / 156.8MB · -- MB/s</div>
+  <div class="stage">
+    <div class="abacus">
+      <div class="abacus-inner">
+        <div class="cols" id="cols"></div>
+        <div class="beam"></div>
+      </div>
+    </div>
+    <div class="seal" id="seal">算定</div>
+  </div>
+  <div class="counter" id="counter">已上拨 <b id="beadCount">0</b> / 10</div>
+  <button class="main-btn" id="mainBtn">取消更新</button>
+  <button class="replay" id="replayBtn">↺ 重新演示</button>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+  const colsEl = document.getElementById('cols'), counter = document.getElementById('counter');
+  const beadCount = document.getElementById('beadCount'), seal = document.getElementById('seal');
+  const statusText = document.getElementById('statusText'), metaText = document.getElementById('metaText');
+  const mainBtn = document.getElementById('mainBtn'), modal = document.getElementById('modal');
+  const toast = document.getElementById('toast');
+
+  const TOTAL = 156.8, NBEADS = 10;
+  let progress = 0, state = 'downloading', timer = null, showSpeed = 0, beadsUp = 0;
+  const beads = [];
+
+  // 生成 10 档算珠
+  for (let i = 0; i < NBEADS; i++) {
+    const col = document.createElement('div'); col.className = 'acol';
+    const rod = document.createElement('div'); rod.className = 'rod';
+    const bead = document.createElement('div'); bead.className = 'bead';
+    col.appendChild(rod); col.appendChild(bead); colsEl.appendChild(col);
+    beads.push(bead);
+  }
+
+  function showToast(m) {
+    toast.textContent = m; toast.classList.add('show');
+    clearTimeout(showToast._t); showToast._t = setTimeout(() => toast.classList.remove('show'), 1800);
+  }
+  function render() {
+    const mb = (progress / 100 * TOTAL).toFixed(1);
+    metaText.textContent = mb + 'MB / ' + TOTAL + 'MB · ' + (state === 'downloading' ? showSpeed.toFixed(1) + ' MB/s' : '-- MB/s');
+  }
+  function setMain(t, gold, dis) {
+    mainBtn.textContent = t; mainBtn.classList.toggle('gold', !!gold); mainBtn.disabled = !!dis;
+  }
+  function syncBeads() {
+    // 每 10% 上拨一颗
+    const target = Math.min(NBEADS, Math.floor(progress / 10));
+    for (let i = 0; i < NBEADS; i++) {
+      const shouldUp = i < target;
+      if (shouldUp && !beads[i].classList.contains('up')) {
+        beads[i].classList.add('up', 'pop');
+        setTimeout(((b) => () => b.classList.remove('pop'))(beads[i]), 380);
+        ripple(beads[i]);
+        beadsUp = target;
+        beadCount.textContent = beadsUp;
+        counter.classList.remove('flash'); void counter.offsetWidth; counter.classList.add('flash');
+      }
+    }
+  }
+  function ripple(bead) {
+    const r = document.createElement('div'); r.className = 'ripple';
+    r.style.bottom = '104px';
+    bead.parentElement.appendChild(r);
+    setTimeout(() => r.remove(), 600);
+  }
+
+  function tick() {
+    if (state !== 'downloading') return;
+    const sp = 8 * (0.6 + Math.random() * 0.8);
+    showSpeed = showSpeed * 0.7 + sp * 0.3;
+    progress += sp * 0.1 / TOTAL * 100;
+    if (progress >= 100) { progress = 100; syncBeads(); enterInstalling(); return; }
+    syncBeads(); render();
+  }
+  function startTimer() { clearInterval(timer); timer = setInterval(tick, 100); }
+
+  function enterDownloading(reset) {
+    if (reset) {
+      progress = 0; showSpeed = 0; beadsUp = 0;
+      beads.forEach(b => b.classList.remove('up', 'nudge', 'pop'));
+      beadCount.textContent = '0'; seal.classList.remove('show');
+    }
+    state = 'downloading';
+    statusText.textContent = '正在拨珠…';
+    setMain('取消更新', false, false); startTimer(); render();
+  }
+  function enterCancelled() {
+    state = 'cancelled'; clearInterval(timer);
+    // 算珠从右往左逐颗落回
+    for (let i = NBEADS - 1; i >= 0; i--) {
+      setTimeout(((idx) => () => {
+        beads[idx].classList.remove('up'); beadsUp = idx; beadCount.textContent = idx;
+      })(i), (NBEADS - 1 - i) * 70);
+    }
+    statusText.textContent = '算珠已归位';
+    metaText.textContent = (progress / 100 * TOTAL).toFixed(1) + 'MB / ' + TOTAL + 'MB · 已停止';
+    setMain('重新下载', false, false); showToast('已取消更新');
+  }
+  function enterInstalling() {
+    state = 'installing'; clearInterval(timer);
+    statusText.textContent = '正在结算…';
+    metaText.textContent = TOTAL + 'MB / ' + TOTAL + 'MB · 校验完成';
+    setMain('结算中…', false, true); render();
+    // 波浪式轻拨
+    beads.forEach((b, i) => {
+      setTimeout(() => b.classList.add('nudge'), i * 90);
+      setTimeout(() => b.classList.remove('nudge'), i * 90 + 320);
+    });
+    setTimeout(() => { if (state === 'installing') enterDone(); }, 2000);
+  }
+  function enterDone() {
+    state = 'done';
+    statusText.textContent = '算定！更新完成';
+    metaText.textContent = 'v4.0.0 已安装 · 十珠归位';
+    seal.classList.add('show');
+    setMain('立即体验', true, false); showToast('已更新到 v4.0.0'); render();
+  }
+
+  mainBtn.addEventListener('click', () => {
+    if (state === 'downloading') enterCancelled();
+    else if (state === 'cancelled') enterDownloading(true);
+    else if (state === 'done') { modal.classList.add('hidden'); showToast('已进入 v4.0.0'); }
+  });
+  document.getElementById('xBtn').addEventListener('click', () => {
+    if (state === 'downloading') enterCancelled(); else modal.classList.add('hidden');
+  });
+  document.getElementById('replayBtn').addEventListener('click', () => {
+    modal.classList.remove('hidden'); enterDownloading(true);
+  });
+
+  window.addEventListener('load', () => {
+    if (location.hash === '#done') {
+      document.body.classList.add('notrans');
+      progress = 100; beads.forEach(b => b.classList.add('up'));
+      beadsUp = 10; beadCount.textContent = '10';
+      state = 'installing'; enterDone();
+    } else if (location.hash === '#mid') {
+      progress = 55; showSpeed = 8.1;
+      enterDownloading(false); progress = 55; syncBeads(); render();
+    } else { enterDownloading(false); }
+  });
+</script>
+</body>
+</html>

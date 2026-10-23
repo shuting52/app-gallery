@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>团队公告</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 48px 18px 60px;
+      color: #fff;
+      font: 15px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(ellipse at 16% 18%, rgba(200,90,180,.78), transparent 34%), radial-gradient(ellipse at 84% 36%, rgba(150,70,170,.75), transparent 36%), radial-gradient(ellipse at 54% 88%, rgba(110,50,140,.8), transparent 38%), linear-gradient(147deg, #2a1230, #3d1a48 52%, #1e0e24);
+      background-attachment: fixed;
+    }
+    main { width: min(440px, 100%); margin: 0 auto; display: grid; gap: 18px; }
+    .heading { padding: 4px 6px 8px; }
+    .eyebrow { margin: 0 0 8px; color: rgba(255,255,255,.68); font-size: 11px; letter-spacing: .18em; }
+    h1 { margin: 0; font-size: 30px; letter-spacing: -.04em; }
+    .hint { margin: 7px 0 0; color: rgba(255,255,255,.68); }
+    .card {
+      position: relative; isolation: isolate; overflow: hidden; padding: 18px;
+      border: 1px solid rgba(255,190,240,.30);
+      border-radius: 28px;
+      background: linear-gradient(135deg, rgba(255,255,255,.20), rgba(255,255,255,.08) 48%, rgba(240,170,255,.12));
+      -webkit-backdrop-filter: blur(24px) saturate(175%);
+      backdrop-filter: blur(24px) saturate(175%);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.42), inset 0 -1px 0 rgba(255,255,255,.08), 0 20px 48px rgba(8,8,24,.28);
+      transition: transform .25s ease, border-color .25s ease;
+    }
+    .card::before {
+      content: ""; position: absolute; z-index: 0; inset: 0; border-radius: inherit; pointer-events: none;
+      background: linear-gradient(110deg,
+        rgba(255,255,255,.34) 0%, rgba(255,255,255,.08) 18%, transparent 42%,
+        transparent 72%, rgba(245,190,255,.16) 100%);
+      opacity: .8;
+    }
+    .card::after {
+      content: ""; position: absolute; z-index: 0; pointer-events: none;
+      top: -46px; right: auto; left: -60px; bottom: auto;
+      width: 170px; height: 120px;
+      border: 1px solid rgba(255,255,255,.22); border-radius: 50%;
+      background: radial-gradient(ellipse, rgba(255,255,255,.22), transparent 68%);
+      filter: blur(2px); transform: rotate(10deg); pointer-events: none;
+    }
+    .card > * { position: relative; z-index: 1; }
+    .card:hover { transform: translateY(-3px); border-color: rgba(255,255,255,.46); }
+    .top, .title-line { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .top { margin-bottom: 17px; }
+    .pill { padding: 6px 12px; border: 1px solid rgba(255,255,255,.30); border-radius: 999px;
+      background: rgba(255,255,255,.10); color: rgba(255,255,255,.94); font-size: 12px;
+      box-shadow: inset 0 1px rgba(255,255,255,.18); white-space: nowrap; }
+    .pill.hot { background: rgba(255,92,92,.22); border-color: rgba(255,120,120,.55); color: #ffd9d9; }
+    .pill.pin { background: rgba(255,214,102,.18); border-color: rgba(255,214,102,.5); color: #ffe9b8; }
+    .pill.ok { background: rgba(102,255,170,.16); border-color: rgba(102,255,170,.45); color: #d2ffe4; }
+    .avatars { display: flex; align-items: center; padding-left: 8px; }
+    .avatar { display: grid; width: 29px; height: 29px; margin-left: -8px; place-items: center;
+      border: 1px solid rgba(255,255,255,.55); border-radius: 50%;
+      background: linear-gradient(135deg, #f8c79e, #a987c8 70%, #7267a9);
+      color: #fff; font-size: 11px; box-shadow: 0 3px 10px rgba(18,12,36,.2); }
+    .more { margin-left: 7px; color: rgba(255,255,255,.72); font-size: 12px; }
+    .row { display: flex; align-items: center; gap: 12px; min-width: 0; }
+    .face { display: grid; flex: 0 0 48px; height: 48px; place-items: center;
+      border: 1px solid rgba(255,255,255,.45); border-radius: 50%;
+      background: linear-gradient(145deg, rgba(255,225,194,.88), rgba(190,139,204,.78) 58%, rgba(111,133,201,.8)); color: #fff; font-size: 19px; font-weight: 650;
+      box-shadow: inset 0 1px 5px rgba(255,255,255,.5), 0 5px 15px rgba(15,12,35,.2); }
+    .face.sq { border-radius: 14px; }
+    .copy { flex: 1; min-width: 0; }
+    .title-line { margin-bottom: 5px; }
+    .title-line strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 15px; }
+    time, .preview { color: rgba(255,255,255,.72); font-size: 12px; }
+    .preview { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .unread { flex: 0 0 auto; color: #d8d2ff; font-size: 12px; font-weight: 600; }
+    .btns { display: flex; gap: 10px; margin-top: 14px; }
+    .btn { flex: 1; padding: 10px 0; border-radius: 14px; border: 1px solid rgba(255,255,255,.28);
+      background: rgba(255,255,255,.10); color: #fff; font-size: 13px; cursor: pointer;
+      font-family: inherit; box-shadow: inset 0 1px rgba(255,255,255,.16); }
+    .btn.primary { background: linear-gradient(135deg, rgba(120,220,255,.35), rgba(150,140,255,.35)); border-color: rgba(160,220,255,.55); }
+    .btn.danger { background: rgba(255,110,110,.16); border-color: rgba(255,130,130,.5); }
+    .atts { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+    .att { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: rgba(255,255,255,.85);
+      padding: 6px 10px; border-radius: 10px; border: 1px solid rgba(255,255,255,.22); background: rgba(255,255,255,.08); }
+    .bar { height: 8px; border-radius: 5px; background: rgba(255,255,255,.14); margin-top: 12px; overflow: hidden; }
+    .bar i { display: block; height: 100%; border-radius: 5px;
+      background: linear-gradient(90deg, rgba(140,230,255,.9), rgba(170,150,255,.9)); }
+    .tl { margin-top: 14px; display: grid; gap: 0; }
+    .tl .nd { display: flex; gap: 12px; }
+    .tl .rail { display: flex; flex-direction: column; align-items: center; }
+    .tl .dt { width: 12px; height: 12px; border-radius: 50%; border: 2px solid rgba(255,255,255,.6); background: rgba(255,255,255,.15); flex: 0 0 auto; margin-top: 3px; }
+    .tl .nd.done .dt { background: #8fe3a8; border-color: #bff0cf; box-shadow: 0 0 10px rgba(140,230,170,.7); }
+    .tl .ln { width: 2px; flex: 1; min-height: 16px; background: rgba(255,255,255,.22); }
+    .tl .tx { padding-bottom: 16px; font-size: 13px; }
+    .tl .tx b { display: block; font-size: 13px; }
+    .tl .tx span { color: rgba(255,255,255,.65); font-size: 12px; }
+    .amt { font-size: 22px; font-weight: 700; letter-spacing: .02em; }
+    .meta { display: flex; gap: 8px; margin-top: 10px; font-size: 12px; color: rgba(255,255,255,.72); }
+    .meta b { color: #fff; font-weight: 600; }
+    @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+      .card { background: rgba(43,35,68,.88); }
+    }
+    @media (prefers-reduced-motion: reduce) { .card { transition: none; } }
+
+  </style>
+</head>
+<body>
+  <main>
+    <header class="heading">
+      <p class="eyebrow">TEAM · NOTICE</p>
+      <h1>公告</h1>
+      <p class="hint">重要的事，值得被置顶。</p>
+    </header>
+
+    <section class="card">
+      <div class="top"><span class="pill pin">📌 置顶</span><span class="more">已读 28/32</span></div>
+      <div class="row">
+        <div class="face">📢</div>
+        <div class="copy">
+          <div class="title-line"><strong>下周一起试行弹性打卡</strong><time>09:00</time></div>
+          <div class="preview">核心工作时间 10:00–16:00，细则见附件。</div>
+        </div>
+      </div>
+      <div class="atts"><span class="att">📎 弹性打卡细则.pdf</span></div>
+    </section>
+    <section class="card">
+      <div class="top"><span class="pill">表彰</span><div class="avatars"><i class="avatar">麦</i><i class="avatar">穗</i></div></div>
+      <div class="row">
+        <div class="face">🏆</div>
+        <div class="copy">
+          <div class="title-line"><strong>10 月之星：麦穗小队</strong><time>昨日 18:00</time></div>
+          <div class="preview">提前 3 天交付支付链路重构，值得学习。</div>
+        </div>
+      </div>
+      <div class="bar"><i style="width:100%"></i></div>
+      <div class="meta">本月目标完成度 <b>100%</b></div>
+    </section>
+  </main>
+</body>
+</html>

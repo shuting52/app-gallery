@@ -1,0 +1,63 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>w25 · 成就勋章</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC",sans-serif;background:#05070c;display:flex;justify-content:center;color:#fff;overflow:hidden}
+.stage{width:430px;height:900px;position:relative;overflow:hidden;flex-shrink:0;background:radial-gradient(120% 90% at 50% 0%,#101c3f 0%,#0b1228 55%,#0b0e16 100%)}
+.mock{position:absolute;inset:0;filter:blur(6px) brightness(.55)}
+.sb{height:46px;display:flex;justify-content:space-between;align-items:center;padding:0 26px;font-size:13px;font-weight:600}
+.sic{width:70px;height:12px;border-radius:6px;background:#2a3040}
+.mh{display:flex;align-items:center;gap:10px;padding:14px 20px}
+.mh i{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,#24365e,#16223e);display:block}
+.mh em{width:110px;height:14px;border-radius:7px;background:#1f2c50;display:block}
+.banner{height:150px;margin:6px 20px 14px;border-radius:18px;background:linear-gradient(135deg,#1b2c58,#111c3a)}
+.row{display:flex;gap:12px;align-items:center;margin:0 20px 12px}
+.row i{width:52px;height:52px;border-radius:14px;background:#1f2c50;display:block;flex-shrink:0}
+.row b{display:block;width:150px;height:13px;border-radius:6px;background:#283a68;margin-bottom:8px}
+.row s{display:block;width:100px;height:10px;border-radius:5px;background:#1a2547;text-decoration:none}
+.tabbar{position:absolute;bottom:0;left:0;right:0;height:84px;background:rgba(11,18,40,.9);display:flex;justify-content:space-around;align-items:center;border-top:1px solid #1f2c50}
+.tabbar i{width:26px;height:26px;border-radius:8px;background:#283a68;display:block}
+.ov{position:absolute;inset:0;z-index:10;display:flex;align-items:center;justify-content:center;background:rgba(6,10,24,.55);animation:fadeIn .4s both}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.modal{width:330px;border-radius:26px;padding:34px 26px 28px;text-align:center;position:relative;background:linear-gradient(165deg,#1a2650,#0e1530);border:1px solid rgba(140,170,255,.3);box-shadow:0 30px 80px rgba(0,0,0,.55);animation:pop .55s cubic-bezier(.2,1.4,.4,1) both;animation-delay:.12s}
+@keyframes pop{from{opacity:0;transform:scale(.7) translateY(30px)}to{opacity:1;transform:none}}
+.x{position:absolute;top:14px;right:14px;width:30px;height:30px;border-radius:50%;border:0;background:rgba(255,255,255,.12);color:#fff;font-size:15px;cursor:pointer;z-index:3}
+.medal{width:150px;height:190px;margin:4px auto;position:relative;animation:flipin .8s cubic-bezier(.2,1.3,.4,1) both;animation-delay:.35s}
+@keyframes flipin{from{opacity:0;transform:rotateY(90deg) scale(.6)}to{opacity:1;transform:none}}
+.ribbon{position:absolute;top:0;left:50%;transform:translateX(-50%);display:flex;gap:6px}
+.ribbon i{width:34px;height:74px;display:block;background:linear-gradient(180deg,#e0485c,#a81c30);clip-path:polygon(0 0,100% 0,100% 100%,50% 78%,0 100%)}
+.ribbon i:last-child{background:linear-gradient(180deg,#3f6fe0,#27489e)}
+.disc{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:118px;height:118px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#ffe9b0,#e8a93d 60%,#9c6b1e);display:flex;align-items:center;justify-content:center;box-shadow:0 12px 30px rgba(232,169,61,.4),inset 0 0 0 8px rgba(255,255,255,.15);overflow:hidden}
+.disc::after{content:"";position:absolute;top:-20%;bottom:-20%;width:34px;background:linear-gradient(100deg,transparent,rgba(255,255,255,.75),transparent);transform:skewX(-18deg);animation:shine 2.8s ease-in-out infinite;animation-delay:-1s}
+@keyframes shine{0%,55%{left:-40px}90%,100%{left:130px}}
+.disc b{font-size:52px;color:#7a4d0d;position:relative;z-index:1}
+h2{font-size:21px;margin:14px 0 6px}
+p.sub{font-size:13px;color:#a9bce8;line-height:1.7}
+.btn{display:block;width:100%;border:0;border-radius:16px;padding:14px;font-size:16px;font-weight:700;cursor:pointer;margin-top:20px;background:linear-gradient(180deg,#8ca4ff,#4a6fe0);color:#fff;box-shadow:0 8px 22px rgba(90,120,240,.4)}
+.btn:active{transform:scale(.97)}
+.replay{position:absolute;bottom:24px;left:50%;transform:translateX(-50%);z-index:20;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.1);color:#fff;border-radius:999px;padding:10px 22px;font-size:13px;cursor:pointer;backdrop-filter:blur(8px)}
+</style></head>
+<body><div class="stage">
+<div class="mock"><div class="sb"><span>9:41</span><span class="sic"></span></div>
+<div class="mh"><i></i><em></em></div><div class="banner"></div>
+<div class="row"><i></i><div><b></b><s></s></div></div>
+<div class="row"><i></i><div><b></b><s></s></div></div>
+<div class="tabbar"><i></i><i></i><i></i><i></i></div></div>
+<div class="ov" id="ov"><div class="modal">
+<button class="x" id="x">✕</button>
+<div class="medal"><div class="ribbon"><i></i><i></i></div><div class="disc"><b>★</b></div></div>
+<h2>获得成就勋章</h2>
+<p class="sub">「初来乍到」<br>完成注册即点亮第一枚勋章</p>
+<button class="btn" id="go">收下勋章</button>
+</div></div>
+<button class="replay" id="replay">重新弹出</button>
+</div>
+<script>
+const ov=document.getElementById('ov');
+document.getElementById('go').onclick=()=>ov.style.display='none';
+document.getElementById('x').onclick=()=>ov.style.display='none';
+document.getElementById('replay').onclick=()=>{ov.style.display='flex';
+const m=ov.querySelector('.modal');m.style.animation='none';void m.offsetWidth;m.style.animation='';};
+</script></body></html>

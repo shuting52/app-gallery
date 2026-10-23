@@ -1,0 +1,32 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>沙画时光</title><style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{background:#d9c49a;display:flex;justify-content:center;font-family:-apple-system,"PingFang SC","Microsoft YaHei","Noto Sans CJK SC",sans-serif;overflow:hidden}
+.stage{width:430px;height:900px;max-height:100vh;position:relative;overflow:hidden;background:radial-gradient(110% 85% at 50% 40%,#f2e3c2 0%,#e6d0a4 55%,#c9ab74 100%)}
+.stream{position:absolute;left:50%;top:0;width:7px;height:330px;margin-left:-3.5px;background:linear-gradient(180deg,rgba(190,150,95,0),#b98f52 30%,#c9a05e);animation:fadein .6s ease .1s both}
+@keyframes fadein{from{opacity:0}to{opacity:1}}
+.grain{position:absolute;left:50%;top:0;width:4px;height:4px;margin-left:-2px;border-radius:50%;background:#a87f45;animation:drop 1.1s linear -0.5s infinite}
+.grain.g2{animation-delay:-0.9s;margin-left:3px}
+.grain.g3{animation-delay:-0.2s;margin-left:-6px}
+.grain.g4{animation-delay:-0.7s;margin-left:1px;width:3px;height:3px}
+@keyframes drop{from{transform:translateY(0);opacity:0}12%{opacity:1}to{transform:translateY(330px);opacity:0}}
+.dune{position:absolute;left:50%;bottom:230px;width:340px;height:120px;margin-left:-170px;background:radial-gradient(ellipse at 50% 100%,#c39a58 0%,#b3874a 55%,#a1763e 100%);border-radius:50% 50% 0 0 / 100% 100% 0 0;transform-origin:50% 100%;animation:grow 2.2s cubic-bezier(.3,.8,.3,1) .5s both}
+@keyframes grow{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+.ridge{position:absolute;left:50%;bottom:330px;width:200px;height:26px;margin-left:-100px;background:rgba(255,244,214,.5);filter:blur(6px);border-radius:50%;transform-origin:50% 100%;animation:grow 2.2s cubic-bezier(.3,.8,.3,1) .8s both}
+.logo{position:absolute;left:0;right:0;bottom:380px;text-align:center;clip-path:inset(0 100% 0 0);animation:wipe 1.4s cubic-bezier(.4,0,.2,1) 1.5s both}
+@keyframes wipe{to{clip-path:inset(0 0 0 0)}}
+.logo h1{font-size:84px;font-weight:800;letter-spacing:22px;text-indent:22px;color:#6e4f24;text-shadow:0 2px 0 rgba(255,244,214,.6)}
+.tag{position:absolute;left:0;right:0;bottom:330px;text-align:center;color:#8a6a3a;font-size:14px;letter-spacing:8px;text-indent:8px;animation:up 1.2s ease 2.1s both}
+@keyframes up{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+.replay{position:absolute;bottom:34px;left:50%;transform:translateX(-50%);z-index:50;padding:10px 26px;border-radius:999px;border:1px solid rgba(110,79,36,.55);background:rgba(255,250,235,.5);color:#6e4f24;font-size:13px;letter-spacing:4px;text-indent:4px;cursor:pointer}
+.replay:active{transform:translateX(-50%) scale(.94)}
+</style></head><body><div class="stage">
+<div class="stream"></div>
+<div class="grain"></div><div class="grain g2"></div><div class="grain g3"></div><div class="grain g4"></div>
+<div class="dune"></div><div class="ridge"></div>
+<div class="logo"><h1>沙画</h1></div>
+<div class="tag">时间 落沙成画</div>
+<button class="replay" onclick="location.reload()">重新播放</button>
+</div></body></html>

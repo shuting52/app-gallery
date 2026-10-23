@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>火山喷发</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;overflow:hidden}
+.stage{position:fixed;inset:0;overflow:hidden}
+.brand{position:absolute;left:0;right:0;top:60%;text-align:center;z-index:30;animation:brandIn 1.1s cubic-bezier(.2,.7,.3,1.2) 1.7s both}
+.brand h1{font-size:44px;letter-spacing:14px;text-indent:14px;font-weight:800}
+.brand p{margin-top:12px;font-size:13px;letter-spacing:5px;opacity:.72}
+@keyframes brandIn{from{opacity:0;transform:translateY(26px) scale(.94)}to{opacity:1;transform:none}}
+.replay{position:absolute;left:50%;bottom:52px;transform:translateX(-50%);z-index:40;border:1px solid rgba(255,255,255,.4);background:rgba(255,255,255,.14);color:#fff;border-radius:999px;padding:10px 28px;font-size:13px;letter-spacing:3px;cursor:pointer;backdrop-filter:blur(6px)}
+.replay.dk{border-color:rgba(0,0,0,.25);background:rgba(0,0,0,.08);color:#2a2a2a}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes rise{from{transform:translateY(0);opacity:0}12%{opacity:1}to{transform:translateY(-340px) translateX(var(--dx,0px));opacity:0}}
+@keyframes fall{to{transform:translateY(960px)}}
+@keyframes sway{from{transform:rotate(-9deg)}to{transform:rotate(9deg)}}
+@keyframes hover{0%,100%{transform:translateY(0)}50%{transform:translateY(-16px)}}
+@keyframes ringX{from{transform:translateX(-50%) scale(.5);opacity:.8}to{transform:translateX(-50%) scale(1.5);opacity:0}}
+@keyframes tw{0%,100%{opacity:.15}50%{opacity:1}}
+
+.stage{background:linear-gradient(#160808,#3d1410 55%,#0d0505)}
+ .brand h1,.brand p{color:#fff}
+.vol{position:absolute;bottom:16%;left:50%;width:300px;height:210px;margin-left:-150px;background:linear-gradient(#54281a,#241009);clip-path:polygon(38% 0,62% 0,100% 100%,0 100%)}
+.crater{position:absolute;bottom:calc(16% + 196px);left:50%;width:70px;height:22px;margin-left:-35px;border-radius:50%;background:radial-gradient(circle,#ffd23e,#ff5a1f 70%,transparent 72%);filter:blur(3px);animation:tw 1.6s infinite}
+.lavaflow{position:absolute;bottom:16%;left:50%;width:24px;height:150px;margin-left:-12px;background:linear-gradient(#ffd23e,#ff5a1f);filter:blur(3px);border-radius:12px;opacity:.85}
+.emb{position:absolute;bottom:34%;width:8px;height:8px;border-radius:50%;background:#ffb03a;box-shadow:0 0 12px #ff7a1f;animation:rise linear infinite}
+.smk{position:absolute;bottom:40%;width:46px;height:46px;border-radius:50%;background:rgba(120,110,105,.35);filter:blur(10px);animation:rise linear infinite}
+</style></head>
+<body><div class="stage">
+<div class="vol"></div><div class="crater"></div><div class="lavaflow"></div>
+<span class="emb" style="left:39%;--dx:-45px;animation-delay:-0.1s;animation-duration:2.8s"></span>
+<span class="emb" style="left:44%;--dx:34px;animation-delay:-0.7s;animation-duration:3.5s"></span>
+<span class="emb" style="left:47%;--dx:27px;animation-delay:-2.9s;animation-duration:2.9s"></span>
+<span class="emb" style="left:55%;--dx:-39px;animation-delay:-2.8s;animation-duration:3.0s"></span>
+<span class="emb" style="left:40%;--dx:24px;animation-delay:-2.9s;animation-duration:2.4s"></span>
+<span class="emb" style="left:43%;--dx:25px;animation-delay:-2.5s;animation-duration:3.5s"></span>
+<span class="emb" style="left:41%;--dx:59px;animation-delay:-0.4s;animation-duration:3.4s"></span>
+<span class="emb" style="left:46%;--dx:24px;animation-delay:-1.6s;animation-duration:2.8s"></span>
+<span class="emb" style="left:61%;--dx:-18px;animation-delay:-1.3s;animation-duration:3.6s"></span>
+<span class="emb" style="left:44%;--dx:-62px;animation-delay:-2.5s;animation-duration:2.8s"></span>
+<span class="emb" style="left:56%;--dx:-8px;animation-delay:-2.7s;animation-duration:3.8s"></span>
+<span class="emb" style="left:52%;--dx:-20px;animation-delay:-1.2s;animation-duration:3.7s"></span>
+<span class="emb" style="left:61%;--dx:-33px;animation-delay:-2.3s;animation-duration:3.1s"></span>
+<span class="emb" style="left:55%;--dx:-14px;animation-delay:-0.3s;animation-duration:3.5s"></span>
+<span class="smk" style="left:56%;animation-delay:-3.4s;animation-duration:6.3s"></span>
+<span class="smk" style="left:50%;animation-delay:-0.6s;animation-duration:7.3s"></span>
+<span class="smk" style="left:53%;animation-delay:-3.6s;animation-duration:7.9s"></span>
+<span class="smk" style="left:51%;animation-delay:-0.5s;animation-duration:5.7s"></span>
+<span class="smk" style="left:52%;animation-delay:-2.1s;animation-duration:5.6s"></span>
+<span class="smk" style="left:45%;animation-delay:-4.4s;animation-duration:5.5s"></span>
+<div class="brand"><h1>熔核</h1><p>炽热之心 喷薄而出</p></div>
+<button class="replay">重新播放</button>
+<script>
+var tpl=document.body.innerHTML;
+function bind(){document.querySelector('.replay').onclick=function(){document.body.innerHTML=tpl;bind();};}
+bind();
+</script>
+</div></body></html>

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>城市建造 · 进度指示</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:#0d1117;color:#e6edf3;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;
+       min-height:100vh;display:flex;justify-content:center;align-items:flex-start;padding:36px 0}
+  .stage{width:360px;max-width:94vw;display:flex;flex-direction:column;align-items:center}
+  .head{display:flex;justify-content:space-between;align-items:baseline;width:100%;margin-bottom:14px}
+  .head h1{font-size:17px;font-weight:600;letter-spacing:2px}
+  .head .pct{font-size:15px;color:#ffd166;font-variant-numeric:tabular-nums}
+  .night{position:relative;width:330px;height:320px;border-radius:14px;overflow:hidden;
+         background:linear-gradient(to bottom,#05070f 0%,#0b1026 70%,#101736 100%);
+         border:1px solid #1b2340}
+  .moon{position:absolute;top:26px;right:34px;width:34px;height:34px;border-radius:50%;
+        background:#f5f0d8;box-shadow:0 0 24px rgba(245,240,216,.5)}
+  .ground{position:absolute;left:0;right:0;bottom:0;height:34px;background:#04060c;border-top:1px solid #232c52}
+  .city{position:absolute;left:8px;right:8px;bottom:34px;height:250px;display:flex;align-items:flex-end;gap:4px}
+  .bld{position:relative;width:38px;background:linear-gradient(to bottom,#1a2242,#0e1330);
+       border:1px solid #2a3568;border-bottom:none;height:0px;overflow:hidden}
+  .bld .win{position:absolute;width:7px;height:9px;background:#2c3766;border-radius:1px}
+  .bld .win.lit{background:#ffd166;box-shadow:0 0 6px rgba(255,209,102,.8)}
+  .cap{position:absolute;bottom:8px;left:0;right:0;text-align:center;font-size:12px;color:#8b949e;letter-spacing:1px;z-index:5}
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="head"><h1>城市建造</h1><span class="pct" id="pct">0%</span></div>
+  <div class="night">
+    <div class="moon"></div>
+    <div class="city" id="city"></div>
+    <div class="ground"></div>
+    <div class="cap">建筑按 12.5% 逐栋升起 · 亮灯数量 ∝ 进度</div>
+  </div>
+</div>
+<script>
+(function(){
+  var pct=document.getElementById('pct'),city=document.getElementById('city');
+  var maxH=[86,128,104,150,116,168,94,138];
+  var blds=[];
+  for(var i=0;i<8;i++){
+    var b=document.createElement('div');b.className='bld';
+    var wins=[];
+    var cols=3,rows=Math.floor(maxH[i]/26);
+    for(var r2=0;r2<rows;r2++){
+      for(var c=0;c<cols;c++){
+        var w=document.createElement('div');w.className='win';
+        w.style.left=(5+c*11)+'px';w.style.top=(8+r2*24)+'px';
+        b.appendChild(w);wins.push(w);
+      }
+    }
+    city.appendChild(b);
+    blds.push({el:b,wins:wins,maxH:maxH[i]});
+  }
+  var p=0,D=7000,HOLD=1000;
+  function clamp(v){return v<0?0:(v>1?1:v);}
+  function render(){
+    pct.textContent=Math.round(p)+'%';
+    for(var i=0;i<8;i++){
+      var b=blds[i];
+      var prog=clamp((p-i*12.5)/12.5);
+      b.el.style.height=(prog*b.maxH)+'px';
+      var lit=Math.round(b.wins.length*prog);
+      for(var k=0;k<b.wins.length;k++){
+        if(k<lit)b.wins[k].classList.add('lit');
+        else b.wins[k].classList.remove('lit');
+      }
+    }
+  }
+  function tick(now){
+    if(tick.t0===undefined)tick.t0=now;
+    var e=now-tick.t0;
+    if(e>=D){p=100;render();if(e>=D+HOLD){tick.t0=now;p=0;}requestAnimationFrame(tick);return;}
+    p=e/D*100;render();requestAnimationFrame(tick);
+  }
+  if(location.hash==='#mid'){p=55;render();}
+  else{requestAnimationFrame(tick);}
+})();
+</script>
+</body>
+</html>

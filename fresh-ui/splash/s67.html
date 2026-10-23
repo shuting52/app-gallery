@@ -1,0 +1,32 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>樱吹雪</title><style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{width:430px;height:900px;margin:0 auto;position:relative;overflow:hidden;
+font-family:-apple-system,"PingFang SC","Microsoft YaHei","Noto Sans CJK SC",sans-serif;
+background:linear-gradient(180deg,#ffe3ec 0%,#ffd0e0 55%,#ffc2d6 100%);color:#fff}
+.scene{position:absolute;inset:0}
+
+.branch{position:absolute;top:60px;right:-40px;width:300px;height:44px;background:linear-gradient(#5a3a2e,#3e2a22);border-radius:22px;transform:rotate(24deg)}
+.branch::before{content:"";position:absolute;left:40px;top:-70px;width:26px;height:110px;background:linear-gradient(#5a3a2e,#3e2a22);border-radius:13px;transform:rotate(-38deg)}
+.blos{position:absolute;width:26px;height:26px;border-radius:50%;background:radial-gradient(circle,#ffd9e6 30%,#f78fb8 75%)}
+.pt{position:absolute;top:-30px;width:21px;height:16px;border-radius:80% 12% 80% 12%;animation:petFall linear infinite;display:block}
+@keyframes petFall{to{transform:translateY(960px) translateX(70px) rotate(420deg)}}
+.gndp{position:absolute;bottom:-70px;left:-60px;width:550px;height:180px;background:#f7b8cd;border-radius:50%}
+
+.brand{position:absolute;left:0;right:0;bottom:118px;text-align:center;z-index:5;
+color:#a34a6e;opacity:0;animation:brandIn 1s ease 2.2s both}
+.brand h1{font-size:34px;letter-spacing:8px;font-weight:800;text-shadow:0 2px 14px rgba(0,0,0,.35)}
+.brand p{font-size:13px;letter-spacing:3px;margin-top:10px;opacity:.85;text-shadow:0 1px 10px rgba(0,0,0,.35)}
+@keyframes brandIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.replay{position:absolute;left:50%;bottom:44px;transform:translateX(-50%);z-index:6;
+padding:10px 28px;border-radius:24px;border:1px solid rgba(255,255,255,.45);
+background:rgba(255,255,255,.14);color:#a34a6e;font-size:14px;letter-spacing:2px;cursor:pointer}
+</style></head><body>
+<div class="scene"><div class="branch"></div>
+<div class="blos" style="left:200px;top:120px"></div><div class="blos" style="left:250px;top:180px;transform:scale(.8)"></div><div class="blos" style="left:150px;top:200px;transform:scale(1.2)"></div><div class="blos" style="left:290px;top:110px;transform:scale(.7)"></div>
+<i class="pt" style="left:25px;animation-duration:8s;animation-delay:-1s;background:#ffb9d2"></i><i class="pt" style="left:70px;animation-duration:9.5s;animation-delay:-4s;background:#f78fb8"></i><i class="pt" style="left:115px;animation-duration:8.5s;animation-delay:-2s;background:#ffc9dd"></i><i class="pt" style="left:160px;animation-duration:10s;animation-delay:-6s;background:#ffb9d2"></i><i class="pt" style="left:205px;animation-duration:8s;animation-delay:-3s;background:#f78fb8"></i><i class="pt" style="left:250px;animation-duration:9s;animation-delay:-5s;background:#ffc9dd"></i><i class="pt" style="left:295px;animation-duration:8.5s;animation-delay:-1.5s;background:#ffb9d2"></i><i class="pt" style="left:340px;animation-duration:10s;animation-delay:-7s;background:#f78fb8"></i><i class="pt" style="left:385px;animation-duration:9s;animation-delay:-3.5s;background:#ffc9dd"></i><i class="pt" style="left:50px;animation-duration:8s;animation-delay:-5.5s;background:#ffb9d2"></i><i class="pt" style="left:140px;animation-duration:9.5s;animation-delay:-2.5s;background:#f78fb8"></i><i class="pt" style="left:230px;animation-duration:8s;animation-delay:-6.5s;background:#ffc9dd"></i><i class="pt" style="left:320px;animation-duration:9s;animation-delay:-4.5s;background:#ffb9d2"></i><i class="pt" style="left:95px;animation-duration:10s;animation-delay:-3s;background:#ffc9dd"></i><i class="pt" style="left:275px;animation-duration:8.5s;animation-delay:-7.5s;background:#f78fb8"></i><i class="pt" style="left:365px;animation-duration:9s;animation-delay:-2s;background:#ffb9d2"></i><div class="gndp"></div></div>
+<div class="brand"><h1>樱吹雪</h1><p>花瓣为信 春风作笺</p></div>
+<button class="replay" onclick="location.reload()">重新播放</button>
+</body></html>

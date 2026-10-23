@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>深海潜行</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{background:#070a12;display:flex;align-items:center;justify-content:center;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;overflow:hidden}
+.stage{position:relative;width:430px;height:900px;flex:none;overflow:hidden}
+.stage i{display:block;position:absolute}
+.brand{position:absolute;left:0;right:0;bottom:104px;text-align:center;z-index:50;animation:brandIn 1s .9s both}
+.brand h1{font-size:32px;letter-spacing:10px;text-indent:10px;color:#fff;font-weight:700;text-shadow:0 2px 24px rgba(0,0,0,.45)}
+.brand p{margin-top:10px;font-size:11px;letter-spacing:5px;color:rgba(255,255,255,.62)}
+@keyframes brandIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.replay{position:absolute;bottom:30px;left:50%;transform:translateX(-50%);z-index:60;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.35);color:#fff;font-size:12px;letter-spacing:2px;padding:9px 24px;border-radius:20px;cursor:pointer;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.shade{position:absolute;left:0;right:0;bottom:0;height:360px;background:linear-gradient(transparent,rgba(8,6,18,.78));z-index:40;pointer-events:none}
+
+.stage{background:linear-gradient(#07305a,#041c34 55%,#020d18)}
+
+.ray{width:70px;height:700px;top:-60px;background:linear-gradient(rgba(140,200,255,.16),transparent 80%);transform:skewX(-12deg);transform-origin:50% 0;animation:raysway 7s ease-in-out infinite alternate}
+.ry1{left:90px}.ry2{left:220px;animation-delay:-2.4s}.ry3{left:330px;animation-delay:-4.8s}
+@keyframes raysway{to{transform:skewX(10deg)}}
+.sub{width:200px;height:66px;left:50px;top:430px;z-index:6;animation:cruise 10s ease-in-out infinite alternate}
+@keyframes cruise{to{transform:translate(150px,-34px)}}
+.sub .hull{width:200px;height:66px;left:0;top:0;border-radius:40px;background:linear-gradient(#4a7ea3,#22415e)}
+.sub .nose{width:60px;height:66px;left:150px;top:0;border-radius:0 40px 40px 0;background:linear-gradient(#5a90b3,#2a4c6e)}
+.sub .tower{width:44px;height:34px;left:80px;top:-24px;border-radius:10px 10px 0 0;background:#2a4c6e}
+.sub .port{width:14px;height:14px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#bfe6ff,#5a90b3);top:26px}
+.pt1{left:56px}.pt2{left:88px}.pt3{left:120px}
+.sub .prop{width:10px;height:44px;left:-8px;top:11px;border-radius:5px;background:rgba(190,225,255,.5);filter:blur(3px);animation:prop .3s linear infinite}
+@keyframes prop{to{transform:rotate(360deg)}}
+.sonar{border:2px solid rgba(120,200,255,.55);border-radius:50%;left:150px;top:463px;width:60px;height:60px;transform:translate(-50%,-50%) scale(.4);opacity:0;animation:sonar 3.2s ease-out infinite;z-index:5}
+.sn2{animation-delay:-1.07s}.sn3{animation-delay:-2.13s}
+@keyframes sonar{0%{transform:translate(-50%,-50%) scale(.4);opacity:0}20%{opacity:.9}100%{transform:translate(-50%,-50%) scale(3.4);opacity:0}}
+.bub{width:10px;height:10px;border-radius:50%;background:radial-gradient(circle at 35% 30%,rgba(255,255,255,.9),rgba(160,210,245,.25));animation:bub 6s linear infinite;opacity:0;z-index:5}
+.b1{left:120px;top:500px;animation-delay:-1s}.b2{left:150px;top:520px;animation-delay:-3s;animation-duration:7s}
+.b3{left:90px;top:540px;animation-delay:-4.6s}
+@keyframes bub{0%{transform:translateY(0);opacity:0}12%{opacity:.9}100%{transform:translateY(-380px);opacity:0}}
+.floor{position:absolute;left:0;right:0;bottom:0;height:130px;background:linear-gradient(#0a2036,#050f1c);clip-path:polygon(0 100%,0 45%,18% 20%,35% 48%,55% 28%,75% 52%,90% 34%,100% 50%,100% 100%);z-index:4}
+.weed{width:12px;height:90px;bottom:60px;border-radius:6px;background:linear-gradient(#1d5a44,#0e3527);transform-origin:50% 100%;animation:weed 4s ease-in-out infinite alternate;z-index:5}
+.wd1{left:80px}.wd2{left:330px;animation-delay:-2s;height:70px}
+@keyframes weed{to{transform:rotate(10deg)}}
+
+</style></head><body>
+<div class="stage" id="stage">
+
+<i class="ray ry1"></i><i class="ray ry2"></i><i class="ray ry3"></i>
+<i class="sub"><i class="hull"></i><i class="nose"></i><i class="tower"></i><i class="port pt1"></i><i class="port pt2"></i><i class="port pt3"></i><i class="prop"></i></i>
+<i class="sonar sn1"></i><i class="sonar sn2"></i><i class="sonar sn3"></i>
+<i class="bub b1"></i><i class="bub b2"></i><i class="bub b3"></i>
+<i class="floor"></i><i class="weed wd1"></i><i class="weed wd2"></i>
+
+<div class="shade"></div>
+<div class="brand"><h1>深潜</h1><p>DEEP DIVE</p></div>
+<button class="replay" onclick="var s=document.getElementById('stage');s.replaceWith(s.cloneNode(true))">重新播放</button>
+</div>
+</body></html>

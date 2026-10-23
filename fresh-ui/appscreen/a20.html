@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>日日精进</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{background:#2b2620;display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sans-serif}
+.phone{width:430px;height:900px;background:#f6f1e7;border-radius:44px;overflow:hidden;position:relative;box-shadow:0 30px 80px rgba(0,0,0,.6),0 0 0 1px rgba(255,255,255,.1);display:flex;flex-direction:column}
+.phone::before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.5;background:repeating-linear-gradient(0deg,transparent,transparent 27px,rgba(120,100,70,.06) 28px)}
+.topbar{padding:56px 24px 0;position:relative;z-index:2}
+.greet{font-size:14px;color:#8a7c64}
+.streak{display:flex;align-items:center;gap:10px;margin-top:8px}
+.flame{font-size:38px;display:inline-block;animation:flick 1.2s ease-in-out infinite;animation-delay:-.6s;transform-origin:50% 90%}
+@keyframes flick{0%,100%{transform:scale(1) rotate(-2deg)}50%{transform:scale(1.12) rotate(2deg)}}
+.streak .n{font-size:34px;font-weight:800;color:#3d3428}
+.streak .l{font-size:13px;color:#8a7c64;line-height:1.5}
+.week{margin:18px 24px 0;background:#fffdf7;border:1px solid #e7dcc6;border-radius:20px;padding:16px;position:relative;z-index:2;box-shadow:0 6px 18px rgba(120,100,70,.1)}
+.week .t{font-size:13px;color:#8a7c64;margin-bottom:12px;letter-spacing:1px}
+.days{display:flex;justify-content:space-between}
+.day{text-align:center}
+.dot{width:38px;height:38px;border-radius:50%;border:2px dashed #d8c9a8;display:flex;align-items:center;justify-content:center;font-size:13px;color:#b3a586;background:#faf6ec;transition:all .3s}
+.day.done .dot{background:radial-gradient(circle at 35% 30%,#ffd97a,#e8a93d);border-style:solid;border-color:#d89a2e;color:#fff;font-weight:700;box-shadow:0 4px 12px rgba(232,169,61,.45)}
+.day.today .dot{border:2px solid #e8a93d;color:#b97f1c;font-weight:700}
+.day .w{font-size:11px;color:#a99a7c;margin-top:6px;display:block}
+.list{flex:1;overflow:hidden;margin:16px 24px 0;position:relative;z-index:2}
+.habit{background:#fffdf7;border:1px solid #e7dcc6;border-radius:18px;padding:16px;display:flex;align-items:center;gap:14px;margin-bottom:12px;cursor:pointer;box-shadow:0 4px 14px rgba(120,100,70,.08);transition:transform .15s}
+.habit:active{transform:scale(.98)}
+.habit .emo{font-size:28px;width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;background:#f3ecdc;flex-shrink:0}
+.habit .info{flex:1}
+.habit .name{font-size:16px;font-weight:700;color:#3d3428}
+.habit .cnt{font-size:12px;color:#a99a7c;margin-top:4px}
+.check{width:34px;height:34px;border-radius:50%;border:2px solid #d8c9a8;flex-shrink:0;position:relative;transition:all .25s;background:#faf6ec}
+.habit.done .check{background:#58b368;border-color:#58b368;animation:pop .45s cubic-bezier(.2,2.2,.4,1)}
+@keyframes pop{0%{transform:scale(.4)}60%{transform:scale(1.25)}100%{transform:scale(1)}}
+.habit.done .check::after{content:"";position:absolute;left:11px;top:6px;width:7px;height:13px;border:solid #fff;border-width:0 3px 3px 0;transform:rotate(45deg);display:block}
+.habit.done .name{text-decoration:line-through;color:#b3a586}
+.quote{margin:0 24px 8px;background:linear-gradient(135deg,#e8a93d,#d97b2e);border-radius:18px;padding:16px 18px;color:#fff;position:relative;z-index:2;animation:slidein .6s ease both;animation-delay:-.1s}
+@keyframes slidein{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+.quote .q{font-size:15px;font-weight:700;line-height:1.6}
+.quote .a{font-size:12px;opacity:.85;margin-top:6px}
+.tabbar{display:flex;background:#fffdf7;border-top:1px solid #e7dcc6;padding:12px 8px 34px;position:relative;z-index:2}
+.tab{flex:1;text-align:center;color:#b3a586;font-size:11px;cursor:pointer;padding:6px 0}
+.tab .ic{font-size:22px;display:block;margin-bottom:4px;transition:transform .25s}
+.tab.on{color:#d97b2e;font-weight:700}
+.tab.on .ic{transform:translateY(-3px) scale(1.15)}
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="topbar">
+    <div class="greet">早上好，今天也要加油 ☀️</div>
+    <div class="streak">
+      <span class="flame">🔥</span>
+      <div><div class="n"><span id="streakN">21</span> 天</div><div class="l">连续打卡中<br>再坚持 9 天解锁新徽章</div></div>
+    </div>
+  </div>
+  <div class="week">
+    <div class="t">本周打卡 · 10月第三周</div>
+    <div class="days" id="days">
+      <div class="day done"><div class="dot">✓</div><span class="w">一</span></div>
+      <div class="day done"><div class="dot">✓</div><span class="w">二</span></div>
+      <div class="day done"><div class="dot">✓</div><span class="w">三</span></div>
+      <div class="day done"><div class="dot">✓</div><span class="w">四</span></div>
+      <div class="day done"><div class="dot">✓</div><span class="w">五</span></div>
+      <div class="day done"><div class="dot">✓</div><span class="w">六</span></div>
+      <div class="day today"><div class="dot">日</div><span class="w">今天</span></div>
+    </div>
+  </div>
+  <div class="list" id="list">
+    <div class="habit done" data-c="3"><div class="emo">💧</div><div class="info"><div class="name">喝够八杯水</div><div class="cnt">已完成 <b class="c">3</b> / 8 次</div></div><div class="check"></div></div>
+    <div class="habit" data-c="0" data-max="1"><div class="emo">📖</div><div class="info"><div class="name">阅读三十分钟</div><div class="cnt">已完成 <b class="c">0</b> / 1 次</div></div><div class="check"></div></div>
+    <div class="habit done" data-c="1" data-max="1"><div class="emo">🏃</div><div class="info"><div class="name">晨跑三公里</div><div class="cnt">已完成 <b class="c">1</b> / 1 次</div></div><div class="check"></div></div>
+    <div class="habit" data-c="0" data-max="1"><div class="emo">🧘</div><div class="info"><div class="name">睡前冥想</div><div class="cnt">已完成 <b class="c">0</b> / 1 次</div></div><div class="check"></div></div>
+  </div>
+  <div class="quote">
+    <div class="q">“自律不是苦行，而是把热爱过成日常。”</div>
+    <div class="a">—— 今日小签 · 累计打卡 214 次</div>
+  </div>
+  <div class="tabbar" id="tabbar">
+    <div class="tab on"><span class="ic">✅</span>习惯</div>
+    <div class="tab"><span class="ic">🏅</span>成就</div>
+    <div class="tab"><span class="ic">📈</span>统计</div>
+    <div class="tab"><span class="ic">👤</span>我的</div>
+  </div>
+</div>
+<script>
+(function(){
+  var list=document.getElementById('list');
+  list.addEventListener('click',function(e){
+    var h=e.target.closest('.habit');if(!h)return;
+    var max=parseInt(h.dataset.max||'8',10);
+    var c=parseInt(h.dataset.c||'0',10);
+    if(h.classList.contains('done')&&c>=max){c=0;h.classList.remove('done');}
+    else{c=Math.min(c+1,max);if(c>=max)h.classList.add('done');
+      else{h.classList.remove('done');var ck=h.querySelector('.check');ck.style.animation='none';void ck.offsetWidth;ck.style.animation='pop .45s cubic-bezier(.2,2.2,.4,1)';}}
+    h.dataset.c=c;h.querySelector('.c').textContent=c;
+    var s=document.getElementById('streakN');
+    s.textContent=parseInt(s.textContent,10)+1;
+  });
+  var tb=document.getElementById('tabbar');
+  tb.addEventListener('click',function(e){
+    var t=e.target.closest('.tab');if(!t)return;
+    tb.querySelectorAll('.tab').forEach(function(x){x.classList.remove('on')});
+    t.classList.add('on');
+  });
+})();
+</script>
+</body>
+</html>

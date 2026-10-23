@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>底部 Tab 栏 · 24 款效果图 + 代码</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;background:#0b0e1a;color:#fff;min-height:100vh;padding:36px 18px 70px}
+header{text-align:center;max-width:720px;margin:0 auto}
+header .tag{display:inline-block;font-size:12px;letter-spacing:2px;color:#9df0c0;border:1px solid #9df0c055;padding:6px 14px;border-radius:999px;margin-bottom:14px;background:#9df0c010}
+header h1{font-size:28px;margin-bottom:10px}
+header p{font-size:13.5px;color:#aab;line-height:1.9}
+header p b{color:#9df0c0}
+#grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:26px;max-width:1280px;margin:34px auto 0}
+.card{background:#ffffff07;border:1px solid #ffffff12;border-radius:20px;overflow:hidden;display:flex;flex-direction:column}
+.card .meta{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid #ffffff0e}
+.card .meta .n{font-size:12px;color:#9df0c0;font-family:ui-monospace,monospace}
+.card .meta h3{font-size:15px}
+.card .meta p{font-size:12px;color:#8f98c8;margin-top:3px}
+.copy{flex:none;font-size:12.5px;border:1px solid #ffffff2c;background:#ffffff0c;color:#fff;padding:8px 15px;border-radius:99px;cursor:pointer;transition:.2s;white-space:nowrap;margin-left:10px}
+.copy:hover{background:#07c160;border-color:#07c160}
+.copy.ok{background:#07c160;border-color:#07c160}
+.stage{padding:22px;display:flex;justify-content:center;background:
+  radial-gradient(300px 200px at 20% 10%,#223,transparent),
+  radial-gradient(260px 220px at 85% 90%,#1a2340,transparent)}
+.screen{width:300px;height:270px;border-radius:26px;overflow:hidden;position:relative;flex:none;
+  background:
+    radial-gradient(180px 140px at 20% 15%,#ff5e3a88,transparent 60%),
+    radial-gradient(170px 150px at 85% 30%,#7b2ff766,transparent 60%),
+    radial-gradient(200px 170px at 40% 85%,#00c9a766,transparent 62%),
+    #141428;
+  box-shadow:0 14px 34px #000a,0 0 0 1px #ffffff14}
+.fake{padding:18px 16px;display:flex;flex-direction:column;gap:10px}
+.fake i{display:block;height:34px;border-radius:9px;background:#ffffff14;font-style:normal}
+.fake i:nth-child(2){width:78%}.fake i:nth-child(3){width:88%}
+/* 各 tab 栏挂载点 */
+.mount{position:absolute;left:0;right:0;bottom:0}
+/* 通用 tab 结构 */
+.bar{position:relative;display:flex;width:100%}
+.tab{flex:1;border:0;background:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:10px;cursor:pointer;color:#8a8a93;font-family:inherit;position:relative;padding:8px 0}
+.tab i{font-size:22px;font-style:normal;line-height:1;transition:transform .25s,filter .25s}
+.tab .bdg{position:absolute;top:6px;left:calc(50% + 2px);background:#fa5151;color:#fff;font-size:9.5px;min-width:16px;height:16px;line-height:16px;border-radius:9px;text-align:center;padding:0 4px;font-weight:700}
+.ind{position:absolute;transition:left .38s cubic-bezier(.3,1.3,.4,1),width .38s cubic-bezier(.3,1.3,.4,1),transform .3s;pointer-events:none}
+footer{text-align:center;color:#5a6080;font-size:12px;margin-top:44px;line-height:2}
+.toast{position:fixed;left:50%;bottom:34px;transform:translateX(-50%) translateY(20px);background:#07c160;color:#fff;font-size:13.5px;padding:11px 22px;border-radius:99px;opacity:0;transition:.3s;z-index:99;pointer-events:none;box-shadow:0 10px 30px #0008}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute"><defs>
+<filter id="lgf" x="-20%" y="-20%" width="140%" height="140%">
+<feTurbulence type="fractalNoise" baseFrequency="0.012 0.02" numOctaves="2" seed="7" result="n"/>
+<feDisplacementMap in="SourceGraphic" in2="n" scale="55" xChannelSelector="R" yChannelSelector="G"/>
+</filter>
+</defs></svg>
+<header>
+<span class="tag">BOTTOM TAB BAR · 24 STYLES</span>
+<h1>底部 Tab 栏 · 24 款效果图</h1>
+<p>每款都可<b>点击切换</b>实时预览，右上角<b>复制代码</b>拿到独立可用的 HTML+CSS 片段。<br>纯手写 CSS，零框架，直接粘进项目就能用。</p>
+</header>
+<div id="grid"></div>
+<footer>24 款底部 Tab 栏 · 由 Muse 手写 CSS 制作 · 点击卡片内 Tab 可交互预览</footer>
+<div class="toast" id="toast">代码已复制 ✓</div>
+<script>
+const TABS=[{i:"💬",t:"微信",b:"3"},{i:"👥",t:"通讯录"},{i:"🧭",t:"发现",d:1},{i:"👤",t:"我"}];
+const D=[
+/* 1 */{n:"液态玻璃",d:"iOS26 风格 · SVG 折射滤镜",ind:"drop",css:`
+.tb1.bar{height:66px;margin:0 12px 12px;width:calc(100% - 24px);border-radius:22px;background:rgba(255,255,255,.14);-webkit-backdrop-filter:url(#lgf) blur(4px) saturate(1.6);backdrop-filter:url(#lgf) blur(4px) saturate(1.6);border:1px solid rgba(255,255,255,.4);box-shadow:0 10px 28px rgba(0,0,0,.3),inset 0 1px 2px rgba(255,255,255,.7)}
+.tb1 .ind{width:52px;height:52px;top:7px;border-radius:18px;background:rgba(255,255,255,.22);-webkit-backdrop-filter:url(#lgf) blur(2px) saturate(1.8);backdrop-filter:url(#lgf) blur(2px) saturate(1.8);border:1px solid rgba(255,255,255,.55);box-shadow:inset 0 2px 5px rgba(255,255,255,.6)}
+.tb1 .tab{color:#e8ecff}.tb1 .tab.on{color:#fff}.tb1 .tab.on i{transform:scale(1.15)}`},
+/* 2 */{n:"微信经典",d:"官方原版还原 · 绿色选中",css:`
+.tb2.bar{height:60px;background:#f7f7f7;border-top:1px solid rgba(0,0,0,.08)}
+.tb2 .tab{color:#999}.tb2 .tab.on{color:#07c160}.tb2 .tab i{filter:grayscale(1);opacity:.7}
+.tb2 .tab.on i{filter:none;opacity:1}`},
+/* 3 */{n:"Material3 胶囊",d:"Google 规范 · 胶囊指示器",ind:"capsule",css:`
+.tb3.bar{height:68px;background:#fef7ff}
+.tb3 .ind{height:34px;top:8px;border-radius:99px;background:#e8def8;transition:left .3s cubic-bezier(.3,1.2,.4,1),width .3s}
+.tb3 .tab{color:#49454f}.tb3 .tab.on{color:#1d1b20}.tb3 .tab.on i{transform:scale(1.08)}`},
+/* 4 */{n:"液滴跟随",d:"WCGlass 风格 · 弹性液滴",ind:"drop",css:`
+.tb4.bar{height:66px;margin:0 14px 12px;width:calc(100% - 28px);border-radius:24px;background:rgba(20,22,34,.72);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.12)}
+.tb4 .ind{width:46px;height:46px;top:10px;border-radius:50%;background:radial-gradient(circle at 32% 28%,#fff,#bfe3ff 55%,#7fb8ec);box-shadow:0 4px 14px rgba(127,184,236,.55),inset 0 -3px 6px rgba(0,60,120,.25)}
+.tb4 .tab{color:#9aa3b8}.tb4 .tab.on{color:#fff}.tb4 .tab.on i{transform:scale(1.12) translateY(-1px)}`},
+/* 5 */{n:"中央凸起",d:"发布按钮上浮",css:`
+.tb5.bar{height:62px;background:#fff;border-top:1px solid rgba(0,0,0,.07)}
+.tb5 .tab{color:#999}.tb5 .tab.on{color:#ff5e3a}
+.tb5 .tab.mid i{width:52px;height:52px;margin-top:-28px;border-radius:50%;background:linear-gradient(135deg,#ff9a56,#ff5e3a);color:#fff;font-size:26px;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 20px rgba(255,94,58,.45);border:4px solid #fff}
+.tb5 .tab.mid{color:#ff5e3a}`},
+/* 6 */{n:"霓虹暗黑",d:"赛博朋克发光",css:`
+.tb6.bar{height:64px;background:#0a0a12;border-top:1px solid #1e1e2e}
+.tb6 .tab{color:#4a4a5e}.tb6 .tab.on{color:#0ff;text-shadow:0 0 10px #0ff,0 0 24px #0ff88}
+.tb6 .tab.on i{transform:scale(1.18);animation:neonflick 2.4s infinite}
+@keyframes neonflick{0%,100%{opacity:1}92%{opacity:1}93%{opacity:.6}94%{opacity:1}96%{opacity:.75}97%{opacity:1}}`},
+/* 7 */{n:"新拟态",d:"柔和凸起 / 凹陷",css:`
+.tb7.bar{height:66px;background:#e8ecf3}
+.tb7 .tab{color:#8a93a8}.tb7 .tab i{width:44px;height:30px;display:flex;align-items:center;justify-content:center;border-radius:14px;background:#e8ecf3;box-shadow:4px 4px 10px #c3c9d6,-4px -4px 10px #ffffff}
+.tb7 .tab.on{color:#5b6cff}.tb7 .tab.on i{box-shadow:inset 3px 3px 8px #c3c9d6,inset -3px -3px 8px #ffffff;color:#5b6cff}`},
+/* 8 */{n:"Dock 放大",d:"macOS 风格 · 鼠标靠近放大",dock:1,css:`
+.tb8.bar{height:70px;margin:0 30px 14px;width:calc(100% - 60px);border-radius:24px;background:rgba(255,255,255,.18);-webkit-backdrop-filter:blur(16px) saturate(1.5);backdrop-filter:blur(16px) saturate(1.5);border:1px solid rgba(255,255,255,.35);align-items:flex-end;padding-bottom:10px}
+.tb8 .tab{color:#fff;transition:transform .12s}.tb8 .tab i{font-size:24px;transition:transform .12s}
+.tb8 .tab span{display:none}`},
+/* 9 */{n:"极简细线",d:"顶部滑动指示线",ind:"line",css:`
+.tb9.bar{height:60px;background:#fff}
+.tb9 .ind{height:3px;top:0;border-radius:3px;background:#111}
+.tb9 .tab{color:#aaa}.tb9 .tab.on{color:#111}.tb9 .tab.on i{transform:translateY(-1px)}`},
+/* 10 */{n:"胶囊滑块",d:"背景胶囊跟随滑动",ind:"capsule",css:`
+.tb10.bar{height:64px;margin:0 12px 12px;width:calc(100% - 24px);border-radius:99px;background:#f1f2f6}
+.tb10 .ind{height:46px;top:9px;border-radius:99px;background:#fff;box-shadow:0 4px 14px rgba(0,0,0,.12)}
+.tb10 .tab{color:#8a8f9e;z-index:1}.tb10 .tab.on{color:#111}.tb10 .tab.on i{transform:scale(1.1)}`},
+/* 11 */{n:"图标上浮",d:"选中图标浮起 + 标签胶囊",css:`
+.tb11.bar{height:64px;background:#fff;border-top:1px solid rgba(0,0,0,.06)}
+.tb11 .tab{color:#b0b3bd}.tb11 .tab span{font-size:0;transition:.25s;background:#eef0ff;color:#5b6cff;border-radius:99px;padding:0}
+.tb11 .tab.on{color:#5b6cff}.tb11 .tab.on i{transform:translateY(-6px) scale(1.15)}
+.tb11 .tab.on span{font-size:10px;padding:2px 10px;margin-top:2px}`},
+/* 12 */{n:"3D 翻转",d:"切换时图标翻转",css:`
+.tb12.bar{height:62px;background:#16161f;perspective:300px}
+.tb12 .tab{color:#5a5a6e}.tb12 .tab i{display:inline-block}
+.tb12 .tab.on{color:#ffd166}.tb12 .tab.on i{animation:flip3d .5s}
+@keyframes flip3d{from{transform:rotateY(90deg) scale(.6)}to{transform:rotateY(0) scale(1.1)}}`},
+];
+
+/* 13-24 款见下方第二个 script 块（D.push） */
+</script>
+<script>
+D.push(
+/* 13 */{n:"果冻弹性",d:"Q 弹缩放",css:`
+.tb13.bar{height:62px;background:#fff;border-top:1px solid rgba(0,0,0,.06)}
+.tb13 .tab{color:#a0a3ad}.tb13 .tab.on{color:#ff5e7e}
+.tb13 .tab.on i{animation:jelly .6s}
+@keyframes jelly{0%{transform:scale(1)}30%{transform:scale(1.35,.75)}50%{transform:scale(.85,1.2)}70%{transform:scale(1.12,.92)}100%{transform:scale(1.1)}}`},
+/* 14 */{n:"OLED 纯黑",d:"纯黑底 + 彩色图标",css:`
+.tb14.bar{height:64px;background:#000}
+.tb14 .tab{color:#3a3a42}.tb14 .tab i{filter:grayscale(1);opacity:.55}
+.tb14 .tab.on i{filter:none;opacity:1;transform:scale(1.15);drop-shadow:0 0 8px currentColor}
+.tb14 .tab.on{color:#fff}
+.tb14 .tab.on:nth-child(1){color:#4da3ff}.tb14 .tab.on:nth-child(2){color:#7bed9f}
+.tb14 .tab.on:nth-child(3){color:#ffa502}.tb14 .tab.on:nth-child(4){color:#ff6b81}`},
+/* 15 */{n:"流光渐变",d:"选中项流光描边",css:`
+.tb15.bar{height:66px;background:#101018}
+.tb15 .tab{color:#55556a;position:relative}
+.tb15 .tab.on{color:#fff}
+.tb15 .tab.on::before{content:"";position:absolute;inset:6px 10px;border-radius:16px;padding:2px;background:linear-gradient(120deg,#ff5e7e,#ffd166,#4da3ff,#b14dff,#ff5e7e);background-size:300% 100%;-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude;animation:flow 3s linear infinite}
+@keyframes flow{to{background-position:300% 0}}
+.tb15 .tab.on i{transform:scale(1.12)}`},
+/* 16 */{n:"分段控制",d:"iOS 分段样式",ind:"seg",css:`
+.tb16.bar{height:58px;margin:0 16px 14px;width:calc(100% - 32px);border-radius:16px;background:rgba(120,120,140,.22);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);padding:3px}
+.tb16 .ind{top:3px;bottom:3px;height:auto;border-radius:13px;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.15)}
+.tb16 .tab{color:#e8e8ee;z-index:1}.tb16 .tab.on{color:#111}.tb16 .tab i{font-size:19px}`},
+/* 17 */{n:"扇形展开",d:"中央按钮扇形弹出",fan:1,css:`
+.tb17.bar{height:64px;background:#fff;border-top:1px solid rgba(0,0,0,.07)}
+.tb17 .tab{color:#999}.tb17 .tab.on{color:#07c160}
+.tb17 .fab{position:absolute;left:50%;bottom:26px;transform:translateX(-50%);width:56px;height:56px;border-radius:50%;border:0;background:linear-gradient(135deg,#07c160,#05a050);color:#fff;font-size:26px;cursor:pointer;box-shadow:0 8px 22px rgba(7,193,96,.45);transition:transform .3s;z-index:3}
+.tb17.open .fab{transform:translateX(-50%) rotate(45deg)}
+.tb17 .fan{position:absolute;left:50%;bottom:88px;transform:translateX(-50%);display:flex;gap:10px;opacity:0;pointer-events:none;transition:.3s;transform:translateX(-50%) translateY(10px)}
+.tb17.open .fan{opacity:1;pointer-events:auto;transform:translateX(-50%) translateY(0)}
+.tb17 .fan button{width:46px;height:46px;border-radius:50%;border:0;background:#fff;font-size:20px;box-shadow:0 6px 16px rgba(0,0,0,.15);cursor:pointer}`},
+/* 18 */{n:"波浪顶边",d:"波浪分隔",css:`
+.tb18.bar{height:70px;background:#fff}
+.tb18.bar::before{content:"";position:absolute;top:-14px;left:0;right:0;height:15px;background:radial-gradient(circle at 10px -4px,transparent 14px,#fff 15px);background-size:30px 15px;background-repeat:repeat-x}
+.tb18 .tab{color:#a0a3ad;padding-top:12px}.tb18 .tab.on{color:#2e9bff}
+.tb18 .tab.on i{transform:translateY(-3px) scale(1.12)}
+.tb18 .tab.on::after{content:"";position:absolute;bottom:8px;width:20px;height:3px;border-radius:3px;background:#2e9bff}`},
+/* 19 */{n:"描边光环",d:"选中项发光圆环",css:`
+.tb19.bar{height:66px;background:#14141c}
+.tb19 .tab{color:#55556a}.tb19 .tab.on{color:#fff}
+.tb19 .tab i{width:46px;height:34px;display:flex;align-items:center;justify-content:center;border-radius:14px;transition:.3s;border:1.5px solid transparent}
+.tb19 .tab.on i{border-color:#b14dff;box-shadow:0 0 12px #b14dff88,inset 0 0 8px #b14dff33;transform:scale(1.05);background:#b14dff18}`},
+/* 20 */{n:"复古像素",d:"8-bit 游戏风",css:`
+.tb20.bar{height:62px;background:#f4f1e8;border-top:4px solid #222;image-rendering:pixelated}
+.tb20 .tab{color:#8a8578;font-family:"Courier New",monospace;font-weight:700}
+.tb20 .tab i{image-rendering:pixelated}
+.tb20 .tab.on{color:#222}.tb20 .tab.on i{transform:translateY(-2px)}
+.tb20 .tab.on::after{content:"▶";position:absolute;bottom:4px;font-size:8px;color:#e74c3c;animation:blink .8s steps(2) infinite}
+@keyframes blink{50%{opacity:0}}`},
+/* 21 */{n:"黏土风",d:"claymorphism · 厚实可爱",css:`
+.tb21.bar{height:68px;background:#ffe9d6}
+.tb21 .tab{color:#a08}
+.tb21 .tab i{width:46px;height:34px;display:flex;align-items:center;justify-content:center;font-size:20px;border-radius:16px;background:#ffd9b8;border:3px solid #fff;box-shadow:3px 4px 0 #e8b98a;color:#b5651d}
+.tb21 .tab.on i{background:#ffb37e;transform:translate(1px,2px);box-shadow:1px 1px 0 #e8b98a}
+.tb21 .tab.on{color:#b5651d}`},
+/* 22 */{n:"金属拉丝",d:"高级灰金属",css:`
+.tb22.bar{height:62px;background:repeating-linear-gradient(90deg,#3a3d44 0 2px,#34373e 2px 4px),linear-gradient(180deg,#4a4e57,#2c2f36);border-top:1px solid #5a5e68;box-shadow:inset 0 1px 0 rgba(255,255,255,.25)}
+.tb22 .tab{color:#9aa0ab;text-shadow:0 1px 2px #000}
+.tb22 .tab.on{color:#fff;text-shadow:0 0 8px rgba(255,255,255,.6)}
+.tb22 .tab.on i{transform:scale(1.14)}
+.tb22 .tab.on::after{content:"";position:absolute;bottom:6px;width:26px;height:3px;border-radius:2px;background:linear-gradient(90deg,#c8ccd4,#fff,#c8ccd4)}`},
+/* 23 */{n:"彩虹指示",d:"彩虹渐变下划线",ind:"line",css:`
+.tb23.bar{height:62px;background:#fff;border-top:1px solid rgba(0,0,0,.06)}
+.tb23 .ind{height:4px;bottom:0;top:auto;border-radius:4px;background:linear-gradient(90deg,#ff5e7e,#ffd166,#7bed9f,#4da3ff,#b14dff)}
+.tb23 .tab{color:#a0a3ad}.tb23 .tab.on{color:#222}.tb23 .tab.on i{transform:scale(1.1) rotate(-6deg)}`},
+/* 24 */{n:"极简圆点",d:"图标 + 小圆点",ind:"dot",css:`
+.tb24.bar{height:60px;background:rgba(255,255,255,.85);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
+.tb24 .ind{width:6px;height:6px;bottom:8px;border-radius:50%;background:#111}
+.tb24 .tab{color:#bbb}.tb24 .tab span{display:none}.tb24 .tab i{font-size:24px}
+.tb24 .tab.on{color:#111}.tb24 .tab.on i{transform:scale(1.12)}`}
+);
+const grid=document.getElementById('grid'),toast=document.getElementById('toast');
+function tabMarkup(cls){return TABS.map((t,k)=>`<button class="tab${k===0?' on':''}${t.i==='➕'?' mid':''}" data-k="${k}"><i>${t.i}</i><span>${t.t}</span>${t.b?`<b class="bdg">${t.b}</b>`:''}${t.d?'<b class="bdg" style="min-width:9px;width:9px;height:9px;padding:0"></b>':''}</button>`).join('')}
+function bulgeMarkup(){const T=[{i:"💬",t:"微信"},{i:"👥",t:"通讯录"},{i:"➕",t:"",mid:1},{i:"🧭",t:"发现"},{i:"👤",t:"我"}];return T.map((t,k)=>`<button class="tab${k===0?' on':''}${t.mid?' mid':''}" data-k="${k}"><i>${t.i}</i>${t.t?`<span>${t.t}</span>`:''}</button>`).join('')}
+function fanMarkup(){return `<button class="tab on" data-k="0"><i>💬</i><span>微信</span></button><button class="tab" data-k="1"><i>👥</i><span>通讯录</span></button><button class="fab">＋</button><div class="fan"><button>📷</button><button>🎙</button><button>📍</button></div><button class="tab" data-k="2"><i>🧭</i><span>发现</span></button><button class="tab" data-k="3"><i>👤</i><span>我</span></button>`}
+function standalone(d,idx){
+const css=d.css.replace(new RegExp('\\.tb'+(idx+1)+'\\b','g'),'.bar');
+return `<!-- ${d.n} -->\n<style>${css}\n.bar{position:relative;display:flex;width:100%}\n.tab{flex:1;border:0;background:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:10px;cursor:pointer;font-family:inherit;position:relative;padding:8px 0}\n.tab i{font-size:22px;font-style:normal;line-height:1}\n.ind{position:absolute;pointer-events:none}\n</style>\n<div class="bar">\n${d.ind?'<div class="ind"></div>':''}${d.fan?fanMarkup():(idx===4?bulgeMarkup():tabMarkup())}\n</div>\n<script>${d.fan?'document.querySelector(".fab").onclick=e=>e.target.closest(".bar").classList.toggle("open");':''}document.querySelectorAll(".tab").forEach(t=>t.onclick=()=>{document.querySelectorAll(".tab").forEach(x=>x.classList.remove("on"));t.classList.add("on")})<\/script>`}
+D.forEach((d,idx)=>{
+const n=idx+1;
+const card=document.createElement('div');card.className='card';
+card.innerHTML=`<div class="meta"><div><span class="n">${String(n).padStart(2,'0')}</span><h3 style="display:inline;margin-left:8px">${d.n}</h3><p>${d.d}</p></div><button class="copy">复制代码</button></div>
+<div class="stage"><div class="screen"><div class="fake"><i></i><i></i><i></i></div><div class="mount"><style>${d.css}</style><div class="bar tb${n}"${d.ind?` data-ind="${d.ind}"`:''}${d.dock?' data-dock="1"':''}>${d.ind?'<div class="ind"></div>':''}${d.fan?fanMarkup():(idx===4?bulgeMarkup():tabMarkup())}</div></div></div></div>`;
+grid.appendChild(card);
+const bar=card.querySelector('.bar');
+/* 切换 */
+bar.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>{
+bar.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));t.classList.add('on');moveInd(bar);
+if(bar.dataset.dock)resetDock(bar);
+}));
+/* 扇形 */
+const fab=bar.querySelector('.fab');if(fab)fab.addEventListener('click',()=>bar.classList.toggle('open'));
+/* dock 放大 */
+if(bar.dataset.dock){bar.addEventListener('mousemove',e=>{const r=bar.getBoundingClientRect();bar.querySelectorAll('.tab').forEach(t=>{const tr=t.getBoundingClientRect();const dist=Math.abs(e.clientX-(tr.left+tr.width/2));const s=Math.max(1,1.7-dist/130);t.style.transform=`scale(${s})`})});bar.addEventListener('mouseleave',()=>resetDock(bar))}
+moveInd(bar);
+/* 复制 */
+card.querySelector('.copy').addEventListener('click',ev=>{
+navigator.clipboard.writeText(standalone(d,idx)).then(()=>{ev.target.textContent='已复制 ✓';ev.target.classList.add('ok');toast.classList.add('show');setTimeout(()=>{ev.target.textContent='复制代码';ev.target.classList.remove('ok');toast.classList.remove('show')},1400)})});
+});
+function resetDock(bar){bar.querySelectorAll('.tab').forEach(t=>t.style.transform='')}
+function moveInd(bar){
+const ind=bar.querySelector('.ind'),on=bar.querySelector('.tab.on');if(!ind||!on)return;
+const kind=bar.dataset.ind,bl=bar.offsetLeft;
+if(kind==='line'||kind==='capsule'||kind==='seg'){ind.style.left=(on.offsetLeft-bl+6)+'px';ind.style.width=(on.offsetWidth-12)+'px'}
+else if(kind==='dot'){ind.style.left=(on.offsetLeft-bl+on.offsetWidth/2-3)+'px'}
+else if(kind==='drop'){const s=ind.offsetWidth||52;ind.style.left=(on.offsetLeft-bl+on.offsetWidth/2-s/2)+'px'}
+}
+window.addEventListener('resize',()=>document.querySelectorAll('.bar').forEach(moveInd));
+setTimeout(()=>document.querySelectorAll('.bar').forEach(moveInd),300);
+</script>
+</body>
+</html>

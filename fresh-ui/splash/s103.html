@@ -1,0 +1,55 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>纸船远航</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{background:#000}
+body{width:430px;height:900px;margin:0 auto;position:relative;overflow:hidden;
+font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans CJK SC",sans-serif;color:#fff}
+
+body{background:linear-gradient(#0a1030 0%,#141c4a 55%,#1e2a66 100%)}
+.moon{position:absolute;left:60px;top:80px;width:76px;height:76px;border-radius:50%;
+background:radial-gradient(circle at 38% 35%,#fdfdf2,#d8dcf0 70%);box-shadow:0 0 46px 14px rgba(220,230,255,.4);z-index:1}
+.stars i{position:absolute;width:3px;height:3px;border-radius:50%;background:#fff;animation:tw 3s ease-in-out infinite}
+@keyframes tw{50%{opacity:.25}}
+.boat{position:absolute;left:50%;bottom:280px;transform:translateX(-50%);z-index:3;
+animation:bob 4.4s ease-in-out infinite;animation-delay:-2s}
+@keyframes bob{50%{transform:translateX(-50%) translateY(-16px) rotate(-4deg)}}
+.boat .hull{width:150px;height:56px;background:linear-gradient(#f5efe0,#d8cfae);
+clip-path:polygon(0 0,100% 0,78% 100%,22% 100%)}
+.boat .sail{width:0;height:0;margin:0 auto;border-left:44px solid transparent;border-right:44px solid transparent;
+border-bottom:88px solid #fff;filter:drop-shadow(0 6px 10px rgba(0,0,0,.3))}
+.boat .mast{width:6px;height:96px;margin:-88px auto 0;background:#8a6f4d}
+.refl{position:absolute;left:50%;bottom:170px;transform:translateX(-50%);width:120px;height:90px;z-index:2;
+background:linear-gradient(rgba(245,239,224,.35),transparent);clip-path:polygon(10% 0,90% 0,100% 100%,0 100%);
+animation:refS 4.4s ease-in-out infinite;animation-delay:-2s}
+@keyframes refS{50%{transform:translateX(-50%) scaleX(1.15);opacity:.7}}
+.sea{position:absolute;left:0;right:0;bottom:0;height:280px;z-index:1}
+.wv{position:absolute;left:-60px;right:-60px;height:64px;border-radius:46%;animation:wave 5.5s ease-in-out infinite}
+.wv.w1{bottom:190px;background:rgba(50,90,170,.5);animation-delay:-1.4s}
+.wv.w2{bottom:110px;background:rgba(36,66,140,.65);animation-delay:-3.2s}
+.wv.w3{bottom:30px;background:rgba(24,46,110,.9);animation-delay:-4.6s}
+@keyframes wave{50%{transform:translateX(44px)}}
+
+.brand{position:absolute;left:0;right:0;bottom:150px;text-align:center;z-index:20;
+animation:brandIn 1.1s cubic-bezier(.2,.7,.3,1.2) .9s both}
+.brand h1{font-size:36px;letter-spacing:10px;font-weight:800;text-shadow:0 4px 24px rgba(0,0,0,.45)}
+.brand p{margin-top:12px;font-size:13px;letter-spacing:6px;opacity:.75}
+@keyframes brandIn{from{opacity:0;transform:translateY(26px) scale(.94)}}
+.replay{position:absolute;bottom:44px;left:50%;transform:translateX(-50%);z-index:30;
+background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.35);color:#fff;
+border-radius:24px;padding:10px 26px;font-size:13px;letter-spacing:2px;cursor:pointer;
+backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.replay:active{transform:translateX(-50%) scale(.94)}
+</style></head><body>
+<div id="st">
+<div class="moon"></div>
+<div class="stars"><i style="left:200px;top:70px"></i><i style="left:300px;top:140px;animation-delay:-1s"></i>
+<i style="left:370px;top:60px;animation-delay:-2s"></i><i style="left:150px;top:180px;animation-delay:-.6s"></i></div>
+<div class="refl"></div>
+<div class="boat"><div class="sail"></div><div class="mast"></div><div class="hull"></div></div>
+<div class="sea"><div class="wv w1"></div><div class="wv w2"></div><div class="wv w3"></div></div>
+</div>
+<div class="brand"><h1>纸船远航</h1><p>PAPER VOYAGE</p></div>
+<button class="replay" onclick="var s=document.getElementById('st');var c=s.cloneNode(true);s.replaceWith(c);">重新播放</button>
+</body></html>

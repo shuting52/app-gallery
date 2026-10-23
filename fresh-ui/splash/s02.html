@@ -1,0 +1,48 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>液态熔合 · 启动页</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{background:#05070c;display:flex;justify-content:center;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif}
+.stage{width:430px;height:900px;max-width:100vw;max-height:100vh;position:relative;overflow:hidden;background:#0d1524}
+.goo{position:absolute;inset:0;filter:blur(16px) contrast(26);background:#0d1524;z-index:2}
+.blob{position:absolute;top:300px;width:110px;height:110px;border-radius:50%;background:#38e1ff;display:block}
+.b1{left:60px;animation:mergeL 1.6s cubic-bezier(.6,0,.3,1) both}
+.b2{left:260px;background:#ff5fa2;animation:mergeR 1.6s cubic-bezier(.6,0,.3,1) both}
+@keyframes mergeL{0%{transform:translateX(-160px) scale(.7)}100%{transform:translateX(100px) scale(1.25)}}
+@keyframes mergeR{0%{transform:translateX(160px) scale(.7)}100%{transform:translateX(-100px) scale(1.25)}}
+.b3{left:160px;background:#8f7bff;opacity:0;animation:mergeC 1.8s ease-out both;animation-delay:.9s}
+@keyframes mergeC{0%{opacity:0;transform:scale(.4)}40%{opacity:1}100%{opacity:1;transform:scale(1.35)}}
+.crisp{position:absolute;left:50%;top:300px;width:120px;height:120px;margin:-60px 0 0 -60px;z-index:5;
+border-radius:38%;background:linear-gradient(135deg,#38e1ff,#8f7bff 55%,#ff5fa2);
+display:flex;align-items:center;justify-content:center;font-size:46px;color:#fff;font-weight:700;
+box-shadow:0 12px 44px rgba(120,120,255,.45);opacity:0;transform:scale(.5) rotate(-30deg);
+animation:crispIn 1s cubic-bezier(.2,.8,.3,1.3) both;animation-delay:2s}
+@keyframes crispIn{0%{opacity:0;transform:scale(.5) rotate(-30deg)}100%{opacity:1;transform:scale(1) rotate(0)}}
+.ring{position:absolute;left:50%;top:300px;width:170px;height:170px;margin:-85px 0 0 -85px;z-index:4;
+border-radius:50%;border:2px solid rgba(140,160,255,.35);opacity:0;animation:ring 1.6s ease-out both;animation-delay:2.1s}
+@keyframes ring{0%{opacity:.9;transform:scale(.6)}100%{opacity:0;transform:scale(1.5)}}
+.brand{position:absolute;left:0;right:0;top:600px;text-align:center;z-index:6;
+opacity:0;animation:fadeUp 1s ease-out both;animation-delay:2.4s}
+.brand h1{font-size:36px;font-weight:700;letter-spacing:14px;color:#eef2ff;text-indent:14px}
+.brand p{font-size:13px;letter-spacing:6px;color:#8fa0d8;margin-top:12px;text-indent:6px}
+@keyframes fadeUp{0%{opacity:0;transform:translateY(18px)}100%{opacity:1;transform:translateY(0)}}
+.replay{position:absolute;left:50%;bottom:36px;transform:translateX(-50%);z-index:50;
+border:1px solid rgba(140,160,255,.4);background:rgba(120,130,255,.1);color:#cfd8ff;
+font-size:13px;letter-spacing:3px;padding:10px 26px;border-radius:24px;cursor:pointer}
+.replay:active{transform:translateX(-50%) scale(.94)}
+</style></head><body>
+<div class="stage">
+  <div class="goo"><i class="blob b1"></i><i class="blob b2"></i><i class="blob b3"></i></div>
+  <div class="ring"></div>
+  <div class="crisp">合</div>
+  <div class="brand"><h1>合流</h1><p>万物皆可相融</p></div>
+  <button class="replay">重新播放</button>
+</div>
+<script>
+function bind(){document.querySelector('.replay').addEventListener('click',()=>{
+const s=document.querySelector('.stage');const n=s.cloneNode(true);s.replaceWith(n);bind();});}
+bind();
+</script>
+</body></html>

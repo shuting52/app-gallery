@@ -1,0 +1,83 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>w26 · 幸运转盘</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC",sans-serif;background:#05070c;display:flex;justify-content:center;color:#fff;overflow:hidden}
+.stage{width:430px;height:900px;position:relative;overflow:hidden;flex-shrink:0;background:radial-gradient(120% 90% at 50% 0%,#3d1030 0%,#200a1c 55%,#0b0e16 100%)}
+.mock{position:absolute;inset:0;filter:blur(6px) brightness(.55)}
+.sb{height:46px;display:flex;justify-content:space-between;align-items:center;padding:0 26px;font-size:13px;font-weight:600}
+.sic{width:70px;height:12px;border-radius:6px;background:#2a3040}
+.mh{display:flex;align-items:center;gap:10px;padding:14px 20px}
+.mh i{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,#5c2347,#3a1530);display:block}
+.mh em{width:110px;height:14px;border-radius:7px;background:#402032;display:block}
+.banner{height:150px;margin:6px 20px 14px;border-radius:18px;background:linear-gradient(135deg,#521e42,#331224)}
+.row{display:flex;gap:12px;align-items:center;margin:0 20px 12px}
+.row i{width:52px;height:52px;border-radius:14px;background:#402032;display:block;flex-shrink:0}
+.row b{display:block;width:150px;height:13px;border-radius:6px;background:#4e2a40;margin-bottom:8px}
+.row s{display:block;width:100px;height:10px;border-radius:5px;background:#381c2e;text-decoration:none}
+.tabbar{position:absolute;bottom:0;left:0;right:0;height:84px;background:rgba(32,10,28,.9);display:flex;justify-content:space-around;align-items:center;border-top:1px solid #402032}
+.tabbar i{width:26px;height:26px;border-radius:8px;background:#4e2a40;display:block}
+.ov{position:absolute;inset:0;z-index:10;display:flex;align-items:center;justify-content:center;background:rgba(20,6,16,.55);animation:fadeIn .4s both}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.modal{width:330px;border-radius:26px;padding:30px 26px 26px;text-align:center;position:relative;background:linear-gradient(165deg,#4a1a3c,#260e20);border:1px solid rgba(255,150,200,.3);box-shadow:0 30px 80px rgba(0,0,0,.55),0 0 60px rgba(230,80,150,.18);animation:pop .55s cubic-bezier(.2,1.4,.4,1) both;animation-delay:.12s}
+@keyframes pop{from{opacity:0;transform:scale(.7) translateY(30px)}to{opacity:1;transform:none}}
+.x{position:absolute;top:14px;right:14px;width:30px;height:30px;border-radius:50%;border:0;background:rgba(255,255,255,.12);color:#fff;font-size:15px;cursor:pointer;z-index:3}
+.wheelbox{width:220px;height:220px;margin:6px auto;position:relative}
+.wheel{position:absolute;inset:0;border-radius:50%;background:conic-gradient(#f06292 0 60deg,#ffd54f 60deg 120deg,#4fc3f7 120deg 180deg,#aed581 180deg 240deg,#ba68c8 240deg 300deg,#ff8a65 300deg 360deg);border:8px solid #2c1226;box-shadow:0 0 0 4px rgba(255,180,210,.35),0 14px 34px rgba(0,0,0,.45);animation:idle 26s linear infinite}
+@keyframes idle{to{transform:rotate(360deg)}}
+.wheel span{position:absolute;left:50%;top:50%;font-size:12px;font-weight:700;color:#3a1026;transform-origin:0 0}
+.hub{position:absolute;left:50%;top:50%;width:56px;height:56px;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle at 35% 30%,#ffe9b0,#e8a93d);display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 6px 16px rgba(0,0,0,.4);z-index:2}
+.pointer{position:absolute;top:-12px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:13px solid transparent;border-right:13px solid transparent;border-top:24px solid #ffd54f;z-index:2;filter:drop-shadow(0 4px 6px rgba(0,0,0,.4))}
+.result{min-height:24px;margin-top:10px;font-size:15px;font-weight:700;color:#ffd54f}
+h2{font-size:21px;margin:12px 0 6px}
+p.sub{font-size:13px;color:#d8a9c2;line-height:1.7}
+.btn{display:block;width:100%;border:0;border-radius:16px;padding:14px;font-size:16px;font-weight:700;cursor:pointer;margin-top:14px;background:linear-gradient(180deg,#ff9ec4,#e65096);color:#fff;box-shadow:0 8px 22px rgba(230,80,150,.45)}
+.btn:active{transform:scale(.97)}
+.btn:disabled{opacity:.6;cursor:default}
+.replay{position:absolute;bottom:24px;left:50%;transform:translateX(-50%);z-index:20;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.1);color:#fff;border-radius:999px;padding:10px 22px;font-size:13px;cursor:pointer;backdrop-filter:blur(8px)}
+</style></head>
+<body><div class="stage">
+<div class="mock"><div class="sb"><span>9:41</span><span class="sic"></span></div>
+<div class="mh"><i></i><em></em></div><div class="banner"></div>
+<div class="row"><i></i><div><b></b><s></s></div></div>
+<div class="row"><i></i><div><b></b><s></s></div></div>
+<div class="tabbar"><i></i><i></i><i></i><i></i></div></div>
+<div class="ov" id="ov"><div class="modal">
+<button class="x" id="x">✕</button>
+<h2>幸运大转盘</h2>
+<p class="sub">新人必中 · 最高可得 888 积分</p>
+<div class="wheelbox"><div class="pointer"></div>
+<div class="wheel" id="wheel">
+<span style="transform:rotate(30deg) translate(0,-88px) rotate(-30deg)">50积分</span>
+<span style="transform:rotate(90deg) translate(0,-88px) rotate(-90deg)">谢谢</span>
+<span style="transform:rotate(150deg) translate(0,-88px) rotate(-150deg)">7天会员</span>
+<span style="transform:rotate(210deg) translate(0,-88px) rotate(-210deg)">20积分</span>
+<span style="transform:rotate(270deg) translate(0,-88px) rotate(-270deg)">888积分</span>
+<span style="transform:rotate(330deg) translate(0,-88px) rotate(-330deg)">头像框</span>
+</div><div class="hub">🎁</div></div>
+<div class="result" id="result"></div>
+<button class="btn" id="spin">转动转盘</button>
+</div></div>
+<button class="replay" id="replay">重新弹出</button>
+</div>
+<script>
+const wheel=document.getElementById('wheel'),spin=document.getElementById('spin'),
+result=document.getElementById('result'),ov=document.getElementById('ov');
+const prizes=['50 积分','谢谢参与','7 天会员','20 积分','888 积分','专属头像框'];
+spin.onclick=()=>{
+spin.disabled=true;result.textContent='';
+const m=new DOMMatrixReadOnly(getComputedStyle(wheel).transform);
+const cur=Math.round(Math.atan2(m.b,m.a)*180/Math.PI);
+wheel.style.animation='none';wheel.style.transform='rotate('+cur+'deg)';void wheel.offsetWidth;
+const target=cur+1440+Math.floor(Math.random()*360);
+wheel.style.transition='transform 3.2s cubic-bezier(.15,.85,.25,1)';
+wheel.style.transform='rotate('+target+'deg)';
+setTimeout(()=>{const seg=Math.floor(((360-(target%360))%360)/60);
+result.textContent='恭喜获得：'+prizes[seg]+' 🎉';spin.disabled=false;spin.textContent='再转一次';},3300);};
+document.getElementById('x').onclick=()=>ov.style.display='none';
+document.getElementById('replay').onclick=()=>{ov.style.display='flex';result.textContent='';spin.textContent='转动转盘';
+wheel.style.transition='none';wheel.style.animation='';void wheel.offsetWidth;
+const m2=ov.querySelector('.modal');m2.style.animation='none';void m2.offsetWidth;m2.style.animation='';};
+</script></body></html>

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>通知 Toast · 霓虹点亮</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{background:radial-gradient(1000px 700px at 50% 0%,#141428 0%,#0a0a16 55%,#050508 100%);color:#e8e8ff;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;display:flex;justify-content:center;padding:16px 0;min-height:100vh}
+.stage{width:360px;max-width:94vw}
+.head{text-align:center;padding:8px 0 12px}
+.head .no{display:inline-block;font-size:11px;letter-spacing:3px;color:#f0f;border:1px solid rgba(255,0,255,.45);border-radius:20px;padding:3px 12px;margin-bottom:8px}
+.head h1{font-size:20px}
+.head p{font-size:12px;color:#7d7d9e;margin-top:6px}
+.screen{position:relative;height:540px;border-radius:22px;overflow:hidden;background:linear-gradient(180deg,#0d0d1c,#07070f);border:1px solid rgba(255,0,255,.14);box-shadow:0 24px 60px rgba(0,0,0,.6)}
+.city{position:absolute;left:0;right:0;bottom:0;height:150px;z-index:1;opacity:.8;
+  background:
+    linear-gradient(180deg,transparent 60%,rgba(0,255,255,.06)),
+    repeating-linear-gradient(90deg,transparent 0 26px,rgba(0,255,255,.10) 26px 28px,transparent 28px 60px,rgba(255,0,255,.10) 60px 62px);
+  -webkit-mask-image:linear-gradient(180deg,transparent,#000 40%);
+  mask-image:linear-gradient(180deg,transparent,#000 40%)}
+.sign{position:absolute;top:36px;left:0;right:0;text-align:center;font-size:11px;letter-spacing:6px;color:#3a3a55;z-index:1}
+.neon{position:absolute;top:120px;left:16px;right:16px;background:#0a0a12;border:2px solid #2a2a3a;border-radius:14px;padding:14px;display:flex;gap:12px;align-items:center;visibility:hidden;z-index:3;will-change:opacity}
+.neon .ic{flex:0 0 42px;width:42px;height:42px;border-radius:50%;border:2px solid #2a2a3a;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:#55556a}
+.neon .tt{font-size:15px;font-weight:800;letter-spacing:1px}
+.neon .bd{font-size:12px;margin-top:4px;line-height:1.5;color:#8a8aa5}
+.neon.lit{border-color:#f0f;box-shadow:0 0 18px rgba(255,0,255,.55),inset 0 0 18px rgba(255,0,255,.12)}
+.neon.lit .ic{border-color:#0ff;color:#0ff;box-shadow:0 0 14px rgba(0,255,255,.6)}
+.neon.lit .tt{color:#fff;text-shadow:0 0 8px #f0f,0 0 20px #f0f}
+.neon.lit .bd{color:#c9c9e8;text-shadow:0 0 6px rgba(0,255,255,.5)}
+.foot{text-align:center;font-size:11px;color:#7d7d9e;padding:12px 0;letter-spacing:2px}
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="head"><div class="no">N10 · 通知 TOAST</div><h1>霓虹点亮</h1><p>坏掉的霓虹灯闪烁几次后稳定点亮 · 收起时闪烁熄灭</p></div>
+  <div class="screen" id="screen">
+    <div class="sign">午夜霓虹 · NEON</div>
+    <div class="city"></div>
+    <div class="neon" id="neon"><div class="ic" id="nic">霓</div><div><div class="tt" id="ntt"></div><div class="bd" id="nbd"></div></div></div>
+  </div>
+  <div class="foot">自动循环 · 每条展示约 2.5 秒</div>
+</div>
+<script>
+(function(){
+  var neon=document.getElementById('neon'),
+      nic=document.getElementById('nic'),
+      ntt=document.getElementById('ntt'),
+      nbd=document.getElementById('nbd');
+  var msgs=[
+    {ic:'霓',t:'深夜食堂开业',b:'午夜 12 点，霓虹灯下的小店准时营业'},
+    {ic:'电',t:'电音派对',b:'本周六晚，旧仓库见，灯光全开'},
+    {ic:'影',t:'午夜场电影',b:'《霓虹都市》午夜场余票 12 张'}
+  ];
+  /* 坏霓虹灯的闪烁节奏：亮-灭-亮-半灭-亮-闪-稳定 */
+  var FLICKER_IN =[1,0.12,0.9,0.25,1,0.4,1,0.15,1];
+  var FLICKER_OUT=[1,0.5,0.9,0.2,0.6,0.05,0];
+  function flick(seq,step,cb){
+    var i=0;
+    neon.style.visibility='visible';
+    (function next(){
+      var v=seq[i];
+      neon.style.opacity=v.toFixed(2);
+      neon.className=v>0.5?'neon lit':'neon';
+      i++;
+      if(i<seq.length){setTimeout(next,step);}
+      else{cb();}
+    })();
+  }
+  var idx=0;
+  function show(m,cb){
+    nic.textContent=m.ic;ntt.textContent=m.t;nbd.textContent=m.b;
+    neon.className='neon';
+    flick(FLICKER_IN,110,function(){
+      neon.style.opacity='1';
+      neon.className='neon lit';
+      cb();
+    });
+  }
+  function hide(cb){
+    flick(FLICKER_OUT,110,function(){
+      neon.style.visibility='hidden';
+      neon.className='neon';
+      cb();
+    });
+  }
+  (function loop(){
+    show(msgs[idx],function(){
+      setTimeout(function(){
+        hide(function(){idx=(idx+1)%msgs.length;loop();});
+      },2500);
+    });
+  })();
+})();
+</script>
+</body>
+</html>

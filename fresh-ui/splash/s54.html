@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>莲开时节</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{background:#070a12;display:flex;align-items:center;justify-content:center;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;overflow:hidden}
+.stage{position:relative;width:430px;height:900px;flex:none;overflow:hidden}
+.stage i{display:block;position:absolute}
+.brand{position:absolute;left:0;right:0;bottom:104px;text-align:center;z-index:50;animation:brandIn 1s .9s both}
+.brand h1{font-size:32px;letter-spacing:10px;text-indent:10px;color:#fff;font-weight:700;text-shadow:0 2px 24px rgba(0,0,0,.45)}
+.brand p{margin-top:10px;font-size:11px;letter-spacing:5px;color:rgba(255,255,255,.62)}
+@keyframes brandIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.replay{position:absolute;bottom:30px;left:50%;transform:translateX(-50%);z-index:60;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.35);color:#fff;font-size:12px;letter-spacing:2px;padding:9px 24px;border-radius:20px;cursor:pointer;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.shade{position:absolute;left:0;right:0;bottom:0;height:360px;background:linear-gradient(transparent,rgba(8,6,18,.78));z-index:40;pointer-events:none}
+
+.stage{background:linear-gradient(#c4e6da,#93c6b4 58%,#62a088)}
+
+.pad{border-radius:50%;background:radial-gradient(circle at 40% 35%,#5da87e,#2f6e4e 75%);z-index:4}
+.pd1{width:130px;height:52px;left:36px;top:560px}.pd2{width:100px;height:42px;left:300px;top:620px}.pd3{width:80px;height:34px;left:200px;top:700px}
+.ripple{border:2px solid rgba(255,255,255,.55);border-radius:50%;left:215px;top:600px;width:120px;height:44px;margin-left:-60px;transform:scale(.4);opacity:0;animation:rip2 4s ease-out infinite;z-index:5}
+.rr2{animation-delay:-2s}
+@keyframes rip2{0%{transform:scale(.4);opacity:0}25%{opacity:.85}100%{transform:scale(1.9);opacity:0}}
+.lotus{width:0;height:0;left:215px;top:640px;z-index:6}
+.pt{left:-27px;bottom:0;width:54px;height:130px;border-radius:50% 50% 8px 8px/100% 100% 8px 8px;background:linear-gradient(#ffc2d4,#ef6a9c);transform:rotate(var(--r)) scale(.15);transform-origin:50% 100%;animation:bloom 1.7s var(--dl) both}
+@keyframes bloom{to{transform:rotate(var(--r)) scale(1)}}
+.bud{width:44px;height:56px;left:-22px;bottom:0;border-radius:50% 50% 50% 50%/60% 60% 40% 40%;background:radial-gradient(circle at 50% 35%,#ffd9e6,#f0789f 70%);transform:scale(0);animation:bud 1s 1.9s both;z-index:7}
+@keyframes bud{to{transform:scale(1)}}
+.fly{width:70px;height:26px;z-index:8;animation:flypath 7s ease-in-out infinite}
+.fly .bdy{width:34px;height:8px;left:18px;top:9px;border-radius:4px;background:#3a6a8f}
+.fly .wg{width:26px;height:12px;top:2px;border-radius:50%;background:rgba(220,240,255,.75);transform-origin:100% 50%}
+.wg1{left:2px;animation:wing2 .18s ease-in-out infinite alternate}
+.wg2{left:42px;animation:wing2 .18s -.09s ease-in-out infinite alternate}
+@keyframes wing2{to{transform:scaleY(.3)}}
+@keyframes flypath{0%{left:-80px;top:300px}30%{left:180px;top:220px}55%{left:330px;top:330px}80%{left:120px;top:420px}100%{left:-80px;top:300px}}
+
+</style></head><body>
+<div class="stage" id="stage">
+<i class="lotus"><i class="pt" style="--r:-72deg;--dl:1.2s"></i></i><i class="lotus"><i class="pt" style="--r:-48deg;--dl:0.9s"></i></i><i class="lotus"><i class="pt" style="--r:-24deg;--dl:0.6s"></i></i><i class="lotus"><i class="pt" style="--r:0deg;--dl:0.3s"></i></i><i class="lotus"><i class="pt" style="--r:24deg;--dl:0.6s"></i></i><i class="lotus"><i class="pt" style="--r:48deg;--dl:0.9s"></i></i><i class="lotus"><i class="pt" style="--r:72deg;--dl:1.2s"></i></i><i class="lotus"><i class="bud"></i></i>
+<i class="pad pd1"></i><i class="pad pd2"></i><i class="pad pd3"></i>
+<i class="ripple rr1"></i><i class="ripple rr2"></i>
+<i class="fly"><i class="bdy"></i><i class="wg wg1"></i><i class="wg wg2"></i></i>
+
+<div class="shade"></div>
+<div class="brand"><h1>莲开时节</h1><p>LOTUS</p></div>
+<button class="replay" onclick="var s=document.getElementById('stage');s.replaceWith(s.cloneNode(true))">重新播放</button>
+</div>
+</body></html>

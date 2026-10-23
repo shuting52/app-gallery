@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>午夜霓虹 · 液态页签</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{width:430px;height:900px;overflow:hidden}
+body{position:relative;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;background:#070812;color:#eef1ff;user-select:none}
+.bg{position:absolute;inset:0;overflow:hidden;background:radial-gradient(120% 100% at 50% 0%,#0c1030 0%,#070812 60%)}
+.blob{position:absolute;border-radius:50%;filter:blur(60px);opacity:.75;will-change:transform}
+.b1{width:340px;height:340px;left:-80px;top:-60px;background:radial-gradient(circle at 40% 40%,#00e5ff,#0077ff 70%);animation:drift1 14s ease-in-out infinite alternate}
+.b2{width:300px;height:300px;right:-70px;top:180px;background:radial-gradient(circle at 60% 40%,#c026ff,#6d28d9 70%);animation:drift2 17s ease-in-out -6s infinite alternate}
+.b3{width:280px;height:280px;left:60px;bottom:80px;background:radial-gradient(circle at 50% 50%,#ff2ec4,#7c1fa2 70%);animation:drift3 19s ease-in-out -3s infinite alternate}
+.b4{width:200px;height:200px;right:40px;bottom:260px;background:radial-gradient(circle at 50% 50%,#4d7cff,#1e2a8a 70%);opacity:.6;animation:drift1 12s ease-in-out -8s infinite alternate-reverse}
+@keyframes drift1{from{transform:translate(0,0) scale(1)}to{transform:translate(50px,70px) scale(1.18)}}
+@keyframes drift2{from{transform:translate(0,0) scale(1.1)}to{transform:translate(-60px,40px) scale(.92)}}
+@keyframes drift3{from{transform:translate(0,0) scale(1)}to{transform:translate(40px,-60px) scale(1.15)}}
+.grain{position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.05) 1px,transparent 1.4px);background-size:22px 22px;opacity:.5}
+.wrap{position:relative;height:100%;display:flex;flex-direction:column;padding:0 16px}
+/* 顶部 */
+.status{display:flex;justify-content:space-between;align-items:center;padding:14px 6px 4px;font-size:13px;color:#c9d2f5}
+.titlebar{display:flex;align-items:center;justify-content:space-between;padding:8px 2px 12px}
+.titlebar h1{font-size:24px;font-weight:800;letter-spacing:.5px}
+.titlebar h1 .glow{background:linear-gradient(100deg,#00e5ff,#c026ff,#ff2ec4);-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:0 0 26px rgba(0,229,255,.35)}
+.iconbtns{display:flex;gap:10px}
+.gbtn{width:38px;height:38px;border-radius:50%;border:1px solid rgba(0,229,255,.35);background:rgba(255,255,255,.07);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);color:#eaf6ff;font-size:17px;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:inset 0 1px 0 rgba(255,255,255,.25),0 0 14px rgba(0,229,255,.25);transition:transform .18s}
+.gbtn:active{transform:scale(.88)}
+/* 卡片 */
+.cards{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:14px;padding:4px 2px 12px;scrollbar-width:none}
+.cards::-webkit-scrollbar{display:none}
+.card{border-radius:26px;border:1.5px solid transparent;background:
+ linear-gradient(rgba(18,22,48,.72),rgba(10,13,32,.72)) padding-box,
+ linear-gradient(135deg,var(--c1),transparent 40%,transparent 60%,var(--c2)) border-box;
+backdrop-filter:blur(22px) saturate(170%);-webkit-backdrop-filter:blur(22px) saturate(170%);
+box-shadow:inset 0 1px 0 rgba(255,255,255,.22),0 10px 30px rgba(0,0,0,.45),0 0 22px var(--glow);
+overflow:hidden;transition:box-shadow .3s}
+.ghead{display:flex;align-items:center;gap:10px;padding:14px 14px 12px;cursor:pointer}
+.gdot{width:10px;height:10px;border-radius:50%;background:linear-gradient(135deg,var(--c1),var(--c2));box-shadow:0 0 10px var(--c1)}
+.gname{font-size:15px;font-weight:700}
+.gnum{font-size:12px;color:#9fb0e8;background:rgba(255,255,255,.08);padding:3px 9px;border-radius:20px}
+.astrip{margin-left:auto;display:flex;align-items:center}
+.ashow{width:100px;overflow:hidden;border-radius:16px;flex:none}
+.aslide{display:flex;transition:transform .55s cubic-bezier(.34,1.9,.4,1)}
+.ashow.slid .aslide{transform:translateX(-36px)}
+.av{width:28px;height:28px;border-radius:50%;flex:none;margin-left:-10px;border:2px solid rgba(12,15,34,.9);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;box-shadow:0 0 8px rgba(0,0,0,.5)}
+.av:first-child{margin-left:0}
+.chev{margin-left:6px;color:#8fa0dd;font-size:12px;transition:transform .4s cubic-bezier(.34,1.9,.4,1)}
+.card.open .chev{transform:rotate(180deg)}
+.rows{max-height:0;overflow:hidden;transition:max-height .6s cubic-bezier(.34,1.9,.4,1)}
+.card.open .rows{max-height:420px}
+.row{display:flex;align-items:center;gap:11px;padding:11px 14px;cursor:pointer;transition:transform .25s cubic-bezier(.34,1.9,.4,1),background .2s}
+.row:active{background:rgba(255,255,255,.05)}
+.row.pop{animation:pop .45s cubic-bezier(.34,1.9,.4,1)}
+@keyframes pop{0%{transform:scale(1)}40%{transform:scale(.93)}100%{transform:scale(1)}}
+.rav{width:44px;height:44px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;color:#fff;border:1.5px solid rgba(255,255,255,.25)}
+.rmid{flex:1;min-width:0}
+.rname{font-size:14px;font-weight:600;margin-bottom:3px}
+.rmsg{font-size:12.5px;color:#a5b1da;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rright{display:flex;flex-direction:column;align-items:flex-end;gap:5px}
+.rtime{font-size:11px;color:#8a97c6}
+.unread{min-width:20px;height:20px;padding:0 6px;border-radius:12px;background:linear-gradient(135deg,#ff2ec4,#ff5a5a);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;box-shadow:0 0 10px rgba(255,46,196,.7)}
+.dot{width:9px;height:9px;border-radius:50%;background:#ff2ec4;box-shadow:0 0 8px #ff2ec4}
+/* 日历条 */
+.week{display:flex;justify-content:space-between;padding:10px 8px 6px}
+.wd{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:11px;color:#8fa0dd;cursor:pointer;padding:6px 4px;border-radius:12px;transition:all .25s cubic-bezier(.34,1.9,.4,1)}
+.wd b{font-size:14px;font-weight:700}
+.wd.on{background:linear-gradient(135deg,rgba(0,229,255,.35),rgba(192,38,255,.35));color:#fff;box-shadow:0 0 14px rgba(0,229,255,.4);transform:scale(1.08)}
+/* 底部导航 */
+.navwrap{padding:4px 30px 22px}
+.nav{position:relative;display:flex;justify-content:space-around;align-items:center;height:66px;border-radius:40px;
+background:rgba(12,15,34,.78);backdrop-filter:blur(26px) saturate(160%);-webkit-backdrop-filter:blur(26px) saturate(160%);
+border:1px solid rgba(0,229,255,.25);box-shadow:inset 0 1px 0 rgba(255,255,255,.2),0 0 26px rgba(0,229,255,.28)}
+.nav::before{content:"";position:absolute;inset:0;border-radius:40px;box-shadow:inset 0 -14px 24px rgba(0,0,0,.5);pointer-events:none}
+.nitem{position:relative;width:52px;height:52px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#7f8cc4;font-size:22px;transition:color .25s,transform .35s cubic-bezier(.34,1.9,.4,1)}
+.nitem.on{color:#00e5ff;transform:translateY(-3px);text-shadow:0 0 14px rgba(0,229,255,.9)}
+.ndrop{position:absolute;bottom:2px;width:7px;height:7px;border-radius:50% 50% 50% 0;transform:rotate(-45deg) scale(0);background:linear-gradient(135deg,#00e5ff,#c026ff);transition:transform .4s cubic-bezier(.34,1.9,.4,1);box-shadow:0 0 8px rgba(0,229,255,.8)}
+.nitem.on .ndrop{transform:rotate(-45deg) scale(1)}
+.nmain{width:58px;height:58px;border-radius:50%;margin-top:-34px;background:linear-gradient(135deg,#00e5ff,#c026ff 60%,#ff2ec4);display:flex;align-items:center;justify-content:center;font-size:26px;color:#fff;cursor:pointer;box-shadow:0 8px 22px rgba(192,38,255,.55),inset 0 2px 4px rgba(255,255,255,.5);transition:transform .3s cubic-bezier(.34,1.9,.4,1)}
+.nmain:active{transform:scale(.86)}
+</style>
+</head>
+<body>
+<div class="bg">
+  <div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div><div class="blob b4"></div>
+  <div class="grain"></div>
+</div>
+<div class="wrap">
+  <div class="status"><span>23:47</span><span>午夜霓虹 · 在线</span></div>
+  <div class="titlebar">
+    <h1><span class="glow">午夜霓虹</span></h1>
+    <div class="iconbtns"><div class="gbtn">⌕</div><div class="gbtn">＋</div></div>
+  </div>
+
+  <div class="cards" id="cards">
+    <!-- 1 星标挚友 -->
+    <div class="card open" style="--c1:#00e5ff;--c2:#4d7cff;--glow:rgba(0,229,255,.18)">
+      <div class="ghead">
+        <span class="gdot"></span><span class="gname">星标挚友</span><span class="gnum">3</span>
+        <div class="astrip"><div class="ashow"><div class="aslide">
+          <span class="av" style="background:linear-gradient(135deg,#00e5ff,#0077ff)">沈</span>
+          <span class="av" style="background:linear-gradient(135deg,#c026ff,#6d28d9)">桃</span>
+          <span class="av" style="background:linear-gradient(135deg,#ff2ec4,#a21caf)">葵</span>
+          <span class="av" style="background:linear-gradient(135deg,#4d7cff,#1e2a8a)">屿</span>
+          <span class="av" style="background:linear-gradient(135deg,#00d1b2,#00897b)">汀</span>
+          <span class="av" style="background:linear-gradient(135deg,#ff8a3d,#ff2e63)">澜</span>
+        </div></div></div>
+        <span class="chev">▼</span>
+      </div>
+      <div class="rows">
+        <div class="row"><span class="rav" style="background:linear-gradient(135deg,#00e5ff,#0077ff)">沈</span>
+          <div class="rmid"><div class="rname">沈夜白</div><div class="rmsg">明晚的霓虹展，票我抢到了！</div></div>
+          <div class="rright"><span class="rtime">23:42</span><span class="unread">3</span></div></div>
+        <div class="row"><span class="rav" style="background:linear-gradient(135deg,#c026ff,#6d28d9)">桃</span>
+          <div class="rmid"><div class="rname">桃子汽水</div><div class="rmsg">新调的电子混音发你了，听听看</div></div>
+          <div class="rright"><span class="rtime">22:15</span><span class="unread">1</span></div></div>
+        <div class="row"><span class="rav" style="background:linear-gradient(135deg,#ff2ec4,#a21caf)">葵</span>
+          <div class="rmid"><div class="rname">葵日向</div><div class="rmsg">收到，明天公司楼下见</div></div>
+          <div class="rright"><span class="rtime">21:03</span></div></div>
+      </div>
+    </div>
+
+    <!-- 2 家人群 -->
+    <div class="card" style="--c1:#ff2ec4;--c2:#ff8a3d;--glow:rgba(255,46,196,.18)">
+      <div class="ghead">
+        <span class="gdot"></span><span class="gname">和和美美一家人</span><span class="gnum">3</span>
+        <div class="astrip"><div class="ashow"><div class="aslide">
+          <span class="av" style="background:linear-gradient(135deg,#ff2ec4,#a21caf)">妈</span>
+          <span class="av" style="background:linear-gradient(135deg,#ff8a3d,#e11d48)">爸</span>
+          <span class="av" style="background:linear-gradient(135deg,#facc15,#f97316)">妹</span>
+          <span class="av" style="background:linear-gradient(135deg,#4ade80,#16a34a)">弟</span>
+          <span class="av" style="background:linear-gradient(135deg,#60a5fa,#2563eb)">我</span>
+          <span class="av" style="background:linear-gradient(135deg,#a78bfa,#7c3aed)">奶</span>
+        </div></div></div>
+        <span class="chev">▼</span>
+      </div>
+      <div class="rows">
+        <div class="row"><span class="rav" style="background:linear-gradient(135deg,#ff2ec4,#a21caf)">妈</span>
+          <div class="rmid"><div class="rname">妈妈</div><div class="rmsg">炖了银耳汤，记得回来喝</div></div>
+          <div class="rright"><span class="rtime">20:48</span><span class="unread">5</span></div></div>
+        <div class="row"><span class="rav" style="background:linear-gradient(135deg,#facc15,#f97316)">妹</span>
+          <div class="rmid"><div class="rname">妹妹小棠</div><div class="rmsg">[图片] 看我今晚拍的月亮！</div></div>
+          <div class="rright"><span class="rtime">20:12</span><span class="dot"></span></div></div>
+        <div class="row"><span class="rav" style="background:linear-gradient(135deg,#ff8a3d,#e11d48)">爸</span>
+          <div class="rmid"><div class="rname">爸爸</div><div class="rmsg">周末回老家，车我开</div></div>
+          <div class="rright"><span class="rtime">19:30</span></div></div>
+      </div>
+    </div>
+
+    <!-- 3 开黑小队 -->
+    <div class="card" style="--c1:#c026ff;--c2:#00e5ff;--glow:rgba(192,38,255,.2)">
+      <div class="ghead">
+        <span class="gdot"></span><span class="gname">午夜开黑小队</span><span class="gnum">2</span>
+        <div class="astrip"><div class="ashow"><div class="aslide">
+          <span class="av" style="background:linear-gradient(135deg,#c026ff,#4c1d95)">野</span>
+          <span class="av" style="background:linear-gradient(135deg,#00e5ff,#0ea5e9)">驰</span>
+          <span class="av" style="background:linear-gradient(135deg,#f0abfc,#a21caf)">雾</span>
+          <span class="av" style="background:linear-gradient(135deg,#67e8f9,#0369a1)">澈</span>
+          <span class="av" style="background:linear-gradient(135deg,#d8b4fe,#7e22ce)">烬</span>
+          <span class="av" style="background:linear-gradient(135deg,#f9a8d4,#be185d)">绯</span>
+        </div></div></div>
+        <span class="chev">▼</span>
+      </div>
+      <div class="rows">
+        <div class="row"><span class="rav" style="background:linear-gradient(135deg,#c026ff,#4c1d95)">野</span>
+          <div class="rmid"><div class="rname">野原不野</div><div class="rmsg">十点准时开车，缺个辅助</div></div>
+          <div class="rright"><span class="rtime">23:35</span><span class="unread">9</span></div></div>
+        <div class="row"><span class="rav" style="background:linear-gradient(135deg,#00e5ff,#0ea5e9)">驰</span>
+          <div class="rmid"><div class="rname">驰电掣风</div><div class="rmsg">我我我！刚更新完驱动</div></div>
+          <div class="rright"><span class="rtime">23:36</span></div></div>
+      </div>
+    </div>
+
+    <!-- 4 灵感电台 -->
+    <div class="card" style="--c1:#4d7cff;--c2:#c026ff;--glow:rgba(77,124,255,.2)">
+      <div class="ghead">
+        <span class="gdot"></span><span class="gname">灵感电台</span><span class="gnum">2</span>
+        <div class="astrip"><div class="ashow"><div class="aslide">
+          <span class="av" style="background:linear-gradient(135deg,#4d7cff,#1e3a8a)">聆</span>
+          <span class="av" style="background:linear-gradient(135deg,#c026ff,#701a75)">弦</span>
+          <span class="av" style="background:linear-gradient(135deg,#38bdf8,#1d4ed8)">汐</span>
+          <span class="av" style="background:linear-gradient(135deg,#e879f9,#86198f)">瑶</span>
+          <span class="av" style="background:linear-gradient(135deg,#818cf8,#3730a3)">湛</span>
+          <span class="av" style="background:linear-gradient(135deg,#22d3ee,#155e75)">漾</span>
+        </div></div></div>
+        <span class="chev">▼</span>
+      </div>
+      <div class="rows">
+        <div class="row"><span class="rav" style="background:linear-gradient(135deg,#4d7cff,#1e3a8a)">聆</span>
+          <div class="rmid"><div class="rname">聆听深海</div><div class="rmsg">这期播客聊城市夜景声场，绝了</div></div>
+          <div class="rright"><span class="rtime">18:22</span><span class="unread">2</span></div></div>
+        <div class="row"><span class="rav" style="background:linear-gradient(135deg,#38bdf8,#1d4ed8)">汐</span>
+          <div class="rmid"><div class="rname">汐汐不困</div><div class="rmsg">收藏了，周末边画稿边听</div></div>
+          <div class="rright"><span class="rtime">18:40</span></div></div>
+      </div>
+    </div>
+
+    <!-- 5 夜行计划 -->
+    <div class="card" style="--c1:#ff2e63;--c2:#c026ff;--glow:rgba(255,46,99,.18)">
+      <div class="ghead">
+        <span class="gdot"></span><span class="gname">夜行计划</span><span class="gnum">2</span>
+        <div class="astrip"><div class="ashow"><div class="aslide">
+          <span class="av" style="background:linear-gradient(135deg,#ff2e63,#9f1239)">荧</span>
+          <span class="av" style="background:linear-gradient(135deg,#c026ff,#581c87)">曜</span>
+          <span class="av" style="background:linear-gradient(135deg,#fb7185,#be123c)">灼</span>
+          <span class="av" style="background:linear-gradient(135deg,#f0abfc,#7e22ce)">霏</span>
+          <span class="av" style="background:linear-gradient(135deg,#fda4af,#9d174d)">绚</span>
+          <span class="av" style="background:linear-gradient(135deg,#d946ef,#701a75)">璨</span>
+        </div></div></div>
+        <span class="chev">▼</span>
+      </div>
+      <div class="rows">
+        <div class="row"><span class="rav" style="background:linear-gradient(135deg,#ff2e63,#9f1239)">荧</span>
+          <div class="rmid"><div class="rname">荧惑守心</div><div class="rmsg">跨年夜顶楼天台，带上相机</div></div>
+          <div class="rright"><span class="rtime">17:05</span><span class="dot"></span></div></div>
+        <div class="row"><span class="rav" style="background:linear-gradient(135deg,#c026ff,#581c87)">曜</span>
+          <div class="rmid"><div class="rname">曜曜有光</div><div class="rmsg">三脚架和热咖啡我包了</div></div>
+          <div class="rright"><span class="rtime">17:09</span></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 日历条 -->
+  <div class="week" id="week">
+    <div class="wd">日<b>19</b></div><div class="wd on">一<b>20</b></div><div class="wd">二<b>21</b></div>
+    <div class="wd">三<b>22</b></div><div class="wd">四<b>23</b></div><div class="wd">五<b>24</b></div><div class="wd">六<b>25</b></div>
+  </div>
+
+  <!-- seam 胶囊导航 -->
+  <div class="navwrap">
+    <div class="nav" id="nav">
+      <div class="nitem on">◈<span class="ndrop"></span></div>
+      <div class="nitem">✉<span class="ndrop"></span></div>
+      <div class="nmain">✦</div>
+      <div class="nitem">◐<span class="ndrop"></span></div>
+      <div class="nitem">⚙<span class="ndrop"></span></div>
+    </div>
+  </div>
+</div>
+
+<script>
+document.querySelectorAll('.ghead').forEach(h=>{
+  h.addEventListener('click',()=>h.closest('.card').classList.toggle('open'));
+});
+document.querySelectorAll('.ashow').forEach(s=>{
+  s.addEventListener('click',e=>{e.stopPropagation();s.classList.toggle('slid');});
+});
+document.querySelectorAll('.row').forEach(r=>{
+  r.addEventListener('click',()=>{r.classList.remove('pop');void r.offsetWidth;r.classList.add('pop');});
+});
+document.querySelectorAll('#nav .nitem').forEach(n=>{
+  n.addEventListener('click',()=>{
+    document.querySelectorAll('#nav .nitem').forEach(x=>x.classList.remove('on'));
+    n.classList.add('on');
+  });
+});
+document.querySelectorAll('#week .wd').forEach(w=>{
+  w.addEventListener('click',()=>{
+    document.querySelectorAll('#week .wd').forEach(x=>x.classList.remove('on'));
+    w.classList.add('on');
+  });
+});
+document.querySelector('.nmain').addEventListener('click',function(){this.style.transform='scale(.86)';setTimeout(()=>this.style.transform='',220);});
+</script>
+</body>
+</html>

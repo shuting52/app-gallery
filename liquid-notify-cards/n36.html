@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>液态玻璃通知卡片 · 心率警报</title>
+<style>
+
+*{box-sizing:border-box}
+body{min-height:100vh;margin:0;padding:48px 18px;color:#fff;
+font:15px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+background:radial-gradient(ellipse at 20% 15%, rgba(255,90,90,.85), transparent 36%),
+ radial-gradient(ellipse at 85% 45%, rgba(200,50,80,.7), transparent 38%),
+ radial-gradient(ellipse at 50% 92%, rgba(90,20,30,.85), transparent 40%),
+ linear-gradient(150deg,#240d12,#4d151c 55%,#1a0a0e);background-attachment:fixed}
+main{width:min(440px,100%);margin:0 auto;display:grid;gap:18px}
+.heading{padding:4px 6px 8px}
+.eyebrow{margin:0 0 8px;color:rgba(255,255,255,.68);font-size:11px;letter-spacing:.18em}
+h1{margin:0;font-size:30px;letter-spacing:-.04em}
+.hint{margin:7px 0 0;color:rgba(255,255,255,.68)}
+.card{position:relative;isolation:isolate;overflow:hidden;padding:18px;
+border:1px solid rgba(255,255,255,.3);border-radius:24px;
+background:linear-gradient(135deg,rgba(255,255,255,.19),rgba(255,255,255,.07) 48%,rgba(255,130,130,.12));
+-webkit-backdrop-filter:blur(20px) saturate(175%);
+backdrop-filter:blur(20px) saturate(175%);
+box-shadow:inset 0 1px 0 rgba(255,255,255,.44),inset 0 -1px 0 rgba(255,255,255,.08),0 20px 48px rgba(20,6,8,.32);
+transition:transform .25s ease,border-color .25s ease}
+.card::before{content:"";position:absolute;z-index:0;inset:0;border-radius:inherit;pointer-events:none;
+background:linear-gradient(112deg,rgba(255,255,255,.34) 0%,rgba(255,255,255,.08) 18%,
+transparent 42%,transparent 72%,rgba(255,170,170,.16) 100%);opacity:.8}
+.card::after{content:"";position:absolute;z-index:0;top:-56px;right:-36px;
+width:185px;height:125px;border:1px solid rgba(255,255,255,.22);border-radius:50%;
+background:radial-gradient(ellipse,rgba(255,255,255,.22),transparent 68%);
+filter:blur(2px);transform:rotate(-26deg);pointer-events:none}
+.card>*{position:relative;z-index:1}
+.card:hover{transform:translateY(-3px);border-color:rgba(255,255,255,.5)}
+.top,.title-line{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.top{margin-bottom:17px}
+.pill{padding:6px 12px;border:1px solid rgba(255,255,255,.3);border-radius:999px;background:rgba(255,255,255,.10);
+color:#fff;font-size:12px;box-shadow:inset 0 1px rgba(255,255,255,.18);white-space:nowrap}
+.avatars{display:flex;align-items:center;padding-left:8px}
+.avatar{display:grid;width:29px;height:29px;margin-left:-8px;place-items:center;
+border:1px solid rgba(255,255,255,.55);border-radius:50%;background:linear-gradient(135deg,#ff6b6b, #c83250 70%, #5a141e);
+color:#fff;font-size:11px;box-shadow:0 3px 10px rgba(18,12,36,.2)}
+.more{margin-left:7px;color:rgba(255,255,255,.68);font-size:12px}
+.row{display:flex;align-items:center;gap:12px;min-width:0}
+.face{display:grid;flex:0 0 48px;height:48px;place-items:center;border:1px solid rgba(255,255,255,.45);
+border-radius:50%;background:linear-gradient(145deg,#ff6b6b, #c83250 70%, #5a141e);color:#fff;font-size:19px;font-weight:650;
+box-shadow:inset 0 1px 5px rgba(255,255,255,.5),0 5px 15px rgba(15,12,35,.2)}
+.copy{flex:1;min-width:0}
+.title-line{margin-bottom:5px}
+.title-line strong{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+time,.preview{color:rgba(255,255,255,.68);font-size:12px}
+.preview{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.unread{flex:0 0 auto;color:#ffb0b0;font-size:12px;font-weight:600}
+
+
+.ecg{width:100%;height:56px;margin-top:12px}
+.ecg .base{fill:none;stroke:#ff7b7b;stroke-width:1.6;opacity:.32}
+.ecg .live{fill:none;stroke:#ff7b7b;stroke-width:2;stroke-dasharray:120 560;animation:beat 3.2s linear infinite;animation-delay:-1.1s;
+filter:drop-shadow(0 0 6px rgba(255,110,110,.8))}
+@keyframes beat{to{stroke-dashoffset:-680}}
+.big{font-size:34px;font-weight:700;letter-spacing:-.03em}
+.unit{font-size:13px;color:rgba(255,255,255,.6);margin-left:6px}
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .card { background: rgba(43,35,68,.88); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .card { transition: none; }
+  .breath,.ecg path { animation: none; }
+}
+</style>
+</head>
+<body>
+<main>
+<header class="heading">
+<p class="eyebrow">HEALTH</p>
+<h1>心率警报</h1>
+<p class="hint">身体在说话，别错过。</p>
+</header>
+
+<section class="card">
+  <div class="top"><span class="pill">心率提醒</span><time>14:22</time></div>
+  <div class="row">
+    <div class="copy">
+      <div class="title-line"><strong>静息心率偏高</strong></div>
+      <div class="preview">过去 1 小时平均 102 bpm，建议休息一下</div>
+    </div>
+    <div><span class="big">102</span><span class="unit">bpm</span></div>
+  </div>
+  <svg class="ecg" viewBox="0 0 400 56" preserveAspectRatio="none"><path class="base" d="M0 30 H90 l10-10 10 16 8-34 10 40 8-12 h20 l10-10 10 16 8-34 10 40 8-12 H400"/><path class="live" d="M0 30 H90 l10-10 10 16 8-34 10 40 8-12 h20 l10-10 10 16 8-34 10 40 8-12 H400"/></svg>
+</section>
+<section class="card">
+  <div class="top"><span class="pill">运动恢复</span><time>昨日</time></div>
+  <div class="row">
+    <div class="face">恢</div>
+    <div class="copy">
+      <div class="title-line"><strong>心率已回到正常区间</strong></div>
+      <div class="preview">昨晚跑步后 2 小时恢复至 68 bpm</div>
+    </div>
+  </div>
+</section>
+</main>
+</body>
+</html>

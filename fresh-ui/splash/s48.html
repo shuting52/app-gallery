@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>水车悠悠</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{background:#070a12;display:flex;align-items:center;justify-content:center;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;overflow:hidden}
+.stage{position:relative;width:430px;height:900px;flex:none;overflow:hidden}
+.stage i{display:block;position:absolute}
+.brand{position:absolute;left:0;right:0;bottom:104px;text-align:center;z-index:50;animation:brandIn 1s .9s both}
+.brand h1{font-size:32px;letter-spacing:10px;text-indent:10px;color:#fff;font-weight:700;text-shadow:0 2px 24px rgba(0,0,0,.45)}
+.brand p{margin-top:10px;font-size:11px;letter-spacing:5px;color:rgba(255,255,255,.62)}
+@keyframes brandIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.replay{position:absolute;bottom:30px;left:50%;transform:translateX(-50%);z-index:60;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.35);color:#fff;font-size:12px;letter-spacing:2px;padding:9px 24px;border-radius:20px;cursor:pointer;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.shade{position:absolute;left:0;right:0;bottom:0;height:360px;background:linear-gradient(transparent,rgba(8,6,18,.78));z-index:40;pointer-events:none}
+
+.stage{background:linear-gradient(#bcdff0,#e8f3e6 52%,#a8cbd8)}
+
+.cloud{width:120px;height:44px;border-radius:22px;background:rgba(255,255,255,.92);animation:cloud 16s ease-in-out infinite alternate;z-index:2}
+.cl1{left:40px;top:90px}.cl2{left:250px;top:150px;animation-delay:-8s;transform:scale(.7)}
+@keyframes cloud{to{transform:translateX(70px)}}
+.wheel{width:230px;height:230px;left:100px;top:320px;z-index:5;animation:spin 16s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.wheel .rim{width:230px;height:230px;left:0;top:0;border-radius:50%;border:10px solid #7a5230}
+.wheel .hub{width:34px;height:34px;left:98px;top:98px;border-radius:50%;background:#5a3a20}
+.spoke{width:8px;height:214px;left:111px;top:8px;background:#8a5f36;transform:rotate(var(--r));transform-origin:50% 50%}
+.paddle{width:34px;height:20px;background:#6b4426;border-radius:4px;transform:rotate(var(--r)) translateY(-104px);transform-origin:50% 114px;left:98px;top:101px}
+.axle{width:16px;height:120px;left:207px;top:430px;background:#5a3a20;z-index:4}
+.river{position:absolute;left:0;right:0;bottom:0;height:300px;background:linear-gradient(#7fb8d4,#4a86ad);z-index:3}
+.wave{height:34px;border-radius:50%;background:rgba(255,255,255,.35);animation:wave 5s ease-in-out infinite alternate}
+.wv1{left:-30px;right:-30px;bottom:230px}.wv2{left:-50px;right:-50px;bottom:150px;animation-delay:-2.5s}
+@keyframes wave{to{transform:translateX(46px)}}
+.hut{width:110px;height:80px;left:290px;top:230px;background:#6b4a30;clip-path:polygon(0 38%,50% 0,100% 38%,100% 100%,0 100%);z-index:4}
+.reed{width:6px;height:70px;border-radius:3px;background:#3f7d4f;transform-origin:50% 100%;animation:sway3 3.6s ease-in-out infinite alternate;z-index:6}
+.rd1{left:50px;bottom:180px}.rd2{left:70px;bottom:170px;animation-delay:-1.2s}.rd3{left:370px;bottom:190px;animation-delay:-2s}
+@keyframes sway3{to{transform:rotate(9deg)}}
+
+</style></head><body>
+<div class="stage" id="stage">
+<i class="wheel"><i class="rim"></i><i class="spoke" style="--r:0deg"></i><i class="spoke" style="--r:45deg"></i><i class="spoke" style="--r:90deg"></i><i class="spoke" style="--r:135deg"></i><i class="paddle" style="--r:0deg"></i><i class="paddle" style="--r:45deg"></i><i class="paddle" style="--r:90deg"></i><i class="paddle" style="--r:135deg"></i><i class="paddle" style="--r:180deg"></i><i class="paddle" style="--r:225deg"></i><i class="paddle" style="--r:270deg"></i><i class="paddle" style="--r:315deg"></i><i class="hub"></i></i>
+<i class="cloud cl1"></i><i class="cloud cl2"></i>
+<i class="hut"></i><i class="axle"></i>
+<i class="river"></i>
+<i class="wave wv1"></i><i class="wave wv2"></i>
+<i class="reed rd1"></i><i class="reed rd2"></i><i class="reed rd3"></i>
+
+<div class="shade"></div>
+<div class="brand"><h1>水车</h1><p>WATERWHEEL</p></div>
+<button class="replay" onclick="var s=document.getElementById('stage');s.replaceWith(s.cloneNode(true))">重新播放</button>
+</div>
+</body></html>

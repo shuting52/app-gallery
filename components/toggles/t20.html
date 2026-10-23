@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>星星点亮</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;display:flex;align-items:center;justify-content:center;background:#0e0f13;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;color:#e8eaf0;padding:20px}
+body.freeze *{transition:none!important;animation:none!important}
+.stage{width:360px;max-width:100%;text-align:center}
+h2{font-size:17px;letter-spacing:3px;margin-bottom:4px}
+.sub{font-size:12px;color:#8a8fa3;margin-bottom:20px}
+.device{cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent}
+.night{width:330px;height:310px;margin:0 auto;border-radius:20px;position:relative;overflow:hidden;background:linear-gradient(180deg,#04060e 0%,#0c1330 70%,#131b40 100%);box-shadow:0 12px 32px rgba(0,0,0,.55)}
+.night::after{content:'';position:absolute;bottom:0;left:0;right:0;height:56px;background:linear-gradient(180deg,transparent,#05070f);pointer-events:none}
+svg.lines{position:absolute;inset:0;width:100%;height:100%}
+svg.lines line{stroke:#ffd75e;stroke-width:2;opacity:0;transition:opacity .6s ease 1.6s}
+.device.on svg.lines line{opacity:.55}
+.star{position:absolute;width:36px;height:36px;margin:-18px;background:#394052;clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);transform:scale(.8);transition:background .45s,box-shadow .45s,transform .45s;transition-delay:calc(var(--i)*170ms)}
+.device.on .star{background:#ffd75e;box-shadow:0 0 20px 4px rgba(255,215,94,.75);transform:scale(1);animation:tw 1.7s ease-in-out infinite;animation-delay:calc(var(--i)*170ms + 1.5s)}
+@keyframes tw{50%{transform:scale(1.14) rotate(8deg)}}
+.moon-s{position:absolute;top:22px;right:26px;width:44px;height:44px;border-radius:50%;background:radial-gradient(circle at 35% 32%,#f4f1de,#c9c4a8);box-shadow:0 0 22px rgba(244,241,222,.4);opacity:.9}
+.cap{position:absolute;bottom:12px;left:0;right:0;font-size:11px;letter-spacing:3px;color:#5c6172;z-index:2}
+.device.on .cap{color:#ffd479}
+.status{margin-top:18px;font-size:14px;color:#9aa0b4}
+.status b{color:#ffd479}
+.hint{font-size:11px;color:#5c6172;margin-top:6px}
+</style>
+</head>
+<body>
+<div class="stage">
+<h2>星星点亮</h2>
+<div class="sub">点击逐颗点亮星座</div>
+<div class="device" id="dev">
+<div class="night">
+<div class="moon-s"></div>
+<svg class="lines" viewBox="0 0 330 310">
+<line x1="52" y1="78" x2="104" y2="56"/><line x1="104" y1="56" x2="158" y2="72"/>
+<line x1="158" y1="72" x2="204" y2="108"/><line x1="204" y1="108" x2="172" y2="162"/>
+<line x1="172" y1="162" x2="118" y2="192"/><line x1="118" y1="192" x2="74" y2="168"/>
+</svg>
+<span class="star" style="--i:0;left:52px;top:78px"></span>
+<span class="star" style="--i:1;left:104px;top:56px"></span>
+<span class="star" style="--i:2;left:158px;top:72px"></span>
+<span class="star" style="--i:3;left:204px;top:108px"></span>
+<span class="star" style="--i:4;left:172px;top:162px"></span>
+<span class="star" style="--i:5;left:118px;top:192px"></span>
+<span class="star" style="--i:6;left:74px;top:168px"></span>
+<div class="cap">北斗七星 · 依次点亮</div>
+</div>
+</div>
+<div class="status">状态：<b id="st">关 · 星空黯淡</b></div>
+<div class="hint">点击星空切换</div>
+</div>
+<script>
+var dev=document.getElementById('dev'),st=document.getElementById('st'),on=location.search.indexOf('s=1')>-1;
+function render(){dev.classList.toggle('on',on);st.textContent=on?'开 · 星座点亮':'关 · 星空黯淡';}
+if(on)document.body.classList.add('freeze');
+dev.addEventListener('click',function(){on=!on;render();});
+render();
+</script>
+</body>
+</html>

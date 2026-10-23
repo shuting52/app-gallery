@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>呼吸之间</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{background:#05060f;display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sans-serif}
+.phone{width:430px;height:900px;background:#05060f;border-radius:44px;overflow:hidden;position:relative;box-shadow:0 30px 80px rgba(0,0,0,.7),0 0 0 1px rgba(255,255,255,.08);display:flex;flex-direction:column}
+.star{position:absolute;background:#fff;border-radius:50%;opacity:.5;animation:tw 3s ease-in-out infinite;display:block}
+@keyframes tw{0%,100%{opacity:.15}50%{opacity:.7}}
+.topbar{padding:56px 24px 8px;display:flex;align-items:center;justify-content:space-between;position:relative;z-index:5}
+.topbar .t{font-size:20px;font-weight:700;color:#fff;letter-spacing:2px}
+.topbar .sub{font-size:12px;color:#8b93b8;margin-top:4px}
+.moonbtn{width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);color:#cfd6ff;font-size:20px;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.moonbtn.on{background:rgba(150,170,255,.22);box-shadow:0 0 18px rgba(150,170,255,.4)}
+.breathe-wrap{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;z-index:4}
+.breath{width:230px;height:230px;border-radius:50%;position:relative;display:flex;align-items:center;justify-content:center;animation:breath 16s ease-in-out infinite;animation-delay:-6s;animation-fill-mode:both}
+.breathbox{position:relative;width:230px;height:230px;flex-shrink:0}
+@keyframes breath{0%,100%{transform:scale(.82)}25%{transform:scale(1.08)}50%{transform:scale(1.08)}62.5%{transform:scale(.9)}75%{transform:scale(.9)}}
+.breath::before{content:"";position:absolute;inset:-34px;border-radius:50%;background:radial-gradient(circle,rgba(140,160,255,.28),rgba(140,160,255,.06) 60%,transparent 70%);animation:breath 16s ease-in-out infinite;animation-delay:-6s}
+.breath::after{content:"";position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 35% 30%,#7c86e8,#3c4488 55%,#1d2140);box-shadow:0 0 60px rgba(140,160,255,.45),inset 0 0 40px rgba(255,255,255,.12)}
+.phrase{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);color:#fff;font-size:22px;font-weight:600;letter-spacing:6px;z-index:2;animation:phrase 16s ease-in-out infinite;animation-delay:-6s;animation-fill-mode:both;white-space:nowrap}
+@keyframes phrase{0%,20%{opacity:0}25%,42%{opacity:1}50%,58%{opacity:0}62%,90%{opacity:1}95%,100%{opacity:0}}
+.rhythm{margin-top:44px;width:300px;position:relative;z-index:4}
+.rhythm .bar{display:flex;height:10px;border-radius:6px;overflow:hidden;background:rgba(255,255,255,.08)}
+.rhythm .seg{height:100%;animation:seg 16s ease-in-out infinite;animation-delay:-6s;animation-fill-mode:both;display:block}
+.seg.i{width:26.6%;background:#7c86e8}
+.seg.h{width:46.7%;background:#4a5499}
+.seg.o{width:26.7%;background:#9aa5ff}
+@keyframes seg{0%,100%{opacity:.4}25%,42%{opacity:1}62%,90%{opacity:1}}
+.rhythm .lbl{display:flex;justify-content:space-between;margin-top:10px;font-size:13px;color:#aab1d6}
+.rhythm .lbl b{color:#fff;font-size:15px}
+.chips{display:flex;gap:12px;margin-top:26px;position:relative;z-index:4}
+.chip{padding:10px 22px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);color:#aab1d6;font-size:14px;cursor:pointer;transition:all .3s}
+.chip.on{background:linear-gradient(135deg,#7c86e8,#4a5499);color:#fff;border-color:transparent;box-shadow:0 6px 20px rgba(124,134,232,.45);transform:scale(1.06)}
+.stats{display:flex;gap:36px;margin-top:24px;position:relative;z-index:4}
+.stat{text-align:center}
+.stat .n{font-size:20px;font-weight:700;color:#fff}
+.stat .l{font-size:12px;color:#8b93b8;margin-top:4px}
+.tabbar{display:flex;background:rgba(10,12,26,.9);border-top:1px solid rgba(255,255,255,.08);padding:12px 8px 34px;position:relative;z-index:5}
+.tab{flex:1;text-align:center;color:#5b6285;font-size:11px;cursor:pointer;padding:6px 0}
+.tab .ic{font-size:22px;display:block;margin-bottom:4px;transition:transform .25s}
+.tab.on{color:#9aa5ff}
+.tab.on .ic{transform:translateY(-3px) scale(1.15)}
+</style>
+</head>
+<body>
+<div class="phone" id="phone">
+  <div class="topbar">
+    <div><div class="t">呼吸之间</div><div class="sub">4-7-8 深度放松练习</div></div>
+    <button class="moonbtn" id="soundBtn" title="环境音">🌙</button>
+  </div>
+  <div class="breathe-wrap">
+    <div class="breathbox"><div class="breath"></div><div class="phrase" id="phrase">吸气</div></div>
+    <div class="rhythm">
+      <div class="bar"><i class="seg i"></i><i class="seg h"></i><i class="seg o"></i></div>
+      <div class="lbl"><span>吸气 <b>4秒</b></span><span>屏息 <b>7秒</b></span><span>呼气 <b>8秒</b></span></div>
+    </div>
+    <div class="chips" id="chips">
+      <button class="chip" data-m="5">5 分钟</button>
+      <button class="chip on" data-m="10">10 分钟</button>
+      <button class="chip" data-m="15">15 分钟</button>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="n" id="doneN">128</div><div class="l">完成练习</div></div>
+      <div class="stat"><div class="n"><span id="minN">10</span>′</div><div class="l">本次时长</div></div>
+      <div class="stat"><div class="n">7天</div><div class="l">连续坚持</div></div>
+    </div>
+  </div>
+  <div class="tabbar" id="tabbar">
+    <div class="tab on"><span class="ic">🫁</span>呼吸</div>
+    <div class="tab"><span class="ic">🎧</span>冥想</div>
+    <div class="tab"><span class="ic">📊</span>记录</div>
+    <div class="tab"><span class="ic">👤</span>我的</div>
+  </div>
+</div>
+<script>
+(function(){
+  var p=document.getElementById('phone');
+  for(var i=0;i<70;i++){var s=document.createElement('i');s.className='star';
+    var sz=(Math.random()*2.2+1).toFixed(1);
+    s.style.cssText='left:'+(Math.random()*100)+'%;top:'+(Math.random()*100)+'%;width:'+sz+'px;height:'+sz+'px;animation-delay:-'+(Math.random()*3).toFixed(1)+'s;';
+    p.appendChild(s);}
+  var phrases=[['吸气',0],['屏息',4],['呼气',11],['屏息',19]];
+  var ph=document.getElementById('phrase');
+  var t0=Date.now()-6000;
+  setInterval(function(){
+    var el=((Date.now()-t0)/1000)%16;
+    var txt=el<4?'吸气':el<11?'屏息':'呼气';
+    if(ph.textContent!==txt)ph.textContent=txt;
+  },500);
+  var chips=document.getElementById('chips');
+  chips.addEventListener('click',function(e){
+    var b=e.target.closest('.chip');if(!b)return;
+    chips.querySelectorAll('.chip').forEach(function(c){c.classList.remove('on')});
+    b.classList.add('on');
+    document.getElementById('minN').textContent=b.dataset.m;
+  });
+  var sb=document.getElementById('soundBtn');
+  sb.addEventListener('click',function(){sb.classList.toggle('on');sb.textContent=sb.classList.contains('on')?'🎵':'🌙';});
+  var tb=document.getElementById('tabbar');
+  tb.addEventListener('click',function(e){
+    var t=e.target.closest('.tab');if(!t)return;
+    tb.querySelectorAll('.tab').forEach(function(x){x.classList.remove('on')});
+    t.classList.add('on');
+  });
+})();
+</script>
+</body>
+</html>

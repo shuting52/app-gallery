@@ -1,0 +1,70 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>w24 · 会员光环</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC",sans-serif;background:#05070c;display:flex;justify-content:center;color:#fff;overflow:hidden}
+.stage{width:430px;height:900px;position:relative;overflow:hidden;flex-shrink:0;background:radial-gradient(120% 90% at 50% 0%,#2b2110 0%,#171208 55%,#0b0e16 100%)}
+.mock{position:absolute;inset:0;filter:blur(6px) brightness(.55)}
+.sb{height:46px;display:flex;justify-content:space-between;align-items:center;padding:0 26px;font-size:13px;font-weight:600}
+.sic{width:70px;height:12px;border-radius:6px;background:#2a3040}
+.mh{display:flex;align-items:center;gap:10px;padding:14px 20px}
+.mh i{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,#4a3a20,#2c2214);display:block}
+.mh em{width:110px;height:14px;border-radius:7px;background:#38301f;display:block}
+.banner{height:150px;margin:6px 20px 14px;border-radius:18px;background:linear-gradient(135deg,#3a2d16,#241c0e)}
+.row{display:flex;gap:12px;align-items:center;margin:0 20px 12px}
+.row i{width:52px;height:52px;border-radius:14px;background:#38301f;display:block;flex-shrink:0}
+.row b{display:block;width:150px;height:13px;border-radius:6px;background:#463b26;margin-bottom:8px}
+.row s{display:block;width:100px;height:10px;border-radius:5px;background:#2e2718;text-decoration:none}
+.tabbar{position:absolute;bottom:0;left:0;right:0;height:84px;background:rgba(24,18,8,.9);display:flex;justify-content:space-around;align-items:center;border-top:1px solid #38301f}
+.tabbar i{width:26px;height:26px;border-radius:8px;background:#463b26;display:block}
+.ov{position:absolute;inset:0;z-index:10;display:flex;align-items:center;justify-content:center;background:rgba(10,8,4,.55);animation:fadeIn .4s both}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.modal{width:330px;text-align:center;position:relative;animation:pop .55s cubic-bezier(.2,1.4,.4,1) both;animation-delay:.12s}
+@keyframes pop{from{opacity:0;transform:scale(.7) translateY(30px)}to{opacity:1;transform:none}}
+.vip{position:relative;border-radius:26px;padding:3px;overflow:hidden}
+.spin{position:absolute;inset:-70px;background:conic-gradient(#f7d774,#7a5200,#f7d774,#7a5200,#f7d774,#7a5200,#f7d774);animation:spin 4s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.inner{position:relative;border-radius:23px;background:linear-gradient(165deg,#221a0e,#120d06);padding:30px 24px 26px}
+.x{position:absolute;top:14px;right:14px;width:30px;height:30px;border-radius:50%;border:0;background:rgba(255,255,255,.12);color:#fff;font-size:15px;cursor:pointer;z-index:3}
+.crown{font-size:52px;display:block;animation:float 2.6s ease-in-out infinite;filter:drop-shadow(0 8px 18px rgba(247,215,116,.45))}
+@keyframes float{50%{transform:translateY(-9px)}}
+h2{font-size:22px;margin:12px 0 6px;color:#f7d774;letter-spacing:2px}
+p.sub{font-size:13px;color:#c9b586;line-height:1.7}
+.perks{display:flex;gap:8px;margin-top:16px}
+.perks div{flex:1;background:rgba(247,215,116,.08);border:1px solid rgba(247,215,116,.25);border-radius:14px;padding:10px 4px;font-size:11px;color:#e8d5a0}
+.perks div b{display:block;font-size:17px;margin-bottom:3px}
+.price{margin-top:14px;font-size:13px;color:#a89568}
+.price b{font-size:26px;color:#f7d774}
+.btn{display:block;width:100%;border:0;border-radius:16px;padding:14px;font-size:16px;font-weight:700;cursor:pointer;margin-top:14px;background:linear-gradient(180deg,#ffe9b0,#d9a83c);color:#4a3205;box-shadow:0 8px 26px rgba(217,168,60,.45)}
+.btn:active{transform:scale(.97)}
+.skip{display:inline-block;margin-top:12px;font-size:12px;color:#8a7c58;background:none;border:0;cursor:pointer}
+.replay{position:absolute;bottom:24px;left:50%;transform:translateX(-50%);z-index:20;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.1);color:#fff;border-radius:999px;padding:10px 22px;font-size:13px;cursor:pointer;backdrop-filter:blur(8px)}
+</style></head>
+<body><div class="stage">
+<div class="mock"><div class="sb"><span>9:41</span><span class="sic"></span></div>
+<div class="mh"><i></i><em></em></div><div class="banner"></div>
+<div class="row"><i></i><div><b></b><s></s></div></div>
+<div class="row"><i></i><div><b></b><s></s></div></div>
+<div class="tabbar"><i></i><i></i><i></i><i></i></div></div>
+<div class="ov" id="ov"><div class="modal"><div class="vip"><div class="spin"></div><div class="inner">
+<button class="x" id="x">✕</button>
+<span class="crown">👑</span>
+<h2>黑金会员</h2>
+<p class="sub">新人首月仅需 1 元<br>解锁全部尊享特权</p>
+<div class="perks"><div><b>🚫</b>去广告</div><div><b>☁️</b>云空间</div><div><b>🎨</b>专属皮肤</div></div>
+<div class="price"><b>¥1</b> / 首月 · 随时可退</div>
+<button class="btn" id="go">开通会员</button>
+<button class="skip" id="skip">暂不需要 →</button>
+</div></div></div></div>
+<button class="replay" id="replay">重新弹出</button>
+</div>
+<script>
+const ov=document.getElementById('ov');
+document.getElementById('go').onclick=()=>ov.style.display='none';
+document.getElementById('skip').onclick=()=>ov.style.display='none';
+document.getElementById('x').onclick=()=>ov.style.display='none';
+document.getElementById('replay').onclick=()=>{ov.style.display='flex';
+const m=ov.querySelector('.modal');m.style.animation='none';void m.offsetWidth;m.style.animation='';};
+</script></body></html>

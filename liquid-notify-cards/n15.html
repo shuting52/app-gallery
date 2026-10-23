@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>包裹签收</title>
+<style>
+*{box-sizing:border-box}
+body{min-height:100vh;margin:0;padding:48px 18px;color:#fff;
+font:15px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+background:radial-gradient(ellipse at 25% 20%, rgba(244,114,182,.85), transparent 36%),radial-gradient(ellipse at 80% 60%, rgba(190,60,110,.75), transparent 38%),radial-gradient(ellipse at 50% 95%, rgba(90,20,50,.85), transparent 42%),linear-gradient(145deg,#33101f,#451a2c 55%,#200a14);background-attachment:fixed}
+main{width:min(440px,100%);margin:0 auto;display:grid;gap:18px}
+.heading{padding:4px 6px 8px}
+.eyebrow{margin:0 0 8px;color:rgba(255,255,255,.68);font-size:11px;letter-spacing:.18em}
+h1{margin:0;font-size:30px;letter-spacing:-.04em}
+.hint{margin:7px 0 0;color:rgba(255,255,255,.68)}
+.card{position:relative;isolation:isolate;overflow:hidden;padding:18px;
+border:1px solid rgba(255,255,255,.28);border-radius:28px;
+background:linear-gradient(135deg,
+rgba(255,255,255,.20),rgba(255,255,255,.08) 48%,rgba(249,168,212,.14));
+-webkit-backdrop-filter:blur(24px) saturate(175%);
+backdrop-filter:blur(24px) saturate(175%);
+box-shadow:inset 0 1px 0 rgba(255,255,255,.42),inset 0 -1px 0 rgba(255,255,255,.08),0 20px 48px rgba(8,8,24,.28);
+transition:transform .25s ease,border-color .25s ease}
+.card::before{content:"";position:absolute;z-index:0;inset:0;border-radius:inherit;pointer-events:none;
+background:linear-gradient(118deg,rgba(255,255,255,.34) 0%,rgba(255,255,255,.08) 18%,transparent 42%,transparent 72%,rgba(255,206,234,.16) 100%);opacity:.8}
+.card::after{content:"";position:absolute;z-index:0;top:-52px;right:-56px;width:190px;height:130px;
+border:1px solid rgba(255,255,255,.28);border-radius:50%;background:radial-gradient(ellipse,rgba(255,255,255,.22),transparent 68%);
+filter:blur(2px);transform:rotate(-30deg);pointer-events:none}
+.card>*{position:relative;z-index:1}
+.card:hover{transform:translateY(-3px);border-color:rgba(255,255,255,.46)}
+.top,.title-line{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.top{margin-bottom:17px}
+.pill{padding:6px 12px;border:1px solid rgba(255,255,255,.28);border-radius:999px;background:rgba(255,255,255,.10);color:#fff;font-size:12px;box-shadow:inset 0 1px rgba(255,255,255,.18)}
+.row{display:flex;align-items:center;gap:12px;min-width:0}
+.face{display:grid;flex:0 0 48px;height:48px;place-items:center;border:1px solid rgba(255,255,255,.45);border-radius:50%;
+background:linear-gradient(145deg,rgba(255,205,225,.9),rgba(244,140,180,.75) 58%,rgba(200,90,140,.8));color:#fff;font-size:19px;font-weight:650;
+box-shadow:inset 0 1px 5px rgba(255,255,255,.5),0 5px 15px rgba(15,12,35,.2)}
+.copy{flex:1;min-width:0}
+.title-line{margin-bottom:5px}
+.title-line strong{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+time,.preview{color:rgba(255,255,255,.68);font-size:12px}
+.preview{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.unread{flex:0 0 auto;color:#fbcfe8;font-size:12px;font-weight:600}
+.prog{height:10px;border-radius:6px;background:rgba(255,255,255,.12);margin:14px 0 6px;overflow:hidden}
+.prog i{display:block;height:100%;width:100%;border-radius:6px;background:linear-gradient(90deg,#f472b6,#fbcfe8);
+box-shadow:0 0 12px rgba(244,114,182,.6);animation:flow 3s linear infinite;background-size:200% 100%}
+@keyframes flow{from{background-position:0 0}to{background-position:-200% 0}}
+.steps{display:flex;margin:16px 0 4px}
+.st{flex:1;text-align:center;position:relative;font-size:11px;color:rgba(255,255,255,.68)}
+.st b{display:block;width:14px;height:14px;margin:0 auto 6px;border-radius:50%;background:rgba(255,255,255,.22);border:1px solid rgba(255,255,255,.28)}
+.st.done{color:#fff}.st.done b{background:#fbcfe8;border-color:#fbcfe8;box-shadow:0 0 10px rgba(244,114,182,.6)}
+.st::before{content:"";position:absolute;top:7px;left:-50%;width:100%;height:2px;background:rgba(255,255,255,.16);z-index:-1}
+.st:first-child::before{display:none}
+.st.done::before{background:#fbcfe8}
+.actions{display:flex;gap:10px;margin-top:16px}
+.btn{flex:1;padding:11px 0;border-radius:14px;border:1px solid rgba(255,255,255,.28);background:rgba(255,255,255,.10);color:#fff;font-size:13px;font-weight:600;text-align:center;cursor:pointer}
+.btn.hot{background:linear-gradient(135deg,#ec4899,#f472b6);border:0;color:#fff;box-shadow:0 6px 18px rgba(244,114,182,.6)}
+.codebox{font-size:34px;font-weight:800;letter-spacing:.35em;text-align:center;padding:10px 0 4px;color:#fff;text-shadow:0 0 24px rgba(244,114,182,.6)}
+.bigamt{font-size:30px;font-weight:800;color:#fff;margin:6px 0}
+.stars{display:flex;gap:8px;margin:12px 0;font-size:26px}
+.stars s{text-decoration:none;cursor:pointer;color:#fbcfe8;filter:drop-shadow(0 0 6px rgba(244,114,182,.6))}
+.thumb{flex:0 0 52px;width:52px;height:52px;border-radius:14px;border:1px solid rgba(255,255,255,.45);
+background:linear-gradient(145deg,rgba(255,205,225,.9),rgba(244,140,180,.75) 58%,rgba(200,90,140,.8));display:grid;place-items:center;font-size:26px;
+box-shadow:inset 0 1px 5px rgba(255,255,255,.5)}
+.tag{font-size:10px;padding:3px 8px;border-radius:8px;background:rgba(255,255,255,.12);color:rgba(255,255,255,.68);margin-left:8px;white-space:nowrap}
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+.card { background: rgba(43,35,68,.88); }
+}
+
+</style>
+</head>
+<body class="n15">
+<main>
+<header class="heading">
+<p class="eyebrow">LIQUID GLASS</p>
+<h1>签收</h1>
+<p class="hint">好物已到家，欢迎回来。</p>
+</header>
+<section class="card"><div class="top"><span class="pill">已签收</span><span class="unread">18:05</span></div><div class="row"><div class="face">📬</div><div class="copy"><div class="title-line"><strong>云南 · 普洱熟茶 357g</strong><time>18:05</time></div><div class="preview">包裹已由本人签收，感谢你的信任</div></div><span class="unread">完成</span></div><div class="prog"><i></i></div><div class="actions"><span class="btn hot">去评价</span><span class="btn">申请售后</span></div></section><section class="card"><div class="top"><span class="pill">邀请</span><time>18:06</time></div><div class="row"><div class="face">⭐</div><div class="copy"><div class="title-line"><strong>晒单赢好礼</strong><time>18:06</time></div><div class="preview">分享你的开箱体验，最高得 50 元券</div></div></div></section>
+</main>
+</body>
+</html>

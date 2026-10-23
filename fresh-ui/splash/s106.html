@@ -1,0 +1,52 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>冰川裂纹</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{background:#000}
+body{width:430px;height:900px;margin:0 auto;position:relative;overflow:hidden;
+font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans CJK SC",sans-serif;color:#fff}
+
+body{background:linear-gradient(#04121f 0%,#072a3f 55%,#0a3a52 100%)}
+.aurora{position:absolute;left:-60px;right:-60px;top:40px;height:190px;filter:blur(26px);opacity:.8;z-index:1;
+background:linear-gradient(100deg,transparent 10%,rgba(80,255,190,.5) 35%,rgba(120,180,255,.5) 60%,transparent 85%);
+animation:aur 9s ease-in-out infinite;animation-delay:-4s;border-radius:50%}
+@keyframes aur{50%{transform:translateX(60px) skewX(-8deg);opacity:1}}
+.glac{position:absolute;bottom:120px;width:0;height:0;z-index:2}
+.glac.g1{left:20px;border-left:110px solid transparent;border-right:110px solid transparent;border-bottom:300px solid #bfe0f2}
+.glac.g2{left:190px;border-left:90px solid transparent;border-right:90px solid transparent;border-bottom:230px solid #9fcbe8}
+.glac.g3{right:10px;border-left:100px solid transparent;border-right:100px solid transparent;border-bottom:270px solid #aed6ee}
+.crack{position:absolute;bottom:130px;height:4px;background:#eaffff;border-radius:2px;
+box-shadow:0 0 16px 5px rgba(180,240,255,.85);transform-origin:left;z-index:3;
+animation:crackG 6s ease-in-out infinite}
+@keyframes crackG{0%{transform:scaleX(0);opacity:0}25%{opacity:1}70%{transform:scaleX(1);opacity:1}100%{transform:scaleX(1);opacity:.35}}
+.crack.c1{left:70px;bottom:220px;width:150px;transform:rotate(-24deg)}
+.crack.c2{left:200px;bottom:180px;width:120px;transform:rotate(18deg);animation-delay:-2s}
+.crack.c3{left:130px;bottom:300px;width:100px;transform:rotate(-8deg);animation-delay:-4s}
+.sea2{position:absolute;left:0;right:0;bottom:0;height:130px;background:linear-gradient(#0e4a66,#082a40);z-index:1}
+.floe{position:absolute;bottom:80px;background:#d8ecf8;border-radius:40% 60% 55% 45%;z-index:2;
+animation:floatF 7s ease-in-out infinite}
+@keyframes floatF{50%{transform:translateY(-12px) rotate(4deg)}}
+
+.brand{position:absolute;left:0;right:0;bottom:150px;text-align:center;z-index:20;
+animation:brandIn 1.1s cubic-bezier(.2,.7,.3,1.2) .9s both}
+.brand h1{font-size:36px;letter-spacing:10px;font-weight:800;text-shadow:0 4px 24px rgba(0,0,0,.45)}
+.brand p{margin-top:12px;font-size:13px;letter-spacing:6px;opacity:.75}
+@keyframes brandIn{from{opacity:0;transform:translateY(26px) scale(.94)}}
+.replay{position:absolute;bottom:44px;left:50%;transform:translateX(-50%);z-index:30;
+background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.35);color:#fff;
+border-radius:24px;padding:10px 26px;font-size:13px;letter-spacing:2px;cursor:pointer;
+backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.replay:active{transform:translateX(-50%) scale(.94)}
+</style></head><body>
+<div id="st">
+<div class="aurora"></div>
+<div class="glac g1"></div><div class="glac g2"></div><div class="glac g3"></div>
+<div class="crack c1"></div><div class="crack c2"></div><div class="crack c3"></div>
+<div class="sea2"></div>
+<div class="floe" style="left:60px;width:110px;height:44px;animation-delay:-2s"></div>
+<div class="floe" style="left:260px;width:90px;height:36px;animation-delay:-5s"></div>
+</div>
+<div class="brand"><h1>冰川裂纹</h1><p>GLACIER CRACK</p></div>
+<button class="replay" onclick="var s=document.getElementById('st');var c=s.cloneNode(true);s.replaceWith(c);">重新播放</button>
+</body></html>

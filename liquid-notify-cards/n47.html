@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>股价提醒</title>
+<style>*{box-sizing:border-box}
+body{min-height:100vh;margin:0;padding:48px 18px;color:#fff;
+font:15px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+background:radial-gradient(ellipse at 85% 20%,rgba(192,38,211,.85),transparent 34%),radial-gradient(ellipse at 12% 42%,rgba(59,130,246,.8),transparent 36%),radial-gradient(ellipse at 58% 90%,rgba(20,10,40,.9),transparent 38%),linear-gradient(150deg,#0d0618,#241040 55%,#0a0616);background-attachment:fixed}
+main{width:min(440px,100%);margin:0 auto;display:grid;gap:18px}
+.heading{padding:4px 6px 8px}
+.eyebrow{margin:0 0 8px;color:rgba(255,255,255,.68);font-size:11px;letter-spacing:.18em}
+h1{margin:0;font-size:30px;letter-spacing:-.04em}
+.hint{margin:7px 0 0;color:rgba(255,255,255,.68)}
+.card{position:relative;isolation:isolate;overflow:hidden;padding:18px;
+border:1px solid rgba(255,255,255,.28);border-radius:28px;
+background:linear-gradient(135deg,rgba(255,255,255,.20),rgba(255,255,255,.08) 48%,rgba(202,170,255,.12));
+-webkit-backdrop-filter:blur(24px) saturate(175%);
+backdrop-filter:blur(24px) saturate(175%);
+box-shadow:inset 0 1px 0 rgba(255,255,255,.42),inset 0 -1px 0 rgba(255,255,255,.08),0 20px 48px rgba(8,8,24,.28);
+transition:transform .25s ease,border-color .25s ease}
+.card::before{content:"";position:absolute;z-index:0;inset:0;border-radius:inherit;pointer-events:none;
+background:linear-gradient(160deg,rgba(255,255,255,.34) 0%,rgba(255,255,255,.08) 18%,transparent 42%,transparent 72%,rgba(220,170,255,.18) 100%);opacity:.8}
+.card::after{content:"";position:absolute;z-index:0;top:-58px;right:-42px;
+width:200px;height:135px;border:1px solid rgba(255,255,255,.22);border-radius:50%;
+background:radial-gradient(ellipse,rgba(255,255,255,.22),transparent 68%);
+filter:blur(2px);transform:rotate(-20deg);pointer-events:none}
+.card>*{position:relative;z-index:1}
+.card:hover{transform:translateY(-3px);border-color:rgba(255,255,255,.46)}
+.top,.title-line{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.top{margin-bottom:17px}
+.pill{padding:6px 12px;border:1px solid rgba(255,255,255,.30);border-radius:999px;background:rgba(255,255,255,.10);color:rgba(255,255,255,.94);font-size:12px;box-shadow:inset 0 1px rgba(255,255,255,.18)}
+.row{display:flex;align-items:center;gap:12px;min-width:0}
+.face{display:grid;flex:0 0 48px;height:48px;place-items:center;border:1px solid rgba(255,255,255,.45);border-radius:50%;background:linear-gradient(145deg,rgba(255,225,194,.88),rgba(190,139,204,.78) 58%,rgba(111,133,201,.8));color:#fff;font-size:19px;font-weight:650;box-shadow:inset 0 1px 5px rgba(255,255,255,.5),0 5px 15px rgba(15,12,35,.2)}
+.copy{flex:1;min-width:0}
+.title-line{margin-bottom:5px}
+.title-line strong{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+time,.preview{color:rgba(255,255,255,.72);font-size:12px}
+.preview{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.unread{flex:0 0 auto;color:#d8d2ff;font-size:12px;font-weight:600}
+.amt{font-size:26px;font-weight:700;letter-spacing:-.02em;margin:2px 0 6px}
+.amt.in{color:#4ade80}
+.amt.out{color:#f87171}
+.tag{font-size:11px;padding:4px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.08)}
+.btns{display:flex;gap:10px;margin-top:14px}
+.btn{flex:1;padding:11px 0;border-radius:14px;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.12);color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit}
+.btn.pri{background:linear-gradient(135deg,#a855f7,#6d28d9);border-color:transparent}
+.bar{height:8px;border-radius:4px;background:rgba(255,255,255,.14);margin-top:12px;overflow:hidden}
+.bar i{display:block;height:100%;border-radius:4px;background:linear-gradient(90deg,#7dffb0,#34d399);width:60%}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.card{background:rgba(43,35,68,.88)}}
+@media (prefers-reduced-motion:reduce){.card{transition:none}}</style>
+</head>
+<body>
+<main>
+<header class="heading">
+<p class="eyebrow">PAY · STOCK</p>
+<h1>行情</h1>
+<p class="hint">涨跌之间，保持冷静。</p>
+</header>
+<section class="card"><div class="top"><span class="pill">涨</span></div><div class="row"><div class="face">📈</div><div class="copy"><div class="title-line"><strong>宁德时代 涨超 5%</strong><time>10:32</time></div><div class="amt in">+5.32%</div><div class="preview">现价 ¥268.40 · 触发你的价格提醒</div></div><span class="unread">查看</span></div></section><section class="card"><div class="top"><span class="pill">跌</span></div><div class="row"><div class="face">📉</div><div class="copy"><div class="title-line"><strong>贵州茅台 跌破提醒</strong><time>14:55</time></div><div class="amt out">-2.18%</div><div class="preview">现价 ¥1,482.00 · 跌破 ¥1,500 预警线</div></div></div><div class="btns"><button class="btn pri">查看</button><button class="btn">加自选</button></div></section><section class="card"><div class="top"><span class="pill">分红</span></div><div class="row"><div class="face">💹</div><div class="copy"><div class="title-line"><strong>分红到账</strong><time>09:30</time></div><div class="amt in">+486.00</div><div class="preview">沪深 300ETF 现金分红已派发</div></div></div></section>
+</main>
+</body>
+</html>

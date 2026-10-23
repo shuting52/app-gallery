@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>版本更新 · 糖果马卡龙</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #ffe3ef 0%, #fff6e8 50%, #e3f6ff 100%);
+    font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 24px 16px;
+  }
+  .modal {
+    width: 330px;
+    background: #fffafd;
+    border: 3px solid #4a3340;
+    border-radius: 30px;
+    box-shadow: 7px 7px 0 #4a3340;
+    padding: 26px 24px;
+    display: flex; flex-direction: column; align-items: center;
+    position: relative;
+  }
+  .modal.hidden { display: none; }
+
+  .header { width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+  .title-area { display: flex; align-items: center; gap: 8px; font-size: 19px; font-weight: 800; color: #4a3340; }
+  .title-area svg { width: 26px; height: 26px; }
+  .close-btn {
+    width: 30px; height: 30px; border-radius: 50%;
+    border: 3px solid #4a3340; background: #ffd6e8; color: #4a3340;
+    font-size: 16px; font-weight: 800; cursor: pointer; line-height: 1;
+  }
+  .close-btn:active { transform: scale(0.9); }
+
+  .subtitle { width: 100%; font-size: 14px; color: #8a6a78; margin-bottom: 4px; text-align: left; font-weight: 600; }
+  .meta { width: 100%; font-size: 12px; color: #b08a99; margin-bottom: 22px; text-align: left; font-variant-numeric: tabular-nums; }
+
+  /* --- 条纹糖果进度条 --- */
+  .bar-track {
+    width: 100%; height: 24px;
+    background: #ffe9f2;
+    border: 3px solid #4a3340;
+    border-radius: 99px;
+    overflow: hidden;
+    margin-bottom: 14px;
+    position: relative;
+  }
+  .bar-fill {
+    height: 100%; width: 0%;
+    background: repeating-linear-gradient(-45deg, #ff8fb1 0 14px, #ffc7da 14px 28px);
+    border-radius: 99px;
+    transition: width 0.15s linear;
+  }
+  .bar-fill.flow { animation: stripes 0.8s linear infinite; }
+  @keyframes stripes { from { background-position: 0 0; } to { background-position: 40px 0; } }
+  .bar-fill.installing {
+    width: 100% !important;
+    background: repeating-linear-gradient(-45deg, #c39bf5 0 14px, #ddc6f7 14px 28px);
+    animation: stripes 0.6s linear infinite;
+  }
+
+  .percent-row { display: flex; align-items: baseline; gap: 8px; margin-bottom: 22px; }
+  .percent-big { font-size: 34px; font-weight: 800; color: #4a3340; font-variant-numeric: tabular-nums; }
+  .percent-tip { font-size: 13px; color: #b08a99; font-weight: 600; }
+
+  .done-badge {
+    display: none;
+    width: 74px; height: 74px; border-radius: 50%;
+    background: #7ed6c5; border: 3px solid #4a3340;
+    align-items: center; justify-content: center;
+    margin-bottom: 18px;
+    box-shadow: 4px 4px 0 #4a3340;
+  }
+  .done-badge.show { display: flex; }
+  .done-badge svg { width: 38px; height: 38px; }
+
+  .main-btn {
+    width: 100%; padding: 14px 0;
+    border-radius: 99px; border: 3px solid #4a3340;
+    background: #ffd6e8; color: #4a3340;
+    font-size: 16px; font-weight: 800; cursor: pointer;
+    box-shadow: 4px 4px 0 #4a3340;
+    transition: transform 0.1s;
+  }
+  .main-btn:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0 #4a3340; }
+  .main-btn.go { background: #ff8fb1; color: #fff; }
+
+  .replay {
+    margin-top: 20px; border: 2px dashed #b08a99; background: transparent;
+    color: #8a6a78; border-radius: 99px; padding: 8px 20px;
+    font-size: 13px; font-weight: 700; cursor: pointer;
+  }
+  .toast {
+    position: fixed; top: 24px; left: 50%;
+    transform: translateX(-50%) translateY(-14px);
+    background: #4a3340; color: #fff;
+    padding: 10px 22px; border-radius: 99px; font-size: 14px; font-weight: 600;
+    opacity: 0; pointer-events: none; transition: opacity 0.25s, transform 0.25s;
+    z-index: 60; border: 2px solid #fff;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+
+<div class="modal" id="modal">
+  <div class="header">
+    <div class="title-area">
+      <svg viewBox="0 0 24 24" fill="#ff8fb1" stroke="#4a3340" stroke-width="1.6">
+        <rect x="8" y="8" width="8" height="8" rx="3" transform="rotate(45 12 12)"/>
+        <path d="M8 12L3 9v6l5-3zM16 12l5-3v6l-5-3z" fill="#c39bf5"/>
+      </svg>
+      版本更新
+    </div>
+    <button class="close-btn" id="closeBtn">×</button>
+  </div>
+  <div class="subtitle" id="statusText">正在下载糖果屋 3.3.1</div>
+  <div class="meta" id="metaText">0.0MB / 156.8MB · -- MB/s</div>
+
+  <div class="done-badge" id="doneBadge">
+    <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M20 6L9 17l-5-5"/>
+    </svg>
+  </div>
+
+  <div class="bar-track" id="barTrack">
+    <div class="bar-fill flow" id="barFill"></div>
+  </div>
+
+  <div class="percent-row">
+    <div class="percent-big" id="percentText">0%</div>
+    <div class="percent-tip" id="percentTip">糖果装载中…</div>
+  </div>
+
+  <button class="main-btn" id="mainBtn">取消更新</button>
+</div>
+
+<button class="replay" id="replayBtn">↺ 重新演示</button>
+<div class="toast" id="toast"></div>
+
+<script>
+  const $ = id => document.getElementById(id);
+  const modal = $('modal'), barFill = $('barFill'), percentText = $('percentText'),
+        percentTip = $('percentTip'), statusText = $('statusText'), metaText = $('metaText'),
+        mainBtn = $('mainBtn'), doneBadge = $('doneBadge'), toast = $('toast');
+
+  const TOTAL_MB = 156.8, VERSION = '3.3.1';
+  let progress = 0, state = 'downloading', timer = null, showSpeed = 0;
+
+  function showToast(msg) {
+    toast.textContent = msg;
+    toast.classList.add('show');
+    clearTimeout(showToast._t);
+    showToast._t = setTimeout(() => toast.classList.remove('show'), 1800);
+  }
+  function render() {
+    const d = Math.floor(progress);
+    percentText.textContent = d + '%';
+    barFill.style.width = progress + '%';
+    metaText.textContent = `${(progress/100*TOTAL_MB).toFixed(1)}MB / ${TOTAL_MB}MB · ${showSpeed.toFixed(1)} MB/s`;
+  }
+  function tick() {
+    if (state !== 'downloading') return;
+    const sp = 8 * (0.6 + Math.random() * 0.8);
+    showSpeed = showSpeed * 0.7 + sp * 0.3;
+    progress += sp * 0.1 / TOTAL_MB * 100;
+    if (progress >= 100) { progress = 100; render(); enterInstalling(); return; }
+    render();
+  }
+  function startTimer() { clearInterval(timer); timer = setInterval(tick, 100); }
+  function stopTimer() { clearInterval(timer); timer = null; }
+
+  function enterDownloading(fresh) {
+    state = 'downloading';
+    if (fresh) {
+      progress = 0; showSpeed = 0;
+      doneBadge.classList.remove('show');
+      barFill.classList.remove('installing');
+      barFill.classList.add('flow');
+      mainBtn.classList.remove('go');
+      percentTip.textContent = '糖果装载中…';
+    }
+    statusText.textContent = `正在下载糖果屋 ${VERSION}`;
+    mainBtn.textContent = '取消更新';
+    startTimer(); render();
+  }
+  function enterInstalling() {
+    state = 'installing'; stopTimer();
+    statusText.textContent = '正在安装…';
+    percentTip.textContent = '包装糖果中…';
+    metaText.textContent = `${TOTAL_MB}MB / ${TOTAL_MB}MB · 校验完成`;
+    barFill.classList.remove('flow');
+    barFill.classList.add('installing');
+    mainBtn.textContent = '安装中…';
+    mainBtn.disabled = true;
+    setTimeout(() => { if (state === 'installing') enterDone(); }, 2400);
+  }
+  function enterDone() {
+    state = 'done';
+    mainBtn.disabled = false;
+    doneBadge.classList.add('show');
+    barFill.classList.remove('installing');
+    barFill.classList.add('flow');
+    barFill.style.width = '100%';
+    barFill.style.background = 'repeating-linear-gradient(-45deg, #7ed6c5 0 14px, #b8ecdf 14px 28px)';
+    statusText.textContent = '更新完成';
+    percentTip.textContent = '新鲜出炉！';
+    metaText.textContent = `${VERSION} 已安装 · 重启后生效`;
+    mainBtn.textContent = '立即体验';
+    mainBtn.classList.add('go');
+    showToast('已更新到最新版本');
+  }
+  function enterCancelled() {
+    state = 'cancelled'; stopTimer();
+    statusText.textContent = '已取消下载';
+    percentTip.textContent = '糖果洒了一地…';
+    metaText.textContent = `${(progress/100*TOTAL_MB).toFixed(1)}MB / ${TOTAL_MB}MB · 已停止`;
+    mainBtn.textContent = '重新下载';
+    showToast('已取消下载');
+  }
+
+  mainBtn.addEventListener('click', () => {
+    if (state === 'downloading') enterCancelled();
+    else if (state === 'cancelled') { barFill.style.background = ''; enterDownloading(true); }
+    else if (state === 'done') { modal.classList.add('hidden'); showToast(`已更新到 ${VERSION}`); }
+  });
+  $('closeBtn').addEventListener('click', () => {
+    if (state === 'downloading') enterCancelled();
+    else modal.classList.add('hidden');
+  });
+  $('replayBtn').addEventListener('click', () => {
+    modal.classList.remove('hidden');
+    barFill.style.background = '';
+    enterDownloading(true);
+    showToast('重新开始演示');
+  });
+
+  window.addEventListener('load', () => {
+    if (location.hash === '#done') {
+      enterDownloading(true);
+      progress = 100; render(); enterInstalling();
+      setTimeout(() => enterDone(), 400);
+    } else {
+      enterDownloading(true);
+    }
+  });
+</script>
+</body>
+</html>

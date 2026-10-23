@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>隧道穿行</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{background:#070a12;display:flex;align-items:center;justify-content:center;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;overflow:hidden}
+.stage{position:relative;width:430px;height:900px;flex:none;overflow:hidden}
+.stage i{display:block;position:absolute}
+.brand{position:absolute;left:0;right:0;bottom:104px;text-align:center;z-index:50;animation:brandIn 1s .9s both}
+.brand h1{font-size:32px;letter-spacing:10px;text-indent:10px;color:#fff;font-weight:700;text-shadow:0 2px 24px rgba(0,0,0,.45)}
+.brand p{margin-top:10px;font-size:11px;letter-spacing:5px;color:rgba(255,255,255,.62)}
+@keyframes brandIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.replay{position:absolute;bottom:30px;left:50%;transform:translateX(-50%);z-index:60;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.35);color:#fff;font-size:12px;letter-spacing:2px;padding:9px 24px;border-radius:20px;cursor:pointer;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.shade{position:absolute;left:0;right:0;bottom:0;height:360px;background:linear-gradient(transparent,rgba(8,6,18,.78));z-index:40;pointer-events:none}
+
+.stage{background:#04060b}
+
+.core{width:70px;height:70px;left:50%;top:40%;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle at 50% 50%,#fff,#9fdcff 55%,rgba(159,220,255,0) 75%);animation:core 2.2s ease-in-out infinite alternate;z-index:5}
+@keyframes core{to{transform:translate(-50%,-50%) scale(1.25)}}
+.tr{border:2px solid rgba(130,205,255,.65);border-radius:50%;left:50%;top:40%;width:130px;height:130px;transform:translate(-50%,-50%) scale(.15);opacity:0;animation:rush 1.9s linear infinite}
+.t1{animation-delay:0s}.t2{animation-delay:-.38s}.t3{animation-delay:-.76s}.t4{animation-delay:-1.14s}.t5{animation-delay:-1.52s}
+@keyframes rush{0%{transform:translate(-50%,-50%) scale(.15);opacity:0}22%{opacity:1}100%{transform:translate(-50%,-50%) scale(2.7);opacity:0}}
+.streak{width:3px;height:130px;border-radius:2px;background:linear-gradient(rgba(160,215,255,0),rgba(160,215,255,.8),rgba(160,215,255,0));animation:streak .7s linear infinite}
+.st1{left:36px;top:120px}.st2{left:70px;top:520px;animation-delay:-.2s}.st3{left:360px;top:200px;animation-delay:-.45s}.st4{left:392px;top:600px;animation-delay:-.1s}.st5{left:20px;top:700px;animation-delay:-.55s}
+@keyframes streak{from{transform:translateY(-160px)}to{transform:translateY(220px)}}
+
+</style></head><body>
+<div class="stage" id="stage">
+
+<i class="core"></i>
+<i class="tr t1"></i><i class="tr t2"></i><i class="tr t3"></i><i class="tr t4"></i><i class="tr t5"></i>
+<i class="streak st1"></i><i class="streak st2"></i><i class="streak st3"></i><i class="streak st4"></i><i class="streak st5"></i>
+
+<div class="shade"></div>
+<div class="brand"><h1>隧道</h1><p>TUNNEL</p></div>
+<button class="replay" onclick="var s=document.getElementById('stage');s.replaceWith(s.cloneNode(true))">重新播放</button>
+</div>
+</body></html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>w32 · 消息订阅</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC",sans-serif;background:#05070c;display:flex;justify-content:center;color:#fff;overflow:hidden}
+.stage{width:430px;height:900px;position:relative;overflow:hidden;flex-shrink:0;background:radial-gradient(120% 90% at 50% 0%,#1e2a3f 0%,#131a2c 55%,#0b0e16 100%)}
+.mock{position:absolute;inset:0;filter:blur(6px) brightness(.55)}
+.sb{height:46px;display:flex;justify-content:space-between;align-items:center;padding:0 26px;font-size:13px;font-weight:600}
+.sic{width:70px;height:12px;border-radius:6px;background:#2a3040}
+.mh{display:flex;align-items:center;gap:10px;padding:14px 20px}
+.mh i{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,#33415c,#222b40);display:block}
+.mh em{width:110px;height:14px;border-radius:7px;background:#2a3450;display:block}
+.banner{height:150px;margin:6px 20px 14px;border-radius:18px;background:linear-gradient(135deg,#26344e,#182032)}
+.row{display:flex;gap:12px;align-items:center;margin:0 20px 12px}
+.row i{width:52px;height:52px;border-radius:14px;background:#2a3450;display:block;flex-shrink:0}
+.row b{display:block;width:150px;height:13px;border-radius:6px;background:#35405e;margin-bottom:8px}
+.row s{display:block;width:100px;height:10px;border-radius:5px;background:#232b44;text-decoration:none}
+.tabbar{position:absolute;bottom:0;left:0;right:0;height:84px;background:rgba(19,26,44,.9);display:flex;justify-content:space-around;align-items:center;border-top:1px solid #2a3450}
+.tabbar i{width:26px;height:26px;border-radius:8px;background:#35405e;display:block}
+.ov{position:absolute;inset:0;z-index:10;display:flex;align-items:center;justify-content:center;background:rgba(8,12,22,.55);animation:fadeIn .4s both}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.modal{width:330px;border-radius:26px;padding:32px 26px 28px;text-align:center;position:relative;background:linear-gradient(165deg,#26334e,#141b30);border:1px solid rgba(140,170,220,.3);box-shadow:0 30px 80px rgba(0,0,0,.55);animation:pop .55s cubic-bezier(.2,1.4,.4,1) both;animation-delay:.12s}
+@keyframes pop{from{opacity:0;transform:scale(.7) translateY(30px)}to{opacity:1;transform:none}}
+.x{position:absolute;top:14px;right:14px;width:30px;height:30px;border-radius:50%;border:0;background:rgba(255,255,255,.12);color:#fff;font-size:15px;cursor:pointer;z-index:3}
+.bellwrap{width:110px;height:110px;margin:2px auto 6px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#3a4a6e,#222c48);display:flex;align-items:center;justify-content:center;position:relative;border:1px solid rgba(140,170,220,.3)}
+.bell{font-size:52px;display:inline-block;transform-origin:top center;animation:swing 2.2s ease-in-out infinite;animation-delay:-.6s}
+@keyframes swing{0%,100%{transform:rotate(14deg)}50%{transform:rotate(-14deg)}}
+.dot{position:absolute;top:22px;right:26px;width:16px;height:16px;border-radius:50%;background:#f0564f;border:3px solid #26334e;animation:blink 1.4s ease-in-out infinite}
+@keyframes blink{50%{transform:scale(.7);opacity:.6}}
+.wave{position:absolute;inset:-1px;border-radius:50%;border:2px solid rgba(140,180,255,.5);animation:wave 2.2s ease-out infinite;pointer-events:none}
+.wave.w2{animation-delay:-1.1s}
+@keyframes wave{from{transform:scale(1);opacity:.8}to{transform:scale(1.55);opacity:0}}
+h2{font-size:21px;margin:12px 0 6px}
+p.sub{font-size:13px;color:#a9b8d8;line-height:1.7}
+.kinds{display:flex;gap:8px;margin-top:16px}
+.kinds div{flex:1;font-size:11px;color:#b9c6e8;background:rgba(255,255,255,.05);border:1px solid rgba(140,170,220,.22);border-radius:12px;padding:10px 4px}
+.kinds div b{display:block;font-size:18px;margin-bottom:3px}
+.switchrow{display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.05);border-radius:14px;padding:12px 14px;margin-top:12px;font-size:14px}
+.sw{position:relative;width:52px;height:30px;border-radius:15px;background:#3a4552;cursor:pointer;transition:background .25s;flex-shrink:0;border:0}
+.sw::after{content:"";position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:#fff;transition:left .25s}
+.sw.on{background:#4a7de0}
+.sw.on::after{left:25px}
+.btn{display:block;width:100%;border:0;border-radius:16px;padding:14px;font-size:16px;font-weight:700;cursor:pointer;margin-top:16px;background:linear-gradient(180deg,#7ea2ff,#4a6fe0);color:#fff;box-shadow:0 8px 22px rgba(90,120,240,.4)}
+.btn:active{transform:scale(.97)}
+.replay{position:absolute;bottom:24px;left:50%;transform:translateX(-50%);z-index:20;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.1);color:#fff;border-radius:999px;padding:10px 22px;font-size:13px;cursor:pointer;backdrop-filter:blur(8px)}
+</style></head>
+<body><div class="stage">
+<div class="mock"><div class="sb"><span>9:41</span><span class="sic"></span></div>
+<div class="mh"><i></i><em></em></div><div class="banner"></div>
+<div class="row"><i></i><div><b></b><s></s></div></div>
+<div class="row"><i></i><div><b></b><s></s></div></div>
+<div class="tabbar"><i></i><i></i><i></i><i></i></div></div>
+<div class="ov" id="ov"><div class="modal">
+<button class="x" id="x">✕</button>
+<div class="bellwrap"><span class="wave"></span><span class="wave w2"></span><span class="bell">🔔</span><span class="dot"></span></div>
+<h2>不错过重要消息</h2>
+<p class="sub">订阅后，第一时间收到<br>为你精选的重要提醒</p>
+<div class="kinds"><div><b>📦</b>物流动态</div><div><b>💰</b>优惠活动</div><div><b>📅</b>日程提醒</div></div>
+<div class="switchrow"><span>开启推送通知</span><button class="sw on" id="sw"></button></div>
+<button class="btn" id="go">开启提醒</button>
+</div></div>
+<button class="replay" id="replay">重新弹出</button>
+</div>
+<script>
+const sw=document.getElementById('sw'),ov=document.getElementById('ov');
+sw.onclick=()=>sw.classList.toggle('on');
+document.getElementById('go').onclick=()=>ov.style.display='none';
+document.getElementById('x').onclick=()=>ov.style.display='none';
+document.getElementById('replay').onclick=()=>{ov.style.display='flex';
+const m=ov.querySelector('.modal');m.style.animation='none';void m.offsetWidth;m.style.animation='';};
+</script></body></html>

@@ -1,0 +1,37 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>灯塔夜航</title><style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{width:430px;height:900px;margin:0 auto;position:relative;overflow:hidden;
+font-family:-apple-system,"PingFang SC","Microsoft YaHei","Noto Sans CJK SC",sans-serif;
+background:linear-gradient(180deg,#040816 0%,#0a1430 55%,#12224d 100%);color:#fff}
+.scene{position:absolute;inset:0}
+
+.stars{position:absolute;inset:0;background-image:radial-gradient(circle,#fff 1.2px,transparent 1.7px),radial-gradient(circle,#fff 1px,transparent 1.5px),radial-gradient(circle,#cfe4ff 1.4px,transparent 1.9px);background-size:130px 110px,90px 150px,180px 100px;background-position:0 0,40px 60px,80px 20px;animation:tw 3s ease-in-out infinite alternate}
+@keyframes tw{to{opacity:.3}}
+.rock{position:absolute;bottom:118px;left:50%;transform:translateX(-50%);width:320px;height:100px;background:#080d20;border-radius:50% 50% 0 0/100% 100% 0 0}
+.tower{position:absolute;bottom:170px;left:50%;transform:translateX(-50%);width:64px;height:230px;background:repeating-linear-gradient(180deg,#f2f4f8 0 26px,#d33a3a 26px 52px);clip-path:polygon(18% 0,82% 0,100% 100%,0 100%)}
+.lamp{position:absolute;bottom:394px;left:50%;transform:translateX(-50%);width:46px;height:36px;background:#ffe9a8;border-radius:8px;box-shadow:0 0 42px 14px rgba(255,220,130,.55);animation:lamp 2.4s ease-in-out infinite}
+@keyframes lamp{50%{box-shadow:0 0 64px 24px rgba(255,220,130,.8)}}
+.roof{position:absolute;bottom:426px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:36px solid transparent;border-right:36px solid transparent;border-bottom:32px solid #1a2340}
+.beam{position:absolute;bottom:400px;left:50%;width:360px;height:74px;transform-origin:0 50%;background:linear-gradient(90deg,rgba(255,232,150,.8),transparent);clip-path:polygon(0 42%,100% 0,100% 100%,0 58%);animation:sweep 7s linear infinite}
+@keyframes sweep{to{transform:rotate(360deg)}}
+.sea{position:absolute;bottom:0;left:0;right:0;height:150px;background:linear-gradient(180deg,#0d1b3f,#060b1d)}
+.wv{position:absolute;bottom:64px;left:-70px;width:570px;height:56px;background:rgba(100,150,255,.16);border-radius:46%;animation:wv 5s ease-in-out infinite alternate}
+.wv.b{bottom:22px;animation-delay:-2.5s;background:rgba(100,150,255,.1)}
+@keyframes wv{to{transform:translateX(56px)}}
+
+.brand{position:absolute;left:0;right:0;bottom:118px;text-align:center;z-index:5;
+color:#fff;opacity:0;animation:brandIn 1s ease 2.2s both}
+.brand h1{font-size:34px;letter-spacing:8px;font-weight:800;text-shadow:0 2px 14px rgba(0,0,0,.35)}
+.brand p{font-size:13px;letter-spacing:3px;margin-top:10px;opacity:.85;text-shadow:0 1px 10px rgba(0,0,0,.35)}
+@keyframes brandIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.replay{position:absolute;left:50%;bottom:44px;transform:translateX(-50%);z-index:6;
+padding:10px 28px;border-radius:24px;border:1px solid rgba(255,255,255,.45);
+background:rgba(255,255,255,.14);color:#fff;font-size:14px;letter-spacing:2px;cursor:pointer}
+</style></head><body>
+<div class="scene"><div class="stars"></div><div class="beam"></div><div class="rock"></div><div class="tower"></div><div class="lamp"></div><div class="roof"></div><div class="sea"><div class="wv"></div><div class="wv b"></div></div></div>
+<div class="brand"><h1>灯塔夜航</h1><p>为你照亮前路</p></div>
+<button class="replay" onclick="location.reload()">重新播放</button>
+</body></html>

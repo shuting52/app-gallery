@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>雾面磨砂</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{min-height:100%}
+body{
+  position:relative;
+  padding:48px 18px 64px;
+  color:#ffffff;
+  font:15px/1.45 -apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sans-serif;
+  background:linear-gradient(150deg,#1a1c22,#23262f 60%,#14161b);
+  background-attachment:fixed;
+  overflow-x:hidden;
+}
+.bg{
+  position:fixed;inset:-6%;z-index:0;pointer-events:none;
+  background:radial-gradient(ellipse 40% 30% at 18% 22%, rgba(140,150,170,.35), transparent 70%),radial-gradient(ellipse 42% 32% at 82% 34%, rgba(110,120,150,.32), transparent 70%),radial-gradient(ellipse 54% 38% at 55% 86%, rgba(50,55,70,.8), transparent 70%);
+  animation:drift 30s ease-in-out infinite alternate;
+  animation-delay:-15s;
+}
+@keyframes drift{
+  from{transform:translate3d(-1.5%,-1%,0) scale(1.03) rotate(0deg)}
+  to{transform:translate3d(1.5%,1.5%,0) scale(1.07) rotate(1.5deg)}
+}
+main{position:relative;z-index:1;width:min(440px,100%);margin:0 auto;display:grid;gap:18px}
+.heading{padding:4px 6px 8px}
+.eyebrow{margin:0 0 8px;color:rgba(255,255,255,.68);font-size:11px;letter-spacing:.18em}
+h1{margin:0;font-size:30px;letter-spacing:-.02em;color:#ffffff}
+.hint{margin:7px 0 0;color:rgba(255,255,255,.68)}
+.card{
+  position:relative;isolation:isolate;overflow:hidden;
+  padding:18px;border-radius:28px;
+  border:1px solid rgba(255,255,255,.28);
+  background:none,linear-gradient(135deg, rgba(200,205,215,.16), rgba(200,205,215,.07) 48%, rgba(160,165,180,.08));
+  -webkit-backdrop-filter:blur(24px) saturate(175%);
+  backdrop-filter:blur(24px) saturate(175%);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.42),
+    inset 0 -1px 0 rgba(0,0,0,.06),
+    0 20px 48px rgba(5,6,10,.4);
+  transition:transform .25s ease,border-color .25s ease;
+}
+.card::before{
+  content:"";position:absolute;z-index:0;inset:0;border-radius:inherit;pointer-events:none;
+  background:
+    linear-gradient(118deg,
+      rgba(255,255,255,.16) 0%,
+      rgba(255,255,255,.05) 18%,
+      transparent 42%,
+      transparent 72%,
+      rgba(190,195,210,.10) 100%);
+  opacity:.8;
+  animation:sheen 9s ease-in-out infinite alternate;
+  animation-delay:-4s;
+}
+@keyframes sheen{from{opacity:.55}to{opacity:.95}}
+.card::after{
+  content:"";position:absolute;z-index:0;
+  top:-54px;right:-40px;width:180px;height:125px;
+  border:1px solid rgba(255,255,255,.22);border-radius:50%;
+  background:radial-gradient(ellipse,rgba(210,215,225,.14),transparent 68%);
+  filter:blur(2px);transform:rotate(-40pxot);pointer-events:none;
+}
+.card>*{position:relative;z-index:1}
+.card:hover{transform:translateY(-3px);border-color:rgba(255,255,255,.46)}
+.top,.title-line{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.top{margin-bottom:15px}
+.pill{
+  padding:6px 12px;border:1px solid rgba(255,255,255,.30);border-radius:999px;
+  background:rgba(255,255,255,.10);color:rgba(255,255,255,.94);font-size:12px;
+  box-shadow:inset 0 1px rgba(255,255,255,.42);white-space:nowrap;
+}
+.avatars{display:flex;align-items:center;padding-left:8px}
+.avatar{
+  display:grid;width:29px;height:29px;margin-left:-8px;place-items:center;
+  border:1px solid rgba(255,255,255,.55);border-radius:50%;
+  background:linear-gradient(135deg,#8a7a6a,#5d5a72 70%,#3f4456);
+  color:#fff;font-size:11px;font-style:normal;
+  box-shadow:0 3px 10px rgba(10,8,18,.25);
+}
+.more{margin-left:7px;color:rgba(255,255,255,.68);font-size:12px}
+.row{display:flex;align-items:center;gap:12px;min-width:0}
+.face{
+  display:grid;flex:0 0 48px;height:48px;place-items:center;
+  border:1px solid rgba(255,255,255,.45);border-radius:50%;
+  background:#6a7285;color:#fff;font-size:19px;font-weight:650;
+  box-shadow:inset 0 1px 5px rgba(255,255,255,.45),0 5px 15px rgba(10,8,20,.22);
+}
+.copy{flex:1;min-width:0}
+.title-line{margin-bottom:5px}
+.title-line strong{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#ffffff}
+time,.preview{color:rgba(255,255,255,.68);font-size:12px}
+.preview{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.unread{flex:0 0 auto;color:#e6dcff;font-size:12px;font-weight:600;white-space:nowrap}
+.dot{flex:0 0 auto;width:9px;height:9px;border-radius:50%;background:#aeb6c8;box-shadow:0 0 8px #aeb6c8}
+.actions{display:flex;gap:10px;margin-top:14px}
+.btn{
+  flex:1;padding:10px 0;text-align:center;border-radius:14px;font-size:13px;cursor:pointer;
+  border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.08);color:rgba(255,255,255,.92);
+  box-shadow:inset 0 1px rgba(255,255,255,.42);
+}
+.btn.pri{background:linear-gradient(135deg,#5a6272,#3c424e);border-color:rgba(170,178,195,.4);color:#fff}
+.prog{height:8px;border-radius:5px;background:rgba(255,255,255,.10);margin-top:12px;overflow:hidden}
+.prog i{display:block;height:100%;width:0%;border-radius:5px;background:linear-gradient(90deg,#9aa2b5,#6a7285)}
+.pmeta{display:flex;justify-content:space-between;margin-top:6px;font-size:11px;color:rgba(255,255,255,.68)}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+  .card{background:rgba(30,26,44,.92)}
+}
+@media (prefers-reduced-motion:reduce){.card,.bg,.card::before{animation:none;transition:none}}
+</style>
+</head>
+<body>
+<div class="bg"></div>
+<main>
+<header class="heading">
+<p class="eyebrow">LIQUID GLASS · 雾</p>
+<h1>雾面磨砂</h1>
+<p class="hint">雾面之下，消息也放轻了脚步。</p>
+</header>
+
+<section class="card">
+  <div class="top">
+    <span class="pill">邮件</span>
+    <div class="avatars" aria-label="members"><i class="avatar">邮</i></div>
+  </div>
+  <div class="row">
+    <div class="face" style="background:linear-gradient(145deg,#6a7285,#484e5c 60%,#33363f)">邮</div>
+    <div class="copy">
+      <div class="title-line"><strong>收件箱</strong><time>11:30</time></div>
+      <div class="preview">季度总结的附件已更新，请查收</div>
+    </div>
+    <span class="unread">2 封未读</span>
+  </div>
+  
+</section>
+
+<section class="card">
+  <div class="top">
+    <span class="pill">日历</span>
+    <div class="avatars" aria-label="members"><i class="avatar">会</i></div>
+  </div>
+  <div class="row">
+    <div class="face" style="background:linear-gradient(145deg,#5a6a7e,#3c4450 60%,#2a2f38)">会</div>
+    <div class="copy">
+      <div class="title-line"><strong>会议提醒</strong><time>10:15</time></div>
+      <div class="preview">10:30 评审会 · 三楼会议室</div>
+    </div>
+    <span class="unread">15 分钟后</span>
+  </div>
+  
+</section>
+
+<section class="card">
+  <div class="top">
+    <span class="pill">天气</span>
+    <div class="avatars" aria-label="members"><i class="avatar">霜</i></div>
+  </div>
+  <div class="row">
+    <div class="face" style="background:linear-gradient(145deg,#7e8a9e,#565e6e 60%,#3c424e)">霜</div>
+    <div class="copy">
+      <div class="title-line"><strong>霜降</strong><time>07:00</time></div>
+      <div class="preview">明日降温 8℃，注意添衣保暖</div>
+    </div>
+    <span class="unread"></span>
+  </div>
+  
+</section>
+</main>
+</body>
+</html>

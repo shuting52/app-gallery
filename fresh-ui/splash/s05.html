@@ -1,0 +1,48 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>涟漪心跳 · 启动页</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{background:#04070e;display:flex;justify-content:center;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif}
+.stage{width:430px;height:900px;max-width:100vw;max-height:100vh;position:relative;overflow:hidden;
+background:linear-gradient(180deg,#071426 0%,#050b18 55%,#03060e 100%)}
+.ripples{position:absolute;left:50%;top:330px;width:0;height:0;z-index:2}
+.r{position:absolute;left:-90px;top:-90px;width:180px;height:180px;border-radius:50%;display:block;
+border:2px solid rgba(90,200,255,.7);opacity:0;animation:rip 3s ease-out infinite;animation-delay:var(--dl)}
+.r:nth-child(1){--dl:-.2s}.r:nth-child(2){--dl:-1.2s}.r:nth-child(3){--dl:-2.2s}
+@keyframes rip{0%{opacity:0;transform:scale(.25)}18%{opacity:.9}100%{opacity:0;transform:scale(2.6)}}
+.heart{position:absolute;left:50%;top:330px;width:118px;height:118px;margin:-59px 0 0 -59px;z-index:4;
+border-radius:50%;background:radial-gradient(circle at 35% 30%,#7fd8ff,#1c7fc4 60%,#0d4d86);
+display:flex;align-items:center;justify-content:center;font-size:46px;color:#eaf7ff;
+box-shadow:0 0 44px rgba(90,200,255,.5),inset 0 0 26px rgba(255,255,255,.15);
+animation:beat 1.6s ease-in-out infinite;animation-delay:-.4s}
+@keyframes beat{0%,100%{transform:scale(1)}12%{transform:scale(1.14)}24%{transform:scale(1)}36%{transform:scale(1.1)}48%{transform:scale(1)}}
+.drop-in{position:absolute;left:50%;top:120px;width:14px;height:22px;margin-left:-7px;z-index:3;
+background:radial-gradient(circle at 35% 30%,#bfe9ff,#3fa9e0 70%);border-radius:50% 50% 60% 60%;
+animation:fall 1.4s cubic-bezier(.5,0,.8,.4) both}
+@keyframes fall{0%{transform:translateY(0);opacity:0}15%{opacity:1}85%{transform:translateY(180px);opacity:1}
+100%{transform:translateY(196px) scale(1.6,.4);opacity:0}}
+.brand{position:absolute;left:0;right:0;top:600px;text-align:center;z-index:6;
+opacity:0;animation:fadeUp 1s ease-out both;animation-delay:.6s}
+.brand h1{font-size:36px;font-weight:700;letter-spacing:14px;color:#eaf6ff;text-indent:14px}
+.brand p{font-size:13px;letter-spacing:6px;color:#6fa8d8;margin-top:12px;text-indent:6px}
+@keyframes fadeUp{0%{opacity:0;transform:translateY(18px)}100%{opacity:1;transform:translateY(0)}}
+.replay{position:absolute;left:50%;bottom:36px;transform:translateX(-50%);z-index:50;
+border:1px solid rgba(90,200,255,.4);background:rgba(90,200,255,.08);color:#bfe4ff;
+font-size:13px;letter-spacing:3px;padding:10px 26px;border-radius:24px;cursor:pointer}
+.replay:active{transform:translateX(-50%) scale(.94)}
+</style></head><body>
+<div class="stage">
+  <div class="drop-in"></div>
+  <div class="ripples"><i class="r"></i><i class="r"></i><i class="r"></i></div>
+  <div class="heart">澜</div>
+  <div class="brand"><h1>澜心</h1><p>世界因你泛起涟漪</p></div>
+  <button class="replay">重新播放</button>
+</div>
+<script>
+function bind(){document.querySelector('.replay').addEventListener('click',()=>{
+const s=document.querySelector('.stage');const n=s.cloneNode(true);s.replaceWith(n);bind();});}
+bind();
+</script>
+</body></html>

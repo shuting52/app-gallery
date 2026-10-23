@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>拾光集市 · 二手闲置</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --orange:#E8590C;--orange-dk:#C74306;--paper:#FDF6EC;--paper2:#F7EBD7;
+  --ink:#4A382A;--ink-soft:#8A7260;--card:#FFFDF8;--line:#EBD9BE;--green:#5C9E46;
+}
+body{background:#E9DCC4;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;color:var(--ink)}
+.phone{max-width:430px;margin:0 auto;background:var(--paper);min-height:100vh;position:relative;
+  box-shadow:0 0 30px rgba(74,56,42,.18);padding-bottom:76px}
+/* 复古纸张纹理 */
+.phone::before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.05;
+  background-image:repeating-linear-gradient(0deg,transparent,transparent 3px,#4A382A 4px)}
+.page{display:none;animation:fade .25s ease}
+.page.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.hand{font-family:"STKaiti","Kaiti SC","KaiTi","TW-Kai",cursive}
+/* 顶部栏 */
+.topbar{padding:14px 16px 8px;display:flex;align-items:center;gap:10px}
+.logo{font-size:26px;color:var(--orange);letter-spacing:2px;font-weight:700}
+.logo small{font-size:11px;color:var(--ink-soft);letter-spacing:4px;display:block;font-weight:400}
+.search{flex:1;background:#fff;border:2px solid var(--line);border-radius:22px;padding:9px 14px;
+  display:flex;align-items:center;gap:8px;color:var(--ink-soft);font-size:13px;cursor:pointer}
+.search:active{border-color:var(--orange)}
+.bell{width:38px;height:38px;border-radius:50%;background:#fff;border:2px solid var(--line);
+  display:flex;align-items:center;justify-content:center;font-size:18px}
+/* 标语条 */
+.banner{margin:6px 16px 0;background:linear-gradient(135deg,var(--orange),#F08C2E);color:#fff;
+  border-radius:16px;padding:14px 16px;position:relative;overflow:hidden}
+.banner::after{content:"";position:absolute;right:-30px;top:-30px;width:120px;height:120px;
+  border-radius:50%;background:rgba(255,255,255,.15)}
+.banner h3{font-size:19px;letter-spacing:1px}
+.banner p{font-size:12px;opacity:.9;margin-top:4px}
+/* 分类快捷 */
+.sec-title{padding:16px 16px 10px;font-size:18px;color:var(--orange-dk);display:flex;align-items:center;gap:8px}
+.sec-title::before,.sec-title::after{content:"";flex:0 0 24px;height:2px;background:var(--orange);opacity:.5;border-radius:2px}
+.cats{display:grid;grid-template-columns:repeat(5,1fr);padding:0 12px;gap:6px}
+.cat{background:var(--card);border:2px solid var(--line);border-radius:14px;padding:10px 4px;
+  text-align:center;cursor:pointer;transition:transform .15s}
+.cat:active{transform:scale(.93);border-color:var(--orange)}
+.cat .ic{font-size:26px}
+.cat .tx{font-size:12px;margin-top:4px}
+/* 商品卡片 */
+.feed{padding:4px 16px 0;display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.card{background:var(--card);border:2px solid var(--line);border-radius:16px;overflow:hidden;cursor:pointer;
+  transition:transform .15s;position:relative}
+.card:active{transform:scale(.97)}
+.card .pic{height:120px;display:flex;align-items:center;justify-content:center;font-size:48px;
+  background:linear-gradient(135deg,var(--paper2),#F3E3C8)}
+.cond{position:absolute;top:8px;left:8px;background:var(--green);color:#fff;font-size:11px;
+  padding:3px 8px;border-radius:10px 10px 10px 2px;font-weight:700}
+.card .bd{padding:10px 12px 12px}
+.card .t{font-size:13px;line-height:1.45;height:38px;overflow:hidden}
+.price-row{display:flex;align-items:baseline;gap:6px;margin-top:8px}
+.price{color:var(--orange);font-size:18px;font-weight:800}
+.price small{font-size:12px}
+.orig{font-size:11px;color:var(--ink-soft);text-decoration:line-through}
+.seller{display:flex;align-items:center;gap:6px;margin-top:8px}
+.avatar{width:24px;height:24px;border-radius:50%;background:var(--orange);color:#fff;font-size:12px;
+  display:flex;align-items:center;justify-content:center;font-weight:700;flex:none}
+.seller .nm{font-size:11px;color:var(--ink-soft);flex:1;white-space:nowrap;overflow:hidden}
+.want{font-size:11px;color:var(--ink-soft)}
+.want b{color:var(--orange)}
+/* 分类页左右分栏 */
+.cate-wrap{display:flex;height:calc(100vh - 170px);min-height:480px}
+.cate-left{width:92px;background:var(--paper2);border-right:2px solid var(--line);flex:none;overflow-y:auto}
+.cate-left div{padding:14px 6px;text-align:center;font-size:13px;border-left:4px solid transparent;cursor:pointer;color:var(--ink-soft)}
+.cate-left div.on{background:var(--paper);border-left-color:var(--orange);color:var(--orange-dk);font-weight:700}
+.cate-right{flex:1;overflow-y:auto;padding:12px}
+.cate-right .sub{font-size:14px;font-weight:700;margin:6px 0 10px;color:var(--orange-dk)}
+.mini-list{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.mini{background:var(--card);border:2px solid var(--line);border-radius:12px;overflow:hidden;cursor:pointer}
+.mini .pic{height:84px;display:flex;align-items:center;justify-content:center;font-size:34px;background:var(--paper2)}
+.mini .bd{padding:8px 10px}
+.mini .t{font-size:12px;height:34px;overflow:hidden;line-height:1.4}
+.mini .p{color:var(--orange);font-weight:800;font-size:15px;margin-top:4px}
+/* 发布页 */
+.pub{padding:16px}
+.photo-box{border:2px dashed var(--orange);border-radius:16px;background:var(--card);
+  height:150px;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:8px;color:var(--ink-soft);cursor:pointer;font-size:13px}
+.photo-box .big{font-size:38px}
+.form{background:var(--card);border:2px solid var(--line);border-radius:16px;padding:6px 16px;margin-top:12px}
+.frow{padding:12px 0;border-bottom:1px dashed var(--line);display:flex;align-items:center;gap:10px}
+.frow:last-child{border:none}
+.frow label{font-size:14px;width:64px;flex:none}
+.frow input,.frow select{flex:1;border:none;outline:none;font-size:14px;background:transparent;color:var(--ink)}
+.cond-chips{display:flex;gap:8px;flex:1;flex-wrap:wrap}
+.chip{border:2px solid var(--line);border-radius:18px;padding:6px 12px;font-size:12px;cursor:pointer;background:#fff}
+.chip.on{border-color:var(--orange);background:#FFF3E8;color:var(--orange-dk);font-weight:700}
+.btn-pub{width:100%;margin-top:16px;background:linear-gradient(135deg,var(--orange),#F08C2E);color:#fff;
+  border:none;border-radius:24px;padding:14px;font-size:17px;font-weight:800;letter-spacing:6px;cursor:pointer;
+  box-shadow:0 6px 16px rgba(232,89,12,.35)}
+.btn-pub:active{transform:scale(.98)}
+/* 消息页 */
+.msg-list{padding:8px 16px}
+.msg{display:flex;gap:12px;background:var(--card);border:2px solid var(--line);border-radius:16px;
+  padding:12px;margin-bottom:10px;cursor:pointer;align-items:center}
+.msg .avatar{width:46px;height:46px;font-size:18px}
+.msg .mid{flex:1;min-width:0}
+.msg .nm{font-size:14px;font-weight:700;display:flex;justify-content:space-between}
+.msg .nm time{font-size:11px;color:var(--ink-soft);font-weight:400}
+.msg .txt{font-size:12px;color:var(--ink-soft);margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.badge{background:var(--orange);color:#fff;font-size:10px;min-width:18px;height:18px;border-radius:9px;
+  display:flex;align-items:center;justify-content:center;padding:0 5px;font-weight:700}
+.role-tag{font-size:10px;border:1px solid var(--orange);color:var(--orange);border-radius:8px;padding:1px 6px;margin-left:6px}
+/* 我的页 */
+.me-head{background:linear-gradient(135deg,var(--orange),#F08C2E);margin:0 16px;border-radius:18px;
+  padding:18px;color:#fff;display:flex;align-items:center;gap:14px}
+.me-head .avatar{width:60px;height:60px;font-size:24px;background:#fff;color:var(--orange)}
+.me-head .nm{font-size:18px;font-weight:800}
+.me-head .lv{font-size:12px;opacity:.9;margin-top:4px}
+.me-grid{display:grid;grid-template-columns:repeat(4,1fr);background:var(--card);border:2px solid var(--line);
+  border-radius:16px;margin:12px 16px;padding:14px 4px}
+.me-grid .it{text-align:center;cursor:pointer}
+.me-grid .num{font-size:20px;font-weight:800;color:var(--orange-dk)}
+.me-grid .tx{font-size:12px;color:var(--ink-soft);margin-top:4px}
+.menu{background:var(--card);border:2px solid var(--line);border-radius:16px;margin:0 16px;overflow:hidden}
+.menu .mi{display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px dashed var(--line);
+  font-size:14px;cursor:pointer}
+.menu .mi:last-child{border:none}
+.menu .mi:active{background:#FFF6EA}
+.menu .ic{font-size:20px}
+.menu .arr{margin-left:auto;color:var(--ink-soft)}
+/* 底部 Tab */
+.tabbar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;
+  background:var(--card);border-top:2px solid var(--line);display:flex;padding:8px 0 calc(8px + env(safe-area-inset-bottom));z-index:50}
+.tab{flex:1;text-align:center;font-size:11px;color:var(--ink-soft);cursor:pointer;padding:2px 0}
+.tab .ic{font-size:22px;display:block;margin-bottom:2px}
+.tab.on{color:var(--orange);font-weight:700}
+.tab-pub .plus{width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,var(--orange),#F08C2E);
+  color:#fff;font-size:26px;display:flex;align-items:center;justify-content:center;margin:-18px auto 2px;
+  box-shadow:0 4px 12px rgba(232,89,12,.4);border:3px solid var(--paper)}
+/* toast */
+.toast{position:fixed;bottom:110px;left:50%;transform:translateX(-50%) translateY(20px);background:rgba(74,56,42,.94);
+  color:#fff;padding:11px 22px;border-radius:24px;font-size:14px;opacity:0;transition:all .3s;z-index:99;pointer-events:none;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.stamp{position:absolute;top:10px;right:12px;transform:rotate(12deg);border:2px solid var(--orange);
+  color:var(--orange);font-size:11px;padding:3px 8px;border-radius:6px;opacity:.75;font-weight:700}
+</style>
+</head>
+<body>
+<div class="phone">
+
+  <!-- ===== 首页 ===== -->
+  <section class="page active" id="pg-home">
+    <div class="topbar">
+      <div class="logo hand">拾光<small>SECOND·HAND</small></div>
+      <div class="search" onclick="toast('搜索：输入关键词找闲置好物')">🔍 搜闲置 · 如"戴森吹风机"</div>
+      <div class="bell" onclick="toast('暂无新通知')">🔔</div>
+    </div>
+    <div class="banner">
+      <h3 class="hand">旧物有新生 · 环保又省钱</h3>
+      <p>本周上新 12,480 件 · 同城自提免邮费</p>
+      <span class="stamp">跳蚤市集</span>
+    </div>
+    <div class="sec-title hand">逛分类</div>
+    <div class="cats">
+      <div class="cat" onclick="goCat('手机数码')"><div class="ic">📱</div><div class="tx">手机</div></div>
+      <div class="cat" onclick="goCat('服装鞋包')"><div class="ic">👗</div><div class="tx">服饰</div></div>
+      <div class="cat" onclick="goCat('家居家具')"><div class="ic">🛋️</div><div class="tx">家具</div></div>
+      <div class="cat" onclick="goCat('图书文具')"><div class="ic">📚</div><div class="tx">图书</div></div>
+      <div class="cat" onclick="goCat('母婴用品')"><div class="ic">🍼</div><div class="tx">母婴</div></div>
+    </div>
+    <div class="sec-title hand">闲置好物</div>
+    <div class="feed" id="homeFeed"></div>
+    <div style="text-align:center;padding:18px;color:var(--ink-soft);font-size:12px">— 到底啦，去发布你的闲置吧 —</div>
+  </section>
+
+  <!-- ===== 分类页 ===== -->
+  <section class="page" id="pg-cate">
+    <div class="topbar"><div class="logo hand">分类</div>
+      <div class="search" onclick="toast('在当前类目下搜索')">🔍 在当前类目搜索</div></div>
+    <div class="cate-wrap">
+      <div class="cate-left" id="cateLeft"></div>
+      <div class="cate-right"><div class="sub" id="cateSub"></div><div class="mini-list" id="cateRight"></div></div>
+    </div>
+  </section>
+
+  <!-- ===== 发布页 ===== -->
+  <section class="page" id="pg-pub">
+    <div class="topbar"><div class="logo hand">发布闲置</div></div>
+    <div class="pub">
+      <div class="photo-box" id="photoBox" onclick="addPhoto()">
+        <div class="big">📷</div><div>点击添加实拍图（最多9张）</div><div id="photoCount" style="font-size:12px">已添加 0 张</div>
+      </div>
+      <div class="form">
+        <div class="frow"><label>标题</label><input id="fTitle" placeholder="如：九成新戴森V11吸尘器"></div>
+        <div class="frow"><label>成色</label>
+          <div class="cond-chips" id="condChips">
+            <span class="chip on">全新</span><span class="chip">99新</span><span class="chip">95新</span>
+            <span class="chip">9成新</span><span class="chip">8成新</span><span class="chip">7成新及以下</span>
+          </div>
+        </div>
+        <div class="frow"><label>价格</label><input id="fPrice" type="number" placeholder="填写出售价格（元）" style="width:60px"> <span style="font-size:13px;color:var(--ink-soft)">元</span></div>
+        <div class="frow"><label>运费</label>
+          <select id="fShip"><option>包邮</option><option>到付</option><option>同城自提</option></select>
+        </div>
+        <div class="frow"><label>描述</label><input id="fDesc" placeholder="补充细节：入手渠道、使用时长等"></div>
+      </div>
+      <button class="btn-pub hand" onclick="doPublish()">发 布</button>
+    </div>
+  </section>
+
+  <!-- ===== 消息页 ===== -->
+  <section class="page" id="pg-msg">
+    <div class="topbar"><div class="logo hand">消息</div></div>
+    <div class="msg-list" id="msgList"></div>
+  </section>
+
+  <!-- ===== 我的页 ===== -->
+  <section class="page" id="pg-me">
+    <div class="topbar"><div class="logo hand">我的</div></div>
+    <div class="me-head">
+      <div class="avatar">陈</div>
+      <div><div class="nm">陈淑婷的闲置铺</div><div class="lv">⭐ 信用优秀 · 在售 12 件</div></div>
+    </div>
+    <div class="me-grid">
+      <div class="it" onclick="toast('我发布的：12 件在售')"><div class="num">12</div><div class="tx">我发布的</div></div>
+      <div class="it" onclick="toast('累计卖出 36 件')"><div class="num">36</div><div class="tx">我卖出的</div></div>
+      <div class="it" onclick="toast('收藏了 58 件好物')"><div class="num">58</div><div class="tx">收藏</div></div>
+      <div class="it" onclick="toast('钱包余额 ¥1,286.50')"><div class="num">¥1286</div><div class="tx">钱包</div></div>
+    </div>
+    <div class="menu">
+      <div class="mi" onclick="toast('我发布的：12 件在售')"><span class="ic">📦</span>我发布的<span class="arr">›</span></div>
+      <div class="mi" onclick="toast('累计卖出 36 件，成交率 92%')"><span class="ic">💰</span>我卖出的<span class="arr">›</span></div>
+      <div class="mi" onclick="toast('收藏夹：58 件好物')"><span class="ic">❤️</span>我的收藏<span class="arr">›</span></div>
+      <div class="mi" onclick="toast('钱包余额 ¥1,286.50，可提现')"><span class="ic">👛</span>我的钱包<span class="arr">›</span></div>
+      <div class="mi" onclick="toast('收货地址：上海市浦东新区…')"><span class="ic">📍</span>收货地址<span class="arr">›</span></div>
+      <div class="mi" onclick="toast('设置页面开发中')"><span class="ic">⚙️</span>设置<span class="arr">›</span></div>
+    </div>
+  </section>
+
+  <nav class="tabbar">
+    <div class="tab on" data-p="home"><span class="ic">🏠</span>首页</div>
+    <div class="tab" data-p="cate"><span class="ic">🗂️</span>分类</div>
+    <div class="tab tab-pub" data-p="pub"><span class="plus">＋</span>发布</div>
+    <div class="tab" data-p="msg"><span class="ic">💬</span>消息</div>
+    <div class="tab" data-p="me"><span class="ic">👤</span>我的</div>
+  </nav>
+  <div class="toast" id="toast"></div>
+</div>
+
+<script>
+var goods=[
+ {e:"📱",t:"iPhone 13 128G 蓝色 电池91%",c:"95新",p:2899,o:5999,s:"果粉小李",w:128},
+ {e:"👗",t:"优衣库摇粒绒外套 女M 奶白色",c:"99新",p:89,o:199,s:"衣橱整理师",w:56},
+ {e:"🛋️",t:"宜家三人布艺沙发 可拆洗 同城自提",c:"9成新",p:650,o:1999,s:"搬家甩卖",w:203},
+ {e:"📚",t:"《三体》全集+番外 精装 几乎没翻过",c:"99新",p:45,o:168,s:"书山有路",w:87},
+ {e:"🍼",t:"好孩子婴儿推车 可折叠 一键收车",c:"95新",p:320,o:899,s:"二胎妈妈",w:145},
+ {e:"🎧",t:"AirPods Pro 2代 国行保修内",c:"95新",p:1099,o:1899,s:"数码闲置",w:231},
+ {e:"⌚",t:"Apple Watch S7 45mm 蜂窝版",c:"9成新",p:1350,o:3199,s:"运动达人",w:98},
+ {e:"🧸",t:"乐高积木 城市系列 拼过一次",c:"9成新",p:199,o:499,s:"宝妈清仓",w:176}
+];
+var cats=["手机数码","服装鞋包","家居家具","图书文具","母婴用品","家电厨卫","美妆个护","运动户外"];
+var subMap={"手机数码":["手机","平板","耳机","相机"],"服装鞋包":["女装","男装","鞋靴","箱包"],
+ "家居家具":["沙发","桌椅","灯具","收纳"],"图书文具":["小说","教材","绘本","文具"],
+ "母婴用品":["推车","玩具","童装","奶粉"],"家电厨卫":["大家电","小家电","厨具"],
+ "美妆个护":["护肤","彩妆","香水"],"运动户外":["健身","骑行","露营"]};
+var msgs=[
+ {n:"果粉小李",r:"卖家",txt:"亲，iPhone 13 还在吗？能小刀吗？",time:"14:32",un:2,av:"李"},
+ {n:"搬家甩卖",r:"卖家",txt:"沙发同城自提的话可以再便宜50",time:"11:05",un:0,av:"搬"},
+ {n:"宝妈清仓",r:"卖家",txt:"乐高已发货，记得查收快递哦",time:"昨天",un:0,av:"宝"},
+ {n:"衣橱整理师",r:"买家",txt:"你好，想问下摇粒绒外套的尺码",time:"昨天",un:1,av:"衣"}
+];
+function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;")}
+function renderHome(){
+ document.getElementById("homeFeed").innerHTML=goods.map(function(g,i){
+  return '<div class="card" onclick="toast(\'查看商品：'+esc(g.t.slice(0,10))+'…\')">'+
+   '<div class="pic">'+g.e+'</div><span class="cond">'+g.c+'</span>'+
+   '<div class="bd"><div class="t">'+esc(g.t)+'</div>'+
+   '<div class="price-row"><span class="price"><small>¥</small>'+g.p+'</span><span class="orig">¥'+g.o+'</span></div>'+
+   '<div class="seller"><span class="avatar">'+g.s[0]+'</span><span class="nm">'+g.s+'</span>'+
+   '<span class="want">❤ <b>'+g.w+'</b>人想要</span></div></div></div>';
+ }).join("");
+}
+function renderCate(sel){
+ sel=sel||cats[0];
+ document.getElementById("cateLeft").innerHTML=cats.map(function(c){
+  return '<div class="'+(c===sel?'on':'')+'" onclick="renderCate(\''+c+'\')">'+c+'</div>';
+ }).join("");
+ document.getElementById("cateSub").textContent=sel+" · "+subMap[sel].join(" / ");
+ var list=goods.filter(function(g){return true;}).slice(0,6);
+ document.getElementById("cateRight").innerHTML=list.map(function(g){
+  return '<div class="mini" onclick="toast(\'查看商品详情\')"><div class="pic">'+g.e+'</div>'+
+   '<div class="bd"><div class="t">'+esc(g.t)+'</div><div class="p">¥'+g.p+'</div></div></div>';
+ }).join("");
+}
+function goCat(c){switchTab("cate");renderCate(c);}
+function renderMsg(){
+ document.getElementById("msgList").innerHTML=msgs.map(function(m){
+  return '<div class="msg" onclick="toast(\'打开与 '+m.n+' 的聊天\')"><div class="avatar">'+m.av+'</div>'+
+   '<div class="mid"><div class="nm"><span>'+m.n+'<span class="role-tag">'+m.r+'</span></span><time>'+m.time+'</time></div>'+
+   '<div class="txt">'+esc(m.txt)+'</div></div>'+(m.un?'<div class="badge">'+m.un+'</div>':'')+'</div>';
+ }).join("");
+}
+var photos=0;
+function addPhoto(){
+ if(photos>=9){toast("最多添加9张图");return;}
+ photos++;
+ document.getElementById("photoCount").textContent="已添加 "+photos+" 张";
+ document.getElementById("photoBox").querySelector(".big").textContent="🖼️";
+}
+document.getElementById("condChips").addEventListener("click",function(e){
+ if(e.target.className.indexOf("chip")>=0){
+  var cs=this.querySelectorAll(".chip");
+  for(var i=0;i<cs.length;i++)cs[i].classList.remove("on");
+  e.target.classList.add("on");
+ }
+});
+function doPublish(){
+ var t=document.getElementById("fTitle").value.trim();
+ var p=document.getElementById("fPrice").value.trim();
+ if(!t){toast("请填写宝贝标题");return;}
+ if(!p){toast("请填写出售价格");return;}
+ toast("发布成功，宝贝已上架！");
+}
+var toastTimer=null;
+function toast(msg){
+ var el=document.getElementById("toast");
+ el.textContent=msg;el.classList.add("show");
+ clearTimeout(toastTimer);
+ toastTimer=setTimeout(function(){el.classList.remove("show")},2200);
+}
+function switchTab(p){
+ var pages=document.querySelectorAll(".page");
+ for(var i=0;i<pages.length;i++)pages[i].classList.remove("active");
+ document.getElementById("pg-"+p).classList.add("active");
+ var tabs=document.querySelectorAll(".tab");
+ for(var j=0;j<tabs.length;j++)tabs[j].classList.toggle("on",tabs[j].dataset.p===p);
+ window.scrollTo(0,0);
+}
+var tabEls=document.querySelectorAll(".tab");
+for(var k=0;k<tabEls.length;k++){
+ tabEls[k].addEventListener("click",function(){switchTab(this.dataset.p)});
+}
+renderHome();renderCate();renderMsg();
+(function(){var m=location.search.match(/tab=(\w+)/);if(m&&document.getElementById("pg-"+m[1]))switchTab(m[1]);})();
+</script>
+</body>
+</html>

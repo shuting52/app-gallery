@@ -1,0 +1,79 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>曜石卡</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sans-serif;background:#04060a;color:#eef2f7;display:flex;justify-content:center;min-height:100vh}
+.phone{width:430px;height:900px;position:relative;overflow:hidden;background:linear-gradient(160deg,#101014,#08080c)}
+/* ---- mock app ---- */
+.mk{padding:54px 20px 0;opacity:.85}
+.sb{display:flex;justify-content:space-between;font-size:13px;color:#cfd6e2;margin-bottom:14px}
+.mknav{font-size:22px;font-weight:800;margin:2px 0 16px}
+.mkbanner{height:110px;border-radius:16px;background:linear-gradient(120deg,#2a3350,#3c2a50);margin-bottom:14px}
+.mkrow{display:flex;gap:12px;align-items:center;background:rgba(255,255,255,.05);border-radius:14px;padding:12px;margin-bottom:10px}
+.mkav{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#4a5a80,#2c3650);flex-shrink:0}
+.mkln{height:10px;border-radius:5px;background:rgba(255,255,255,.12);margin:5px 0}
+.mkgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.mkcard{border-radius:14px;background:rgba(255,255,255,.05);padding:10px}
+.mkph{height:80px;border-radius:10px;background:linear-gradient(135deg,#33405e,#232c46);margin-bottom:8px}
+.mksearch{height:42px;border-radius:21px;background:rgba(255,255,255,.08);margin-bottom:16px}
+.mkalbum{height:230px;border-radius:18px;background:linear-gradient(135deg,#3b2a5e,#1f2a4e);margin-bottom:14px}
+.mkbar{height:6px;border-radius:3px;background:rgba(255,255,255,.12);margin:14px 0 6px;position:relative}
+.mkbar i{display:block;position:absolute;left:0;top:0;bottom:0;width:38%;border-radius:3px;background:#7ab8ff}
+.mkctl{display:flex;justify-content:center;gap:26px;margin-top:14px}
+.mkctl i{display:block;width:46px;height:46px;border-radius:50%;background:rgba(255,255,255,.1)}
+/* ---- overlay / modal ---- */
+.ov{position:absolute;inset:0;z-index:30;display:flex;align-items:center;justify-content:center;background:rgba(5,8,13,.52);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.ov.hide{display:none}
+.modal{position:relative;width:340px;border-radius:24px;padding:28px 24px 22px;text-align:center;background:linear-gradient(165deg,#17171f,#0c0c11);--ac:#e8b93c;--ds:#b9b3a4;--tc:#ffe9ad;border:1px solid rgba(232,185,60,.35);animation:eFlip .6s cubic-bezier(.2,.9,.28,1.18) both;box-shadow:0 24px 70px rgba(0,0,0,.5)}
+.x{position:absolute;top:10px;right:12px;width:30px;height:30px;border-radius:50%;border:0;background:rgba(255,255,255,.14);color:#fff;font-size:17px;cursor:pointer;line-height:30px;padding:0}
+.btn{display:block;width:100%;border:0;border-radius:14px;padding:14px;font-size:16px;font-weight:700;cursor:pointer;margin-top:18px;background:var(--ac,#ffd479);color:#1a1405;transition:transform .15s}
+.btn:active{transform:scale(.96)}
+.btn.off{opacity:.35;pointer-events:none}
+.ghost{background:none;border:0;color:var(--ds,#9aa3b2);font-size:13px;margin-top:12px;cursor:pointer;width:100%}
+.rp{position:absolute;left:50%;bottom:22px;transform:translateX(-50%);z-index:40;border:1px solid rgba(255,255,255,.28);background:rgba(8,12,18,.72);color:#fff;border-radius:999px;padding:10px 24px;font-size:13px;cursor:pointer;backdrop-filter:blur(6px);white-space:nowrap}
+h2.tt{font-size:21px;margin:12px 0 8px;letter-spacing:2px;color:var(--tc,#fff)}
+p.ds{font-size:13.5px;line-height:1.75;color:var(--ds,#aeb6c2)}
+@keyframes ePop{from{opacity:0;transform:scale(.62) translateY(46px)}to{opacity:1;transform:none}}
+@keyframes eUp{from{opacity:0;transform:translateY(130px)}to{opacity:1;transform:none}}
+@keyframes eFlip{from{opacity:0;transform:perspective(700px) rotateX(-72deg)}to{opacity:1;transform:none}}
+@keyframes eLeft{from{opacity:0;transform:translateX(-170px) rotate(-7deg)}to{opacity:1;transform:none}}
+@keyframes eBlur{from{opacity:0;transform:scale(1.16);filter:blur(16px)}to{opacity:1;transform:none;filter:blur(0)}}
+@keyframes eDrop{0%{opacity:0;transform:translateY(-280px)}62%{opacity:1;transform:translateY(14px)}80%{transform:translateY(-7px)}100%{opacity:1;transform:none}}
+.vip{border-radius:16px;padding:18px 16px;text-align:left;background:linear-gradient(120deg,#23232e,#101016 60%,#1d1a12);border:1px solid rgba(232,185,60,.5);position:relative;overflow:hidden;margin-bottom:4px}
+.shine{position:absolute;top:0;bottom:0;width:70px;background:linear-gradient(100deg,transparent,rgba(255,236,180,.35),transparent);transform:skewX(-18deg);animation:sh 2.8s ease-in-out -1s infinite;left:-90px}
+@keyframes sh{0%{left:-90px}55%,100%{left:360px}}
+.vtop{font-size:15px;letter-spacing:4px;color:#e8b93c;font-weight:800}.vtop span{border:1px solid #e8b93c;border-radius:6px;font-size:10px;padding:1px 6px;margin-left:8px;letter-spacing:1px}
+.vno{font-size:14px;letter-spacing:3px;color:#8f887a;margin:14px 0 6px}
+.vnm{font-size:12px;color:#e8b93c}
+.plans{display:flex;gap:10px;margin-top:14px}
+.plan{flex:1;border:1px solid rgba(255,255,255,.16);border-radius:12px;padding:12px 6px;cursor:pointer;transition:all .25s}
+.plan b{display:block;font-size:14px;margin-bottom:4px}.plan span{font-size:12px;color:var(--ds)}
+.plan.on{border-color:#e8b93c;background:rgba(232,185,60,.1);box-shadow:0 0 16px rgba(232,185,60,.25)}
+</style></head><body>
+<div class="phone">
+<div class="mk"><div class="sb"><span>9:41</span><span>●●●</span></div>
+<div class="mknav">在听</div><div class="mkalbum"></div>
+<div class="mkln" style="width:55%"></div><div class="mkln" style="width:30%"></div>
+<div class="mkbar"><i></i></div>
+<div class="mkctl"><i></i><i></i><i></i></div></div>
+<div class="ov" id="ov"><div class="modal" id="md">
+<button class="x" id="cx" aria-label="关闭">×</button>
+<div class="vip"><div class="shine"></div><div class="vtop">OBSIDIAN<span>VIP</span></div><div class="vno">8888 •••• •••• 0001</div><div class="vnm">黑曜会员 · 专属礼遇</div></div>
+<h2 class="tt">开通黑曜会员</h2><p class="ds">免广告 · 无损音质 · 专属皮肤<br>首月仅需一杯咖啡钱</p>
+<div class="plans"><div class="plan on" data-p="连续包月 ¥12/月"><b>连续包月</b><span>¥12/月</span></div>
+<div class="plan" data-p="年卡 ¥118/年"><b>年卡</b><span>¥118/年</span></div></div>
+<button class="btn" id="go">立即开通</button><button class="ghost">恢复购买</button>
+</div></div>
+<button class="rp" id="rp">↻ 重新弹出</button>
+</div>
+<script>
+var ov=document.getElementById('ov'),md=document.getElementById('md');
+document.getElementById('cx').onclick=function(){ov.classList.add('hide')};
+ov.addEventListener('click',function(e){if(e.target===ov)ov.classList.add('hide')});
+document.getElementById('rp').onclick=function(){ov.classList.remove('hide');md.style.animation='none';void md.offsetWidth;md.style.animation=''};
+var ps=document.querySelectorAll('.plan');
+ps.forEach(function(p){p.onclick=function(){ps.forEach(function(x){x.classList.remove('on')});p.classList.add('on')}});
+document.getElementById('go').onclick=function(){var p=document.querySelector('.plan.on');this.textContent='已开通 · '+p.dataset.p;this.classList.add('off')};
+</script>
+</body></html>

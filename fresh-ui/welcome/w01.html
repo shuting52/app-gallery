@@ -1,0 +1,76 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>红包到</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sans-serif;background:#04060a;color:#eef2f7;display:flex;justify-content:center;min-height:100vh}
+.phone{width:430px;height:900px;position:relative;overflow:hidden;background:linear-gradient(160deg,#1a0d12,#0d0a10)}
+/* ---- mock app ---- */
+.mk{padding:54px 20px 0;opacity:.85}
+.sb{display:flex;justify-content:space-between;font-size:13px;color:#cfd6e2;margin-bottom:14px}
+.mknav{font-size:22px;font-weight:800;margin:2px 0 16px}
+.mkbanner{height:110px;border-radius:16px;background:linear-gradient(120deg,#2a3350,#3c2a50);margin-bottom:14px}
+.mkrow{display:flex;gap:12px;align-items:center;background:rgba(255,255,255,.05);border-radius:14px;padding:12px;margin-bottom:10px}
+.mkav{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#4a5a80,#2c3650);flex-shrink:0}
+.mkln{height:10px;border-radius:5px;background:rgba(255,255,255,.12);margin:5px 0}
+.mkgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.mkcard{border-radius:14px;background:rgba(255,255,255,.05);padding:10px}
+.mkph{height:80px;border-radius:10px;background:linear-gradient(135deg,#33405e,#232c46);margin-bottom:8px}
+.mksearch{height:42px;border-radius:21px;background:rgba(255,255,255,.08);margin-bottom:16px}
+.mkalbum{height:230px;border-radius:18px;background:linear-gradient(135deg,#3b2a5e,#1f2a4e);margin-bottom:14px}
+.mkbar{height:6px;border-radius:3px;background:rgba(255,255,255,.12);margin:14px 0 6px;position:relative}
+.mkbar i{display:block;position:absolute;left:0;top:0;bottom:0;width:38%;border-radius:3px;background:#7ab8ff}
+.mkctl{display:flex;justify-content:center;gap:26px;margin-top:14px}
+.mkctl i{display:block;width:46px;height:46px;border-radius:50%;background:rgba(255,255,255,.1)}
+/* ---- overlay / modal ---- */
+.ov{position:absolute;inset:0;z-index:30;display:flex;align-items:center;justify-content:center;background:rgba(5,8,13,.52);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.ov.hide{display:none}
+.modal{position:relative;width:340px;border-radius:24px;padding:28px 24px 22px;text-align:center;background:linear-gradient(165deg,#d42b2b 0%,#a31515 60%,#7c0d0d 100%);--ac:#f6c453;--ds:#ffd7d7;--tc:#fff8ec;overflow:hidden;animation:eDrop .6s cubic-bezier(.2,.9,.28,1.18) both;box-shadow:0 24px 70px rgba(0,0,0,.5)}
+.x{position:absolute;top:10px;right:12px;width:30px;height:30px;border-radius:50%;border:0;background:rgba(255,255,255,.14);color:#fff;font-size:17px;cursor:pointer;line-height:30px;padding:0}
+.btn{display:block;width:100%;border:0;border-radius:14px;padding:14px;font-size:16px;font-weight:700;cursor:pointer;margin-top:18px;background:var(--ac,#ffd479);color:#1a1405;transition:transform .15s}
+.btn:active{transform:scale(.96)}
+.btn.off{opacity:.35;pointer-events:none}
+.ghost{background:none;border:0;color:var(--ds,#9aa3b2);font-size:13px;margin-top:12px;cursor:pointer;width:100%}
+.rp{position:absolute;left:50%;bottom:22px;transform:translateX(-50%);z-index:40;border:1px solid rgba(255,255,255,.28);background:rgba(8,12,18,.72);color:#fff;border-radius:999px;padding:10px 24px;font-size:13px;cursor:pointer;backdrop-filter:blur(6px);white-space:nowrap}
+h2.tt{font-size:21px;margin:12px 0 8px;letter-spacing:2px;color:var(--tc,#fff)}
+p.ds{font-size:13.5px;line-height:1.75;color:var(--ds,#aeb6c2)}
+@keyframes ePop{from{opacity:0;transform:scale(.62) translateY(46px)}to{opacity:1;transform:none}}
+@keyframes eUp{from{opacity:0;transform:translateY(130px)}to{opacity:1;transform:none}}
+@keyframes eFlip{from{opacity:0;transform:perspective(700px) rotateX(-72deg)}to{opacity:1;transform:none}}
+@keyframes eLeft{from{opacity:0;transform:translateX(-170px) rotate(-7deg)}to{opacity:1;transform:none}}
+@keyframes eBlur{from{opacity:0;transform:scale(1.16);filter:blur(16px)}to{opacity:1;transform:none;filter:blur(0)}}
+@keyframes eDrop{0%{opacity:0;transform:translateY(-280px)}62%{opacity:1;transform:translateY(14px)}80%{transform:translateY(-7px)}100%{opacity:1;transform:none}}
+.env{width:150px;height:110px;margin:2px auto 0;background:linear-gradient(180deg,#e04242,#b01a1a);border-radius:0 0 18px 18px;position:relative;box-shadow:0 10px 26px rgba(0,0,0,.35)}
+.flap{position:absolute;top:0;left:0;right:0;height:56px;background:linear-gradient(180deg,#c22525,#a31515);clip-path:polygon(0 0,100% 0,50% 100%);transform-origin:top;animation:flap 2.4s ease-in-out -0.6s infinite}
+@keyframes flap{0%,100%{transform:rotateX(0)}50%{transform:rotateX(38deg)}}
+.seal{position:absolute;top:34px;left:50%;transform:translateX(-50%);width:52px;height:52px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#ffe9a8,#e8a93c 60%,#b97a1c);color:#8a1d00;font-size:24px;font-weight:900;line-height:52px;box-shadow:0 4px 10px rgba(0,0,0,.3)}
+.amt{position:absolute;bottom:8px;left:0;right:0;color:#ffe9a8;font-size:15px}.amt b{font-size:26px}
+.coin{display:block;position:absolute;width:22px;height:22px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#ffe9a8,#e8a93c 65%,#9c6414);box-shadow:0 0 12px #f6c453;animation:rise 2.2s ease-in infinite}
+.c1{left:14%;bottom:30px;animation-delay:-0.4s}.c2{left:48%;bottom:22px;animation-delay:-1.3s}.c3{left:80%;bottom:34px;animation-delay:-2s}
+@keyframes rise{0%{transform:translateY(0);opacity:0}25%{opacity:1}100%{transform:translateY(-190px);opacity:0}}
+</style></head><body>
+<div class="phone">
+<div class="mk"><div class="sb"><span>9:41</span><span>●●●</span></div>
+<div class="mknav">首页</div><div class="mkbanner"></div>
+<div class="mkrow"><div class="mkav" style="border-radius:12px"></div><div style="flex:1"><div class="mkln" style="width:60%"></div></div></div>
+<div class="mkrow"><div class="mkav" style="border-radius:12px"></div><div style="flex:1"><div class="mkln" style="width:45%"></div></div></div>
+<div class="mkrow"><div class="mkav" style="border-radius:12px"></div><div style="flex:1"><div class="mkln" style="width:70%"></div></div></div>
+<div class="mkrow"><div class="mkav" style="border-radius:12px"></div><div style="flex:1"><div class="mkln" style="width:50%"></div></div></div></div>
+<div class="ov" id="ov"><div class="modal" id="md">
+<button class="x" id="cx" aria-label="关闭">×</button>
+<div class="env"><div class="flap"></div><div class="seal">福</div><div class="amt">¥<b>8.8</b></div></div>
+<h2 class="tt">新人见面礼</h2><p class="ds">欢迎加入！这只红包专为你准备<br>无门槛 · 直接抵扣</p>
+<button class="btn" id="go">开心收下</button><button class="ghost" id="no">下次再说</button>
+<span class="coin c1"></span><span class="coin c2"></span><span class="coin c3"></span>
+</div></div>
+<button class="rp" id="rp">↻ 重新弹出</button>
+</div>
+<script>
+var ov=document.getElementById('ov'),md=document.getElementById('md');
+document.getElementById('cx').onclick=function(){ov.classList.add('hide')};
+ov.addEventListener('click',function(e){if(e.target===ov)ov.classList.add('hide')});
+document.getElementById('rp').onclick=function(){ov.classList.remove('hide');md.style.animation='none';void md.offsetWidth;md.style.animation=''};
+document.getElementById('go').onclick=function(){this.textContent='已放入钱包 ✓';this.classList.add('off')};
+document.getElementById('no').onclick=function(){ov.classList.add('hide')};
+</script>
+</body></html>

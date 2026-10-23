@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>悬浮胶囊 · 底部Tab</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#20242e;display:flex;justify-content:center;min-height:100vh;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif}
+.phone{width:430px;height:900px;position:relative;overflow:hidden;background:linear-gradient(180deg,#2b3a55 0%,#3a5a8c 45%,#7ab3d8 100%)}
+.status{height:44px;display:flex;justify-content:space-between;align-items:center;padding:0 26px;font-size:14px;font-weight:700;color:#fff}
+.content{position:absolute;top:44px;left:0;right:0;bottom:0;overflow:hidden}
+.feed{padding:14px 16px 140px}
+.hero{border-radius:18px;padding:22px 18px;color:#fff;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.25);margin-bottom:14px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.hero h2{font-size:20px}
+.hero p{font-size:12px;opacity:.85;margin-top:6px}
+.card{background:rgba(255,255,255,.92);border-radius:14px;padding:14px 16px;margin-bottom:12px;display:flex;align-items:center;gap:12px}
+.sw{width:44px;height:44px;border-radius:12px;flex-shrink:0}
+.ct{font-size:14px;font-weight:600;color:#22334a}
+.cs{font-size:12px;color:#7a8ba0;margin-top:4px}
+/* ---- 悬浮胶囊 ---- */
+.dock{position:absolute;left:26px;right:26px;bottom:26px;height:74px;border-radius:999px;background:rgba(255,255,255,.78);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);box-shadow:0 14px 34px rgba(10,25,50,.35);display:flex;z-index:10}
+.hi{position:absolute;top:9px;bottom:9px;width:60px;left:12.5%;border-radius:999px;background:#22334a;transform:translateX(-50%);transition:left .45s cubic-bezier(.3,1.6,.45,1)}
+.tabs{position:absolute;inset:0;display:flex;z-index:2}
+.tab{flex:1;background:none;border:0;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer}
+.glyph{font-size:21px;font-weight:700;color:#8a99b0;transition:transform .45s cubic-bezier(.3,1.7,.4,1),color .3s}
+.tab.on .glyph{transform:translateY(-13px);color:#fff}
+.tlabel{font-size:10px;color:#8a99b0;transition:color .3s}
+.tab.on .tlabel{color:#22334a;font-weight:700}
+.dot{position:absolute;bottom:9px;left:50%;width:5px;height:5px;border-radius:50%;background:#22334a;transform:translateX(-50%) scale(0);transition:transform .35s .1s}
+.tab.on .dot{transform:translateX(-50%) scale(1)}
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="status"><span>9:41</span><span>5G ▮▮▮</span></div>
+  <div class="content"><div class="feed">
+    <div class="hero"><h2>深海潜水季</h2><p>跟着洋流去旅行</p></div>
+    <div class="card"><div class="sw" style="background:linear-gradient(135deg,#1a6fd4,#2b9df4)"></div><div><div class="ct">沉船探秘</div><div class="cs">水下 18 米 · 需 AOW</div></div></div>
+    <div class="card"><div class="sw" style="background:linear-gradient(135deg,#00b8a9,#5fe3d0)"></div><div><div class="ct">夜潜观微距</div><div class="cs">豆丁海马出没</div></div></div>
+    <div class="card"><div class="sw" style="background:linear-gradient(135deg,#7c6cf5,#b39dff)"></div><div><div class="ct">自由潜课程</div><div class="cs">闭气技巧入门</div></div></div>
+    <div class="card"><div class="sw" style="background:linear-gradient(135deg,#f5a623,#ffd57e)"></div><div><div class="ct">水下摄影</div><div class="cs">微距镜头推荐</div></div></div>
+    <div class="card"><div class="sw" style="background:linear-gradient(135deg,#ff6b81,#ffa4b3)"></div><div><div class="ct">海岛船宿</div><div class="cs">4 天 3 夜行程</div></div></div>
+    <div class="card"><div class="sw" style="background:linear-gradient(135deg,#2fd48f,#a8e6a1)"></div><div><div class="ct">珊瑚保育</div><div class="cs">志愿者招募中</div></div></div>
+  </div></div>
+  <div class="dock">
+    <div class="hi" id="hi"></div>
+    <div class="tabs">
+      <button class="tab on"><span class="glyph">首</span><span class="tlabel">首页</span><span class="dot"></span></button>
+      <button class="tab"><span class="glyph">发</span><span class="tlabel">发现</span><span class="dot"></span></button>
+      <button class="tab"><span class="glyph">消</span><span class="tlabel">消息</span><span class="dot"></span></button>
+      <button class="tab"><span class="glyph">我</span><span class="tlabel">我</span><span class="dot"></span></button>
+    </div>
+  </div>
+</div>
+<script>
+var tabs=Array.prototype.slice.call(document.querySelectorAll('.tab'));
+var hi=document.getElementById('hi');
+function go(i){
+  tabs.forEach(function(t,k){t.classList.toggle('on',k===i);});
+  hi.style.left=(12.5+25*i)+'%';
+}
+tabs.forEach(function(t,i){t.addEventListener('click',function(){go(i);});});
+var n=parseInt(new URLSearchParams(location.search).get('tab'),10);
+go((n>=0&&n<4)?n:0);
+</script>
+</body>
+</html>

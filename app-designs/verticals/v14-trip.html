@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>云游记 · 行程规划</title>
+<style>
+:root{
+  --sky:#3FA7F5; --teal:#2ED3B8; --sand:#F7EFD9; --sand-deep:#EFDCAC;
+  --ink:#1E3A4C; --muted:#7C93A6; --card:#ffffff; --line:#EAE4D2;
+  --radius:22px;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{background:#E9EFEF}
+body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;color:var(--ink);
+  background:linear-gradient(180deg,#DCEFFB 0%,#EAF3F1 320px,#F4F1E4 100%);
+  min-height:100vh;display:flex;justify-content:center}
+.phone{width:100%;max-width:430px;min-height:100vh;position:relative;
+  background:linear-gradient(180deg,#D9ECFB 0%,#E7F4F3 340px,#F6F2E2 100%);
+  padding-bottom:calc(84px + env(safe-area-inset-bottom));overflow:hidden}
+.phone::before{content:"";position:absolute;top:-70px;right:-70px;width:230px;height:230px;border-radius:50%;
+  background:radial-gradient(circle,rgba(62,211,184,.35),transparent 70%)}
+.phone::after{content:"";position:absolute;top:130px;left:-90px;width:260px;height:260px;border-radius:50%;
+  background:radial-gradient(circle,rgba(239,220,172,.55),transparent 70%)}
+.page{display:none;position:relative;z-index:1;padding:0 16px}
+.page.active{display:block;animation:fadeUp .28s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+/* header */
+.hdr{padding:22px 4px 12px;display:flex;align-items:center;justify-content:space-between}
+.hdr h1{font-size:22px;font-weight:800;letter-spacing:1px}
+.hdr .sub{font-size:12px;color:var(--muted);margin-top:3px}
+.btn-add{background:linear-gradient(135deg,var(--sky),var(--teal));color:#fff;border:none;
+  padding:9px 16px;border-radius:999px;font-size:13px;font-weight:700;box-shadow:0 6px 14px rgba(63,167,245,.35);cursor:pointer}
+/* cards */
+.card{background:var(--card);border-radius:var(--radius);padding:16px;margin-bottom:14px;
+  box-shadow:0 8px 22px rgba(30,58,76,.08);position:relative;overflow:hidden}
+.card-title{font-size:15px;font-weight:800;margin-bottom:4px}
+.card-sub{font-size:12px;color:var(--muted)}
+.pill{display:inline-block;font-size:11px;font-weight:700;padding:3px 10px;border-radius:999px;margin-right:6px}
+.pill.ongoing{background:#E3F4FF;color:#1B7FD4}
+.pill.done{background:#F1EFE4;color:#8A7B4F}
+.pill.hot{background:#FFE8D6;color:#D96C2B}
+.pill.free{background:#E2FAF1;color:#0E9E78}
+/* hero trip */
+.hero{border-radius:var(--radius);padding:20px;color:#fff;position:relative;overflow:hidden;margin-bottom:14px;
+  background:linear-gradient(135deg,#2E9BEF 0%,#35C9E8 55%,#2ED3B8 100%);
+  box-shadow:0 12px 28px rgba(46,155,239,.35)}
+.hero::after{content:"✈️";position:absolute;right:14px;bottom:6px;font-size:74px;opacity:.22;transform:rotate(-12deg)}
+.hero .tag{font-size:11px;background:rgba(255,255,255,.28);padding:4px 11px;border-radius:999px;display:inline-block;margin-bottom:10px}
+.hero h2{font-size:22px;font-weight:800;margin-bottom:4px}
+.hero .date{font-size:13px;opacity:.92}
+.hero .prog{margin-top:14px}
+.hero .prog .bar{height:7px;border-radius:99px;background:rgba(255,255,255,.35);overflow:hidden}
+.hero .prog .fill{height:100%;width:55%;border-radius:99px;background:#fff}
+.hero .prog .txt{font-size:11px;margin-top:6px;opacity:.9}
+.rowline{display:flex;align-items:center;gap:10px;margin-top:12px;font-size:13px;color:#EAF6FF}
+.rowline .ic{font-size:18px}
+/* trip list item */
+.trip-item{display:flex;gap:12px;align-items:center;padding:14px;cursor:pointer}
+.trip-thumb{width:64px;height:64px;border-radius:16px;flex-shrink:0;display:flex;align-items:center;justify-content:center;
+  font-size:30px;color:#fff;font-weight:800}
+.trip-item .meta{flex:1}
+.trip-item .meta h3{font-size:15px;font-weight:800}
+.trip-item .meta p{font-size:12px;color:var(--muted);margin-top:3px}
+.trip-item .arrow{color:#B7C6D2;font-size:18px}
+/* detail */
+.backbtn{display:inline-flex;align-items:center;gap:6px;font-size:14px;color:var(--ink);font-weight:700;
+  background:#fff;border:1px solid var(--line);border-radius:999px;padding:8px 14px;cursor:pointer;margin:14px 0 6px}
+.daytab{display:flex;gap:8px;margin:10px 0 4px;overflow-x:auto;padding-bottom:6px}
+.daytab button{flex-shrink:0;border:1.5px solid var(--line);background:#fff;border-radius:999px;padding:8px 14px;
+  font-size:13px;font-weight:700;color:var(--muted);cursor:pointer}
+.daytab button.on{background:linear-gradient(135deg,var(--sky),var(--teal));color:#fff;border-color:transparent}
+.timeline{position:relative;margin:14px 0 0;padding-left:26px}
+.timeline::before{content:"";position:absolute;left:8px;top:8px;bottom:8px;width:2px;background:var(--sand-deep);border-radius:2px}
+.node{position:relative;padding:0 0 18px}
+.node::before{content:"";position:absolute;left:-24px;top:3px;width:12px;height:12px;border-radius:50%;
+  background:#fff;border:3px solid var(--teal)}
+.node.fly::before{border-color:var(--sky)}
+.node .t{font-size:12px;color:var(--muted);font-weight:700}
+.node .c{background:#fff;border-radius:16px;padding:12px;margin-top:6px;box-shadow:0 4px 12px rgba(30,58,76,.06);
+  display:flex;gap:10px;align-items:center}
+.node .c .ic{font-size:24px}
+.node .c .tt{font-size:14px;font-weight:800}
+.node .c .dd{font-size:12px;color:var(--muted);margin-top:2px}
+/* hotel */
+.searchbox{display:flex;align-items:center;background:#fff;border-radius:999px;padding:11px 16px;margin:2px 0 10px;
+  box-shadow:0 6px 16px rgba(30,58,76,.07)}
+.searchbox input{border:none;outline:none;flex:1;font-size:14px;background:transparent;color:var(--ink)}
+.searchbox .s-ic{font-size:16px;margin-right:8px}
+.filters{background:var(--sand);border-radius:18px;padding:12px;margin-bottom:12px}
+.fgroup{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:8px}
+.fgroup:last-child{margin-bottom:0}
+.fgroup .lb{font-size:12px;color:#8A7B4F;font-weight:800;width:44px}
+.chip{border:1.5px solid #E3D6B4;background:#fff;border-radius:999px;padding:6px 13px;font-size:12px;font-weight:700;
+  color:#7C6F47;cursor:pointer}
+.chip.on{background:linear-gradient(135deg,var(--sky),var(--teal));color:#fff;border-color:transparent}
+.hotel{display:flex;gap:12px;padding:14px;cursor:pointer}
+.hotel .pic{width:88px;height:88px;border-radius:16px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:36px}
+.hotel .info{flex:1;min-width:0}
+.hotel .info h3{font-size:15px;font-weight:800;display:flex;align-items:center;gap:6px}
+.stars{color:#F5A623;font-size:11px;letter-spacing:1px}
+.hotel .info .loc{font-size:12px;color:var(--muted);margin:4px 0}
+.hotel .tags{display:flex;gap:6px;flex-wrap:wrap}
+.hotel .rt{text-align:right;display:flex;flex-direction:column;justify-content:center;align-items:flex-end}
+.score{background:linear-gradient(135deg,var(--sky),var(--teal));color:#fff;font-size:13px;font-weight:800;
+  border-radius:10px;padding:4px 8px}
+.score small{font-weight:400;font-size:10px;display:block;opacity:.9}
+.price{margin-top:8px;font-size:12px;color:var(--muted)}
+.price b{font-size:20px;color:#E8641B;font-weight:800}
+/* spots */
+.spot-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+.spot{background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 8px 20px rgba(30,58,76,.08);cursor:pointer}
+.spot .cov{height:104px;display:flex;align-items:center;justify-content:center;font-size:44px;position:relative}
+.spot .cov .sc{position:absolute;top:8px;right:8px;background:rgba(255,255,255,.92);border-radius:10px;
+  font-size:11px;font-weight:800;color:#1B7FD4;padding:3px 8px}
+.spot .bd{padding:10px 12px 12px}
+.spot .bd h3{font-size:14px;font-weight:800}
+.spot .bd .row{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-top:6px}
+.spot .bd .fee{font-size:12px;color:#E8641B;font-weight:800;margin-top:4px}
+.empty{grid-column:1/-1;text-align:center;color:var(--muted);font-size:13px;padding:30px 0;background:#fff;border-radius:20px}
+/* me */
+.profile{background:linear-gradient(135deg,#2E9BEF,#35C9E8 60%,#2ED3B8);border-radius:var(--radius);
+  padding:22px 18px;color:#fff;display:flex;gap:14px;align-items:center;margin:4px 0 14px;
+  box-shadow:0 12px 26px rgba(46,155,239,.3);position:relative;overflow:hidden}
+.profile::after{content:"🌊";position:absolute;right:8px;top:-8px;font-size:70px;opacity:.2}
+.avatar{width:64px;height:64px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;
+  font-size:32px;flex-shrink:0}
+.profile h2{font-size:18px;font-weight:800}
+.profile p{font-size:12px;opacity:.9;margin-top:3px}
+.vip{font-size:11px;background:rgba(255,255,255,.28);padding:3px 10px;border-radius:999px;display:inline-block;margin-top:6px}
+.order{display:flex;gap:12px;align-items:center;padding:12px 4px;border-bottom:1px solid #F1EFE2}
+.order:last-child{border-bottom:none}
+.order .oic{width:44px;height:44px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.order .oi{flex:1}
+.order .oi h4{font-size:14px;font-weight:800}
+.order .oi p{font-size:12px;color:var(--muted);margin-top:2px}
+.ost{font-size:11px;font-weight:800;padding:4px 10px;border-radius:999px;background:#E3F4FF;color:#1B7FD4}
+.ost.fin{background:#F1EFE4;color:#8A7B4F}
+.trav{display:flex;gap:10px;align-items:center;padding:10px 4px;border-bottom:1px solid #F1EFE2}
+.trav:last-child{border:none}
+.trav .av{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;color:#fff;font-weight:800}
+.trav .ti{flex:1}.trav .ti h4{font-size:14px}.trav .ti p{font-size:12px;color:var(--muted)}
+.setrow{display:flex;align-items:center;gap:12px;padding:13px 4px;border-bottom:1px solid #F1EFE2;font-size:14px;cursor:pointer}
+.setrow:last-child{border:none}
+.setrow .sic{font-size:18px}
+.setrow .sv{margin-left:auto;font-size:12px;color:var(--muted)}
+.setrow .arr{color:#B7C6D2}
+/* tabbar */
+.tabbar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;z-index:10;
+  background:rgba(255,255,255,.96);backdrop-filter:blur(10px);border-top:1px solid var(--line);
+  display:flex;padding:8px 4px calc(10px + env(safe-area-inset-bottom))}
+.tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 0;cursor:pointer;
+  color:#9DB0C0;font-size:11px;font-weight:700;border:none;background:none}
+.tab .ti{font-size:23px;line-height:1}
+.tab.on{color:#1B8FD4}
+.tab.on .ti{transform:scale(1.12)}
+.toast{position:fixed;left:50%;bottom:110px;transform:translateX(-50%) translateY(20px);background:rgba(30,58,76,.92);
+  color:#fff;font-size:13px;padding:10px 18px;border-radius:999px;opacity:0;transition:.3s;z-index:50;pointer-events:none}
+.toast.show{opacity:1;transform:translateX(-50%)}
+.sec-h{display:flex;align-items:center;justify-content:space-between;margin:6px 4px 10px}
+.sec-h h2{font-size:16px;font-weight:800}
+.sec-h a{font-size:12px;color:var(--sky);font-weight:700}
+</style>
+</head>
+<body>
+<div class="phone" id="app">
+
+  <!-- ============ 行程 ============ -->
+  <section class="page" id="page-0">
+    <div class="hdr"><div><h1>我的旅行 ✈️</h1><div class="sub">把每一程都走成诗</div></div>
+      <button class="btn-add" id="btnNew">＋ 新行程</button></div>
+
+    <div class="hero" id="heroTrip">
+      <span class="tag">进行中 · Day 3 / 5</span>
+      <h2>云南 5 日游</h2>
+      <div class="date">10.01 — 10.05 · 昆明 · 大理 · 丽江</div>
+      <div class="prog"><div class="bar"><div class="fill"></div></div><div class="txt">已完成 3 天 · 当前：大理洱海</div></div>
+      <div class="rowline"><span class="ic">🌤️</span><span>大理今日多云 18–24℃，适合环洱海骑行</span></div>
+    </div>
+
+    <div class="sec-h"><h2>全部行程</h2><a id="linkAll">管理</a></div>
+    <div id="tripList"></div>
+  </section>
+
+  <!-- ============ 行程详情（内页） ============ -->
+  <section class="page" id="page-detail">
+    <button class="backbtn" id="btnBack">← 返回行程</button>
+    <div class="card">
+      <div class="card-title" id="dTitle">行程详情</div>
+      <div class="card-sub" id="dSub"></div>
+      <div style="margin-top:10px" id="dMeta"></div>
+    </div>
+    <div class="daytab" id="dayTabs"></div>
+    <div class="timeline" id="timeline"></div>
+  </section>
+
+  <!-- ============ 酒店 ============ -->
+  <section class="page" id="page-1">
+    <div class="hdr"><div><h1>住哪里 🏨</h1><div class="sub">云南精选 · 128 家酒店</div></div></div>
+    <div class="searchbox"><span class="s-ic">🔍</span><input id="hotelQ" placeholder="搜索酒店名称 / 区域，如：洱海"></div>
+    <div class="filters">
+      <div class="fgroup"><span class="lb">价格</span><span id="fPrice"></span></div>
+      <div class="fgroup"><span class="lb">星级</span><span id="fStar"></span></div>
+    </div>
+    <div id="hotelList"></div>
+  </section>
+
+  <!-- ============ 景点 ============ -->
+  <section class="page" id="page-2">
+    <div class="hdr"><div><h1>去哪玩 🎡</h1><div class="sub">云南必打卡 · 36 个景点</div></div></div>
+    <div class="searchbox"><span class="s-ic">🔍</span><input id="spotQ" placeholder="搜索景点，如：雪山"></div>
+    <div class="spot-grid" id="spotGrid"></div>
+  </section>
+
+  <!-- ============ 我的 ============ -->
+  <section class="page" id="page-3">
+    <div class="hdr"><div><h1>我的 👤</h1></div></div>
+    <div class="profile">
+      <div class="avatar">🌤️</div>
+      <div><h2>旅行达人·小芸</h2><p>已出行 12 次 · 足迹 9 座城市</p><span class="vip">💎 黄金会员 · 享 9 折</span></div>
+    </div>
+    <div class="card"><div class="card-title">我的订单</div><div id="orderList"></div></div>
+    <div class="card">
+      <div class="card-title" style="margin-bottom:6px">常用旅客 <span class="card-sub">· 3人</span></div>
+      <div id="travList"></div>
+      <button class="btn-add" id="btnTrav" style="margin-top:10px;width:100%">＋ 添加旅客</button>
+    </div>
+    <div class="card"><div class="card-title" style="margin-bottom:6px">设置</div><div id="setList"></div></div>
+    <div style="text-align:center;font-size:11px;color:var(--muted);padding:8px 0 4px">云游记 v2.4.1 · 让旅行更简单</div>
+  </section>
+
+  <!-- 底部 Tab -->
+  <nav class="tabbar" id="tabbar">
+    <button class="tab" data-i="0"><span class="ti">🗺️</span>行程</button>
+    <button class="tab" data-i="1"><span class="ti">🏨</span>酒店</button>
+    <button class="tab" data-i="2"><span class="ti">🎡</span>景点</button>
+    <button class="tab" data-i="3"><span class="ti">👤</span>我的</button>
+  </nav>
+  <div class="toast" id="toast"></div>
+</div>
+
+<script>
+(function(){
+"use strict";
+/* ---------- 数据 ---------- */
+var TRIPS=[
+ {id:0,name:"云南 5 日游",date:"10.01 — 10.05",route:"昆明 · 大理 · 丽江",status:"ongoing",
+  icon:"🏔️",bg:"linear-gradient(135deg,#2E9BEF,#2ED3B8)",days:5,cur:3,
+  meta:["✈️ 往返机票已出票","🏨 4晚酒店已预订","🎫 6张门票已购"],
+  detail:[
+   [{t:"08:30",icon:"✈️",fly:1,tt:"MU5712 上海虹桥 → 昆明长水",dd:"东方航空 · 经济舱 · 准点起飞"},
+    {t:"12:10",icon:"🏨",tt:"入住 昆明滇池大观酒店",dd:"豪华湖景大床房 · 含双早 · ¥486/晚"},
+    {t:"15:00",icon:"🦩",tt:"滇池海埂大坝",dd:"看红嘴鸥 · 环湖骑行 6 公里"},
+    {t:"18:30",icon:"🍜",tt:"晚餐 · 建新园过桥米线",dd:"大众评分 4.6 · 人均 ¥38"}],
+   [{t:"08:00",icon:"🚌",tt:"石林一日游拼车",dd:"8 人小团 · 含门票+讲解 ¥198"},
+    {t:"10:00",icon:"🪨",tt:"石林风景区",dd:"大小石林 · 步云路 · 预计游玩 4 小时"},
+    {t:"19:00",icon:"🍲",tt:"晚餐 · 老滇味汽锅鸡",dd:"昆明老字号 · 人均 ¥65"}],
+   [{t:"09:00",icon:"🚄",fly:1,tt:"D8668 昆明南 → 大理",dd:"二等座 · 2 小时 05 分"},
+    {t:"12:00",icon:"🏨",tt:"入住 大理洱海边的客栈",dd:"180° 海景房 · ¥328/晚"},
+    {t:"14:30",icon:"🚲",tt:"环洱海东路骑行",dd:"租车 ¥30/天 · 喜洲古镇打卡"},
+    {t:"18:00",icon:"🌅",tt:"洱海日落 · 龙龛码头",dd:"今日最佳机位 · 带好外套"}],
+   [{t:"08:30",icon:"🚐",tt:"大理 → 丽江",dd:"拼车 2.5 小时 · ¥80/人"},
+    {t:"11:30",icon:"🏨",tt:"入住 丽江束河·花筑客栈",dd:"纳西小院 · ¥268/晚"},
+    {t:"14:00",icon:"🏔️",tt:"玉龙雪山 · 冰川公园",dd:"大索道 8:30 场 · 氧气瓶备好"},
+    {t:"19:30",icon:"🏮",tt:"丽江古城夜游",dd:"四方街 · 酒吧街 · 束河更安静"}],
+   [{t:"10:00",icon:"🛍️",tt:"花市 + 伴手礼",dd:"鲜花饼 · 普洱茶 · 扎染围巾"},
+    {t:"14:20",icon:"✈️",fly:1,tt:"MU5721 丽江三义 → 上海虹桥",dd:"返程 · 记得提前 2 小时到机场"}]
+  ]},
+ {id:1,name:"成都 3 日游",date:"07.18 — 07.20",route:"宽窄巷子 · 锦里 · 都江堰",status:"done",
+  icon:"🐼",bg:"linear-gradient(135deg,#F5A623,#E8641B)",days:3,cur:3,
+  meta:["✅ 已完成 · 共花费 ¥2,860"],
+  detail:[
+   [{t:"09:00",icon:"🐼",tt:"大熊猫繁育基地",dd:"看花花排队 1 小时 · 早去"},
+    {t:"14:00",icon:"🍢",tt:"宽窄巷子 + 建设路小吃",dd:"三大炮 · 冰粉 · 钵钵鸡"}],
+   [{t:"08:00",icon:"🏞️",tt:"都江堰一日游",dd:"离堆公园 · 南桥蓝眼泪夜景"},
+    {t:"18:00",icon:"🌶️",tt:"蜀大侠火锅",dd:"排队 2 小时 · 值得"}],
+   [{t:"10:00",icon:"🛕",tt:"武侯祠 + 锦里",dd:"三国文化 · 盖碗茶"},
+    {t:"16:00",icon:"✈️",fly:1,tt:"返程航班",dd:"成都天府 → 上海虹桥"}]
+  ]},
+ {id:2,name:"三亚 4 日游",date:"03.05 — 03.08",route:"亚龙湾 · 蜈支洲岛 · 天涯海角",status:"done",
+  icon:"🏖️",bg:"linear-gradient(135deg,#35C9E8,#2E9BEF)",days:4,cur:4,
+  meta:["✅ 已完成 · 共花费 ¥4,120"],
+  detail:[
+   [{t:"11:00",icon:"✈️",fly:1,tt:"抵达三亚凤凰机场",dd:"直飞 3 小时"},
+    {t:"14:00",icon:"🏨",tt:"入住 亚龙湾万豪",dd:"海景房 · 私人沙滩"},
+    {t:"16:00",icon:"🏖️",tt:"亚龙湾沙滩",dd:"日落 18:40"}],
+   [{t:"08:30",icon:"⛴️",tt:"蜈支洲岛",dd:"潜水 ¥580 · 上岛船票 8:30 首班"}],
+   [{t:"10:00",icon:"🌊",tt:"天涯海角 + 南山寺",dd:"108 米海上观音"},
+    {t:"19:00",icon:"🦀",tt:"第一市场海鲜加工",dd:"龙虾 · 和乐蟹"}],
+   [{t:"12:00",icon:"✈️",fly:1,tt:"返程",dd:"三亚 → 上海虹桥"}]
+  ]}
+];
+var HOTELS=[
+ {n:"大理洱海边的客栈",s:4,star:"舒适型",p:328,score:4.8,c:"超赞",loc:"大理 · 洱海东岸",tags:["海景房","亲子","含早"],bg:"#D9ECFB",ic:"🌊"},
+ {n:"昆明滇池大观酒店",s:5,star:"豪华型",p:486,score:4.9,c:"超赞",loc:"昆明 · 滇池路",tags:["湖景","行政酒廊","泳池"],bg:"#FFF3D6",ic:"🏙️"},
+ {n:"丽江束河·花筑客栈",s:4,star:"舒适型",p:268,score:4.7,c:"很好",loc:"丽江 · 束河古镇",tags:["庭院","安静","旅拍"],bg:"#E2FAF1",ic:"🏡"},
+ {n:"昆明春城快捷酒店",s:3,star:"经济型",p:159,score:4.3,c:"不错",loc:"昆明 · 火车站旁",tags:["交通便利","24h前台"],bg:"#F1EFE4",ic:"🏢"},
+ {n:"大理古城·云想客栈",s:4,star:"舒适型",p:356,score:4.8,c:"超赞",loc:"大理 · 古城南门",tags:["古城内","网红","含早"],bg:"#FFE8D6",ic:"🏯"},
+ {n:"玉龙雪山脚下度假村",s:5,star:"豪华型",p:888,score:4.9,c:"超赞",loc:"丽江 · 玉龙雪山",tags:["雪山景","温泉","亲子"],bg:"#E3F4FF",ic:"🏔️"},
+ {n:"昆明青年旅舍·床位",s:2,star:"经济型",p:68,score:4.5,c:"很好",loc:"昆明 · 翠湖旁",tags:["青旅","社交","便宜"],bg:"#E8F6FF",ic:"🎒"},
+ {n:"西双版纳雨林 resort",s:5,star:"豪华型",p:720,score:4.7,c:"很好",loc:"版纳 · 告庄",tags:["雨林","无边泳池"],bg:"#DFF5E3",ic:"🌴"}
+];
+var SPOTS=[
+ {n:"滇池海埂大坝",fee:"免费",score:4.7,time:"全天开放",bg:"#D9ECFB",ic:"🦩"},
+ {n:"石林风景区",fee:"¥130",score:4.8,time:"08:30–18:00",bg:"#FFF3D6",ic:"🪨"},
+ {n:"洱海生态廊道",fee:"免费",score:4.9,time:"全天开放",bg:"#E2FAF1",ic:"🚲"},
+ {n:"大理古城",fee:"免费",score:4.6,time:"全天开放",bg:"#FFE8D6",ic:"🏯"},
+ {n:"玉龙雪山",fee:"¥100+索道",score:4.9,time:"07:30–16:30",bg:"#E3F4FF",ic:"🏔️"},
+ {n:"丽江古城",fee:"免费",score:4.5,time:"全天开放",bg:"#F3E8FF",ic:"🏮"},
+ {n:"苍山洗马潭索道",fee:"¥35+索道",score:4.6,time:"08:30–17:00",bg:"#E8F6FF",ic:"🚡"},
+ {n:"普达措国家公园",fee:"¥138",score:4.7,time:"08:00–17:00",bg:"#DFF5E3",ic:"🦌"}
+];
+var ORDERS=[
+ {ic:"✈️",bg:"#E3F4FF",t:"机票 · MU5712 上海→昆明",d:"10.01 08:30 起飞 · 2成人",s:"已出票",fin:0},
+ {ic:"🏨",bg:"#FFF3D6",t:"酒店 · 大理洱海边的客栈",d:"10.03–10.04 · 海景大床房 1间",s:"待入住",fin:0},
+ {ic:"🎫",bg:"#E2FAF1",t:"门票 · 玉龙雪山大索道",d:"10.04 08:30场 · 2张",s:"已完成",fin:1},
+ {ic:"🚄",bg:"#F1EFE4",t:"火车票 · D8668 昆明南→大理",d:"10.03 09:00 · 二等座 2张",s:"已完成",fin:1}
+];
+var TRAVS=[
+ {n:"陈小芸",id:"本人 · 3201**********0025",c:"#3FA7F5",ic:"👩"},
+ {n:"李建国",id:"父亲 · 3201**********0018",c:"#2ED3B8",ic:"👨"},
+ {n:"王秀兰",id:"母亲 · 3201**********0032",c:"#F5A623",ic:"👵"}
+];
+var SETS=[
+ {ic:"🔔",t:"消息通知",v:"已开启"},
+ {ic:"📍",t:"定位服务",v:"仅使用时"},
+ {ic:"💾",t:"清除缓存",v:"86.4 MB"},
+ {ic:"🛡️",t:"隐私设置",v:""},
+ {ic:"ℹ️",t:"关于云游记",v:"v2.4.1"}
+];
+var PRICE_F=[["不限",0,99999],["¥300以下",0,300],["¥300–600",300,600],["¥600以上",600,99999]];
+var STAR_F=["全部","经济型","舒适型","豪华型"];
+var fPrice=0,fStar=0;
+
+/* ---------- 工具 ---------- */
+var $=function(id){return document.getElementById(id)};
+function toast(msg){var t=$("toast");t.textContent=msg;t.className="toast show";
+  clearTimeout(t._h);t._h=setTimeout(function(){t.className="toast"},1800)}
+function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;")}
+
+/* ---------- Tab ---------- */
+var tabs=document.querySelectorAll(".tab");
+function showPage(i){
+  document.querySelectorAll(".page").forEach(function(p){p.classList.remove("active")});
+  var target=(i==="detail")?"page-detail":"page-"+i;
+  $(target).classList.add("active");
+  tabs.forEach(function(b){b.classList.toggle("on",b.getAttribute("data-i")===String(i))});
+  window.scrollTo(0,0);
+}
+tabs.forEach(function(b){b.addEventListener("click",function(){showPage(b.getAttribute("data-i"))})});
+
+/* ---------- 行程列表 ---------- */
+function renderTrips(){
+  var html="";
+  TRIPS.forEach(function(tr){
+    var pill=tr.status==="ongoing"
+      ?'<span class="pill ongoing">进行中 · Day '+tr.cur+'/'+tr.days+'</span>'
+      :'<span class="pill done">已完成</span>';
+    html+='<div class="card trip-item" data-id="'+tr.id+'">'
+      +'<div class="trip-thumb" style="background:'+tr.bg+'">'+tr.icon+'</div>'
+      +'<div class="meta"><h3>'+esc(tr.name)+'</h3><p>'+esc(tr.date)+' · '+esc(tr.route)+'</p>'
+      +'<div style="margin-top:6px">'+pill+'</div></div>'
+      +'<div class="arrow">›</div></div>';
+  });
+  $("tripList").innerHTML=html;
+  var items=document.querySelectorAll(".trip-item");
+  items.forEach(function(el){el.addEventListener("click",function(){openTrip(+el.getAttribute("data-id"))})});
+}
+$("btnNew").addEventListener("click",function(){toast("行程规划器开发中，敬请期待")});
+$("linkAll").addEventListener("click",function(){toast("已同步 3 条行程到云端")});
+$("heroTrip").addEventListener("click",function(){openTrip(0)});
+
+/* ---------- 行程详情 ---------- */
+var curTrip=0,curDay=0;
+function openTrip(id){
+  curTrip=id;curDay=Math.min(TRIPS[id].cur-1,TRIPS[id].detail.length-1);
+  if(TRIPS[id].status!=="ongoing")curDay=0;
+  renderDetail();showPage("detail");
+}
+$("btnBack").addEventListener("click",function(){showPage(0)});
+function renderDetail(){
+  var tr=TRIPS[curTrip];
+  $("dTitle").textContent=tr.name;
+  $("dSub").textContent=tr.date+" · "+tr.route;
+  $("dMeta").innerHTML=tr.meta.map(function(m){
+    return '<span class="pill '+(tr.status==="ongoing"?"ongoing":"done")+'" style="margin-bottom:6px">'+esc(m)+'</span>'}).join("");
+  var dt="";
+  tr.detail.forEach(function(_,i){
+    dt+='<button class="'+(i===curDay?"on":"")+'" data-d="'+i+'">Day '+(i+1)+'</button>'});
+  $("dayTabs").innerHTML=dt;
+  var bs=$("dayTabs").querySelectorAll("button");
+  bs.forEach(function(b){b.addEventListener("click",function(){curDay=+b.getAttribute("data-d");renderDetail()})});
+  var tl="";
+  tr.detail[curDay].forEach(function(n){
+    tl+='<div class="node'+(n.fly?" fly":"")+'"><div class="t">'+esc(n.t)+'</div>'
+      +'<div class="c"><span class="ic">'+n.icon+'</span><div><div class="tt">'+esc(n.tt)+'</div>'
+      +'<div class="dd">'+esc(n.dd)+'</div></div></div></div>'});
+  $("timeline").innerHTML=tl;
+}
+
+/* ---------- 酒店 ---------- */
+function renderFilters(){
+  var hp="";
+  PRICE_F.forEach(function(p,i){hp+='<button class="chip'+(i===fPrice?" on":"")+'" data-p="'+i+'">'+p[0]+'</button>'});
+  $("fPrice").innerHTML=hp;
+  var hs="";
+  STAR_F.forEach(function(s,i){hs+='<button class="chip'+(i===fStar?" on":"")+'" data-s="'+i+'">'+s+'</button>'});
+  $("fStar").innerHTML=hs;
+  $("fPrice").querySelectorAll(".chip").forEach(function(c){
+    c.addEventListener("click",function(){fPrice=+c.getAttribute("data-p");renderFilters();renderHotels()})});
+  $("fStar").querySelectorAll(".chip").forEach(function(c){
+    c.addEventListener("click",function(){fStar=+c.getAttribute("data-s");renderFilters();renderHotels()})});
+}
+function renderHotels(){
+  var q=$("hotelQ").value.trim();
+  var pr=PRICE_F[fPrice],sf=STAR_F[fStar];
+  var list=HOTELS.filter(function(h){
+    return h.p>=pr[1]&&h.p<pr[2]&&(sf==="全部"||h.star===sf)&&(!q||h.n.indexOf(q)>-1||h.loc.indexOf(q)>-1)});
+  var html="";
+  list.forEach(function(h){
+    html+='<div class="card hotel"><div class="pic" style="background:'+h.bg+'">'+h.ic+'</div>'
+      +'<div class="info"><h3>'+esc(h.n)+' <span class="stars">'+"★".repeat(h.s)+'</span></h3>'
+      +'<div class="loc">'+esc(h.loc)+' · '+h.star+'</div>'
+      +'<div class="tags">'+h.tags.map(function(t){return '<span class="pill '+(t==="含早"?"free":"hot")+'">'+esc(t)+'</span>'}).join("")+'</div></div>'
+      +'<div class="rt"><div class="score">'+h.score+'<small>'+h.c+'</small></div>'
+      +'<div class="price"><b>¥'+h.p+'</b> 起</div></div></div>';
+  });
+  $("hotelList").innerHTML=html||'<div class="card" style="text-align:center;color:var(--muted);font-size:13px">没有符合条件的酒店，换个筛选试试</div>';
+  $("hotelList").querySelectorAll(".hotel").forEach(function(el){
+    el.addEventListener("click",function(){toast("进入酒店详情预订页")})});
+}
+$("hotelQ").addEventListener("input",renderHotels);
+
+/* ---------- 景点 ---------- */
+function renderSpots(){
+  var q=$("spotQ").value.trim();
+  var list=SPOTS.filter(function(s){return !q||s.n.indexOf(q)>-1});
+  var html="";
+  list.forEach(function(s){
+    html+='<div class="spot"><div class="cov" style="background:'+s.bg+'"><span>'+s.ic+'</span>'
+      +'<span class="sc">★ '+s.score+'</span></div>'
+      +'<div class="bd"><h3>'+esc(s.n)+'</h3>'
+      +'<div class="fee">'+esc(s.fee)+'</div>'
+      +'<div class="row"><span>🕘 '+esc(s.time)+'</span></div></div></div>';
+  });
+  $("spotGrid").innerHTML=html||'<div class="empty">没找到相关景点，换个关键词试试</div>';
+  $("spotGrid").querySelectorAll(".spot").forEach(function(el){
+    el.addEventListener("click",function(){toast("进入景点详情页")})});
+}
+$("spotQ").addEventListener("input",renderSpots);
+
+/* ---------- 我的 ---------- */
+function renderMe(){
+  var oh="";
+  ORDERS.forEach(function(o){
+    oh+='<div class="order"><div class="oic" style="background:'+o.bg+'">'+o.ic+'</div>'
+      +'<div class="oi"><h4>'+esc(o.t)+'</h4><p>'+esc(o.d)+'</p></div>'
+      +'<span class="ost'+(o.fin?" fin":"")+'">'+esc(o.s)+'</span></div>'});
+  $("orderList").innerHTML=oh;
+  var th="";
+  TRAVS.forEach(function(t){
+    th+='<div class="trav"><div class="av" style="background:'+t.c+'">'+t.ic+'</div>'
+      +'<div class="ti"><h4>'+esc(t.n)+'</h4><p>'+esc(t.id)+'</p></div></div>'});
+  $("travList").innerHTML=th;
+  var sh="";
+  SETS.forEach(function(s){
+    sh+='<div class="setrow" data-t="'+esc(s.t)+'"><span class="sic">'+s.ic+'</span><span>'+esc(s.t)+'</span>'
+      +'<span class="sv">'+esc(s.v)+'</span><span class="arr">›</span></div>'});
+  $("setList").innerHTML=sh;
+  $("setList").querySelectorAll(".setrow").forEach(function(el){
+    el.addEventListener("click",function(){
+      if(el.getAttribute("data-t")==="清除缓存")toast("已清理 86.4 MB 缓存");
+      else toast(el.getAttribute("data-t")+" 设置页开发中")})});
+}
+$("btnTrav").addEventListener("click",function(){toast("添加旅客：需实名认证")});
+
+/* ---------- 启动 ---------- */
+renderTrips();renderFilters();renderHotels();renderSpots();renderMe();
+var m=/[?&]tab=(\d)/.exec(location.search);
+var startTab=m?Math.min(3,Math.max(0,+m[1])):0;
+var mt=/[?&]trip=(\d)/.exec(location.search);
+if(mt&&TRIPS[+mt[1]]){openTrip(+mt[1])}else{showPage(startTab)}
+})();
+</script>
+</body>
+</html>

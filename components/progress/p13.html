@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>马拉松 · 赛道进度</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:#0d141c; color:#e8f4f8; font-family:"PingFang SC","Microsoft YaHei",sans-serif;
+         min-height:100vh; display:flex; align-items:center; justify-content:center; }
+  .stage { width:360px; max-width:94vw; background:#141e29; border-radius:18px;
+           padding:22px 20px 26px; box-shadow:0 10px 40px rgba(0,0,0,.5); }
+  .stage h2 { font-size:17px; font-weight:600; letter-spacing:1px; text-align:center; }
+  .stage .pct { text-align:center; font-size:40px; font-weight:700; color:#ffb86b;
+                margin:6px 0 14px; font-variant-numeric:tabular-nums; }
+  .track-area { position:relative; height:230px; background:linear-gradient(180deg,#182635,#101a26);
+                border-radius:14px; overflow:hidden; border:1px solid #24344a; }
+  .track { position:absolute; left:14px; right:14px; top:120px; height:16px;
+           background:repeating-linear-gradient(90deg,#4a5a6e 0 26px,#3a485c 26px 52px);
+           border-radius:8px; }
+  .flag { position:absolute; top:64px; text-align:center; width:44px; margin-left:-22px; }
+  .flag .pole { width:4px; height:56px; background:#8aa0b4; margin:0 auto; }
+  .flag .tri { width:0; height:0; border-left:15px solid #5a6b7e; border-top:10px solid transparent;
+               border-bottom:10px solid transparent; margin:-56px auto 0; }
+  .flag .km { font-size:11px; color:#8aa0b4; margin-top:6px; }
+  .flag.passed .tri { border-left-color:#ffb86b; }
+  .flag.passed .km { color:#ffb86b; font-weight:700; }
+  .runner { position:absolute; top:58px; font-size:44px; margin-left:-24px; }
+  .finish { position:absolute; right:6px; top:52px; text-align:center; }
+  .finish .banner { background:#e5484d; color:#fff; font-size:12px; font-weight:700;
+                    padding:6px 10px; border-radius:6px; letter-spacing:2px;
+                    box-shadow:0 0 16px rgba(229,72,77,.7); }
+  .finish .line { width:4px; height:78px; background:repeating-linear-gradient(180deg,#fff 0 8px,#222 8px 16px);
+                  margin:0 auto; }
+  .crowd { position:absolute; bottom:8px; left:0; right:0; text-align:center; font-size:20px;
+           letter-spacing:6px; opacity:.85; }
+  .tip { text-align:center; color:#8aa0b4; font-size:12px; margin-top:12px; letter-spacing:1px; }
+</style>
+</head>
+<body>
+<div class="stage">
+  <h2>🏃 马拉松 · 赛道进度</h2>
+  <div class="pct" id="pct">0%</div>
+  <div class="track-area">
+    <div class="track"></div>
+    <div class="flag" data-km="10" style="left:24%"><div class="pole"></div><div class="tri"></div><div class="km">10km</div></div>
+    <div class="flag" data-km="30" style="left:42%"><div class="pole"></div><div class="tri"></div><div class="km">30km</div></div>
+    <div class="flag" data-km="60" style="left:66%"><div class="pole"></div><div class="tri"></div><div class="km">60km</div></div>
+    <div class="flag" data-km="90" style="left:88%"><div class="pole"></div><div class="tri"></div><div class="km">90km</div></div>
+    <div class="runner" id="runner">🏃</div>
+    <div class="finish"><div class="banner">终点</div><div class="line"></div></div>
+    <div class="crowd">👏🎉👏🎉👏</div>
+  </div>
+  <div class="tip">跑者冲向终点，里程碑逐一点亮</div>
+</div>
+<script>
+var p = 0;
+var runner = document.getElementById('runner');
+var pctEl = document.getElementById('pct');
+var flags = document.querySelectorAll('.flag');
+var kms = [10, 30, 60, 90];
+function render() {
+  // 跑者 left 位置 = p（4%→96% 防止溢出）
+  runner.style.left = (4 + p * 0.92) + '%';
+  for (var i = 0; i < flags.length; i++) {
+    if (p >= kms[i]) flags[i].className = 'flag passed';
+    else flags[i].className = 'flag';
+  }
+  pctEl.textContent = Math.round(p) + '%';
+}
+var start = Date.now();
+var bob = 0;
+function loop() {
+  var t = (Date.now() - start) / 1000;
+  if (t < 7) p = t / 7 * 100;
+  else { p = 100; if (t > 8) start = Date.now(); }
+  render();
+  // 装饰：跑者上下轻微起伏（不影响进度映射）
+  bob += 0.25;
+  runner.style.top = (58 + Math.sin(bob) * 4) + 'px';
+  requestAnimationFrame(loop);
+}
+render();
+if (location.hash === '#mid') { p = 55; render(); }
+else { requestAnimationFrame(loop); }
+</script>
+</body>
+</html>

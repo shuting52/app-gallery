@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>通知中心 · 通知与提醒</title>
+<style>
+:root{
+  --bg:#F2F4F8; --card:#FFFFFF; --ink:#1F2430; --ink2:#6B7280; --ink3:#9AA3B2;
+  --line:#E7EAF1; --indigo:#4F46E5; --indigo-soft:#EEF0FE;
+  --sys:#4F46E5; --promo:#F59E0B; --social:#10B981; --ship:#0EA5E9; --warn:#EF4444;
+  --red:#FF3B30; --radius:14px;
+  --font:-apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{background:#D8DCE6}
+body{font-family:var(--font);background:#D8DCE6;color:var(--ink);min-height:100vh;display:flex;justify-content:center}
+.phone{width:100%;max-width:430px;background:var(--bg);min-height:100vh;position:relative;display:flex;flex-direction:column;box-shadow:0 0 40px rgba(31,36,48,.18)}
+.topbar{background:#fff;padding:14px 18px 10px;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20}
+.topbar h1{font-size:20px;font-weight:700;letter-spacing:.5px}
+.topbar .sub{font-size:12px;color:var(--ink3);margin-top:2px}
+.topbar .actions{position:absolute;right:16px;top:16px;display:flex;gap:14px;font-size:20px}
+.topbar .actions span{cursor:pointer}
+.main{flex:1;overflow-y:auto;padding-bottom:96px}
+/* ---------- 通知页 ---------- */
+.group-title{font-size:13px;color:var(--ink2);padding:18px 18px 8px;font-weight:600}
+.nitem{background:#fff;margin:0 14px;border-bottom:1px solid var(--line);padding:13px 14px;display:flex;gap:12px;align-items:flex-start;cursor:pointer;position:relative;transition:background .15s}
+.nitem:first-of-type{border-top-left-radius:var(--radius);border-top-right-radius:var(--radius)}
+.nitem:last-child{border-bottom-left-radius:var(--radius);border-bottom-right-radius:var(--radius);border-bottom:none}
+.nitem:active{background:#F7F8FC}
+.nicon{width:40px;height:40px;border-radius:12px;flex:none;display:flex;align-items:center;justify-content:center;font-size:20px;color:#fff}
+.nicon.sys{background:linear-gradient(135deg,#6366F1,#4F46E5)}
+.nicon.promo{background:linear-gradient(135deg,#FBBF24,#F59E0B)}
+.nicon.social{background:linear-gradient(135deg,#34D399,#10B981)}
+.nicon.ship{background:linear-gradient(135deg,#38BDF8,#0EA5E9)}
+.nicon.warn{background:linear-gradient(135deg,#F87171,#EF4444)}
+.nbody{flex:1;min-width:0}
+.ntitle{font-size:15px;font-weight:600;line-height:1.35;display:flex;align-items:center;gap:6px}
+.ndesc{font-size:13px;color:var(--ink2);margin-top:3px;line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.ntime{font-size:11px;color:var(--ink3);margin-top:5px}
+.ntag{font-size:10px;padding:2px 7px;border-radius:20px;font-weight:600;flex:none}
+.ntag.sys{background:var(--indigo-soft);color:var(--indigo)}
+.ntag.promo{background:#FEF3C7;color:#B45309}
+.ntag.social{background:#D1FAE5;color:#047857}
+.ntag.ship{background:#E0F2FE;color:#0369A1}
+.ndot{width:9px;height:9px;border-radius:50%;background:var(--red);flex:none;margin-top:6px}
+.ndot.hidden{display:none}
+.chevron{color:var(--ink3);font-size:18px;flex:none;margin-top:2px}
+/* ---------- 站内信 ---------- */
+.litem{background:#fff;margin:10px 14px;border-radius:var(--radius);padding:14px;display:flex;gap:12px;align-items:center;cursor:pointer;border:1px solid var(--line)}
+.litem:active{background:#F7F8FC}
+.avatar{width:46px;height:46px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px;font-weight:700}
+.avatar.kf{background:linear-gradient(135deg,#6366F1,#8B5CF6)}
+.avatar.xt{background:linear-gradient(135deg,#64748B,#334155)}
+.lbody{flex:1;min-width:0}
+.lname{font-size:15px;font-weight:600}
+.lname .off{font-size:10px;color:var(--indigo);border:1px solid var(--indigo);border-radius:4px;padding:1px 5px;margin-left:6px;font-weight:600}
+.lprev{font-size:13px;color:var(--ink2);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ltime{font-size:11px;color:var(--ink3);flex:none;align-self:flex-start}
+.unread-badge{min-width:20px;height:20px;border-radius:11px;background:var(--red);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;padding:0 6px;margin-top:4px}
+/* ---------- 详情页 ---------- */
+.detail{background:#fff;margin:14px;border-radius:var(--radius);padding:20px 18px;border:1px solid var(--line)}
+.detail .dt-tag{font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;margin-bottom:10px;display:inline-block}
+.detail h2{font-size:18px;line-height:1.45;margin-bottom:8px}
+.detail .dtime{font-size:12px;color:var(--ink3);margin-bottom:14px}
+.detail .dicon{width:52px;height:52px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:26px;color:#fff;margin-bottom:12px}
+.detail p{font-size:14.5px;line-height:1.9;color:#374151;margin-bottom:12px}
+.detail .btn{display:block;width:100%;padding:13px;border-radius:12px;border:none;background:var(--indigo);color:#fff;font-size:15px;font-weight:600;margin-top:8px;cursor:pointer}
+.backbar{display:flex;align-items:center;gap:6px;padding:12px 14px 0;font-size:14px;color:var(--indigo);cursor:pointer;font-weight:600}
+.letter-paper{background:#fff;margin:14px;border-radius:var(--radius);border:1px solid var(--line);overflow:hidden}
+.letter-head{padding:18px;border-bottom:1px dashed var(--line)}
+.letter-head h2{font-size:17px;margin-bottom:6px}
+.letter-head .from{font-size:12.5px;color:var(--ink2)}
+.letter-body{padding:18px;font-size:14.5px;line-height:2;color:#374151}
+.letter-body p{margin-bottom:12px}
+.letter-sign{text-align:right;padding:0 18px 18px;font-size:13px;color:var(--ink2)}
+/* ---------- 提醒设置 ---------- */
+.sec{background:#fff;margin:14px 14px 0;border-radius:var(--radius);border:1px solid var(--line);overflow:hidden}
+.sec-title{font-size:13px;color:var(--ink2);padding:18px 18px 8px;font-weight:600}
+.srow{display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid var(--line)}
+.srow:last-child{border-bottom:none}
+.sicon{width:38px;height:38px;border-radius:11px;flex:none;display:flex;align-items:center;justify-content:center;font-size:19px;color:#fff}
+.sbody{flex:1;min-width:0}
+.stitle{font-size:15px;font-weight:600}
+.sdesc{font-size:12px;color:var(--ink3);margin-top:2px;line-height:1.5}
+/* iOS switch */
+.switch{position:relative;width:52px;height:31px;flex:none;cursor:pointer}
+.switch input{display:none}
+.sw{position:absolute;inset:0;background:#D1D5DB;border-radius:17px;transition:.2s}
+.sw:before{content:"";position:absolute;width:27px;height:27px;background:#fff;border-radius:50%;top:2px;left:2px;transition:.2s;box-shadow:0 2px 5px rgba(0,0,0,.25)}
+.switch input:checked + .sw{background:var(--indigo)}
+.switch input:checked + .sw:before{transform:translateX(21px)}
+.timerow{display:flex;align-items:center;justify-content:space-between;padding:13px 16px;border-bottom:1px solid var(--line);font-size:15px}
+.timerow:last-child{border-bottom:none}
+.timeselect{display:flex;align-items:center;gap:8px;color:var(--ink2)}
+.timeselect select{border:1px solid var(--line);border-radius:8px;padding:6px 8px;font-size:14px;color:var(--ink);background:#F8FAFC;font-family:var(--font)}
+.note{font-size:12px;color:var(--ink3);padding:12px 20px;line-height:1.7}
+/* ---------- 我的页 ---------- */
+.me-head{background:linear-gradient(135deg,#4F46E5,#7C6CF0);padding:26px 20px;color:#fff}
+.me-row{display:flex;align-items:center;gap:14px}
+.me-avatar{width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,.22);display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:700;border:2px solid rgba(255,255,255,.5)}
+.me-name{font-size:19px;font-weight:700}
+.me-id{font-size:12px;opacity:.8;margin-top:4px}
+.me-menu{background:#fff;margin:14px;border-radius:var(--radius);border:1px solid var(--line);overflow:hidden}
+.mrow{display:flex;align-items:center;padding:14px 16px;border-bottom:1px solid var(--line);font-size:15px;cursor:pointer}
+.mrow:last-child{border-bottom:none}
+.mrow:active{background:#F7F8FC}
+.micon{width:30px;text-align:center;margin-right:10px;font-size:18px}
+.mrow .mval{margin-left:auto;font-size:13px;color:var(--ink3)}
+.mrow .chev{color:var(--ink3);margin-left:6px}
+.stat3{display:flex;background:#fff;margin:14px;border-radius:var(--radius);border:1px solid var(--line)}
+.stat3 div{flex:1;text-align:center;padding:16px 0}
+.stat3 b{font-size:20px;color:var(--indigo)}
+.stat3 span{display:block;font-size:12px;color:var(--ink2);margin-top:4px}
+/* ---------- 底部 Tab ---------- */
+.tabbar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:#fff;border-top:1px solid var(--line);display:flex;z-index:30;padding-bottom:env(safe-area-inset-bottom)}
+.tab{flex:1;text-align:center;padding:9px 0 8px;font-size:11px;color:var(--ink3);cursor:pointer}
+.tab .tico{font-size:22px;display:block;margin-bottom:2px;position:relative}
+.tab.on{color:var(--indigo);font-weight:700}
+.tbadge{position:absolute;top:-4px;right:calc(50% - 20px);min-width:17px;height:17px;border-radius:9px;background:var(--red);color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;padding:0 5px}
+.page{display:none}
+.page.on{display:block}
+.toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:rgba(31,36,48,.92);color:#fff;font-size:13px;padding:10px 18px;border-radius:24px;opacity:0;transition:opacity .25s;z-index:50;pointer-events:none;white-space:nowrap}
+.toast.show{opacity:1}
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="topbar">
+    <h1 id="topTitle">通知</h1>
+    <div class="sub" id="topSub">系统 · 活动 · 互动，一眼不错过</div>
+    <div class="actions"><span id="markAll" title="全部已读">✓</span><span title="设置">⚙</span></div>
+  </div>
+  <div class="main">
+    <!-- 通知 -->
+    <section class="page on" id="page-notify">
+      <div class="group-title">今天</div>
+      <div id="grpToday"></div>
+      <div class="group-title">昨天</div>
+      <div id="grpYest"></div>
+      <div class="note">仅保留最近 30 天的通知记录。已读通知仍可在此查看。</div>
+    </section>
+    <!-- 通知详情 -->
+    <section class="page" id="page-detail">
+      <div class="backbar" data-back="notify">‹ 返回通知列表</div>
+      <div class="detail" id="detailBox"></div>
+    </section>
+    <!-- 站内信 -->
+    <section class="page" id="page-letter">
+      <div class="group-title">全部信件</div>
+      <div id="letterList"></div>
+    </section>
+    <!-- 站内信详情 -->
+    <section class="page" id="page-letterdetail">
+      <div class="backbar" data-back="letter">‹ 返回信件列表</div>
+      <div class="letter-paper" id="letterBox"></div>
+    </section>
+    <!-- 提醒设置 -->
+    <section class="page" id="page-remind">
+      <div class="sec-title">消息提醒</div>
+      <div class="sec" id="remindSec1"></div>
+      <div class="sec-title">夜间免打扰</div>
+      <div class="sec">
+        <div class="srow">
+          <div class="sicon" style="background:linear-gradient(135deg,#64748B,#334155)">🌙</div>
+          <div class="sbody"><div class="stitle">夜间免打扰</div><div class="sdesc">开启后仅保留电话与紧急提醒</div></div>
+          <label class="switch"><input type="checkbox" id="dnd" checked><span class="sw"></span></label>
+        </div>
+        <div class="timerow"><span>开始时间</span><div class="timeselect"><select id="dndStart"></select></div></div>
+        <div class="timerow"><span>结束时间</span><div class="timeselect"><select id="dndEnd"></select></div></div>
+      </div>
+      <div class="sec-title">提醒方式</div>
+      <div class="sec" id="remindSec2"></div>
+      <div class="note">修改将于保存后实时生效。关闭全部提醒后，你仍可在 App 内查看通知记录。</div>
+      <button class="detail" id="saveBtn" style="border:none;cursor:pointer;font-size:15px;font-weight:700;color:var(--indigo);text-align:center">保存设置</button>
+    </section>
+    <!-- 我的 -->
+    <section class="page" id="page-mine">
+      <div class="me-head">
+        <div class="me-row">
+          <div class="me-avatar">陈</div>
+          <div><div class="me-name">陈淑婷</div><div class="me-id">账号 ID：CST-88214 · 通知中心会员</div></div>
+        </div>
+      </div>
+      <div class="stat3">
+        <div><b id="stUnread">5</b><span>未读通知</span></div>
+        <div><b>3</b><span>未读信件</span></div>
+        <div><b>12</b><span>订阅提醒</span></div>
+      </div>
+      <div class="me-menu">
+        <div class="mrow"><span class="micon">🔔</span>通知订阅管理<span class="mval">6 类已开启</span><span class="chev">›</span></div>
+        <div class="mrow"><span class="micon">📬</span>信件回收站<span class="mval"></span><span class="chev">›</span></div>
+        <div class="mrow"><span class="micon">🕒</span>通知历史<span class="mval">最近 30 天</span><span class="chev">›</span></div>
+        <div class="mrow"><span class="micon">🛡</span>隐私与推送权限<span class="mval"></span><span class="chev">›</span></div>
+        <div class="mrow"><span class="micon">❓</span>帮助与反馈<span class="mval"></span><span class="chev">›</span></div>
+      </div>
+    </section>
+  </div>
+  <nav class="tabbar" id="tabbar">
+    <div class="tab on" data-tab="notify"><span class="tico">🔔<span class="tbadge" id="badgeNotify">5</span></span>通知</div>
+    <div class="tab" data-tab="letter"><span class="tico">✉️<span class="tbadge" id="badgeLetter">3</span></span>站内信</div>
+    <div class="tab" data-tab="remind"><span class="tico">⏰</span>提醒</div>
+    <div class="tab" data-tab="mine"><span class="tico">👤</span>我的</div>
+  </nav>
+  <div class="toast" id="toast"></div>
+</div>
+<script>
+(function(){
+"use strict";
+var ICONS={sys:"⚙️",promo:"🎁",social:"💬",ship:"🚚",warn:"⚠️"};
+var TAGS={sys:["sys","系统通知"],promo:["promo","活动优惠"],social:["social","互动提醒"],ship:["ship","订单物流"],warn:["warn","安全提醒"]};
+var NOTIFY=[
+ {id:"n1",day:"today",type:"ship",title:"您的订单已签收",desc:"订单尾号 4821 的包裹已由菜鸟驿站代收，请及时取件。取件码：7-2041。",time:"10:42",read:false,
+  body:"亲爱的用户，您在 10 月 16 日下单的「锐速四口快充头」已于今日 10:42 被菜鸟驿站（幸福小区店）代收。取件码：7-2041，请携带本人有效证件在 3 天内取件。超时未取件的包裹将由驿站代管并收取保管费。如已取件请忽略此通知。"},
+ {id:"n2",day:"today",type:"promo",title:"双 11 预热：满 300 减 50 券已到账",desc:"3 张品类券已放入你的卡包，今晚 8 点开抢，限量 2 万张。",time:"09:15",read:false,
+  body:"双 11 预热活动正式开启！3 张满 300 减 50 品类券已发放至您的卡包，有效期至 11 月 11 日 23:59。今日 20:00 开启整点抢券，限量 2 万张，先到先得。券可与店铺满减叠加使用，具体以结算页为准。"},
+ {id:"n3",day:"today",type:"social",title:"@设计师周鱼 赞了你的作品",desc:"「黏土风组件库」收到 1 个赞，快去看看大家的评论吧。",time:"08:03",read:false,
+  body:"@设计师周鱼 赞了你的作品《黏土风组件库》。截至目前，该作品共获得 128 个赞、36 条评论。优质评论将有机会被推荐至首页精选，继续加油！"},
+ {id:"n4",day:"today",type:"sys",title:"版本 1.7.23 已发布",desc:"本次更新修复了欢迎弹窗重复弹出的问题，建议升级体验。",time:"07:30",read:false,
+  body:"通知中心 App 已更新至 1.7.23 版本。本次更新内容：1）版本升级后自动压住欢迎弹窗，不再重复打扰；2）修复启动页点击穿透问题；3）优化通知列表加载速度。建议在 Wi-Fi 环境下更新。"},
+ {id:"n5",day:"today",type:"warn",title:"异地登录提醒",desc:"你的账号于 06:58 在深圳登录，如非本人操作请立即修改密码。",time:"06:58",read:false,
+  body:"安全提醒：您的账号于今日 06:58 在广东省深圳市（IP 183.62.*.*，设备：HUAWEI Mate 60）登录。如为本人操作请忽略；如非本人操作，请立即修改密码并开启登录保护，谨防账号被盗。"},
+ {id:"n6",day:"yest",type:"ship",title:"包裹正在派送中",desc:"快递员已取件，预计今日 18:00 前送达，请保持电话畅通。",time:"昨日 17:20",read:true,
+  body:"您的包裹（运单号 YT884210336571）已由快递员揽收，正在派送中，预计今日 18:00 前送达。派送员：王师傅（138****4520）。请保持电话畅通，如需改派请联系快递员。"},
+ {id:"n7",day:"yest",type:"promo",title:"会员日专享：9.9 元秒杀",desc:"每月 18 日会员日，爆款好物 9.9 元起，记得定好闹钟。",time:"昨日 12:00",read:true,
+  body:"每月 18 日为会员日，精选爆款 9.9 元起秒杀，另有会员专享满减券包。本月参与品牌：锐速、绿联、倍思等。活动 10:00 / 14:00 / 20:00 三场开抢，库存有限。"},
+ {id:"n8",day:"yest",type:"social",title:"你有 2 条新评论",desc:"「更新弹窗交互合集」收到 2 条新评论，作者已置顶其中 1 条。",time:"昨日 09:47",read:true,
+  body:"你的作品《更新弹窗交互合集》收到 2 条新评论：「这个波浪进度环太丝滑了，求教程！」「已收藏，交互细节拉满」。其中 1 条已被你置顶。及时回复评论有助于提升作品热度。"},
+ {id:"n9",day:"yest",type:"sys",title:"隐私政策更新",desc:"《用户隐私政策》已于昨日更新，主要涉及推送权限说明。",time:"昨日 08:00",read:true,
+  body:"《用户隐私政策》已于 10 月 18 日更新，主要变更：1）新增推送通知权限的单独说明；2）明确通知数据仅保留 30 天；3）补充第三方 SDK 清单。继续使用即代表同意更新后的政策，详情可在「我的-隐私与推送权限」查看。"}
+];
+var LETTERS=[
+ {id:"l1",from:"官方客服",off:true,avatar:"kf",avt:"服",preview:"关于您反馈的订单 尾号4821 物流异常问题…",time:"10:20",unread:2,
+  title:"关于订单尾号 4821 物流异常的处理回复",
+  body:"尊敬的用户陈淑婷：\n\n您于 10 月 18 日 21:35 反馈的「订单尾号 4821 物流停滞 2 天」问题（工单号 KF-20261018-3371），经核实，包裹因中转场分拣异常延误，现已重新发出，预计 10 月 20 日送达。\n\n为表达歉意，我们已向您的账户发放 10 元无门槛优惠券（有效期 30 天），请在「我的-优惠券」中查收。\n\n如仍有疑问，可回复本信件继续咨询，客服将在 2 小时内响应。\n\n官方客服团队\n2026 年 10 月 19 日"},
+ {id:"l2",from:"系统通知",off:false,avatar:"xt",avt:"系",preview:"您的账号已完成实名认证，信用分 +5…",time:"昨天",unread:1,
+  title:"实名认证完成通知",
+  body:"尊敬的用户：\n\n您的账号已于 10 月 18 日完成实名认证，账号信用分 +5，当前信用等级：良好。\n\n实名认证后您可享受：大额支付免验证、优先客服通道、专属活动报名资格。\n\n请妥善保管个人信息，切勿将验证码透露给他人。\n\n系统通知\n2026 年 10 月 18 日"},
+ {id:"l3",from:"官方客服",off:true,avatar:"kf",avt:"服",preview:"欢迎使用通知中心！新手引导与常见问题…",time:"10-12",unread:0,
+  title:"欢迎使用通知中心",
+  body:"欢迎来到通知中心！\n\n在这里你可以：\n1. 接收订单物流、活动优惠等实时推送；\n2. 在站内信与官方客服直接沟通；\n3. 在「提醒」页自定义各类消息开关与免打扰时段。\n\n常见问题：\nQ：收不到推送怎么办？\nA：请检查手机系统设置中是否允许本 App 发送通知，并确认未开启省电模式限制。\n\n祝使用愉快！\n官方客服团队"}
+];
+var REMIND1=[
+ {t:"订单物流提醒",d:"下单、发货、派送、签收全程跟踪",c:"#0EA5E9",i:"🚚",on:true},
+ {t:"优惠活动提醒",d:"大促、秒杀、优惠券到账通知",c:"#F59E0B",i:"🎁",on:true},
+ {t:"互动消息提醒",d:"点赞、评论、@你的消息",c:"#10B981",i:"💬",on:false},
+ {t:"系统公告提醒",d:"版本更新、政策变更等重要公告",c:"#4F46E5",i:"📢",on:true}
+];
+var REMIND2=[
+ {t:"声音提醒",d:"收到通知时播放提示音",on:true},
+ {t:"振动提醒",d:"收到通知时振动",on:true},
+ {t:"锁屏显示详情",d:"在锁屏上显示通知内容",on:false},
+ {t:"横幅通知",d:"顶部弹出横幅并可快捷操作",on:true}
+];
+function el(html){var d=document.createElement("div");d.innerHTML=html;return d.firstChild;}
+function toast(msg){var t=document.getElementById("toast");t.textContent=msg;t.classList.add("show");clearTimeout(t._h);t._h=setTimeout(function(){t.classList.remove("show");},1600);}
+function badgeRefresh(){
+ var u=NOTIFY.filter(function(n){return !n.read;}).length;
+ var b=document.getElementById("badgeNotify");
+ b.textContent=u;b.style.display=u?"flex":"none";
+ document.getElementById("stUnread").textContent=u;
+ var lu=LETTERS.reduce(function(a,l){return a+l.unread;},0);
+ var bl=document.getElementById("badgeLetter");
+ bl.textContent=lu;bl.style.display=lu?"flex":"none";
+}
+/* ---- 通知列表渲染 ---- */
+function renderNotify(){
+ ["today","yest"].forEach(function(day){
+  var box=document.getElementById(day==="today"?"grpToday":"grpYest");
+  box.innerHTML="";
+  NOTIFY.filter(function(n){return n.day===day;}).forEach(function(n){
+   var tg=TAGS[n.type];
+   var item=el('<div class="nitem"><div class="nicon '+n.type+'">'+ICONS[n.type]+'</div><div class="nbody"><div class="ntitle">'+n.title+'</div><div class="ndesc">'+n.desc+'</div><div class="ntime">'+n.time+' · <span class="ntag '+tg[0]+'">'+tg[1]+'</span></div></div><div class="ndot'+(n.read?" hidden":"")+'"></div></div>');
+   item.addEventListener("click",function(){openDetail(n.id);});
+   box.appendChild(item);
+  });
+ });
+ badgeRefresh();
+}
+/* ---- 通知详情 ---- */
+function openDetail(id){
+ var n=NOTIFY.filter(function(x){return x.id===id;})[0];if(!n)return;
+ var tg=TAGS[n.type];
+ document.getElementById("detailBox").innerHTML=
+  '<div class="dicon '+n.type+'" style="background:linear-gradient(135deg,var(--'+n.type+'),var(--'+n.type+'))">'+ICONS[n.type]+'</div>'+
+  '<span class="dt-tag ntag '+tg[0]+'">'+tg[1]+'</span>'+
+  '<h2>'+n.title+'</h2><div class="dtime">'+n.time+' · 通知中心</div>'+
+  n.body.split("\n").map(function(p){return "<p>"+p+"</p>";}).join("")+
+  (n.type==="promo"?'<button class="btn" id="dBtn">去看看</button>':"")+
+  (n.type==="warn"?'<button class="btn" id="dBtn">立即修改密码</button>':"");
+ var b=document.getElementById("dBtn");
+ if(b)b.addEventListener("click",function(){toast(n.type==="warn"?"已跳转至安全中心（演示）":"已跳转至活动页（演示）");});
+ if(!n.read){n.read=true;renderNotify();}
+ showPage("detail","通知详情","该通知的完整内容");
+}
+/* ---- 站内信 ---- */
+function renderLetters(){
+ var box=document.getElementById("letterList");box.innerHTML="";
+ LETTERS.forEach(function(l){
+  var item=el('<div class="litem"><div class="avatar '+l.avatar+'">'+l.avt+'</div><div class="lbody"><div class="lname">'+l.from+(l.off?'<span class="off">官方</span>':"")+'</div><div class="lprev">'+l.preview+'</div></div><div style="display:flex;flex-direction:column;align-items:flex-end"><div class="ltime">'+l.time+'</div>'+(l.unread?'<div class="unread-badge">'+l.unread+'</div>':"")+'</div></div>');
+  item.addEventListener("click",function(){openLetter(l.id);});
+  box.appendChild(item);
+ });
+ badgeRefresh();
+}
+function openLetter(id){
+ var l=LETTERS.filter(function(x){return x.id===id;})[0];if(!l)return;
+ document.getElementById("letterBox").innerHTML=
+  '<div class="letter-head"><h2>'+l.title+'</h2><div class="from">发件人：'+l.from+(l.off?"（官方认证）":"")+' · '+l.time+'</div></div>'+
+  '<div class="letter-body">'+l.body.split("\n").map(function(p){return p?("<p>"+p+"</p>"):"";}).join("")+'</div>'+
+  '<div class="letter-sign">— 通知中心</div>';
+ if(l.unread){l.unread=0;renderLetters();}
+ showPage("letterdetail","站内信详情",l.from);
+}
+/* ---- 提醒设置 ---- */
+function renderRemind(){
+ function sec(list,boxId){
+  var box=document.getElementById(boxId);box.innerHTML="";
+  list.forEach(function(r){
+   var row=el('<div class="srow"><div class="sicon" style="background:'+r.c+'">'+r.i+'</div><div class="sbody"><div class="stitle">'+r.t+'</div><div class="sdesc">'+r.d+'</div></div><label class="switch"><input type="checkbox"'+(r.on?" checked":"")+ '><span class="sw"></span></label></div>');
+   var inp=row.querySelector("input");
+   inp.addEventListener("change",function(){r.on=inp.checked;toast(r.t+(inp.checked?"已开启":"已关闭"));});
+   box.appendChild(row);
+  });
+ }
+ REMIND1.forEach(function(r,i){if(!r.c)r.c="#4F46E5";});
+ sec(REMIND1,"remindSec1");
+ sec(REMIND2.map(function(r){return {t:r.t,d:r.d,i:r.t.indexOf("声音")>=0?"🔊":r.t.indexOf("振动")>=0?"📳":r.t.indexOf("锁屏")>=0?"🔒":"💠",c:"#4F46E5",on:r.on};}),"remindSec2");
+ var ds=document.getElementById("dndStart"),de=document.getElementById("dndEnd");
+ if(!ds.options.length){
+  for(var h=18;h<=23;h++){ds.add(new Option(h+":00",h+":00"));}
+  ds.value="22:00";
+  ["06:00","07:00","08:00"].forEach(function(t){de.add(new Option(t,t));});
+  de.value="07:00";
+ }
+}
+/* ---- 页面/Tab ---- */
+var TITLES={notify:["通知","系统 · 活动 · 互动，一眼不错过"],detail:["通知详情","该通知的完整内容"],letter:["站内信","官方客服 · 系统信件"],letterdetail:["站内信详情",""],remind:["提醒设置","自定义你的消息偏好"],mine:["我的","账号与通知管理"]};
+function showPage(name,title,sub){
+ document.querySelectorAll(".page").forEach(function(p){p.classList.remove("on");});
+ document.getElementById("page-"+name).classList.add("on");
+ document.getElementById("topTitle").textContent=title;
+ document.getElementById("topSub").textContent=sub;
+ document.querySelector(".main").scrollTop=0;
+}
+function switchTab(tab){
+ document.querySelectorAll(".tab").forEach(function(t){t.classList.toggle("on",t.dataset.tab===tab);});
+ showPage(tab,TITLES[tab][0],TITLES[tab][1]);
+ if(history.replaceState){history.replaceState(null,"","?tab="+tab);}
+}
+document.querySelectorAll(".tab").forEach(function(t){
+ t.addEventListener("click",function(){switchTab(t.dataset.tab);});
+});
+document.querySelectorAll(".backbar").forEach(function(b){
+ b.addEventListener("click",function(){switchTab(b.dataset.back);});
+});
+document.getElementById("markAll").addEventListener("click",function(){
+ NOTIFY.forEach(function(n){n.read=true;});renderNotify();toast("全部通知已标为已读");
+});
+document.getElementById("saveBtn").addEventListener("click",function(){toast("提醒设置已保存");});
+document.getElementById("dnd").addEventListener("change",function(e){toast("夜间免打扰"+(e.target.checked?"已开启":"已关闭"));});
+document.getElementById("dndStart").addEventListener("change",function(e){toast("免打扰开始时间："+e.target.value);});
+document.getElementById("dndEnd").addEventListener("change",function(e){toast("免打扰结束时间："+e.target.value);});
+/* ---- init ---- */
+renderNotify();renderLetters();renderRemind();
+var q=(location.search.match(/tab=([a-z]+)/)||[])[1];
+var ok={notify:1,letter:1,remind:1,mine:1};
+switchTab(ok[q]?q:"notify");
+})();
+</script>
+</body>
+</html>

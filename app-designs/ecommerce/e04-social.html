@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>种草集 · 社交电商</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --g1:#a855f7; --g2:#ec4899; --y:#fde047; --ink:#2b2140; --mut:#8b8496;
+  --card:#ffffff; --bg:#faf5ff;
+}
+html{background:#e9dff7}
+body{font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;color:var(--ink);background:#e9dff7}
+.phone{max-width:430px;margin:0 auto;min-height:100dvh;position:relative;background:var(--bg);box-shadow:0 0 40px rgba(168,85,247,.25)}
+.grad{background:linear-gradient(135deg,var(--g1),var(--g2))}
+.page{display:none;padding-bottom:110px;animation:fade .25s ease}
+.page.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+/* 顶部栏 */
+.topbar{position:sticky;top:0;z-index:20;background:linear-gradient(135deg,var(--g1),var(--g2));color:#fff;padding:14px 16px 12px;border-radius:0 0 26px 26px;box-shadow:0 6px 18px rgba(236,72,153,.28)}
+.topbar h1{font-size:22px;font-weight:800;letter-spacing:1px}
+.topbar h1 .dot{display:inline-block;background:var(--y);color:var(--ink);font-size:12px;padding:2px 8px;border-radius:20px;margin-left:8px;vertical-align:middle;transform:rotate(-4deg)}
+.searchbar{margin:10px 16px 0;background:#fff;border-radius:999px;display:flex;align-items:center;padding:10px 16px;gap:8px;box-shadow:0 4px 12px rgba(168,85,247,.15)}
+.searchbar input{border:0;outline:0;flex:1;font-size:14px;background:transparent}
+.searchbar .sbtn{background:linear-gradient(135deg,var(--g1),var(--g2));color:#fff;border:0;border-radius:999px;padding:6px 14px;font-size:13px;font-weight:700}
+/* 话题横滑 */
+.topics{display:flex;gap:10px;overflow-x:auto;padding:12px 16px 4px;scrollbar-width:none}
+.topics::-webkit-scrollbar{display:none}
+.topic{flex:0 0 auto;background:#fff;border:2px solid #f3e8ff;color:var(--g1);font-size:13px;font-weight:700;padding:7px 14px;border-radius:999px;box-shadow:0 2px 6px rgba(168,85,247,.12)}
+.topic.hot{background:var(--y);border-color:var(--y);color:var(--ink)}
+/* 帖子卡 */
+.feed{padding:10px 12px;display:flex;flex-direction:column;gap:14px}
+.post{background:var(--card);border-radius:24px;overflow:hidden;box-shadow:0 6px 18px rgba(168,85,247,.12);border:3px solid #fff}
+.p-head{display:flex;align-items:center;gap:10px;padding:12px 14px 8px}
+.avatar{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;color:#fff;flex:0 0 auto;border:3px solid var(--y)}
+.p-name{font-size:15px;font-weight:800}
+.p-meta{font-size:12px;color:var(--mut);margin-top:2px}
+.follow{margin-left:auto;border:2px solid var(--g2);color:var(--g2);background:#fff;font-size:13px;font-weight:800;padding:6px 14px;border-radius:999px;cursor:pointer;transition:all .2s}
+.follow.on{background:linear-gradient(135deg,var(--g1),var(--g2));color:#fff;border-color:transparent}
+.p-img{height:230px;display:flex;align-items:center;justify-content:center;font-size:84px;position:relative;overflow:hidden}
+.p-img .sticker{position:absolute;top:12px;left:12px;background:var(--y);color:var(--ink);font-size:12px;font-weight:800;padding:5px 12px;border-radius:999px;transform:rotate(-6deg);box-shadow:0 3px 8px rgba(0,0,0,.15)}
+.p-body{padding:12px 14px 4px;font-size:14px;line-height:1.65}
+.p-tags{color:var(--g1);font-weight:700}
+.p-goods{margin:10px 14px;background:#fff7ed;border:2px dashed #fbbf24;border-radius:18px;display:flex;gap:12px;padding:10px;align-items:center}
+.p-goods .gimg{width:64px;height:64px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:32px;flex:0 0 auto}
+.p-goods .gname{font-size:13px;font-weight:700;line-height:1.4}
+.p-goods .gprice{color:var(--g2);font-weight:800;font-size:15px;margin-top:4px}
+.zc-tag{display:inline-block;background:linear-gradient(135deg,var(--g1),var(--g2));color:#fff;font-size:11px;font-weight:800;padding:2px 8px;border-radius:8px;margin-right:4px;vertical-align:1px}
+.p-goods .buy{margin-left:auto;background:var(--ink);color:#fff;border:0;font-size:12px;font-weight:800;padding:8px 14px;border-radius:999px;flex:0 0 auto}
+.p-act{display:flex;gap:22px;padding:10px 16px 14px;align-items:center}
+.act{border:0;background:none;font-size:14px;color:#5b5470;display:flex;align-items:center;gap:5px;font-weight:600;cursor:pointer}
+.act .ic{font-size:20px;transition:transform .15s}
+.act.liked{color:var(--g2)}
+.act.liked .ic{transform:scale(1.25)}
+.act.faved{color:#f59e0b}
+/* 商城 */
+.mall-tabs{display:flex;gap:10px;overflow-x:auto;padding:12px 16px;scrollbar-width:none}
+.mall-tabs::-webkit-scrollbar{display:none}
+.mtab{flex:0 0 auto;background:#fff;border-radius:999px;padding:8px 16px;font-size:13px;font-weight:700;color:#5b5470;border:2px solid transparent;cursor:pointer}
+.mtab.on{background:linear-gradient(135deg,var(--g1),var(--g2));color:#fff}
+.goods-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:4px 14px}
+.gcard{background:#fff;border-radius:22px;overflow:hidden;box-shadow:0 4px 14px rgba(168,85,247,.1);border:2px solid #fff}
+.gcard .gimg{height:130px;display:flex;align-items:center;justify-content:center;font-size:56px;position:relative}
+.gcard .gimg .zc-tag{position:absolute;top:8px;left:8px}
+.gcard .ginfo{padding:10px 12px 12px}
+.gcard .gname{font-size:13px;font-weight:700;line-height:1.4;height:36px;overflow:hidden}
+.gcard .grow{display:flex;align-items:center;justify-content:space-between;margin-top:8px}
+.gcard .gp{color:var(--g2);font-weight:800;font-size:16px}
+.gcard .gp small{color:var(--mut);font-size:11px;text-decoration:line-through;font-weight:400;margin-left:4px}
+.gcard .sold{font-size:11px;color:var(--mut);margin-top:4px}
+/* 发布 */
+.pub{padding:16px}
+.pub-card{background:#fff;border-radius:26px;padding:18px;box-shadow:0 6px 18px rgba(168,85,247,.12)}
+.pub-card h3{font-size:16px;font-weight:800;margin:14px 0 10px}
+.pub-card h3:first-child{margin-top:0}
+#pubTitle{width:100%;border:2px solid #f3e8ff;border-radius:16px;padding:12px;font-size:14px;outline:none;resize:none;font-family:inherit}
+#pubTitle:focus{border-color:var(--g1)}
+.img-add{border:3px dashed #d8b4fe;border-radius:20px;height:130px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--g1);font-size:14px;font-weight:700;gap:6px;background:#faf5ff;cursor:pointer}
+.img-add .plus{font-size:34px}
+.link-row{display:flex;gap:8px}
+#pubLink{flex:1;border:2px solid #f3e8ff;border-radius:14px;padding:10px 12px;font-size:13px;outline:none}
+.link-row button{background:var(--y);border:0;border-radius:14px;padding:0 16px;font-weight:800;font-size:13px;cursor:pointer}
+.tchip-row{display:flex;flex-wrap:wrap;gap:8px}
+.tchip{background:#faf5ff;border:2px solid #f3e8ff;color:var(--g1);border-radius:999px;padding:6px 14px;font-size:13px;font-weight:700;cursor:pointer}
+.tchip.on{background:linear-gradient(135deg,var(--g1),var(--g2));color:#fff;border-color:transparent}
+.pub-btn{width:100%;margin-top:18px;border:0;border-radius:999px;padding:15px;font-size:17px;font-weight:800;color:#fff;background:linear-gradient(135deg,var(--g1),var(--g2));box-shadow:0 8px 20px rgba(236,72,153,.4);cursor:pointer}
+/* 消息 */
+.msg-filter{display:flex;gap:8px;padding:12px 16px}
+.mf{background:#fff;border-radius:999px;padding:7px 16px;font-size:13px;font-weight:700;color:#5b5470;border:2px solid transparent;cursor:pointer}
+.mf.on{background:var(--ink);color:#fff}
+.msg-list{padding:4px 12px;display:flex;flex-direction:column;gap:10px}
+.msg{background:#fff;border-radius:20px;padding:12px 14px;display:flex;gap:12px;align-items:center;box-shadow:0 3px 10px rgba(168,85,247,.08)}
+.msg .mav{width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;color:#fff;flex:0 0 auto}
+.msg .mtxt{flex:1;font-size:13px;line-height:1.5}
+.msg .mtxt b{font-weight:800}
+.msg .mtime{font-size:11px;color:var(--mut);margin-top:3px}
+.msg .mthumb{width:52px;height:52px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:26px;flex:0 0 auto}
+.sys-ic{background:linear-gradient(135deg,var(--g1),var(--g2));color:#fff;width:46px;height:46px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:22px;flex:0 0 auto}
+/* 我的 */
+.me-head{background:linear-gradient(135deg,var(--g1),var(--g2));border-radius:0 0 30px 30px;padding:22px 20px 30px;color:#fff}
+.me-row{display:flex;align-items:center;gap:14px}
+.me-avatar{width:72px;height:72px;border-radius:50%;background:var(--y);display:flex;align-items:center;justify-content:center;font-size:36px;border:4px solid #fff;box-shadow:0 4px 12px rgba(0,0,0,.2)}
+.me-name{font-size:20px;font-weight:800}
+.me-id{font-size:12px;opacity:.85;margin-top:3px}
+.me-stats{display:flex;gap:26px;margin-top:16px;background:rgba(255,255,255,.18);border-radius:18px;padding:12px 0;justify-content:space-around}
+.me-stats div{text-align:center}
+.me-stats b{font-size:17px}
+.me-stats span{font-size:12px;opacity:.85;display:block;margin-top:2px}
+.me-sec{background:#fff;border-radius:24px;margin:14px 12px 0;padding:16px;box-shadow:0 4px 14px rgba(168,85,247,.1)}
+.me-sec h3{font-size:15px;font-weight:800;margin-bottom:12px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.grid4 .it{text-align:center;font-size:12px;font-weight:600;color:#5b5470;cursor:pointer}
+.grid4 .ic{width:52px;height:52px;border-radius:18px;margin:0 auto 6px;display:flex;align-items:center;justify-content:center;font-size:24px}
+.wallet{background:linear-gradient(135deg,#fde047,#fbbf24);border-radius:20px;padding:16px;color:var(--ink)}
+.wallet .wrow{display:flex;justify-content:space-between;align-items:center}
+.wallet b{font-size:26px}
+.wallet .wbtn{background:var(--ink);color:#fff;border:0;border-radius:999px;padding:8px 18px;font-size:13px;font-weight:800}
+.wchips{display:flex;gap:10px;margin-top:12px}
+.wchip{flex:1;background:rgba(255,255,255,.7);border-radius:14px;padding:10px;text-align:center;font-size:12px;font-weight:700}
+.mrow{display:flex;align-items:center;gap:12px;padding:13px 4px;border-bottom:1px solid #f5f0ff;font-size:14px;font-weight:600;cursor:pointer}
+.mrow:last-child{border:0}
+.mrow .ric{width:36px;height:36px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;color:#fff}
+.mrow .arr{margin-left:auto;color:#c4b5fd;font-weight:800}
+/* 底部 Tab */
+.tabbar{position:fixed;left:50%;transform:translateX(-50%);width:100%;max-width:430px;bottom:0;z-index:50;background:#fff;border-top:2px solid #f3e8ff;display:flex;padding:8px 6px calc(10px + env(safe-area-inset-bottom));box-shadow:0 -6px 20px rgba(168,85,247,.12)}
+.tab{flex:1;border:0;background:none;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11px;color:var(--mut);font-weight:600;cursor:pointer;padding-top:4px}
+.tab .tic{font-size:23px;filter:grayscale(1);opacity:.55}
+.tab.on{color:var(--g2)}
+.tab.on .tic{filter:none;opacity:1}
+.tab.center{position:relative}
+.tab.center .plusbtn{width:58px;height:58px;border-radius:50%;background:linear-gradient(135deg,var(--g1),var(--g2));color:#fff;font-size:32px;font-weight:300;display:flex;align-items:center;justify-content:center;margin-top:-26px;box-shadow:0 8px 20px rgba(236,72,153,.5);border:4px solid #fff}
+/* toast */
+#toast{position:fixed;left:50%;transform:translateX(-50%) translateY(20px);bottom:110px;max-width:400px;background:rgba(43,33,64,.94);color:#fff;font-size:14px;font-weight:700;padding:12px 22px;border-radius:999px;opacity:0;pointer-events:none;transition:all .3s;z-index:99;white-space:nowrap}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+<div class="phone">
+
+  <!-- ① 发现 -->
+  <section class="page" id="page-0">
+    <div class="topbar"><h1>种草集<span class="dot">种草价更香</span></h1></div>
+    <div class="searchbar"><span>🔍</span><input placeholder="搜好物、搜博主、搜话题"><button class="sbtn" onclick="toast('正在为你搜罗全网好价…')">搜索</button></div>
+    <div class="topics">
+      <span class="topic hot">#开学好物#</span><span class="topic">#宿舍神器#</span><span class="topic">#早八必备#</span>
+      <span class="topic">#健身打卡#</span><span class="topic">#美妆分享#</span><span class="topic">#数码好物#</span><span class="topic">#咖啡日常#</span>
+    </div>
+    <div class="feed" id="feed">
+      <article class="post">
+        <div class="p-head"><div class="avatar" style="background:linear-gradient(135deg,#a855f7,#ec4899)">🍑</div>
+          <div><div class="p-name">小桃子的宿舍日记</div><div class="p-meta">2小时前 · 宿舍收纳达人</div></div>
+          <button class="follow" onclick="toggleFollow(this)">关注</button></div>
+        <div class="p-img" style="background:linear-gradient(135deg,#fde68a,#fbcfe8)"><span class="sticker">宿舍必备</span>🗄️</div>
+        <div class="p-body">开学第三天，桌面终于收拾明白了！这个亚克力收纳盒透明可视，化妆品文具一盒搞定，宿舍党闭眼入～<br><span class="p-tags">#开学好物# #宿舍神器#</span></div>
+        <div class="p-goods"><div class="gimg" style="background:#fef3c7">🗄️</div>
+          <div><div class="gname"><span class="zc-tag">种草价</span>亚克力透明桌面收纳盒</div><div class="gprice">¥19.9</div></div>
+          <button class="buy" onclick="toast('已加入购物车 🛒')">去购买</button></div>
+        <div class="p-act">
+          <button class="act" onclick="toggleLike(this)"><span class="ic">🤍</span><span class="n">2304</span></button>
+          <button class="act" onclick="toast('评论区火热讨论中…')"><span class="ic">💬</span><span class="n">318</span></button>
+          <button class="act" onclick="toggleFav(this)"><span class="ic">⭐</span><span class="n">收藏</span></button>
+        </div>
+      </article>
+      <article class="post">
+        <div class="p-head"><div class="avatar" style="background:linear-gradient(135deg,#f59e0b,#ef4444)">🍐</div>
+          <div><div class="p-name">早八人阿梨</div><div class="p-meta">5小时前 · 睡眠拯救计划</div></div>
+          <button class="follow" onclick="toggleFollow(this)">关注</button></div>
+        <div class="p-img" style="background:linear-gradient(135deg,#c4b5fd,#f9a8d4)"><span class="sticker">午睡神器</span>😴</div>
+        <div class="p-body">早八人的命是眼罩给的！真丝蒸汽眼罩，恒温发热40℃，趴桌上15分钟满血复活，图书馆午睡不社死～<br><span class="p-tags">#早八必备# #开学好物#</span></div>
+        <div class="p-goods"><div class="gimg" style="background:#ede9fe">😴</div>
+          <div><div class="gname"><span class="zc-tag">种草价</span>真丝恒温蒸汽眼罩 10片装</div><div class="gprice">¥29.9</div></div>
+          <button class="buy" onclick="toast('已加入购物车 🛒')">去购买</button></div>
+        <div class="p-act">
+          <button class="act" onclick="toggleLike(this)"><span class="ic">🤍</span><span class="n">1876</span></button>
+          <button class="act" onclick="toast('评论区火热讨论中…')"><span class="ic">💬</span><span class="n">204</span></button>
+          <button class="act" onclick="toggleFav(this)"><span class="ic">⭐</span><span class="n">收藏</span></button>
+        </div>
+      </article>
+      <article class="post">
+        <div class="p-head"><div class="avatar" style="background:linear-gradient(135deg,#10b981,#84cc16)">💪</div>
+          <div><div class="p-name">健身教练K姐</div><div class="p-meta">昨天 21:30 · 私人教练</div></div>
+          <button class="follow on" onclick="toggleFollow(this)">已关注</button></div>
+        <div class="p-img" style="background:linear-gradient(135deg,#bbf7d0,#fef9c3)"><span class="sticker">补水必备</span>🏋️</div>
+        <div class="p-body">学员问我训练带什么水杯？就这个2L大容量运动水杯！带刻度+吸管，一天喝水量看得见，减脂期多喝水真的会瘦！<br><span class="p-tags">#健身打卡# #运动好物#</span></div>
+        <div class="p-goods"><div class="gimg" style="background:#dcfce7">🥤</div>
+          <div><div class="gname"><span class="zc-tag">种草价</span>2L大容量运动水杯带刻度</div><div class="gprice">¥39.9</div></div>
+          <button class="buy" onclick="toast('已加入购物车 🛒')">去购买</button></div>
+        <div class="p-act">
+          <button class="act" onclick="toggleLike(this)"><span class="ic">🤍</span><span class="n">3521</span></button>
+          <button class="act" onclick="toast('评论区火热讨论中…')"><span class="ic">💬</span><span class="n">466</span></button>
+          <button class="act" onclick="toggleFav(this)"><span class="ic">⭐</span><span class="n">收藏</span></button>
+        </div>
+      </article>
+      <article class="post">
+        <div class="p-head"><div class="avatar" style="background:linear-gradient(135deg,#ec4899,#f43f5e)">💄</div>
+          <div><div class="p-name">美妆博主cc</div><div class="p-meta">昨天 18:02 · 干皮亲妈</div></div>
+          <button class="follow" onclick="toggleFollow(this)">关注</button></div>
+        <div class="p-img" style="background:linear-gradient(135deg,#fbcfe8,#fde68a)"><span class="sticker">奶油肌</span>💋</div>
+        <div class="p-body">干皮姐妹看过来！这款持妆气垫拍出奶油肌，8小时不暗沉不卡粉，秋冬底妆天菜，百元内闭眼入！<br><span class="p-tags">#美妆分享# #底妆推荐#</span></div>
+        <div class="p-goods"><div class="gimg" style="background:#fce7f3">💄</div>
+          <div><div class="gname"><span class="zc-tag">种草价</span>奶油肌持妆气垫BB霜</div><div class="gprice">¥89</div></div>
+          <button class="buy" onclick="toast('已加入购物车 🛒')">去购买</button></div>
+        <div class="p-act">
+          <button class="act" onclick="toggleLike(this)"><span class="ic">🤍</span><span class="n">5102</span></button>
+          <button class="act" onclick="toast('评论区火热讨论中…')"><span class="ic">💬</span><span class="n">723</span></button>
+          <button class="act" onclick="toggleFav(this)"><span class="ic">⭐</span><span class="n">收藏</span></button>
+        </div>
+      </article>
+      <article class="post">
+        <div class="p-head"><div class="avatar" style="background:linear-gradient(135deg,#6366f1,#0ea5e9)">🤖</div>
+          <div><div class="p-name">数码极客老王</div><div class="p-meta">2天前 · 桌面美学</div></div>
+          <button class="follow" onclick="toggleFollow(this)">关注</button></div>
+        <div class="p-img" style="background:linear-gradient(135deg,#c7d2fe,#bae6fd)"><span class="sticker">快充天花板</span>🔌</div>
+        <div class="p-body">桌面只留一个充电头！65W氮化镓三口快充，手机电脑一起充，体积小一半，出差塞包里毫无负担。<br><span class="p-tags">#数码好物# #桌面改造#</span></div>
+        <div class="p-goods"><div class="gimg" style="background:#e0e7ff">🔌</div>
+          <div><div class="gname"><span class="zc-tag">种草价</span>65W氮化镓三口快充头</div><div class="gprice">¥129</div></div>
+          <button class="buy" onclick="toast('已加入购物车 🛒')">去购买</button></div>
+        <div class="p-act">
+          <button class="act" onclick="toggleLike(this)"><span class="ic">🤍</span><span class="n">2988</span></button>
+          <button class="act" onclick="toast('评论区火热讨论中…')"><span class="ic">💬</span><span class="n">351</span></button>
+          <button class="act" onclick="toggleFav(this)"><span class="ic">⭐</span><span class="n">收藏</span></button>
+        </div>
+      </article>
+      <article class="post">
+        <div class="p-head"><div class="avatar" style="background:linear-gradient(135deg,#b45309,#f59e0b)">☕</div>
+          <div><div class="p-name">咖啡爱好者momo</div><div class="p-meta">3天前 · 手冲日记</div></div>
+          <button class="follow" onclick="toggleFollow(this)">关注</button></div>
+        <div class="p-img" style="background:linear-gradient(135deg,#fde68a,#fed7aa)"><span class="sticker">手冲入门</span>🫖</div>
+        <div class="p-body">入坑手冲第一把壶！细口壶嘴水流超稳，新手也能冲出甜感，配上这支耶加雪菲，在家实现咖啡自由～<br><span class="p-tags">#咖啡日常# #手冲咖啡#</span></div>
+        <div class="p-goods"><div class="gimg" style="background:#fef3c7">🫖</div>
+          <div><div class="gname"><span class="zc-tag">种草价</span>不锈钢细口手冲壶 900ml</div><div class="gprice">¥99</div></div>
+          <button class="buy" onclick="toast('已加入购物车 🛒')">去购买</button></div>
+        <div class="p-act">
+          <button class="act" onclick="toggleLike(this)"><span class="ic">🤍</span><span class="n">1643</span></button>
+          <button class="act" onclick="toast('评论区火热讨论中…')"><span class="ic">💬</span><span class="n">189</span></button>
+          <button class="act" onclick="toggleFav(this)"><span class="ic">⭐</span><span class="n">收藏</span></button>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ② 商城 -->
+  <section class="page" id="page-1">
+    <div class="topbar"><h1>种草商城<span class="dot">全场种草价</span></h1></div>
+    <div class="searchbar"><span>🔍</span><input placeholder="搜你心动的宝贝"><button class="sbtn" onclick="toast('正在为你搜罗全网好价…')">搜索</button></div>
+    <div class="mall-tabs">
+      <span class="mtab on" onclick="mtab(this)">全部</span><span class="mtab" onclick="mtab(this)">美妆</span><span class="mtab" onclick="mtab(this)">数码</span><span class="mtab" onclick="mtab(this)">家居</span><span class="mtab" onclick="mtab(this)">服饰</span><span class="mtab" onclick="mtab(this)">美食</span><span class="mtab" onclick="mtab(this)">运动</span>
+    </div>
+    <div class="goods-grid">
+      <div class="gcard"><div class="gimg" style="background:linear-gradient(135deg,#fde68a,#fbcfe8)"><span class="zc-tag">种草价</span>🗄️</div>
+        <div class="ginfo"><div class="gname">亚克力透明桌面收纳盒宿舍整理</div>
+        <div class="grow"><div class="gp">¥19.9<small>¥39.9</small></div></div><div class="sold">已售 2.3万 · 💬318</div></div></div>
+      <div class="gcard"><div class="gimg" style="background:linear-gradient(135deg,#c4b5fd,#f9a8d4)"><span class="zc-tag">种草价</span>😴</div>
+        <div class="ginfo"><div class="gname">真丝恒温蒸汽眼罩10片装护眼</div>
+        <div class="grow"><div class="gp">¥29.9<small>¥59.9</small></div></div><div class="sold">已售 1.8万 · 💬204</div></div></div>
+      <div class="gcard"><div class="gimg" style="background:linear-gradient(135deg,#bbf7d0,#fef9c3)"><span class="zc-tag">种草价</span>🥤</div>
+        <div class="ginfo"><div class="gname">2L大容量运动水杯带刻度吸管</div>
+        <div class="grow"><div class="gp">¥39.9<small>¥79.9</small></div></div><div class="sold">已售 3.1万 · 💬466</div></div></div>
+      <div class="gcard"><div class="gimg" style="background:linear-gradient(135deg,#fbcfe8,#fde68a)"><span class="zc-tag">种草价</span>💄</div>
+        <div class="ginfo"><div class="gname">奶油肌持妆气垫BB霜遮瑕保湿</div>
+        <div class="grow"><div class="gp">¥89<small>¥159</small></div></div><div class="sold">已售 5.6万 · 💬723</div></div></div>
+      <div class="gcard"><div class="gimg" style="background:linear-gradient(135deg,#c7d2fe,#bae6fd)"><span class="zc-tag">种草价</span>🔌</div>
+        <div class="ginfo"><div class="gname">65W氮化镓三口快充头迷你便携</div>
+        <div class="grow"><div class="gp">¥129<small>¥199</small></div></div><div class="sold">已售 8.9千 · 💬351</div></div></div>
+      <div class="gcard"><div class="gimg" style="background:linear-gradient(135deg,#fde68a,#fed7aa)"><span class="zc-tag">种草价</span>🫖</div>
+        <div class="ginfo"><div class="gname">不锈钢细口手冲壶900ml咖啡</div>
+        <div class="grow"><div class="gp">¥99<small>¥169</small></div></div><div class="sold">已售 6.2千 · 💬189</div></div></div>
+      <div class="gcard"><div class="gimg" style="background:linear-gradient(135deg,#fecdd3,#fde68a)"><span class="zc-tag">种草价</span>🧸</div>
+        <div class="ginfo"><div class="gname">治愈系抱抱熊玩偶午睡枕</div>
+        <div class="grow"><div class="gp">¥49.9<small>¥99</small></div></div><div class="sold">已售 1.2万 · 💬156</div></div></div>
+      <div class="gcard"><div class="gimg" style="background:linear-gradient(135deg,#ddd6fe,#fbcfe8)"><span class="zc-tag">种草价</span>🎧</div>
+        <div class="ginfo"><div class="gname">半入耳蓝牙耳机降噪长续航</div>
+        <div class="grow"><div class="gp">¥159<small>¥299</small></div></div><div class="sold">已售 9.8千 · 💬287</div></div></div>
+    </div>
+  </section>
+
+  <!-- ③ 发布 -->
+  <section class="page" id="page-2">
+    <div class="topbar"><h1>发布种草<span class="dot">分享好物</span></h1></div>
+    <div class="pub"><div class="pub-card">
+      <h3>📝 种草标题</h3>
+      <textarea id="pubTitle" rows="3" placeholder="写下你的种草心得，比如：开学季必入的桌面好物…"></textarea>
+      <h3>🖼️ 添加图片</h3>
+      <div class="img-add" id="imgAdd" onclick="addImg()"><span class="plus">＋</span><span id="imgTip">点击添加图片（最多9张）</span></div>
+      <h3>🔗 挂载商品</h3>
+      <div class="link-row"><input id="pubLink" placeholder="粘贴商品链接或输入商品名"><button onclick="addLink()">添加</button></div>
+      <div id="linkChips" style="margin-top:10px"></div>
+      <h3>🏷️ 选择话题</h3>
+      <div class="tchip-row" id="tchips">
+        <span class="tchip" onclick="tchip(this)">#开学好物#</span><span class="tchip" onclick="tchip(this)">#宿舍神器#</span>
+        <span class="tchip" onclick="tchip(this)">#美妆分享#</span><span class="tchip" onclick="tchip(this)">#数码好物#</span>
+        <span class="tchip" onclick="tchip(this)">#健身打卡#</span><span class="tchip" onclick="tchip(this)">#咖啡日常#</span>
+      </div>
+      <button class="pub-btn" onclick="publish()">✨ 发布种草</button>
+    </div></div>
+  </section>
+
+  <!-- ④ 消息 -->
+  <section class="page" id="page-3">
+    <div class="topbar"><h1>消息中心<span class="dot">3条未读</span></h1></div>
+    <div class="msg-filter">
+      <span class="mf on">全部</span><span class="mf">点赞</span><span class="mf">评论</span><span class="mf">粉丝</span><span class="mf">系统</span>
+    </div>
+    <div class="msg-list">
+      <div class="msg"><div class="mav" style="background:linear-gradient(135deg,#f59e0b,#ef4444)">🍐</div>
+        <div class="mtxt"><b>早八人阿梨</b> 赞了你的种草「宿舍桌面收纳分享」<div class="mtime">10分钟前</div></div>
+        <div class="mthumb" style="background:#fef3c7">🗄️</div></div>
+      <div class="msg"><div class="mav" style="background:linear-gradient(135deg,#10b981,#84cc16)">💪</div>
+        <div class="mtxt"><b>健身教练K姐</b> 评论了你：这个水杯我也在用，刻度设计绝了！<div class="mtime">32分钟前</div></div>
+        <div class="mthumb" style="background:#dcfce7">🥤</div></div>
+      <div class="msg"><div class="mav" style="background:linear-gradient(135deg,#ec4899,#f43f5e)">💄</div>
+        <div class="mtxt"><b>美妆博主cc</b> 关注了你，快去看看她的新种草吧<div class="mtime">1小时前</div></div>
+        <button class="follow" onclick="toggleFollow(this)">回关</button></div>
+      <div class="msg"><div class="mav" style="background:linear-gradient(135deg,#6366f1,#0ea5e9)">🤖</div>
+        <div class="mtxt"><b>数码极客老王</b> 赞了你的种草「65W快充头测评」<div class="mtime">2小时前</div></div>
+        <div class="mthumb" style="background:#e0e7ff">🔌</div></div>
+      <div class="msg"><div class="mav" style="background:linear-gradient(135deg,#b45309,#f59e0b)">☕</div>
+        <div class="mtxt"><b>咖啡爱好者momo</b> 收藏了你的种草「手冲壶入门」<div class="mtime">昨天 20:14</div></div>
+        <div class="mthumb" style="background:#fef3c7">🫖</div></div>
+      <div class="msg"><div class="sys-ic">📢</div>
+        <div class="mtxt"><b>系统通知</b>「开学季种草大赛」开始啦！发布带 #开学好物# 话题的种草，瓜分10万现金红包<div class="mtime">昨天 10:00</div></div></div>
+      <div class="msg"><div class="sys-ic">📦</div>
+        <div class="mtxt"><b>物流通知</b> 你购买的「真丝恒温蒸汽眼罩」已签收，记得确认收货并晒单哦<div class="mtime">3天前</div></div></div>
+    </div>
+  </section>
+
+  <!-- ⑤ 我的 -->
+  <section class="page" id="page-4">
+    <div class="me-head">
+      <div class="me-row"><div class="me-avatar">🌷</div>
+        <div><div class="me-name">种草小达人</div><div class="me-id">种草号：ZC666888 · Lv.5 种草官</div></div></div>
+      <div class="me-stats">
+        <div><b>128</b><span>关注</span></div><div><b>8.6万</b><span>粉丝</span></div><div><b>32.4万</b><span>获赞</span></div>
+      </div>
+    </div>
+    <div class="me-sec"><h3>📦 我的种草</h3>
+      <div class="grid4">
+        <div class="it" onclick="toast('共发布 36 篇种草')"><div class="ic" style="background:#f3e8ff">📝</div>我的作品</div>
+        <div class="it" onclick="toast('共收藏 128 篇种草')"><div class="ic" style="background:#fef9c3">⭐</div>我的收藏</div>
+        <div class="it" onclick="toast('待收货 2 · 已完成 15')"><div class="ic" style="background:#dcfce7">🛍️</div>我的订单</div>
+        <div class="it" onclick="toast('地址管理：2个收货地址')"><div class="ic" style="background:#ffedd5">📍</div>收货地址</div>
+      </div></div>
+    <div class="me-sec"><h3>💰 我的钱包</h3>
+      <div class="wallet"><div class="wrow"><div>种草金余额<br><b>¥128.50</b></div><button class="wbtn" onclick="toast('提现申请已提交')">提现</button></div>
+      <div class="wchips"><div class="wchip">🎟️ 优惠券 ×6</div><div class="wchip">🧧 红包 ×3</div><div class="wchip">💎 积分 2450</div></div></div></div>
+    <div class="me-sec">
+      <div class="mrow" onclick="toast('账号与安全：已实名/已绑手机')"><div class="ric grad">🔐</div>账号与安全<span class="arr">›</span></div>
+      <div class="mrow" onclick="toast('通知设置：点赞/评论/粉丝提醒开')"><div class="ric" style="background:linear-gradient(135deg,#f59e0b,#ef4444)">🔔</div>通知设置<span class="arr">›</span></div>
+      <div class="mrow" onclick="toast('隐私：仅互关可见动态')"><div class="ric" style="background:linear-gradient(135deg,#10b981,#0ea5e9)">🛡️</div>隐私设置<span class="arr">›</span></div>
+      <div class="mrow" onclick="toast('种草集 v2.4.0 已是最新版')"><div class="ric" style="background:linear-gradient(135deg,#8b5cf6,#6366f1)">ℹ️</div>关于我们<span class="arr">›</span></div>
+    </div>
+  </section>
+
+  <!-- 底部 Tab -->
+  <nav class="tabbar">
+    <button class="tab" data-t="0"><span class="tic">🏠</span>发现</button>
+    <button class="tab" data-t="1"><span class="tic">🛒</span>商城</button>
+    <button class="tab center" data-t="2"><span class="plusbtn">＋</span>发布</button>
+    <button class="tab" data-t="3"><span class="tic">💬</span>消息</button>
+    <button class="tab" data-t="4"><span class="tic">👤</span>我的</button>
+  </nav>
+</div>
+<div id="toast"></div>
+<script>
+var toastTimer=null;
+function toast(msg){
+  var t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(function(){t.classList.remove('show')},2200);
+}
+function switchTab(n){
+  var pages=document.querySelectorAll('.page'),tabs=document.querySelectorAll('.tab');
+  n=Math.max(0,Math.min(4,parseInt(n)||0));
+  pages.forEach(function(p,i){p.classList.toggle('active',i===n)});
+  tabs.forEach(function(t,i){t.classList.toggle('on',i===n)});
+  window.scrollTo(0,0);
+}
+document.querySelectorAll('.tab').forEach(function(t){
+  t.addEventListener('click',function(){switchTab(t.getAttribute('data-t'))});
+});
+function toggleLike(btn){
+  var ic=btn.querySelector('.ic'),nEl=btn.querySelector('.n');
+  var n=parseInt(nEl.textContent)||0;
+  if(btn.classList.contains('liked')){btn.classList.remove('liked');ic.textContent='🤍';nEl.textContent=n-1;}
+  else{btn.classList.add('liked');ic.textContent='❤️';nEl.textContent=n+1;toast('已点赞 ❤️');}
+}
+function toggleFav(btn){
+  var ic=btn.querySelector('.ic'),nEl=btn.querySelector('.n');
+  if(btn.classList.contains('faved')){btn.classList.remove('faved');ic.textContent='⭐';nEl.textContent='收藏';}
+  else{btn.classList.add('faved');ic.textContent='🌟';nEl.textContent='已收藏';toast('已加入收藏 ⭐');}
+}
+function toggleFollow(btn){
+  if(btn.classList.contains('on')){btn.classList.remove('on');btn.textContent='关注';}
+  else{btn.classList.add('on');btn.textContent='已关注';toast('关注成功，期待TA的更新 ✨');}
+}
+function mtab(el){
+  el.parentElement.querySelectorAll('.mtab').forEach(function(m){m.classList.remove('on')});
+  el.classList.add('on'); toast('已切换分类：'+el.textContent);
+}
+var imgCount=0;
+function addImg(){
+  if(imgCount>=9){toast('最多添加9张图片');return;}
+  imgCount++;
+  document.getElementById('imgTip').textContent='已添加 '+imgCount+' 张图片（示例占位）';
+  toast('图片已添加 📷（'+imgCount+'/9）');
+}
+function addLink(){
+  var v=document.getElementById('pubLink').value.trim();
+  if(!v){toast('请先输入商品名或链接');return;}
+  var c=document.createElement('span');
+  c.className='tchip on'; c.style.marginRight='6px'; c.textContent='🔗 '+v;
+  c.onclick=function(){c.remove();toast('已移除该商品链接');};
+  document.getElementById('linkChips').appendChild(c);
+  document.getElementById('pubLink').value='';
+  toast('商品链接已挂载 ✅');
+}
+function tchip(el){el.classList.toggle('on');}
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function publish(){
+  var title=document.getElementById('pubTitle').value.trim();
+  if(!title){toast('先写一句种草标题吧 ✍️');return;}
+  var tags=[...document.querySelectorAll('#tchips .tchip.on')].map(function(t){return t.textContent}).join(' ');
+  var links=[...document.querySelectorAll('#linkChips .tchip')].map(function(c){return c.textContent.replace('🔗 ','')});
+  var goodsHtml='';
+  if(links.length){
+    goodsHtml='<div class="p-goods"><div class="gimg" style="background:#fef9c3">🎁</div>'+
+      '<div><div class="gname"><span class="zc-tag">种草价</span>'+esc(links[0])+'</div><div class="gprice">¥--.--</div></div>'+
+      '<button class="buy" onclick="toast(\'已加入购物车 🛒\')">去购买</button></div>';
+  }
+  var html='<article class="post">'+
+    '<div class="p-head"><div class="avatar" style="background:linear-gradient(135deg,#a855f7,#ec4899)">🌷</div>'+
+    '<div><div class="p-name">种草小达人</div><div class="p-meta">刚刚 · Lv.5 种草官</div></div>'+
+    '<button class="follow on" onclick="toggleFollow(this)">已关注</button></div>'+
+    (imgCount?'<div class="p-img" style="background:linear-gradient(135deg,#fde68a,#fbcfe8)"><span class="sticker">新鲜出炉</span>📸</div>':'')+
+    '<div class="p-body">'+esc(title)+(tags?'<br><span class="p-tags">'+esc(tags)+'</span>':'')+'</div>'+
+    goodsHtml+
+    '<div class="p-act"><button class="act" onclick="toggleLike(this)"><span class="ic">🤍</span><span class="n">0</span></button>'+
+    '<button class="act" onclick="toast(\'评论区火热讨论中…\')"><span class="ic">💬</span><span class="n">0</span></button>'+
+    '<button class="act" onclick="toggleFav(this)"><span class="ic">⭐</span><span class="n">收藏</span></button></div></article>';
+  var feed=document.getElementById('feed');
+  feed.insertAdjacentHTML('afterbegin',html);
+  document.getElementById('pubTitle').value='';
+  document.getElementById('linkChips').innerHTML='';
+  document.getElementById('imgTip').textContent='点击添加图片（最多9张）'; imgCount=0;
+  document.querySelectorAll('#tchips .tchip.on').forEach(function(t){t.classList.remove('on')});
+  toast('发布成功 🎉');
+  switchTab(0);
+}
+document.querySelectorAll('.msg-filter .mf').forEach(function(m){
+  m.addEventListener('click',function(){
+    m.parentElement.querySelectorAll('.mf').forEach(function(x){x.classList.remove('on')});
+    m.classList.add('on'); toast('已筛选：'+m.textContent);
+  });
+});
+(function(){
+  var q=new URLSearchParams(location.search).get('tab');
+  switchTab(q===null?0:q);
+})();
+</script>
+</body>
+</html>

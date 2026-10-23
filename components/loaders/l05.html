@@ -1,0 +1,19 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DNA双螺旋 · 加载动画</title><style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;background:radial-gradient(600px 400px at 50% 40%,#160f2e,#08060f 70%);display:flex;flex-direction:column;align-items:center;justify-content:center;
+font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;color:#e8eaf0;padding:24px 12px}
+h1{font-size:15px;font-weight:600;letter-spacing:4px;color:#f472b6;margin-bottom:6px}
+.sub{font-size:11px;color:#8a90a6;margin-bottom:30px;letter-spacing:3px}
+.stage{width:360px;max-width:94vw;height:300px;position:relative;display:flex;align-items:center;justify-content:center}
+.dna{display:flex;flex-direction:column;gap:2px}
+.pr{width:130px;height:24px;position:relative;animation:tw 2.4s ease-in-out infinite}
+.pr i{position:absolute;top:7px;width:11px;height:11px;border-radius:50%}
+.dl{left:14px;background:#f472b6;box-shadow:0 0 10px #f472b6}
+.dr{right:14px;background:#38bdf8;box-shadow:0 0 10px #38bdf8}
+.rg{position:absolute;left:30px;right:30px;top:11.5px;height:2px;background:rgba(255,255,255,.35);transform-origin:center}
+@keyframes tw{0%,100%{transform:translateY(-9px)}50%{transform:translateY(9px)}}
+.pr .rg{animation:rgw 2.4s ease-in-out infinite}
+@keyframes rgw{0%,100%{transform:scaleX(.25);opacity:.3}50%{transform:scaleX(1);opacity:.9}}
+</style></head><body><h1>DNA双螺旋</h1><div class="sub">LOADING · 加载中</div><div class="stage"><div class="dna"><div class="pr" style="animation-delay:0.00s"><i class="dl"></i><i class="dr"></i><b class="rg" style="animation-delay:0.00s"></b></div><div class="pr" style="animation-delay:0.16s"><i class="dl"></i><i class="dr"></i><b class="rg" style="animation-delay:0.16s"></b></div><div class="pr" style="animation-delay:0.32s"><i class="dl"></i><i class="dr"></i><b class="rg" style="animation-delay:0.32s"></b></div><div class="pr" style="animation-delay:0.48s"><i class="dl"></i><i class="dr"></i><b class="rg" style="animation-delay:0.48s"></b></div><div class="pr" style="animation-delay:0.64s"><i class="dl"></i><i class="dr"></i><b class="rg" style="animation-delay:0.64s"></b></div><div class="pr" style="animation-delay:0.80s"><i class="dl"></i><i class="dr"></i><b class="rg" style="animation-delay:0.80s"></b></div><div class="pr" style="animation-delay:0.96s"><i class="dl"></i><i class="dr"></i><b class="rg" style="animation-delay:0.96s"></b></div><div class="pr" style="animation-delay:1.12s"><i class="dl"></i><i class="dr"></i><b class="rg" style="animation-delay:1.12s"></b></div><div class="pr" style="animation-delay:1.28s"><i class="dl"></i><i class="dr"></i><b class="rg" style="animation-delay:1.28s"></b></div><div class="pr" style="animation-delay:1.44s"><i class="dl"></i><i class="dr"></i><b class="rg" style="animation-delay:1.44s"></b></div><div class="pr" style="animation-delay:1.60s"><i class="dl"></i><i class="dr"></i><b class="rg" style="animation-delay:1.60s"></b></div><div class="pr" style="animation-delay:1.76s"><i class="dl"></i><i class="dr"></i><b class="rg" style="animation-delay:1.76s"></b></div></div></div></body></html>

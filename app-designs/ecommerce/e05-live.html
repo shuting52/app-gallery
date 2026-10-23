@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>星播 LIVE · 直播电商</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#0b0e1a; --bg2:#12162a; --card:#151a30; --line:rgba(139,92,246,.22);
+  --purple:#8b5cf6; --purple-d:#6d28d9; --green:#22ff88; --red:#ff2d55;
+  --txt:#eef0ff; --mut:#8b90b8;
+}
+html{background:#05060d}
+body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;color:var(--txt);background:#05060d}
+.phone{max-width:430px;margin:0 auto;min-height:100dvh;position:relative;background:radial-gradient(120% 50% at 50% -10%,rgba(139,92,246,.14),transparent 60%),var(--bg);padding-bottom:86px}
+/* ---------- 顶栏 ---------- */
+.topbar{position:sticky;top:0;z-index:50;background:rgba(11,14,26,.9);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);padding:12px 16px;display:flex;align-items:center;gap:10px}
+.logo{font-size:20px;font-weight:900;letter-spacing:1px;background:linear-gradient(90deg,var(--purple),var(--green));-webkit-background-clip:text;background-clip:text;color:transparent}
+.logo em{font-style:normal;color:var(--red);-webkit-text-fill-color:var(--red)}
+.search{flex:1;background:var(--card);border:1px solid var(--line);border-radius:20px;padding:8px 14px;font-size:13px;color:var(--mut);display:flex;gap:6px;align-items:center}
+.bell{width:34px;height:34px;border-radius:50%;background:var(--card);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:17px}
+/* ---------- 页面 ---------- */
+.page{display:none;padding:14px 14px 8px;animation:fade .25s}
+.page.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.sect{font-size:15px;font-weight:800;margin:14px 2px 10px;display:flex;align-items:center;gap:8px}
+.sect::before{content:"";width:4px;height:16px;border-radius:2px;background:linear-gradient(var(--purple),var(--green))}
+.sect .more{margin-left:auto;font-size:12px;color:var(--mut);font-weight:400}
+/* ---------- 直播卡片 ---------- */
+.rooms{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.room{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden;cursor:pointer;transition:transform .15s}
+.room:active{transform:scale(.97)}
+.cover{position:relative;height:150px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.cover .emoji{font-size:46px;filter:drop-shadow(0 4px 12px rgba(0,0,0,.5))}
+.cover .fake-face{position:absolute;inset:auto 0 0 0;height:56px;background:linear-gradient(transparent,rgba(0,0,0,.55))}
+.live-badge{position:absolute;top:8px;left:8px;background:var(--red);color:#fff;font-size:10px;font-weight:800;padding:3px 8px;border-radius:6px;letter-spacing:1px;box-shadow:0 0 10px var(--red);animation:blink 1.4s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.55}}
+.viewers{position:absolute;bottom:8px;left:8px;font-size:10px;color:#fff;background:rgba(0,0,0,.55);padding:2px 8px;border-radius:10px}
+.room .info{padding:10px 11px}
+.room .t{font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.room .host{display:flex;align-items:center;gap:6px;margin-top:7px;font-size:11px;color:var(--mut)}
+.avatar{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#0b0e1a;background:linear-gradient(135deg,var(--green),var(--purple))}
+/* ---------- 直播间全屏 ---------- */
+.live-room{display:none;position:fixed;inset:0;z-index:200;background:#000;max-width:430px;margin:0 auto;overflow:hidden}
+.live-room.open{display:block}
+.stage{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.stage .big{font-size:110px;filter:drop-shadow(0 8px 30px rgba(139,92,246,.6));animation:sway 5s ease-in-out infinite}
+@keyframes sway{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-14px) rotate(3deg)}}
+.stage .rays{position:absolute;inset:0;background:radial-gradient(80% 55% at 50% 40%,rgba(139,92,246,.35),transparent 70%)}
+.lr-top{position:absolute;top:0;left:0;right:0;z-index:5;padding:12px;display:flex;align-items:center;gap:10px;background:linear-gradient(rgba(0,0,0,.6),transparent)}
+.back{width:36px;height:36px;border-radius:50%;background:rgba(0,0,0,.5);border:1px solid var(--line);color:#fff;font-size:18px;display:flex;align-items:center;justify-content:center}
+.hostcard{display:flex;align-items:center;gap:8px;background:rgba(0,0,0,.5);border:1px solid var(--line);border-radius:22px;padding:4px 12px 4px 4px}
+.hostcard .avatar{width:30px;height:30px;font-size:14px}
+.hostcard .nm{font-size:12px;font-weight:700}
+.hostcard .fans{font-size:10px;color:var(--mut)}
+.follow{margin-left:auto;background:linear-gradient(90deg,var(--red),#ff6b81);color:#fff;border:0;border-radius:14px;padding:7px 14px;font-size:12px;font-weight:800}
+.follow.on{background:rgba(255,255,255,.15);color:var(--green)}
+.lr-side{position:absolute;right:12px;bottom:150px;z-index:5;display:flex;flex-direction:column;gap:14px;align-items:center}
+.sidebtn{width:48px;height:48px;border-radius:50%;background:rgba(0,0,0,.5);border:1px solid var(--line);display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:18px;color:#fff}
+.sidebtn small{font-size:9px;margin-top:2px}
+.sidebtn.like.liked{color:var(--red);border-color:var(--red);box-shadow:0 0 12px rgba(255,45,85,.5)}
+.danmaku{position:absolute;top:70px;left:0;right:70px;z-index:4;pointer-events:none;display:flex;flex-direction:column;gap:8px;padding:0 10px}
+.dm{font-size:12px;color:#fff;background:rgba(0,0,0,.45);border-radius:12px;padding:5px 12px;width:max-content;max-width:80%;animation:dmin .3s}
+.dm b{color:var(--green);font-weight:700;margin-right:6px}
+@keyframes dmin{from{opacity:0;transform:translateX(-16px)}to{opacity:1;transform:none}}
+.heart{position:absolute;bottom:170px;font-size:22px;z-index:6;pointer-events:none;animation:floatUp 1.2s forwards}
+@keyframes floatUp{0%{opacity:1;transform:translateY(0) scale(.6)}100%{opacity:0;transform:translateY(-160px) scale(1.3) rotate(20deg)}}
+.lr-bottom{position:absolute;bottom:0;left:0;right:0;z-index:5;padding:12px;background:linear-gradient(transparent,rgba(0,0,0,.85) 40%)}
+.lr-title{font-size:13px;font-weight:700;margin-bottom:10px}
+.lr-bar{display:flex;gap:10px;align-items:center}
+.dm-input{flex:1;background:rgba(255,255,255,.12);border:1px solid var(--line);border-radius:22px;padding:10px 16px;font-size:13px;color:#fff;outline:none}
+.dm-input::placeholder{color:#aab}
+.cart-btn{width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,var(--purple),var(--purple-d));display:flex;align-items:center;justify-content:center;font-size:22px;position:relative;box-shadow:0 0 16px rgba(139,92,246,.7)}
+.cart-btn .badge{position:absolute;top:-4px;right:-4px;background:var(--red);color:#fff;font-size:10px;font-weight:800;min-width:18px;height:18px;border-radius:9px;display:flex;align-items:center;justify-content:center;padding:0 4px}
+/* 小黄车面板 */
+.cart-panel{position:absolute;left:0;right:0;bottom:0;z-index:8;background:var(--bg2);border-top:1px solid var(--line);border-radius:18px 18px 0 0;max-height:62%;display:none;flex-direction:column}
+.cart-panel.open{display:flex;animation:slideUp .25s}
+@keyframes slideUp{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
+.cp-head{padding:14px 16px 10px;display:flex;align-items:center;font-size:14px;font-weight:800}
+.cp-head .close{margin-left:auto;font-size:18px;color:var(--mut);padding:4px 8px}
+.cp-list{overflow-y:auto;padding:0 14px 16px}
+.cp-item{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid rgba(139,92,246,.12);align-items:center}
+.cp-thumb{width:58px;height:58px;border-radius:10px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:30px}
+.cp-item .nm{font-size:13px;font-weight:600}
+.cp-item .pr{color:var(--red);font-weight:800;font-size:14px;margin-top:4px}
+.cp-item .pr s{color:var(--mut);font-weight:400;font-size:11px;margin-left:6px}
+.addbtn{margin-left:auto;background:linear-gradient(90deg,var(--green),#00d4ff);color:#06251a;border:0;border-radius:16px;padding:8px 14px;font-size:12px;font-weight:800;white-space:nowrap}
+/* ---------- 商城双列 ---------- */
+.goods{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.good{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.gimg{height:130px;display:flex;align-items:center;justify-content:center;font-size:52px;position:relative}
+.gimg .tag{position:absolute;top:8px;left:8px;font-size:10px;background:linear-gradient(90deg,var(--purple),var(--purple-d));padding:2px 8px;border-radius:6px;font-weight:700}
+.good .info{padding:10px 11px}
+.good .nm{font-size:12.5px;font-weight:600;height:36px;overflow:hidden}
+.good .row{display:flex;align-items:center;margin-top:6px}
+.good .pr{color:var(--red);font-weight:800;font-size:15px}
+.good .sold{font-size:10px;color:var(--mut);margin-left:auto}
+.buy{width:100%;margin-top:8px;background:linear-gradient(90deg,var(--purple),var(--purple-d));border:0;color:#fff;border-radius:10px;padding:9px;font-size:13px;font-weight:700}
+/* ---------- 购物车 ---------- */
+.cart-item{display:flex;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;margin-bottom:12px;align-items:center}
+.cimg{width:70px;height:70px;border-radius:10px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:36px}
+.cart-item .nm{font-size:13px;font-weight:600}
+.cart-item .pr{color:var(--red);font-weight:800;margin-top:6px}
+.qty{margin-left:auto;display:flex;align-items:center;gap:8px}
+.qty button{width:26px;height:26px;border-radius:8px;border:1px solid var(--line);background:var(--bg2);color:#fff;font-size:15px}
+.checkbar{position:sticky;bottom:96px;background:var(--bg2);border:1px solid var(--line);border-radius:16px;padding:14px;display:flex;align-items:center;gap:10px;margin-top:8px}
+.total{margin-left:auto;font-size:13px;color:var(--mut)}
+.total b{color:var(--red);font-size:18px}
+.pay{background:linear-gradient(90deg,var(--red),#ff6b81);border:0;color:#fff;border-radius:12px;padding:12px 26px;font-size:14px;font-weight:800}
+.empty{padding:50px 20px;text-align:center;color:var(--mut)}
+.empty .e{font-size:56px;margin-bottom:12px}
+/* ---------- 我的 ---------- */
+.me-head{background:linear-gradient(135deg,#1a1033,#0e2a1f);border:1px solid var(--line);border-radius:18px;padding:20px 16px;display:flex;gap:14px;align-items:center}
+.me-head .avatar{width:60px;height:60px;font-size:26px}
+.me-head .nm{font-size:17px;font-weight:800}
+.me-head .lv{font-size:11px;color:var(--green);border:1px solid var(--green);border-radius:8px;padding:2px 8px;margin-top:6px;display:inline-block}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);background:var(--card);border:1px solid var(--line);border-radius:14px;margin-top:12px;padding:14px 0;text-align:center}
+.stats b{font-size:16px;color:var(--green)}
+.stats span{font-size:11px;color:var(--mut);display:block;margin-top:4px}
+.menu{background:var(--card);border:1px solid var(--line);border-radius:14px;margin-top:12px;overflow:hidden}
+.menu .mi{display:flex;align-items:center;gap:12px;padding:14px 16px;font-size:14px;border-bottom:1px solid rgba(139,92,246,.1)}
+.menu .mi:last-child{border:0}
+.menu .mi .ic{font-size:19px;width:26px;text-align:center}
+.menu .mi .arr{margin-left:auto;color:var(--mut)}
+.hist{display:flex;gap:10px;overflow-x:auto;padding:4px 2px 10px}
+.hist .h{flex-shrink:0;width:120px;background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.hist .hc{height:80px;display:flex;align-items:center;justify-content:center;font-size:34px}
+.hist .ht{font-size:11px;padding:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* ---------- Tab 栏 ---------- */
+.tabbar{position:fixed;left:50%;transform:translateX(-50%);bottom:0;width:100%;max-width:430px;z-index:100;background:rgba(11,14,26,.96);backdrop-filter:blur(12px);border-top:1px solid var(--line);display:flex;padding:8px 0 calc(10px + env(safe-area-inset-bottom))}
+.tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11px;color:var(--mut);padding:4px 0;position:relative}
+.tab .ti{font-size:22px}
+.tab.on{color:var(--green)}
+.tab .cbadge{position:absolute;top:0;right:calc(50% - 24px);background:var(--red);color:#fff;font-size:9px;font-weight:800;min-width:16px;height:16px;border-radius:8px;display:flex;align-items:center;justify-content:center;padding:0 4px}
+/* ---------- toast ---------- */
+.toast{position:fixed;left:50%;transform:translateX(-50%) translateY(20px);bottom:110px;z-index:300;background:rgba(20,24,45,.95);border:1px solid var(--purple);color:#fff;font-size:13px;padding:11px 22px;border-radius:24px;opacity:0;transition:.3s;pointer-events:none;max-width:80%;text-align:center}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="topbar">
+    <div class="logo">星播<em>LIVE</em></div>
+    <div class="search">🔍 搜主播 / 商品 / 直播间</div>
+    <div class="bell">🔔</div>
+  </div>
+
+  <!-- ① 直播 -->
+  <div class="page" id="page-0">
+    <div class="sect">🔥 正在直播 <span class="more">全部 128 间 ›</span></div>
+    <div class="rooms" id="roomGrid"></div>
+    <div class="sect">🌙 今晚预告 <span class="more">预约提醒 ›</span></div>
+    <div class="rooms" id="roomGrid2"></div>
+  </div>
+
+  <!-- ② 商城 -->
+  <div class="page" id="page-1">
+    <div class="sect">🛍️ 直播同款 <span class="more">全部 ›</span></div>
+    <div class="goods" id="goodsGrid"></div>
+  </div>
+
+  <!-- ③ 购物车 -->
+  <div class="page" id="page-2">
+    <div class="sect">🛒 我的购物车 <span class="more" id="cartCount"></span></div>
+    <div id="cartList"></div>
+    <div class="checkbar" id="checkBar">
+      <label style="font-size:13px"><input type="checkbox" id="selAll" checked style="accent-color:#22ff88"> 全选</label>
+      <div class="total">合计 <b id="totalAmt">¥0.00</b></div>
+      <button class="pay" id="payBtn">去结算</button>
+    </div>
+  </div>
+
+  <!-- ④ 我的 -->
+  <div class="page" id="page-3">
+    <div class="me-head">
+      <div class="avatar">🛍️</div>
+      <div><div class="nm">追播达人_小星</div><span class="lv">💎 LV.6 直播会员</span></div>
+    </div>
+    <div class="stats">
+      <div><b>128</b><span>关注</span></div>
+      <div><b>56</b><span>收藏</span></div>
+      <div><b>12</b><span>优惠券</span></div>
+      <div><b>¥1,286</b><span>省钱</span></div>
+    </div>
+    <div class="sect">🧾 我的订单</div>
+    <div class="menu">
+      <div class="mi"><span class="ic">💳</span>待付款<span class="arr">›</span></div>
+      <div class="mi"><span class="ic">📦</span>待发货<span class="arr">›</span></div>
+      <div class="mi"><span class="ic">🚚</span>待收货<span class="arr">›</span></div>
+      <div class="mi"><span class="ic">⭐</span>待评价<span class="arr">›</span></div>
+    </div>
+    <div class="sect">🎬 观看历史</div>
+    <div class="hist" id="histRow"></div>
+    <div class="sect">⚙️ 更多</div>
+    <div class="menu">
+      <div class="mi"><span class="ic">🎟️</span>我的优惠券<span class="arr">满300减50 ›</span></div>
+      <div class="mi"><span class="ic">❤️</span>我的收藏<span class="arr">56 ›</span></div>
+      <div class="mi"><span class="ic">⚙️</span>设置<span class="arr">›</span></div>
+    </div>
+  </div>
+
+  <!-- 底部 Tab -->
+  <nav class="tabbar">
+    <div class="tab" data-t="0"><span class="ti">📺</span>直播<span class="cbadge" id="tabCartBadge" style="display:none">0</span></div>
+    <div class="tab" data-t="1"><span class="ti">🛍️</span>商城</div>
+    <div class="tab" data-t="2"><span class="ti">🛒</span>购物车<span class="cbadge" id="tabCartBadge2" style="display:none">0</span></div>
+    <div class="tab" data-t="3"><span class="ti">👤</span>我的</div>
+  </nav>
+</div>
+
+<!-- 直播间全屏 -->
+<div class="live-room" id="liveRoom">
+  <div class="stage" id="stage">
+    <div class="rays"></div>
+    <div class="big" id="stageEmoji">🧥</div>
+  </div>
+  <div class="lr-top">
+    <div class="back" id="backBtn">‹</div>
+    <div class="hostcard">
+      <div class="avatar" id="lrAvatar">🍁</div>
+      <div><div class="nm" id="lrName">枫糖小筑</div><div class="fans" id="lrFans">粉丝 86.2万 · 在看 2.3万</div></div>
+    </div>
+    <button class="follow" id="followBtn">+ 关注</button>
+  </div>
+  <div class="danmaku" id="danmaku"></div>
+  <div class="lr-side">
+    <div class="sidebtn like" id="likeBtn">❤️<small id="likeCount">8.6w</small></div>
+    <div class="sidebtn" id="shareBtn">🔗<small>分享</small></div>
+    <div class="sidebtn" id="giftBtn">🎁<small>礼物</small></div>
+  </div>
+  <div class="lr-bottom">
+    <div class="lr-title" id="lrTitle">🍂 秋冬大衣专场 · 全场 5 折起</div>
+    <div class="lr-bar">
+      <input class="dm-input" id="dmInput" placeholder="说点什么…">
+      <div class="cart-btn" id="cartBtn">🛒<span class="badge" id="lrBadge" style="display:none">0</span></div>
+    </div>
+  </div>
+  <div class="cart-panel" id="cartPanel">
+    <div class="cp-head">🛒 本场小黄车 <span style="color:var(--mut);font-weight:400;font-size:12px" id="cpCount"></span><span class="close" id="cpClose">✕</span></div>
+    <div class="cp-list" id="cpList"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+"use strict";
+/* ============ 数据 ============ */
+const ROOMS=[
+ {emoji:"🧥",bg:"linear-gradient(135deg,#3b1d5e,#8b5cf6)",host:"枫糖小筑",title:"秋冬大衣专场 · 全场5折起",viewers:"2.3万",fans:"86.2万"},
+ {emoji:"💄",bg:"linear-gradient(135deg,#5e1d3b,#ff2d78)",host:"美妆阿梨",title:"大牌口红买一送一 · 今晚免单",viewers:"5.1万",fans:"210万"},
+ {emoji:"🍜",bg:"linear-gradient(135deg,#5e3a1d,#ff9a3d)",host:"吃货老陈",title:"深夜食堂 · 网红零食大测评",viewers:"1.8万",fans:"64.5万"},
+ {emoji:"👟",bg:"linear-gradient(135deg,#1d4d5e,#22ffcc)",host:"潮流KIKI",title:"球鞋上新 · 限量款抽签",viewers:"3.7万",fans:"152万"},
+ {emoji:"🏠",bg:"linear-gradient(135deg,#2d5e1d,#a3ff5e)",host:"家居研究所",title:"出租屋改造 · 百元好物",viewers:"9千",fans:"38万"},
+ {emoji:"📱",bg:"linear-gradient(135deg,#1d2d5e,#5e8bff)",host:"数码老炮",title:"双11预热 · 手机耳机抄底价",viewers:"4.2万",fans:"178万"},
+];
+const UPCOMING=[
+ {emoji:"👗",bg:"linear-gradient(135deg,#5e1d52,#c65eff)",host:"穿搭MOMO",title:"今晚20:00 · 毛衣裙专场",viewers:"预约 1.2万",fans:"92万"},
+ {emoji:"🍵",bg:"linear-gradient(135deg,#3d5e1d,#d4ff5e)",host:"茶山阿婆",title:"今晚21:30 · 高山茶开汤",viewers:"预约 8千",fans:"45万"},
+];
+const GOODS=[
+ {emoji:"🧥",bg:"linear-gradient(135deg,#3b1d5e,#8b5cf6)",nm:"枫糖小筑同款 · 双面羊绒大衣",pr:299,op:899,sold:"已售2.3万",tag:"直播价"},
+ {emoji:"💄",bg:"linear-gradient(135deg,#5e1d3b,#ff2d78)",nm:"阿梨推荐 · 丝绒哑光口红# chili",pr:89,op:159,sold:"已售5.6万",tag:"买一送一"},
+ {emoji:"🍜",bg:"linear-gradient(135deg,#5e3a1d,#ff9a3d)",nm:"老陈测评第一 · 爆浆麻薯组合装",pr:39.9,op:69,sold:"已售8.1万",tag:"第二件半价"},
+ {emoji:"👟",bg:"linear-gradient(135deg,#1d4d5e,#22ffcc)",nm:"KIKI上脚 · 复古跑鞋限定配色",pr:459,op:799,sold:"已售1.2万",tag:"限量"},
+ {emoji:"🛋️",bg:"linear-gradient(135deg,#2d5e1d,#a3ff5e)",nm:"家居研究所 · 懒人沙发豆袋",pr:129,op:259,sold:"已售3.4万",tag:"直播价"},
+ {emoji:"🎧",bg:"linear-gradient(135deg,#1d2d5e,#5e8bff)",nm:"老炮力荐 · 主动降噪蓝牙耳机",pr:199,op:399,sold:"已售4.7万",tag:"抄底"},
+ {emoji:"👗",bg:"linear-gradient(135deg,#5e1d52,#c65eff)",nm:"MOMO穿搭 · 针织毛衣裙秋冬款",pr:159,op:329,sold:"已售9千",tag:"预告"},
+ {emoji:"🍵",bg:"linear-gradient(135deg,#3d5e1d,#d4ff5e)",nm:"茶山阿婆 · 明前高山绿茶500g",pr:99,op:188,sold:"已售6千",tag:"预告"},
+];
+const ROOM_GOODS=[0,2,5,1]; // 当前直播间小黄车商品索引
+const HISTORY=[
+ {emoji:"💄",bg:"linear-gradient(135deg,#5e1d3b,#ff2d78)",t:"美妆阿梨 · 口红专场"},
+ {emoji:"👟",bg:"linear-gradient(135deg,#1d4d5e,#22ffcc)",t:"潮流KIKI · 球鞋上新"},
+ {emoji:"🍜",bg:"linear-gradient(135deg,#5e3a1d,#ff9a3d)",t:"吃货老陈 · 零食测评"},
+ {emoji:"📱",bg:"linear-gradient(135deg,#1d2d5e,#5e8bff)",t:"数码老炮 · 耳机抄底"},
+];
+const DM_POOL=[
+ ["星星不睡觉","这个大衣版型绝了！"],["剁手党本党","已下单，求发货快点"],["吃瓜群众","主播声音好好听"],["羊毛党","蹲一个优惠券"],["夜猫子","刚进来，有回放吗？"],
+ ["省钱小能手","比官网便宜200！"],["颜值即正义","主播今天妆好好看"],["等等党","等等党表示再观望下"],["冲鸭","3号链接上了快抢！"],["社恐不社","默默加购了两件"],
+ ["熬夜冠军","这个点还在播，辛苦了"],["薅羊毛","福袋还有吗？"],["理性消费","冷静…冷静不了"],["快乐肥宅","购物车已清空钱包"],["种草机","求试色口红！"]
+];
+/* ============ 状态 ============ */
+let cart=[]; // {gi, qty, sel}
+let likes=86000;
+let followed=false;
+let dmTimer=null, curRoom=0;
+
+const $=id=>document.getElementById(id);
+function toast(msg){
+  const t=$("toast"); t.textContent=msg; t.classList.add("show");
+  clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove("show"),1800);
+}
+function fmt(n){return n>=10000?(n/10000).toFixed(1)+"w":String(n);}
+
+/* ============ 直播列表 ============ */
+function roomCard(r,i){
+  return `<div class="room" data-i="${i}">
+    <div class="cover" style="background:${r.bg}">
+      <span class="emoji">${r.emoji}</span><div class="fake-face"></div>
+      <span class="live-badge">● LIVE</span><span class="viewers">👁 ${r.viewers} 在看</span>
+    </div>
+    <div class="info"><div class="t">${r.title}</div>
+    <div class="host"><span class="avatar">${r.host[0]}</span>${r.host}</div></div>
+  </div>`;
+}
+$("roomGrid").innerHTML=ROOMS.map(roomCard).join("");
+$("roomGrid2").innerHTML=UPCOMING.map(roomCard).join("");
+document.querySelectorAll(".room").forEach(el=>{
+  el.addEventListener("click",()=>openRoom(parseInt(el.dataset.i,10)));
+});
+
+/* ============ 直播间 ============ */
+function openRoom(i){
+  curRoom=i%ROOMS.length;
+  const r=ROOMS[curRoom];
+  $("stageEmoji").textContent=r.emoji;
+  $("stage").style.background=r.bg;
+  $("lrAvatar").textContent=r.host[0];
+  $("lrName").textContent=r.host;
+  $("lrFans").textContent="粉丝 "+r.fans+" · 在看 "+r.viewers;
+  $("lrTitle").textContent=r.title;
+  followed=false; updateFollow();
+  $("liveRoom").classList.add("open");
+  document.body.style.overflow="hidden";
+  startDanmaku();
+}
+function closeRoom(){
+  $("liveRoom").classList.remove("open");
+  document.body.style.overflow="";
+  stopDanmaku();
+  $("cartPanel").classList.remove("open");
+}
+$("backBtn").addEventListener("click",closeRoom);
+function updateFollow(){
+  const b=$("followBtn");
+  b.textContent=followed?"✓ 已关注":"+ 关注";
+  b.classList.toggle("on",followed);
+}
+$("followBtn").addEventListener("click",()=>{
+  followed=!followed; updateFollow();
+  toast(followed?"已关注，下次开播提醒你":"已取消关注");
+});
+/* 点赞 */
+$("likeBtn").addEventListener("click",e=>{
+  e.stopPropagation();
+  likes+=Math.floor(Math.random()*3)+1;
+  $("likeCount").textContent=fmt(likes);
+  $("likeBtn").classList.add("liked");
+  spawnHeart(e.clientX||200,e.clientY||500);
+});
+/* 点击画面飘爱心 */
+$("stage").addEventListener("click",e=>{
+  likes++; $("likeCount").textContent=fmt(likes);
+  spawnHeart(e.clientX,e.clientY);
+});
+function spawnHeart(x,y){
+  const h=document.createElement("div");
+  h.className="heart"; h.textContent=["❤️","💜","💚","✨"][Math.floor(Math.random()*4)];
+  h.style.left=(x-11)+"px"; h.style.top=(y-22)+"px";
+  $("liveRoom").appendChild(h);
+  setTimeout(()=>h.remove(),1250);
+}
+$("shareBtn").addEventListener("click",()=>toast("直播间链接已复制，快分享给好友"));
+$("giftBtn").addEventListener("click",()=>toast("🎁 礼物面板开发中，先点个关注吧"));
+/* 弹幕 */
+function startDanmaku(){
+  stopDanmaku();
+  const box=$("danmaku"); box.innerHTML="";
+  let k=0;
+  const push=()=>{
+    const d=DM_POOL[k%DM_POOL.length]; k++;
+    const el=document.createElement("div");
+    el.className="dm";
+    el.innerHTML="<b>"+d[0]+"</b>"+d[1].replace(/</g,"&lt;");
+    box.appendChild(el);
+    while(box.children.length>5) box.removeChild(box.firstChild);
+  };
+  push();push();
+  dmTimer=setInterval(push,2200);
+}
+function stopDanmaku(){ if(dmTimer){clearInterval(dmTimer);dmTimer=null;} }
+$("dmInput").addEventListener("keydown",e=>{
+  if(e.key==="Enter"&&e.target.value.trim()){
+    const el=document.createElement("div");
+    el.className="dm";
+    el.innerHTML="<b>我</b>"+e.target.value.trim().replace(/</g,"&lt;");
+    const box=$("danmaku"); box.appendChild(el);
+    while(box.children.length>5) box.removeChild(box.firstChild);
+    e.target.value="";
+  }
+});
+/* 小黄车 */
+function renderCartPanel(){
+  $("cpList").innerHTML=ROOM_GOODS.map(gi=>{
+    const g=GOODS[gi];
+    return `<div class="cp-item">
+      <div class="cp-thumb" style="background:${g.bg}">${g.emoji}</div>
+      <div><div class="nm">${g.nm}</div><div class="pr">¥${g.pr}<s>¥${g.op}</s></div></div>
+      <button class="addbtn" data-gi="${gi}">加购</button>
+    </div>`;
+  }).join("");
+  $("cpCount").textContent="共 "+ROOM_GOODS.length+" 件";
+  $("cpList").querySelectorAll(".addbtn").forEach(b=>{
+    b.addEventListener("click",()=>addToCart(parseInt(b.dataset.gi,10)));
+  });
+}
+$("cartBtn").addEventListener("click",e=>{
+  e.stopPropagation();
+  const p=$("cartPanel"); p.classList.toggle("open");
+  if(p.classList.contains("open")) renderCartPanel();
+});
+$("cpClose").addEventListener("click",()=>$("cartPanel").classList.remove("open"));
+
+/* ============ 购物车 ============ */
+function cartCountTotal(){return cart.reduce((s,c)=>s+c.qty,0);}
+function updateBadges(){
+  const n=cartCountTotal();
+  ["tabCartBadge","tabCartBadge2","lrBadge"].forEach(id=>{
+    const el=$(id);
+    el.style.display=n>0?"flex":"none";
+    el.textContent=n>99?"99+":n;
+  });
+  $("cartCount").textContent=n>0?"共 "+n+" 件":"";
+}
+function addToCart(gi){
+  const ex=cart.find(c=>c.gi===gi);
+  if(ex) ex.qty++; else cart.push({gi,qty:1,sel:true});
+  updateBadges(); renderCart();
+  toast("已加入购物车 🛒");
+}
+function renderCart(){
+  const list=$("cartList");
+  if(cart.length===0){
+    list.innerHTML=`<div class="empty"><div class="e">🛒</div>购物车空空如也<br>去直播间逛逛吧～</div>`;
+  }else{
+    list.innerHTML=cart.map((c,i)=>{
+      const g=GOODS[c.gi];
+      return `<div class="cart-item">
+        <input type="checkbox" data-i="${i}" class="csel" ${c.sel?"checked":""} style="accent-color:#22ff88;width:18px;height:18px">
+        <div class="cimg" style="background:${g.bg}">${g.emoji}</div>
+        <div style="flex:1"><div class="nm">${g.nm}</div><div class="pr">¥${g.pr}</div></div>
+        <div class="qty">
+          <button data-i="${i}" data-a="dec">−</button><span>${c.qty}</span><button data-i="${i}" data-a="inc">+</button>
+        </div>
+      </div>`;
+    }).join("");
+  }
+  let sum=0;
+  cart.forEach(c=>{ if(c.sel) sum+=GOODS[c.gi].pr*c.qty; });
+  $("totalAmt").textContent="¥"+sum.toFixed(2);
+  list.querySelectorAll(".csel").forEach(cb=>{
+    cb.addEventListener("change",()=>{
+      cart[parseInt(cb.dataset.i,10)].sel=cb.checked; renderCart();
+    });
+  });
+  list.querySelectorAll(".qty button").forEach(b=>{
+    b.addEventListener("click",()=>{
+      const i=parseInt(b.dataset.i,10);
+      if(b.dataset.a==="inc") cart[i].qty++;
+      else{ cart[i].qty--; if(cart[i].qty<1) cart.splice(i,1); }
+      updateBadges(); renderCart();
+    });
+  });
+}
+$("selAll").addEventListener("change",e=>{
+  cart.forEach(c=>c.sel=e.target.checked); renderCart();
+});
+$("payBtn").addEventListener("click",()=>{
+  const sel=cart.filter(c=>c.sel);
+  if(sel.length===0){ toast("请先勾选要结算的商品"); return; }
+  let sum=0; sel.forEach(c=>sum+=GOODS[c.gi].pr*c.qty);
+  toast("订单已提交：¥"+sum.toFixed(2)+"，请在30分钟内付款");
+  cart=cart.filter(c=>!c.sel); updateBadges(); renderCart();
+});
+
+/* ============ 商城 ============ */
+$("goodsGrid").innerHTML=GOODS.map((g,gi)=>`
+  <div class="good">
+    <div class="gimg" style="background:${g.bg}">${g.emoji}<span class="tag">${g.tag}</span></div>
+    <div class="info"><div class="nm">${g.nm}</div>
+    <div class="row"><span class="pr">¥${g.pr}</span><span class="sold">${g.sold}</span></div>
+    <button class="buy" data-gi="${gi}">🛒 加入购物车</button></div>
+  </div>`).join("");
+$("goodsGrid").querySelectorAll(".buy").forEach(b=>{
+  b.addEventListener("click",()=>addToCart(parseInt(b.dataset.gi,10)));
+});
+
+/* ============ 我的：观看历史 ============ */
+$("histRow").innerHTML=HISTORY.map(h=>`
+  <div class="h"><div class="hc" style="background:${h.bg}">${h.emoji}</div><div class="ht">${h.t}</div></div>`).join("");
+
+/* ============ Tab 切换 + 深链 ============ */
+const tabs=document.querySelectorAll(".tab");
+function switchTab(n){
+  n=Math.max(0,Math.min(3,n));
+  tabs.forEach(t=>t.classList.toggle("on",parseInt(t.dataset.t,10)===n));
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+  $("page-"+n).classList.add("active");
+  window.scrollTo(0,0);
+}
+tabs.forEach(t=>t.addEventListener("click",()=>switchTab(parseInt(t.dataset.t,10))));
+(function(){
+  const q=new URLSearchParams(location.search);
+  const t=parseInt(q.get("tab")||"0",10);
+  switchTab(isNaN(t)?0:t);
+  const r=parseInt(q.get("room")||"",10);
+  if(!isNaN(r)) openRoom(r);
+})();
+updateBadges(); renderCart();
+document.querySelector(".bell").addEventListener("click",()=>toast("暂无新通知"));
+document.querySelector(".search").addEventListener("click",()=>toast("搜索功能演示：试试「大衣」"));
+document.querySelectorAll(".menu .mi").forEach(mi=>{
+  mi.addEventListener("click",()=>toast(mi.textContent.trim().split("›")[0].trim()+" · 功能演示"));
+});
+</script>
+</body>
+</html>

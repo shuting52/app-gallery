@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>INK UI · 墨水晕染</title>
+<style>
+/* ============ INK UI · 设计语言（宣纸 · 水墨 · 朱砂印） ============ */
+:root{
+  --paper:#f5efe3;          /* 宣纸 */
+  --paper2:#ece3cf;         /* 陈纸 */
+  --card:#fbf7ec;           /* 纸面 */
+  --ink:#23211c;            /* 浓墨 */
+  --ink2:#4c463c;           /* 淡墨 */
+  --ink3:#9a927e;           /* 飞白灰 */
+  --line:#ddd2ba;           /* 纸纹边线 */
+  --seal:#b03a26;           /* 朱砂 */
+  --seal2:#8c2b1b;          /* 深朱 */
+  --indigo:#33536e;         /* 黛蓝 */
+  --jade:#5d7263;           /* 石绿 */
+  --gold:#a5874e;           /* 金箔 */
+  --r:1rem;
+  --serif:"Songti SC","STSong","Noto Serif CJK SC","SimSun",serif;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{
+  margin:0;background:#e7dfc9;color:var(--ink);
+  font-family:system-ui,-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;
+  display:flex;align-items:center;justify-content:center;
+}
+/* App 外壳：移动端全屏，桌面端手机框 */
+.phone{
+  position:relative;width:100%;max-width:430px;height:100dvh;overflow:hidden;
+  display:flex;flex-direction:column;
+  background:
+    radial-gradient(rgba(35,33,28,.05) 1px,transparent 1.4px) 0 0/7px 7px,
+    radial-gradient(rgba(35,33,28,.035) 1px,transparent 1.4px) 3px 4px/9px 9px,
+    var(--paper);
+}
+@media(min-width:520px){
+  body{padding:24px}
+  .phone{height:min(880px,94dvh);border:1.5px solid var(--ink);border-radius:2.2rem;
+    box-shadow:0 0 0 5px #d9cfb2,0 30px 80px rgba(60,50,25,.45)}
+}
+/* 顶部栏 */
+.appbar{
+  flex:0 0 auto;display:flex;align-items:center;gap:.7rem;z-index:5;
+  padding:calc(.9rem + env(safe-area-inset-top)) 1.1rem .9rem;
+  background:linear-gradient(180deg,rgba(251,247,236,.96),rgba(245,239,227,.88));
+  backdrop-filter:blur(8px);border-bottom:1px solid var(--line);
+}
+.appbar .seal-logo{
+  width:36px;height:36px;flex:0 0 auto;border-radius:.5rem;background:var(--seal);
+  color:#fdf6e9;font-family:var(--serif);font-size:1.15rem;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:inset 0 0 0 2px rgba(253,246,233,.35),0 3px 8px rgba(140,43,27,.35);
+  transform:rotate(-3deg);
+}
+.appbar h1{margin:0;font-size:1.05rem;letter-spacing:.06em;font-family:var(--serif)}
+.appbar h1 small{display:block;font-size:.66rem;font-weight:400;color:var(--ink3);letter-spacing:.28em;font-family:system-ui,sans-serif;margin-top:.15rem}
+.appbar .sp{flex:1}
+/* 页面滚动区 */
+.screens{flex:1;position:relative;overflow:hidden}
+.screen{position:absolute;inset:0;overflow-y:auto;padding:1.1rem 1.1rem 1.5rem;display:none;scrollbar-width:none}
+.screen::-webkit-scrollbar{display:none}
+.screen.active{display:block;animation:screen-in .25s ease}
+@keyframes screen-in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.sec{margin:0 0 1.6rem}
+.sec-t{display:flex;align-items:center;gap:.55rem;margin:0 0 .85rem;font-size:.82rem;letter-spacing:.22em;color:var(--ink2);font-weight:700;font-family:var(--serif)}
+.sec-t::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--ink3),transparent)}
+.sec-t .n{background:var(--ink);color:var(--paper);font-size:.66rem;min-width:1.3rem;height:1.3rem;border-radius:.45rem;display:inline-flex;align-items:center;justify-content:center;padding:0 .3rem;font-family:system-ui,sans-serif;letter-spacing:0}
+/* 底部 Tab 栏 · 悬浮宣纸胶囊 + 墨色滑动指示 */
+.tabbar{
+  position:relative;flex:0 0 auto;display:flex;z-index:5;
+  background:rgba(251,247,236,.82);backdrop-filter:blur(14px);
+  border:1px solid var(--line);border-radius:2rem;
+  margin:.55rem .9rem calc(.75rem + env(safe-area-inset-bottom));
+  padding:.35rem;box-shadow:0 10px 26px rgba(60,50,25,.18),inset 0 1px 0 rgba(255,255,255,.7);
+}
+.tab-pill{
+  position:absolute;top:.35rem;bottom:.35rem;left:.35rem;width:60px;border-radius:1.4rem;
+  background:radial-gradient(120% 130% at 25% 20%,#4a463e,var(--ink) 62%);
+  box-shadow:0 4px 12px rgba(35,33,28,.35),inset 0 1px 0 rgba(255,255,255,.25);
+  transition:left .34s cubic-bezier(.55,1.35,.45,1),width .34s ease;z-index:0;
+}
+.tab{flex:1;border:0;background:none;color:var(--ink3);font-family:inherit;cursor:pointer;
+  display:flex;flex-direction:column;align-items:center;gap:.15rem;
+  font-size:.62rem;font-weight:500;padding:.45rem 0 .3rem;border-radius:1.2rem;position:relative;z-index:1;transition:color .2s}
+.tab svg{width:22px;height:22px}
+.tab.on{color:var(--paper);font-weight:700}
+.tab:not(.on):active{transform:translateY(1px)}
+/* ============ 按钮 ============ */
+.btn{
+  position:relative;overflow:hidden;cursor:pointer;font-family:inherit;
+  display:inline-flex;align-items:center;justify-content:center;gap:.45rem;
+  font-weight:600;font-size:.95rem;line-height:1;border-radius:.9rem;
+  padding:.8rem 1.45rem;border:1.5px solid transparent;color:var(--ink);
+  transition:transform .14s ease,box-shadow .2s ease,background .2s ease;white-space:nowrap;
+}
+.btn:active{transform:translateY(2px) scale(.985)}
+.btn.sm{padding:.55rem 1rem;font-size:.83rem;border-radius:.75rem}
+.btn.lg{padding:1rem 1.8rem;font-size:1.08rem;border-radius:1.05rem}
+.btn.block{width:100%}
+.btn[disabled]{opacity:.42;cursor:not-allowed;transform:none}
+/* 墨晕主按钮：悬停墨色加深晕开，点击泛起墨涟 */
+.btn-ink{background:radial-gradient(130% 150% at 22% 12%,#514c42,var(--ink) 58%);color:var(--paper);
+  box-shadow:0 6px 16px rgba(35,33,28,.3),inset 0 1px 0 rgba(255,255,255,.18)}
+.btn-ink::before{content:"";position:absolute;left:50%;top:50%;width:30px;height:30px;border-radius:50%;
+  background:radial-gradient(circle,rgba(245,239,227,.34),rgba(245,239,227,.08) 55%,transparent 72%);
+  transform:translate(-50%,-50%) scale(.3);opacity:0;transition:all .45s ease;pointer-events:none}
+.btn-ink:hover::before{transform:translate(-50%,-50%) scale(6);opacity:1}
+.btn-seal{background:linear-gradient(160deg,#c24a32,var(--seal) 55%,var(--seal2));color:#fdf6e9;
+  box-shadow:0 6px 16px rgba(140,43,27,.32),inset 0 1px 0 rgba(255,255,255,.22)}
+.btn-sub{background:var(--card);border-color:var(--ink);color:var(--ink);box-shadow:0 3px 0 0 rgba(35,33,28,.85)}
+.btn-sub:active{box-shadow:0 1px 0 0 rgba(35,33,28,.85)}
+.btn-ghost{background:rgba(251,247,236,.35);border-color:var(--ink3);border-style:dashed;color:var(--ink2)}
+.btn-indigo{background:linear-gradient(160deg,#40637f,var(--indigo));color:#eef3ec;box-shadow:0 6px 16px rgba(51,83,110,.3)}
+/* 液浪填充按钮：悬停时墨浪自下涌起 */
+.btn-wave{background:var(--card);border-color:var(--ink);color:var(--ink)}
+.btn-wave .wv{position:absolute;left:50%;top:108%;width:175%;padding-top:175%;border-radius:42%;
+  background:radial-gradient(120% 120% at 30% 20%,#57534a,var(--ink) 65%);
+  transform:translateX(-50%);transition:top .55s cubic-bezier(.4,0,.3,1);pointer-events:none;
+  animation:wob 7s linear infinite}
+@keyframes wob{from{transform:translateX(-50%) rotate(0)}to{transform:translateX(-50%) rotate(360deg)}}
+.btn-wave:hover .wv{top:-48%}
+.btn-wave span{position:relative;z-index:1;transition:color .35s}
+.btn-wave:hover span{color:var(--paper)}
+/* 点击墨涟（JS 注入） */
+.inkrip{position:absolute;border-radius:50%;pointer-events:none;z-index:0;
+  transform:scale(.15);opacity:.85;filter:blur(1.5px);animation:inkrip .85s ease-out both}
+.inkrip.dk{background:radial-gradient(circle,rgba(35,33,28,.5),rgba(35,33,28,.16) 55%,transparent 72%)}
+.inkrip.lt{background:radial-gradient(circle,rgba(245,239,227,.55),rgba(245,239,227,.15) 55%,transparent 72%)}
+@keyframes inkrip{to{transform:scale(1);opacity:0}}
+.btn>*{position:relative;z-index:1}
+/* 加载按钮的墨滴旋环 */
+.spin{width:17px;height:17px;flex:0 0 auto;border-radius:50%;
+  border:2.5px solid rgba(245,239,227,.3);border-top-color:var(--paper);
+  animation:rot .8s linear infinite}
+.spin.dk{border-color:rgba(35,33,28,.18);border-top-color:var(--ink)}
+@keyframes rot{to{transform:rotate(360deg)}}
+/* 图标按钮 */
+.icobtn{
+  width:46px;height:46px;border-radius:.85rem;border:1.5px solid var(--ink);cursor:pointer;
+  background:var(--card);color:var(--ink);display:inline-flex;align-items:center;justify-content:center;
+  box-shadow:0 3px 0 0 rgba(35,33,28,.85);font-family:inherit;transition:transform .13s,box-shadow .13s;position:relative}
+.icobtn svg{width:20px;height:20px}
+.icobtn:active{transform:translateY(2px);box-shadow:0 1px 0 0 rgba(35,33,28,.85)}
+.icobtn.seal{background:var(--seal);border-color:var(--seal2);color:#fdf6e9;box-shadow:0 3px 0 0 var(--seal2)}
+.icobtn.seal:active{box-shadow:0 1px 0 0 var(--seal2)}
+.icobtn.round{border-radius:50%}
+/* ============ 卡片 ============ */
+.card{
+  background:linear-gradient(175deg,#fdfaf2,var(--card) 70%);border:1px solid var(--line);
+  border-radius:var(--r);padding:1rem;position:relative;overflow:hidden;
+  box-shadow:0 8px 22px rgba(70,58,32,.1),inset 0 1px 0 rgba(255,255,255,.8);
+}
+.card h3{margin:.2rem 0 .4rem;font-size:1rem;font-family:var(--serif);letter-spacing:.05em}
+.card p{margin:0;color:var(--ink2);font-size:.85rem;line-height:1.6}
+.card .media{height:112px;border-radius:.7rem;margin:-.2rem -.2rem .8rem;position:relative;overflow:hidden;
+  border:1px solid var(--line);background:linear-gradient(180deg,#e9e2d2,#d9cfae 70%,#c9bb97)}
+.card .media svg{position:absolute;inset:0;width:100%;height:100%}
+.card .stamp-tag{position:absolute;left:.7rem;top:.7rem;background:var(--seal);color:#fdf6e9;font-size:.68rem;font-weight:700;
+  padding:.28rem .6rem;border-radius:.35rem;font-family:var(--serif);transform:rotate(-4deg);
+  box-shadow:inset 0 0 0 1.5px rgba(253,246,233,.4),0 2px 6px rgba(140,43,27,.4)}
+.card.press{cursor:pointer;transition:transform .14s}
+.card.press:active{transform:scale(.98)}
+/* ============ 芯片 / 标签 ============ */
+.chip{
+  border:1px solid var(--ink);background:var(--card);color:var(--ink);font-family:inherit;font-weight:500;
+  font-size:.78rem;padding:.45rem .9rem;border-radius:2rem;cursor:pointer;transition:all .15s;
+  box-shadow:0 2px 6px rgba(70,58,32,.1);
+}
+.chip.on{background:var(--ink);color:var(--paper);font-weight:700;box-shadow:0 4px 10px rgba(35,33,28,.28)}
+.tag{display:inline-flex;align-items:center;gap:.35rem;font-size:.7rem;font-weight:600;
+  padding:.3rem .68rem;border-radius:2rem;border:1px solid var(--ink)}
+.tag.ink{background:var(--ink);color:var(--paper)}
+.tag.seal{background:var(--seal);color:#fdf6e9;border-color:var(--seal2)}
+.tag.ghost{background:transparent;color:var(--ink2);border-color:var(--ink3)}
+.tag .dot{width:.5rem;height:.5rem;border-radius:50%;background:currentColor}
+/* ============ 头像 ============ */
+.avatar{width:52px;height:52px;border-radius:50%;border:1px solid var(--line);flex:0 0 auto;
+  display:inline-flex;align-items:center;justify-content:center;font-weight:700;color:#f6f1e4;font-size:1.05rem;
+  font-family:var(--serif);box-shadow:0 4px 10px rgba(70,58,32,.18)}
+.avatar.stack{margin-left:-14px;box-shadow:0 0 0 2px var(--paper),0 4px 10px rgba(70,58,32,.18)}
+/* ============ 表单 ============ */
+.field{margin-bottom:1.05rem}
+.field label{display:block;font-size:.78rem;font-weight:700;margin-bottom:.45rem;letter-spacing:.12em;font-family:var(--serif)}
+.field label small{color:var(--ink3);font-weight:400;font-family:system-ui,sans-serif}
+.inp,textarea.inp,select.inp{
+  width:100%;background:var(--card);border:1px solid var(--ink);border-radius:.8rem;
+  color:var(--ink);font-family:inherit;font-size:.92rem;padding:.78rem .9rem;outline:none;
+  box-shadow:inset 0 2px 5px rgba(70,58,32,.08);transition:border-color .15s,box-shadow .15s;
+}
+.inp::placeholder{color:var(--ink3)}
+.inp:focus{border-color:var(--ink);box-shadow:inset 0 2px 5px rgba(70,58,32,.08),0 0 0 3px rgba(35,33,28,.14)}
+textarea.inp{min-height:84px;resize:vertical}
+select.inp{appearance:none;-webkit-appearance:none;padding-right:2.2rem;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2323211c' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right .8rem center;background-size:18px}
+.searchbar{display:flex;align-items:center;gap:.6rem;background:var(--card);
+  border:1px solid var(--ink);border-radius:2rem;padding:.72rem 1rem;
+  box-shadow:inset 0 2px 5px rgba(70,58,32,.08)}
+.searchbar:focus-within{box-shadow:inset 0 2px 5px rgba(70,58,32,.08),0 0 0 3px rgba(35,33,28,.14)}
+.searchbar svg{width:18px;height:18px;color:var(--ink3);flex:0 0 auto}
+.searchbar input{flex:1;background:none;border:0;outline:none;color:var(--ink);font-family:inherit;font-size:.9rem}
+/* 开关 · 必须 position:relative + 固定宽高 */
+.switch{position:relative;display:inline-flex;align-items:center;cursor:pointer}
+.switch input{position:absolute;opacity:0;inset:0;cursor:pointer}
+.switch .tr{position:relative;width:58px;height:32px;flex:0 0 auto;border-radius:2rem;border:1px solid var(--ink);
+  background:var(--paper2);box-shadow:inset 0 2px 5px rgba(70,58,32,.15);transition:background .22s}
+.switch .tr::after{content:"";position:absolute;top:2.5px;left:3px;width:25px;height:25px;border-radius:50%;
+  background:radial-gradient(circle at 34% 30%,#fffdf6,#e9e0cb 75%);border:1px solid var(--ink);
+  box-shadow:0 2px 5px rgba(35,33,28,.3);transition:left .22s cubic-bezier(.55,1.5,.4,1)}
+.switch input:checked+.tr{background:linear-gradient(90deg,var(--ink2),var(--ink))}
+.switch input:checked+.tr::after{left:28px}
+.switch input:focus-visible+.tr{outline:2px dashed var(--seal);outline-offset:3px}
+.switch.lb{gap:.7rem;font-size:.9rem;font-weight:500}
+/* 复选 / 单选 */
+.check{display:flex;align-items:center;gap:.7rem;padding:.6rem .2rem;cursor:pointer;font-size:.9rem;position:relative}
+.check input{position:absolute;opacity:0}
+.check .box{width:26px;height:26px;border-radius:.5rem;border:1.5px solid var(--ink);background:var(--card);
+  display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;transition:all .15s;
+  box-shadow:inset 0 2px 4px rgba(70,58,32,.12)}
+.check .box svg{width:15px;height:15px;color:var(--paper);opacity:0;transform:scale(.4);transition:all .16s}
+.check input:checked+.box{background:radial-gradient(circle at 35% 30%,#57534a,var(--ink) 70%)}
+.check input:checked+.box svg{opacity:1;transform:scale(1)}
+.check .box.radio{border-radius:50%}
+.check .box.radio::before{content:"";width:11px;height:11px;border-radius:50%;background:var(--ink);opacity:0;transform:scale(.4);transition:all .15s}
+.check input:checked+.box.radio::before{opacity:1;transform:scale(1)}
+.check input:checked+.box.radio{background:var(--card)}
+.check input:focus-visible+.box{outline:2px dashed var(--seal);outline-offset:3px}
+/* 滑杆 */
+.slider-row{display:flex;align-items:center;gap:.8rem}
+input[type=range].slider{flex:1;-webkit-appearance:none;appearance:none;height:12px;border-radius:1rem;
+  border:1px solid var(--ink);outline-offset:4px;
+  background:linear-gradient(to right,var(--ink) var(--v,50%),var(--paper2) var(--v,50%))}
+input[type=range].slider::-webkit-slider-thumb{-webkit-appearance:none;width:28px;height:28px;border-radius:50%;
+  background:radial-gradient(circle at 34% 30%,#fffdf6,#e6dcc4 78%);border:1.5px solid var(--ink);
+  box-shadow:0 2px 6px rgba(35,33,28,.35);cursor:pointer}
+input[type=range].slider::-moz-range-thumb{width:26px;height:26px;border-radius:50%;
+  background:radial-gradient(circle at 34% 30%,#fffdf6,#e6dcc4 78%);border:1.5px solid var(--ink);cursor:pointer}
+.slider-val{min-width:3.2rem;text-align:center;font-weight:700;background:var(--ink);color:var(--paper);
+  border-radius:.6rem;padding:.32rem .4rem;font-size:.82rem}
+/* 步进器 */
+.stepper{display:inline-flex;align-items:center;gap:.15rem;background:var(--card);
+  border:1px solid var(--ink);border-radius:1rem;padding:.25rem;box-shadow:0 4px 10px rgba(70,58,32,.12)}
+.stepper button{width:38px;height:38px;border-radius:.75rem;border:1px solid var(--ink);cursor:pointer;
+  background:var(--ink);color:var(--paper);font-size:1.15rem;font-weight:700;font-family:inherit;line-height:1}
+.stepper button:active{transform:translateY(2px)}
+.stepper b{min-width:2.6rem;text-align:center;font-size:1rem}
+/* 分段选择 */
+.segmented{display:flex;background:var(--paper2);border:1px solid var(--ink);border-radius:1rem;
+  padding:.25rem;gap:.25rem}
+.segmented button{flex:1;border:0;background:none;color:var(--ink3);font-family:inherit;font-weight:500;
+  font-size:.85rem;padding:.62rem 0;border-radius:.75rem;cursor:pointer;transition:all .16s}
+.segmented button.on{background:radial-gradient(120% 140% at 25% 15%,#57534a,var(--ink) 65%);color:var(--paper);font-weight:700;
+  box-shadow:0 3px 8px rgba(35,33,28,.3)}
+/* 墨点评分 */
+.rating{display:flex;gap:.55rem}
+.rating button{border:0;background:none;cursor:pointer;padding:0;width:44px;height:44px;position:relative;transition:transform .14s}
+.rating button i{display:block;width:30px;height:30px;margin:7px auto;border-radius:50%;border:1.5px solid var(--ink);
+  background:var(--card);transition:all .2s}
+.rating button.lit i{background:radial-gradient(circle at 36% 30%,#6b665a,var(--ink) 68%);
+  box-shadow:0 0 0 4px rgba(35,33,28,.1),0 4px 10px rgba(35,33,28,.3);animation:inkpop .3s ease}
+@keyframes inkpop{0%{transform:scale(.6)}60%{transform:scale(1.18)}100%{transform:scale(1)}}
+.rating button:active{transform:scale(1.15)}
+/* 上传 */
+.upload{border:1.5px dashed var(--ink3);border-radius:var(--r);background:rgba(251,247,236,.5);
+  padding:1.4rem 1rem;text-align:center;cursor:pointer;transition:all .18s}
+.upload:hover,.upload:active{border-color:var(--ink);background:rgba(251,247,236,.9)}
+.upload svg{width:34px;height:34px;color:var(--ink2);margin-bottom:.4rem}
+.upload p{margin:0;font-size:.85rem;font-weight:600}
+.upload small{color:var(--ink3);font-size:.72rem}
+.upfile{display:flex;align-items:center;gap:.6rem;background:var(--card);border:1px solid var(--line);
+  border-radius:.7rem;padding:.55rem .8rem;margin-top:.55rem;font-size:.82rem}
+.upfile small{margin-left:auto;color:var(--ink3);font-size:.7rem}
+/* ============ 晕染进度条 ============ */
+.progress{height:15px;border:1px solid var(--ink);border-radius:1rem;background:var(--paper2);
+  overflow:hidden;position:relative;box-shadow:inset 0 2px 4px rgba(70,58,32,.15)}
+.progress i{display:block;height:100%;border-radius:1rem;position:relative;
+  background:linear-gradient(90deg,#6b665a,var(--ink) 75%)}
+.progress i::after{content:"";position:absolute;right:-7px;top:-3px;bottom:-3px;width:16px;border-radius:50%;
+  background:radial-gradient(closest-side,rgba(35,33,28,.75),rgba(35,33,28,.25) 60%,transparent);
+  filter:blur(2.5px)}
+.progress.seal i{background:linear-gradient(90deg,#d4694f,var(--seal) 75%)}
+.progress.seal i::after{background:radial-gradient(closest-side,rgba(176,58,38,.75),rgba(176,58,38,.25) 60%,transparent)}
+.progress .soak{animation:soak 2.6s ease .3s both}
+@keyframes soak{from{width:6%}to{width:78%}}
+/* ============ 列表行 ============ */
+.rows{background:var(--card);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;
+  box-shadow:0 8px 20px rgba(70,58,32,.1)}
+.row-it{display:flex;align-items:center;gap:.85rem;padding:.85rem 1rem;border:0;width:100%;
+  background:none;color:var(--ink);font-family:inherit;text-align:left;cursor:pointer;font-size:.92rem}
+.row-it+.row-it{border-top:1px solid var(--line)}
+.row-it .ri{width:40px;height:40px;border-radius:.8rem;flex:0 0 auto;
+  display:flex;align-items:center;justify-content:center;color:#f6f1e4;border:1px solid rgba(35,33,28,.2)}
+.row-it .ri svg{width:19px;height:19px}
+.row-it .tx{flex:1;min-width:0}
+.row-it .tx b{display:block;font-size:.9rem;font-weight:600}
+.row-it .tx small{color:var(--ink3);font-size:.74rem}
+.row-it>svg{width:18px;height:18px;color:var(--ink3);flex:0 0 auto}
+.row-it:active{background:var(--paper2)}
+/* 手风琴 */
+.acc{background:var(--card);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;
+  box-shadow:0 6px 16px rgba(70,58,32,.09);margin-bottom:.7rem}
+.acc>button{width:100%;display:flex;align-items:center;gap:.6rem;padding:.92rem 1rem;background:none;border:0;
+  color:var(--ink);font-family:var(--serif);font-size:.92rem;font-weight:700;cursor:pointer;text-align:left;letter-spacing:.04em}
+.acc>button svg{margin-left:auto;width:18px;height:18px;transition:transform .2s;color:var(--seal)}
+.acc.open>button svg{transform:rotate(180deg)}
+.acc .body{max-height:0;overflow:hidden;transition:max-height .25s ease}
+.acc .body p{margin:0;padding:0 1rem 1rem;color:var(--ink2);font-size:.85rem;line-height:1.65}
+/* 轮播 */
+.car{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:.7rem;border-radius:var(--r);scrollbar-width:none}
+.car::-webkit-scrollbar{display:none}
+.car .slide{min-width:100%;scroll-snap-align:center;border-radius:var(--r);overflow:hidden;
+  border:1px solid var(--line);position:relative;height:150px}
+.car .slide svg{position:absolute;inset:0;width:100%;height:100%}
+.car .cap{position:absolute;left:.8rem;bottom:.6rem;background:rgba(35,33,28,.72);color:var(--paper);
+  font-size:.72rem;padding:.3rem .7rem;border-radius:2rem;backdrop-filter:blur(4px)}
+.car-dots{display:flex;gap:.45rem;justify-content:center;margin-top:.65rem}
+.car-dots button{width:9px;height:9px;border-radius:50%;border:0;background:var(--ink3);opacity:.4;cursor:pointer;padding:0;transition:all .2s}
+.car-dots button.on{opacity:1;background:var(--ink);transform:scale(1.25)}
+/* 表格 */
+.tbl{width:100%;border-collapse:collapse;font-size:.83rem;background:var(--card);
+  border:1px solid var(--line);border-radius:var(--r);overflow:hidden;box-shadow:0 6px 16px rgba(70,58,32,.09)}
+.tbl th{background:var(--ink);color:var(--paper);text-align:left;padding:.65rem .8rem;font-weight:600;font-size:.78rem;letter-spacing:.08em}
+.tbl td{padding:.65rem .8rem;border-top:1px solid var(--line);color:var(--ink2)}
+.tbl tr td:first-child{color:var(--ink);font-weight:600}
+/* 骨架屏 */
+.skel{border-radius:.55rem;background:linear-gradient(90deg,var(--paper2) 25%,#ddd2b8 50%,var(--paper2) 75%);
+  background-size:200% 100%;animation:sk 1.3s linear infinite}
+@keyframes sk{to{background-position:-200% 0}}
+/* 空状态 · 圆相 */
+.empty{text-align:center;padding:2rem 1rem}
+.empty .enso{width:104px;height:104px;margin:0 auto .9rem;animation:rot 26s linear infinite}
+.empty p{color:var(--ink3);font-size:.85rem;margin:.3rem 0 1.1rem}
+.empty h3{font-family:var(--serif);margin:.2rem 0;letter-spacing:.1em}
+/* ============ 反馈层 ============ */
+.scrim{position:absolute;inset:0;background:rgba(35,33,28,.45);backdrop-filter:blur(2px);
+  opacity:0;pointer-events:none;transition:opacity .22s;z-index:20}
+.scrim.show{opacity:1;pointer-events:auto}
+.modal{position:absolute;left:1.2rem;right:1.2rem;top:50%;z-index:21;background:var(--card);
+  border:1px solid var(--ink);border-radius:1.2rem;padding:1.4rem 1.3rem 1.3rem;
+  box-shadow:0 24px 60px rgba(35,33,28,.35);
+  transform:translateY(-50%) scale(.92);opacity:0;pointer-events:none;transition:all .24s cubic-bezier(.5,1.5,.5,1)}
+.modal.show{transform:translateY(-50%) scale(1);opacity:1;pointer-events:auto}
+.modal .mseal{width:58px;height:58px;margin:-2.7rem auto .5rem;background:var(--seal);border-radius:.55rem;
+  color:#fdf6e9;font-family:var(--serif);font-size:1.6rem;font-weight:700;display:flex;align-items:center;justify-content:center;
+  transform:rotate(-4deg);box-shadow:inset 0 0 0 2px rgba(253,246,233,.4),0 8px 18px rgba(140,43,27,.4)}
+.modal h3{margin:.2rem 0 .5rem;text-align:center;font-family:var(--serif);letter-spacing:.12em}
+.modal p{text-align:center;color:var(--ink2);font-size:.85rem;line-height:1.65;margin:0 0 1.15rem}
+.modal .mrow{display:flex;gap:.7rem}
+.modal .mrow .btn{flex:1}
+/* 抽屉 */
+.drawer{position:absolute;top:0;bottom:0;right:0;width:76%;z-index:21;background:var(--card);
+  border-left:1px solid var(--ink);box-shadow:-18px 0 40px rgba(35,33,28,.25);
+  transform:translateX(106%);transition:transform .3s cubic-bezier(.5,1.1,.4,1);
+  padding:calc(1rem + env(safe-area-inset-top)) 1.1rem 1.2rem}
+.drawer.show{transform:none}
+.drawer h3{font-family:var(--serif);letter-spacing:.14em;margin:.4rem 0 1rem;display:flex;align-items:center;gap:.6rem}
+.drawer h3::after{content:"";flex:1;height:1px;background:var(--line)}
+.drawer .opt{display:flex;align-items:center;gap:.8rem;width:100%;padding:.85rem .4rem;background:none;border:0;
+  color:var(--ink);font-family:inherit;font-size:.9rem;cursor:pointer;border-radius:.7rem;text-align:left}
+.drawer .opt:active{background:var(--paper2)}
+.drawer .opt svg{width:20px;height:20px;color:var(--seal)}
+/* 底部动作表 */
+.sheet{position:absolute;left:0;right:0;bottom:0;z-index:21;background:var(--card);
+  border-top:1px solid var(--ink);border-radius:1.4rem 1.4rem 0 0;padding:.7rem 1.1rem calc(1.2rem + env(safe-area-inset-bottom));
+  transform:translateY(105%);transition:transform .3s cubic-bezier(.5,1.2,.4,1);box-shadow:0 -14px 40px rgba(35,33,28,.25)}
+.sheet.show{transform:none}
+.sheet .grab{width:44px;height:5px;border-radius:3px;background:var(--ink3);margin:0 auto .8rem;opacity:.6}
+.sheet .opt{display:flex;align-items:center;gap:.8rem;width:100%;padding:.85rem .4rem;background:none;border:0;
+  color:var(--ink);font-family:inherit;font-size:.92rem;cursor:pointer;border-radius:.7rem;text-align:left}
+.sheet .opt:active{background:var(--paper2)}
+.sheet .opt svg{width:20px;height:20px;color:var(--seal)}
+/* Toast · 墨滴 */
+.toast{position:absolute;left:50%;bottom:6.4rem;transform:translate(-50%,16px);z-index:22;
+  background:radial-gradient(130% 150% at 25% 15%,#4a463e,var(--ink) 65%);color:var(--paper);
+  border-radius:2rem;padding:.68rem 1.25rem;font-size:.85rem;display:flex;align-items:center;gap:.55rem;
+  box-shadow:0 10px 24px rgba(35,33,28,.4);opacity:0;pointer-events:none;transition:all .25s;
+  white-space:nowrap;max-width:92%}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.toast .dot{width:.6rem;height:.6rem;border-radius:50%;background:var(--seal);flex:0 0 auto;
+  box-shadow:0 0 0 3px rgba(176,58,38,.25)}
+/* 内联横幅 */
+.banner{display:flex;gap:.7rem;align-items:flex-start;border:1px solid var(--ink);border-radius:.9rem;
+  padding:.8rem .9rem;font-size:.83rem;line-height:1.5;margin-bottom:.7rem;background:var(--card);
+  box-shadow:0 4px 12px rgba(70,58,32,.1)}
+.banner svg{width:18px;height:18px;flex:0 0 auto;margin-top:.1rem}
+.banner.ok{border-color:var(--jade)}
+.banner.ok svg{color:var(--jade)}
+.banner.warn{border-color:var(--seal)}
+.banner.warn svg{color:var(--seal)}
+.banner b{display:block;margin-bottom:.15rem;font-family:var(--serif);letter-spacing:.08em}
+.banner p{margin:0;color:var(--ink2)}
+/* 气泡提示 */
+.tip-wrap{position:relative;display:inline-block}
+.tip{position:absolute;bottom:calc(100% + 10px);left:50%;transform:translate(-50%,6px);z-index:10;
+  background:var(--ink);color:var(--paper);font-size:.76rem;padding:.5rem .8rem;border-radius:.6rem;
+  white-space:nowrap;opacity:0;pointer-events:none;transition:all .2s;box-shadow:0 8px 18px rgba(35,33,28,.35)}
+.tip::after{content:"";position:absolute;top:100%;left:50%;transform:translateX(-50%);
+  border:6px solid transparent;border-top-color:var(--ink)}
+.tip-wrap.show .tip{opacity:1;transform:translate(-50%,0)}
+/* 加载动画 · 墨滴 */
+.drop-loader{display:flex;align-items:flex-end;justify-content:center;gap:1.1rem;padding:1.2rem .5rem .6rem}
+.drop{width:15px;height:15px;border-radius:0 50% 50% 50%;transform:rotate(45deg);background:var(--ink);
+  animation:dropfall 1.5s cubic-bezier(.5,0,.7,.4) infinite}
+.drop:nth-child(2){animation-delay:-.5s;background:var(--seal)}
+.drop:nth-child(3){animation-delay:-1s;background:var(--indigo)}
+@keyframes dropfall{0%{transform:rotate(45deg) translate(0,0);opacity:0}25%{opacity:1}70%{opacity:1}100%{transform:rotate(45deg) translate(34px,34px);opacity:0}}
+.enso-spin{width:52px;height:52px;animation:rot 2.6s linear infinite}
+.inkdots{display:flex;gap:.5rem;justify-content:center;padding:1rem}
+.inkdots i{width:12px;height:12px;border-radius:50%;background:var(--ink);animation:dotp 1.2s ease-in-out infinite}
+.inkdots i:nth-child(2){animation-delay:-.4s}
+.inkdots i:nth-child(3){animation-delay:-.8s}
+@keyframes dotp{0%,100%{transform:scale(.55);opacity:.4}50%{transform:scale(1.15);opacity:1}}
+/* 结果页 · 盖章 */
+.result{text-align:center;padding:1.6rem 1rem}
+.stamp{display:inline-flex;width:78px;height:78px;background:linear-gradient(160deg,#c24a32,var(--seal2));
+  border-radius:.65rem;color:#fdf6e9;font-family:var(--serif);font-size:2.1rem;font-weight:700;
+  align-items:center;justify-content:center;transform:rotate(-6deg);
+  box-shadow:inset 0 0 0 2.5px rgba(253,246,233,.42),0 10px 22px rgba(140,43,27,.4)}
+.stamp.play{animation:stampin .48s cubic-bezier(.2,2.4,.4,1) .35s both}
+@keyframes stampin{0%{transform:rotate(-6deg) scale(1.7);opacity:0}55%{opacity:1}100%{transform:rotate(-6deg) scale(1);opacity:1}}
+.result h3{font-family:var(--serif);letter-spacing:.16em;margin:1rem 0 .4rem}
+.result p{color:var(--ink2);font-size:.85rem;margin:0 0 1.2rem}
+/* ============ 总览页 ============ */
+.hero{position:relative;overflow:hidden;border:1px solid var(--ink);border-radius:1.2rem;margin-bottom:1.4rem;
+  box-shadow:0 12px 30px rgba(70,58,32,.18);background:linear-gradient(180deg,#f8f3e6,#efe5cd)}
+.hero svg.land{position:absolute;inset:0;width:100%;height:100%}
+.hero .mist{position:absolute;left:-20%;right:-20%;height:44px;border-radius:50%;pointer-events:none;
+  background:radial-gradient(closest-side,rgba(251,247,236,.85),transparent);
+  filter:blur(6px);animation:mist 11s ease-in-out infinite alternate}
+.hero .mist.m1{top:34%;animation-delay:-4s}
+.hero .mist.m2{top:52%;animation-delay:-8s}
+@keyframes mist{from{transform:translateX(-6%)}to{transform:translateX(6%)}}
+.hero .in{position:relative;padding:2.1rem 1.2rem 1.7rem;text-align:center}
+.hero h2{margin:0 0 .35rem;font-size:1.9rem;letter-spacing:.24em;font-family:var(--serif);font-weight:700}
+.hero h2 em{font-style:normal;color:var(--seal)}
+.hero p{color:var(--ink2);font-size:.85rem;margin:0 0 1.25rem;line-height:1.7}
+.swatches{display:grid;grid-template-columns:repeat(3,1fr);gap:.7rem}
+.sw{border:1px solid var(--ink);border-radius:.8rem;overflow:hidden;cursor:pointer;background:var(--card);
+  box-shadow:0 4px 10px rgba(70,58,32,.12)}
+.sw i{display:block;height:52px}
+.sw span{display:block;font-size:.66rem;padding:.4rem .5rem 0;color:var(--ink3)}
+.sw b{display:block;font-size:.74rem;color:var(--ink);padding:0 .5rem .5rem;font-weight:700}
+.type-row{padding:.55rem 0;border-bottom:1px dashed var(--line)}
+.type-row:last-child{border:0}
+.type-row small{display:block;color:var(--ink3);font-size:.66rem;margin-bottom:.18rem;letter-spacing:.1em}
+.idx{display:flex;align-items:center;gap:.85rem;width:100%;padding:.85rem .5rem;background:none;border:0;
+  color:var(--ink);font-family:inherit;cursor:pointer;text-align:left;border-bottom:1px solid var(--line);font-size:.9rem}
+.idx:last-child{border-bottom:0}
+.idx .n{width:34px;height:34px;border-radius:.7rem;flex:0 0 auto;
+  display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.85rem;color:#f6f1e4;
+  font-family:var(--serif);border:1px solid rgba(35,33,28,.25)}
+.idx small{display:block;color:var(--ink3);font-size:.72rem;font-weight:400;font-family:system-ui,sans-serif}
+.idx>svg{margin-left:auto;width:18px;height:18px;color:var(--ink3)}
+.idx .b{font-weight:600}
+.demo-row{display:flex;flex-wrap:wrap;gap:.8rem;align-items:center;margin-bottom:1rem}
+.demo-row.center{justify-content:center;padding:1.25rem .5rem;background:rgba(251,247,236,.6);
+  border:1px dashed var(--ink3);border-radius:var(--r)}
+.note{font-size:.75rem;color:var(--ink3);line-height:1.65}
+code.k{font-family:ui-monospace,monospace;font-size:.72rem;background:var(--ink);color:var(--paper);
+  padding:.15rem .45rem;border-radius:.4rem}
+.wash-deco{position:relative}
+.wash-deco::before{content:"";position:absolute;right:-46px;top:-46px;width:150px;height:150px;border-radius:50%;
+  background:radial-gradient(closest-side,rgba(35,33,28,.10),rgba(35,33,28,.04) 60%,transparent);
+  filter:blur(4px);pointer-events:none}
+</style>
+
+</head>
+<body>
+<div class="phone">
+  <header class="appbar">
+    <span class="seal-logo">墨</span>
+    <h1>INK UI<small>墨水晕染 · 组件库</small></h1>
+    <span class="sp"></span>
+    <button class="icobtn round" style="width:38px;height:38px" onclick="toast('INK UI v1.0 · 纯手写 CSS')" aria-label="关于">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M12 11v5"/></svg>
+    </button>
+  </header>
+
+  <main class="screens">
+    <!-- ============ 总览 ============ -->
+    <section class="screen active" data-screen="home">
+      <div class="hero">
+        <svg class="land" viewBox="0 0 400 210" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+          <circle cx="322" cy="52" r="21" fill="#b03a26" opacity=".85"/>
+          <path d="M0 118 L60 74 L108 104 L168 58 L228 100 L286 66 L340 98 L400 70 L400 210 L0 210 Z" fill="#23211c" opacity=".14"/>
+          <path d="M0 148 L74 104 L132 136 L204 92 L268 132 L326 104 L400 140 L400 210 L0 210 Z" fill="#23211c" opacity=".3"/>
+          <path d="M0 182 L66 146 L140 172 L214 134 L292 168 L348 146 L400 172 L400 210 L0 210 Z" fill="#23211c" opacity=".55"/>
+        </svg>
+        <span class="mist m1"></span><span class="mist m2"></span>
+        <div class="in">
+          <h2>INK <em>UI</em></h2>
+          <p>一滴墨落宣纸，晕开千层意境<br>水墨晕染 · 朱砂印章 · 纸纹肌理</p>
+          <button class="btn btn-ink" data-goto="buttons"><span>入墨 · 浏览组件</span></button>
+        </div>
+      </div>
+
+      <div class="sec">
+        <h4 class="sec-t">设色 · TOKENS</h4>
+        <div class="swatches">
+          <div class="sw" data-hex="#23211C"><i style="background:#23211c"></i><span>浓墨</span><b>#23211C</b></div>
+          <div class="sw" data-hex="#F5EFE3"><i style="background:#f5efe3"></i><span>宣纸</span><b>#F5EFE3</b></div>
+          <div class="sw" data-hex="#B03A26"><i style="background:#b03a26"></i><span>朱砂</span><b>#B03A26</b></div>
+          <div class="sw" data-hex="#33536E"><i style="background:#33536e"></i><span>黛蓝</span><b>#33536E</b></div>
+          <div class="sw" data-hex="#5D7263"><i style="background:#5d7263"></i><span>石绿</span><b>#5D7263</b></div>
+          <div class="sw" data-hex="#A5874E"><i style="background:#a5874e"></i><span>金箔</span><b>#A5874E</b></div>
+        </div>
+        <p class="note" style="margin-top:.6rem">点色卡可复制色值 · 标题用宋体（Songti SC）取书卷气，正文用系统无衬线保清晰</p>
+      </div>
+
+      <div class="sec">
+        <h4 class="sec-t">字阶</h4>
+        <div class="card">
+          <div class="type-row"><small>DISPLAY / 宋体 700</small><span style="font-size:1.7rem;font-weight:700;font-family:var(--serif);letter-spacing:.14em">水墨之间</span></div>
+          <div class="type-row"><small>TITLE / 宋体 700</small><span style="font-size:1.15rem;font-weight:700;font-family:var(--serif);letter-spacing:.08em">组件全览 Demo</span></div>
+          <div class="type-row"><small>BODY / 400</small><span style="font-size:.9rem">墨色有浓淡，组件有呼吸，落纸皆成画。</span></div>
+          <div class="type-row"><small>CAPTION / 500</small><span style="font-size:.72rem;color:var(--ink3)">晕染边缘 · 印章朱红 · 纸纹底色</span></div>
+        </div>
+      </div>
+
+      <div class="sec">
+        <h4 class="sec-t">组件索引</h4>
+        <div class="rows">
+          <button class="idx" data-goto="buttons"><span class="n" style="background:var(--ink)">钮</span><span><span class="b">按钮 Buttons</span><small>墨晕主钮 · 液浪填充 · 印章钮 · 图标钮</small></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></button>
+          <button class="idx" data-goto="forms"><span class="n" style="background:var(--indigo)">笺</span><span><span class="b">表单 Forms</span><small>输入 · 开关 · 墨点评分 · 上传</small></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></button>
+          <button class="idx" data-goto="showcase"><span class="n" style="background:var(--jade)">卷</span><span><span class="b">展示 Display</span><small>长卷轮播 · 卡片 · 表格 · 圆相空状态</small></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></button>
+          <button class="idx" data-goto="feedback"><span class="n" style="background:var(--seal)">印</span><span><span class="b">反馈 Feedback</span><small>盖章结果 · 抽屉 · 墨滴加载 · 晕染进度</small></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 按钮 ============ -->
+    <section class="screen" data-screen="buttons">
+      <div class="sec">
+        <h4 class="sec-t"><span class="n">墨</span>主按钮 · 墨晕</h4>
+        <div class="demo-row center">
+          <button class="btn btn-ink"><span>墨晕主按钮</span></button>
+        </div>
+        <p class="note">悬停：纸色微光自中心晕开 · 点击：泛起一圈墨涟，边缘带 1.5px 模糊，如墨落水面</p>
+      </div>
+      <div class="sec">
+        <h4 class="sec-t">变体</h4>
+        <div class="demo-row">
+          <button class="btn btn-seal"><span>朱砂印钮</span></button>
+          <button class="btn btn-sub"><span>次按钮</span></button>
+        </div>
+        <div class="demo-row">
+          <button class="btn btn-ghost"><span>幽灵 · 虚线</span></button>
+          <button class="btn btn-indigo"><span>黛蓝按钮</span></button>
+        </div>
+        <div class="demo-row">
+          <button class="btn btn-ink" disabled><span>禁用态</span></button>
+          <button class="btn btn-ink"><span class="spin"></span><span>研墨中…</span></button>
+        </div>
+      </div>
+      <div class="sec">
+        <h4 class="sec-t">液态特效</h4>
+        <div class="demo-row">
+          <button class="btn btn-wave"><span class="wv"></span><span>液浪填充 · 悬停</span></button>
+          <button class="btn btn-seal" onclick="toast('已盖章 · 生效')"><span>盖章按钮</span></button>
+        </div>
+        <p class="note">液浪按钮内部藏一团缓转的墨，悬停时自下涌起淹没按钮；盖章按钮点按即落印</p>
+      </div>
+      <div class="sec">
+        <h4 class="sec-t">尺寸</h4>
+        <div class="demo-row">
+          <button class="btn btn-ink sm"><span>小号</span></button>
+          <button class="btn btn-ink"><span>中号</span></button>
+          <button class="btn btn-ink lg"><span>大号</span></button>
+        </div>
+        <button class="btn btn-ink block"><span>通栏按钮 Block</span></button>
+      </div>
+      <div class="sec">
+        <h4 class="sec-t">图标按钮</h4>
+        <div class="demo-row">
+          <button class="icobtn" aria-label="搜索"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></button>
+          <button class="icobtn seal" aria-label="收藏"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7.2-4.6-9.7-9.2C.7 8.5 2.6 5 6 5c2 0 3.4 1.1 4 2.2C10.6 6.1 12 5 14 5c3.4 0 5.3 3.5 3.7 6.8C19.2 16.4 12 21 12 21z"/></svg></button>
+          <button class="icobtn round" aria-label="消息"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a8 8 0 0 1-8 8H4l2-3a8 8 0 1 1 15-5z"/></svg><span class="bdg">3</span></button>
+          <button class="icobtn round" aria-label="添加" onclick="toast('新建一幅画卷')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></button>
+        </div>
+        <p class="note">用法：<code class="k">.btn-ink</code> 墨晕主钮、<code class="k">.btn-seal</code> 朱砂、<code class="k">.btn-wave</code> 液浪、<code class="k">.btn-sub</code> 次钮、<code class="k">.btn-ghost</code> 幽灵</p>
+      </div>
+    </section>
+
+    <!-- ============ 表单 ============ -->
+    <section class="screen" data-screen="forms">
+      <div class="sec">
+        <h4 class="sec-t">输入</h4>
+        <div class="field">
+          <label>画题 <small>· 给作品起个名字</small></label>
+          <input class="inp" placeholder="如：千里江山图">
+        </div>
+        <div class="field">
+          <label>搜索</label>
+          <div class="searchbar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+            <input placeholder="搜组件、设色、用法…">
+          </div>
+        </div>
+        <div class="field">
+          <label>题跋</label>
+          <textarea class="inp" placeholder="多行文本，落笔之处自有回响…"></textarea>
+        </div>
+        <div class="field">
+          <label>画派 <small>· 下拉选择</small></label>
+          <select class="inp">
+            <option>水墨写意</option><option>工笔重彩</option><option>青绿山水</option><option>浅绛山水</option><option>没骨花卉</option>
+          </select>
+        </div>
+      </div>
+      <div class="sec">
+        <h4 class="sec-t">选择器 · 分段</h4>
+        <div class="segmented" id="segDemo">
+          <button class="on">写意</button><button>工笔</button><button>青绿</button>
+        </div>
+      </div>
+      <div class="sec">
+        <h4 class="sec-t">开关 · 复选 · 单选</h4>
+        <div class="demo-row">
+          <label class="switch lb"><input type="checkbox" checked><span class="tr"></span>墨迹晕染</label>
+        </div>
+        <div class="demo-row">
+          <label class="switch lb"><input type="checkbox"><span class="tr"></span>留白模式</label>
+        </div>
+        <div class="card" style="margin-top:.4rem">
+          <label class="check"><input type="checkbox" checked><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span>记住我的用纸偏好</label>
+          <label class="check"><input type="checkbox"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span>新作完成时提醒我</label>
+          <label class="check"><input type="radio" name="paper" checked><span class="box radio"></span>生宣 · 洇墨快</label>
+          <label class="check"><input type="radio" name="paper"><span class="box radio"></span>熟宣 · 线条稳</label>
+        </div>
+      </div>
+      <div class="sec">
+        <h4 class="sec-t">滑杆 · 步进器</h4>
+        <div class="field">
+          <label>墨色浓淡 <small id="concLabel">· 50%</small></label>
+          <div class="slider-row">
+            <input type="range" class="slider" min="0" max="100" value="50" id="conc">
+            <span class="slider-val" id="concVal">50%</span>
+          </div>
+        </div>
+        <div class="field">
+          <label>宣纸张数</label>
+          <div class="stepper">
+            <button id="stepMinus" aria-label="减少">−</button><b id="stepNum">1</b><button id="stepPlus" aria-label="增加">＋</button>
+          </div>
+        </div>
+      </div>
+      <div class="sec">
+        <h4 class="sec-t">评分 · 墨点</h4>
+        <div class="demo-row center">
+          <div class="rating" id="inkRating" role="radiogroup" aria-label="墨点评分">
+            <button aria-label="1分"><i></i></button><button aria-label="2分"><i></i></button><button aria-label="3分"><i></i></button><button aria-label="4分"><i></i></button><button aria-label="5分"><i></i></button>
+          </div>
+        </div>
+        <p class="note" style="text-align:center" id="ratingTip">点一点墨点，试试浓淡</p>
+      </div>
+      <div class="sec">
+        <h4 class="sec-t">上传</h4>
+        <div class="upload" id="upload">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3v10m0-10L8 7m4-4l4 4"/><path d="M4 15v3a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3v-3"/></svg>
+          <p>点击上传画作</p>
+          <small>支持 PNG / JPG，墨色会自动校准</small>
+        </div>
+        <div id="upList"></div>
+      </div>
+    </section>
+
+    <!-- ============ 展示 ============ -->
+    <section class="screen" data-screen="showcase">
+      <div class="sec">
+        <h4 class="sec-t">卡片</h4>
+        <div class="card wash-deco" style="margin-bottom:.9rem">
+          <span class="tag seal" style="margin-bottom:.5rem"><span class="dot"></span>新作</span>
+          <h3>基础卡片</h3>
+          <p>纸面微暖，右上角藏一团极淡的墨晕，像不小心洇开的一笔。</p>
+        </div>
+        <div class="card press" style="margin-bottom:.9rem" onclick="toast('你展开了一幅画卷')">
+          <div class="media">
+            <svg viewBox="0 0 400 112" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+              <circle cx="330" cy="30" r="13" fill="#b03a26" opacity=".85"/>
+              <path d="M0 66 L58 34 L104 56 L164 24 L226 56 L288 30 L344 58 L400 36 L400 112 L0 112 Z" fill="#23211c" opacity=".28"/>
+              <path d="M0 88 L70 58 L138 82 L210 50 L280 80 L340 60 L400 84 L400 112 L0 112 Z" fill="#23211c" opacity=".55"/>
+            </svg>
+            <span class="stamp-tag">藏品</span>
+          </div>
+          <h3>多媒体卡片 · 可按压</h3>
+          <p>封面是三层远山与一轮朱日，按压时整张卡轻轻沉下。</p>
+        </div>
+      </div>
+      <div class="sec">
+        <h4 class="sec-t">长卷 · 轮播</h4>
+        <div class="car" id="car">
+          <div class="slide">
+            <svg viewBox="0 0 400 150" preserveAspectRatio="xMidYMid slice"><rect width="400" height="150" fill="#ece3cf"/><path d="M0 92 L70 48 L130 80 L205 38 L280 78 L340 52 L400 84 L400 150 L0 150 Z" fill="#23211c" opacity=".5"/><circle cx="60" cy="36" r="14" fill="#b03a26" opacity=".85"/></svg>
+            <span class="cap">其一 · 远山含黛</span>
+          </div>
+          <div class="slide">
+            <svg viewBox="0 0 400 150" preserveAspectRatio="xMidYMid slice"><rect width="400" height="150" fill="#e4e7dd"/><path d="M0 118 Q100 92 200 112 T400 108 L400 150 L0 150 Z" fill="#33536e" opacity=".55"/><path d="M0 132 Q110 114 220 128 T400 126 L400 150 L0 150 Z" fill="#33536e" opacity=".8"/><circle cx="322" cy="34" r="17" fill="#f5efe3" opacity=".9"/></svg>
+            <span class="cap">其二 · 江水东流</span>
+          </div>
+          <div class="slide">
+            <svg viewBox="0 0 400 150" preserveAspectRatio="xMidYMid slice"><rect width="400" height="150" fill="#f0e9d8"/><path d="M60 150 Q70 84 52 40 M120 150 Q118 96 132 58 M330 150 Q322 88 340 44" stroke="#5d7263" stroke-width="5" fill="none" stroke-linecap="round"/><circle cx="52" cy="34" r="9" fill="#5d7263" opacity=".7"/><circle cx="134" cy="50" r="7" fill="#5d7263" opacity=".55"/><circle cx="342" cy="36" r="10" fill="#5d7263" opacity=".65"/></svg>
+            <span class="cap">其三 · 竹影清风</span>
+          </div>
+        </div>
+        <div class="car-dots" id="carDots"><button class="on" aria-label="第1幅"></button><button aria-label="第2幅"></button><button aria-label="第3幅"></button></div>
+      </div>
+      <div class="sec">
+        <h4 class="sec-t">芯片 · 标签 · 头像</h4>
+        <div class="demo-row" id="chipRow">
+          <button class="chip on">全部</button><button class="chip">山水</button><button class="chip">花鸟</button><button class="chip">人物</button>
+        </div>
+        <div class="demo-row">
+          <span class="tag ink"><span class="dot"></span>已装裱</span>
+          <span class="tag seal">馆藏</span>
+          <span class="tag ghost">草稿</span>
+        </div>
+        <div class="demo-row">
+          <span class="avatar" style="background:#23211c">陈</span>
+          <span class="avatar stack" style="background:#33536e">淑</span>
+          <span class="avatar stack" style="background:#5d7263">婷</span>
+          <span class="avatar stack" style="background:#b03a26">+9</span>
+        </div>
+      </div>
+      <div class="sec">
+        <h4 class="sec-t">列表行</h4>
+        <div class="rows">
+          <button class="row-it" onclick="toast('打开：我的画卷')"><span class="ri" style="background:var(--ink)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V4H6.5A2.5 2.5 0 0 0 4 6.5z"/><path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5"/></svg></span><span class="tx"><b>我的画卷</b><small>已收藏 36 幅作品</small></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></button>
+          <button class="row-it" onclick="toast('打开：展览日程')"><span class="ri" style="background:var(--indigo)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></span><span class="tx"><b>展览日程</b><small>本周六 · 水墨双年展</small></span><span class="tag seal">将启</span></button>
+          <button class="row-it" onclick="toast('打开：研墨设置')"><span class="ri" style="background:var(--jade)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9L17 7M7 17l-2.1 2.1"/></svg></span><span class="tx"><b>研墨设置</b><small>浓淡 · 纸性 · 印章</small></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></button>
+        </div>
+      </div>
+      <div class="sec">
+        <h4 class="sec-t">折叠面板</h4>
+        <div class="acc open">
+          <button>墨分五色，是哪五色？<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></button>
+          <div class="body"><p>焦、浓、重、淡、清。一块墨锭研出的深浅，便是这套组件的灰阶：从浓墨主钮到飞白留白，皆出于此。</p></div>
+        </div>
+        <div class="acc">
+          <button>宣纸为什么会洇墨？<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></button>
+          <div class="body"><p>生宣纤维松散，墨落即走，正合液态组件之意：按钮的墨涟、进度的晕染边，都在学这口洇劲儿。</p></div>
+        </div>
+      </div>
+      <div class="sec">
+        <h4 class="sec-t">表格 · 墨具价目</h4>
+        <table class="tbl">
+          <tr><th>墨具</th><th>规格</th><th>价位</th></tr>
+          <tr><td>徽墨一锭</td><td>四两 · 松烟</td><td>¥128</td></tr>
+          <tr><td>生宣十张</td><td>四尺 · 单宣</td><td>¥46</td></tr>
+          <tr><td>朱砂印泥</td><td>一两 · 蓖麻油</td><td>¥68</td></tr>
+          <tr><td>狼毫笔</td><td>大号 · 兼毫</td><td>¥39</td></tr>
+        </table>
+      </div>
+      <div class="sec">
+        <h4 class="sec-t">骨架屏 · 空状态</h4>
+        <div class="card" style="margin-bottom:.9rem">
+          <div class="skel" style="height:18px;width:55%;margin-bottom:.7rem"></div>
+          <div class="skel" style="height:14px;width:90%;margin-bottom:.5rem"></div>
+          <div class="skel" style="height:14px;width:72%"></div>
+        </div>
+        <div class="card">
+          <div class="empty">
+            <svg class="enso" viewBox="0 0 100 100" aria-hidden="true"><path d="M50 6a44 44 0 1 1-30 12" fill="none" stroke="#23211c" stroke-width="7" stroke-linecap="round" opacity=".55"/></svg>
+            <h3>纸上空空</h3>
+            <p>还没有落下第一笔，去按钮页点一点吧</p>
+            <button class="btn btn-ink sm" data-goto="buttons"><span>去落笔</span></button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 反馈 ============ -->
+    <section class="screen" data-screen="feedback">
+      <div class="sec">
+        <h4 class="sec-t">内联横幅</h4>
+        <div class="banner ok">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5L16 9.5"/></svg>
+          <div><b>装裱完成</b><p>36 幅画卷已全部渲染通过，墨色无丢失。</p></div>
+        </div>
+        <div class="banner warn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l10 17H2z"/><path d="M12 10v4M12 17.5h.01"/></svg>
+          <div><b>墨汁将尽</b><p>当前墨锭余量不足两成，建议提前研墨。</p></div>
+        </div>
+      </div>
+      <div class="sec">
+        <h4 class="sec-t">弹层演示</h4>
+        <div class="demo-row">
+          <button class="btn btn-ink sm" id="openModal"><span>打开弹窗</span></button>
+          <button class="btn btn-seal sm" id="openSheet"><span>底部动作表</span></button>
+        </div>
+        <div class="demo-row">
+          <button class="btn btn-sub sm" id="openDrawer"><span>侧边抽屉</span></button>
+          <button class="btn btn-ghost sm" id="showToast"><span>墨滴 Toast</span></button>
+        </div>
+        <p class="note">弹窗顶着朱砂印，抽屉自右侧滑入，Toast 像一滴墨落在纸面，2.4 秒后淡去。</p>
+      </div>
+      <div class="sec">
+        <h4 class="sec-t">气泡提示</h4>
+        <div class="demo-row center">
+          <span class="tip-wrap" id="tipWrap">
+            <button class="btn btn-sub sm" id="tipBtn"><span>这枚印归谁？</span></button>
+            <span class="tip">朱砂印 · 落款专用，不可外借</span>
+          </span>
+        </div>
+      </div>
+      <div class="sec">
+        <h4 class="sec-t">晕染进度</h4>
+        <div class="field"><label>装裱进度 · 72%</label><div class="progress"><i style="width:72%"></i></div></div>
+        <div class="field"><label>洇墨演示 · 自动晕开</label><div class="progress seal"><i class="soak"></i></div></div>
+        <p class="note">进度条的前锋带一圈模糊的晕，像墨在宣纸上慢慢洇向四周</p>
+      </div>
+      <div class="sec">
+        <h4 class="sec-t">加载动画</h4>
+        <div class="card">
+          <div class="drop-loader"><span class="drop"></span><span class="drop"></span><span class="drop"></span></div>
+          <p class="note" style="text-align:center">墨滴坠落 · 三色轮替</p>
+          <div style="display:flex;justify-content:center;padding:.4rem 0">
+            <svg class="enso-spin" viewBox="0 0 100 100" aria-hidden="true"><path d="M50 6a44 44 0 1 1-30 12" fill="none" stroke="#23211c" stroke-width="8" stroke-linecap="round" opacity=".7"/></svg>
+          </div>
+          <div class="inkdots"><i></i><i></i><i></i></div>
+        </div>
+      </div>
+      <div class="sec">
+        <h4 class="sec-t">结果页 · 盖章</h4>
+        <div class="card">
+          <div class="result">
+            <span class="stamp play" id="stamp">成</span>
+            <h3>画作已入册</h3>
+            <p>这一幅《水墨之间》已编号归档<br>可在「我的画卷」里随时展开</p>
+            <div class="demo-row center" style="margin:0">
+              <button class="btn btn-sub sm" id="restamp"><span>再盖一次</span></button>
+              <button class="btn btn-ink sm" data-goto="showcase"><span>去看画卷</span></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- 底部 Tab -->
+  <nav class="tabbar" id="tabbar">
+    <span class="tab-pill" id="tabPill"></span>
+    <button class="tab on" data-tab="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>总览</button>
+    <button class="tab" data-tab="buttons"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3c3.2 4.6 6 8 6 11a6 6 0 1 1-12 0c0-3 2.8-6.4 6-11z"/></svg>按钮</button>
+    <button class="tab" data-tab="forms"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 8h10M18 8h2M4 16h2M10 16h10"/><circle cx="16" cy="8" r="2.2"/><circle cx="8" cy="16" r="2.2"/></svg>表单</button>
+    <button class="tab" data-tab="showcase"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 18l5.5-6 4 4L17 10l4 8z"/><circle cx="17.5" cy="6" r="1.8"/></svg>展示</button>
+    <button class="tab" data-tab="feedback"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 8-3 8h18s-3-1-3-8"/><path d="M10.3 21a2 2 0 0 0 3.4 0"/></svg>反馈</button>
+  </nav>
+
+  <!-- 弹层 -->
+  <div class="scrim" id="scrim"></div>
+  <div class="modal" id="modal" role="dialog" aria-modal="true">
+    <div class="mseal">印</div>
+    <h3>落印确认</h3>
+    <p>这一印落下，画作即告完成并归档入册。<br>确认要现在盖印吗？</p>
+    <div class="mrow">
+      <button class="btn btn-ghost sm" data-close><span>再想想</span></button>
+      <button class="btn btn-seal sm" data-close onclick="toast('已落印归档')"><span>确认盖印</span></button>
+    </div>
+  </div>
+  <aside class="drawer" id="drawer">
+    <h3>墨房菜单</h3>
+    <button class="opt" data-close onclick="toast('打开：藏书阁')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V4H6.5A2.5 2.5 0 0 0 4 6.5z"/><path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5"/></svg>藏书阁</button>
+    <button class="opt" data-close onclick="toast('打开：印章匣')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M9 15l3-6 3 6M10 12.5h4"/></svg>印章匣</button>
+    <button class="opt" data-close onclick="toast('打开：纸坊')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6"/></svg>纸坊</button>
+    <button class="opt" data-close onclick="toast('打开：研墨偏好')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9L17 7M7 17l-2.1 2.1"/></svg>研墨偏好</button>
+  </aside>
+  <div class="sheet" id="sheet">
+    <div class="grab"></div>
+    <button class="opt" data-close onclick="toast('已分享给同好')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 10.5l6.8-4M8.6 13.5l6.8 4"/></svg>分享给同好</button>
+    <button class="opt" data-close onclick="toast('已收入画卷')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7.2-4.6-9.7-9.2C.7 8.5 2.6 5 6 5c2 0 3.4 1.1 4 2.2C10.6 6.1 12 5 14 5c3.4 0 5.3 3.5 3.7 6.8C19.2 16.4 12 21 12 21z"/></svg>收入画卷</button>
+    <button class="opt" data-close onclick="toast('已弃稿')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2m3 0l-.8 12.2a1 1 0 0 1-1 .8H7.8a1 1 0 0 1-1-.8L6 7"/></svg>弃稿</button>
+  </div>
+  <div class="toast" id="toast"><span class="dot"></span><span id="toastMsg"></span></div>
+</div>
+
+<script>
+/* Tab 切换 + ?tab= 深链 */
+const tabs=[...document.querySelectorAll('#tabbar .tab')];
+const screens=[...document.querySelectorAll('.screen')];
+const tabPill=document.getElementById('tabPill');
+function movePill(){
+  const t=document.querySelector('#tabbar .tab.on');if(!t||!tabPill)return;
+  tabPill.style.left=t.offsetLeft+'px';tabPill.style.width=t.offsetWidth+'px';
+}
+function goto(name){
+  tabs.forEach(t=>t.classList.toggle('on',t.dataset.tab===name));
+  screens.forEach(s=>s.classList.toggle('active',s.dataset.screen===name));
+  const sc=document.querySelector('.screen.active');if(sc)sc.scrollTop=0;
+  movePill();
+}
+tabs.forEach(t=>t.addEventListener('click',()=>goto(t.dataset.tab)));
+document.querySelectorAll('[data-goto]').forEach(b=>b.addEventListener('click',()=>goto(b.dataset.goto)));
+const qtab=new URLSearchParams(location.search).get('tab');
+if(qtab&&document.querySelector('[data-tab="'+qtab+'"]'))goto(qtab);
+movePill();
+window.addEventListener('resize',movePill);
+window.addEventListener('load',movePill);
+
+/* Toast */
+let toastTimer;
+function toast(msg){
+  const el=document.getElementById('toast');
+  document.getElementById('toastMsg').textContent=msg;
+  el.classList.add('show');clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>el.classList.remove('show'),2400);
+}
+/* 弹层：弹窗 / 动作表 / 抽屉 */
+const scrim=document.getElementById('scrim'),
+      modal=document.getElementById('modal'),
+      sheet=document.getElementById('sheet'),
+      drawer=document.getElementById('drawer');
+function openLayer(el){scrim.classList.add('show');el.classList.add('show')}
+function closeLayers(){scrim.classList.remove('show');modal.classList.remove('show');sheet.classList.remove('show');drawer.classList.remove('show')}
+document.getElementById('openModal').onclick=()=>openLayer(modal);
+document.getElementById('openSheet').onclick=()=>openLayer(sheet);
+document.getElementById('openDrawer').onclick=()=>openLayer(drawer);
+document.getElementById('showToast').onclick=()=>toast('一滴墨落纸面，2.4 秒后淡去');
+scrim.onclick=closeLayers;
+document.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click',closeLayers));
+
+/* 按钮点击墨涟 */
+const darkBtn=['btn-ink','btn-seal','btn-indigo'];
+document.querySelectorAll('.btn').forEach(b=>b.addEventListener('click',e=>{
+  const r=b.getBoundingClientRect(),s=Math.max(r.width,r.height)*2.3,
+        d=document.createElement('span');
+  d.className='inkrip '+(darkBtn.some(c=>b.classList.contains(c))?'lt':'dk');
+  d.style.width=d.style.height=s+'px';
+  d.style.left=(e.clientX-r.left-s/2)+'px';
+  d.style.top=(e.clientY-r.top-s/2)+'px';
+  b.appendChild(d);setTimeout(()=>d.remove(),900);
+}));
+/* 芯片单选 */
+document.getElementById('chipRow').addEventListener('click',e=>{
+  const c=e.target.closest('.chip');if(!c)return;
+  document.querySelectorAll('#chipRow .chip').forEach(x=>x.classList.remove('on'));
+  c.classList.add('on');toast('画目：'+c.textContent);
+});
+/* 分段选择 */
+document.getElementById('segDemo').addEventListener('click',e=>{
+  const b=e.target.closest('button');if(!b)return;
+  document.querySelectorAll('#segDemo button').forEach(x=>x.classList.remove('on'));
+  b.classList.add('on');toast('画派：'+b.textContent);
+});
+/* 滑杆 */
+const conc=document.getElementById('conc');
+conc.addEventListener('input',()=>{
+  conc.style.setProperty('--v',conc.value+'%');
+  document.getElementById('concVal').textContent=conc.value+'%';
+  document.getElementById('concLabel').textContent='· '+conc.value+'%';
+});
+conc.style.setProperty('--v','50%');
+/* 步进器 */
+let stepN=1;const stepNum=document.getElementById('stepNum');
+document.getElementById('stepPlus').onclick=()=>{stepN=Math.min(99,stepN+1);stepNum.textContent=stepN};
+document.getElementById('stepMinus').onclick=()=>{stepN=Math.max(0,stepN-1);stepNum.textContent=stepN};
+/* 墨点评分 */
+const dots=[...document.querySelectorAll('#inkRating button')];
+dots.forEach((b,i)=>b.addEventListener('click',()=>{
+  dots.forEach((x,j)=>x.classList.toggle('lit',j<=i));
+  document.getElementById('ratingTip').textContent='墨色浓淡 · '+ (i+1) +' 分';
+}));
+/* 手风琴 */
+document.querySelectorAll('.acc>button').forEach(btn=>btn.addEventListener('click',()=>{
+  const acc=btn.parentElement,body=acc.querySelector('.body'),open=acc.classList.toggle('open');
+  body.style.maxHeight=open?body.scrollHeight+'px':'0';
+}));
+const firstAcc=document.querySelector('.acc.open .body');
+if(firstAcc)firstAcc.style.maxHeight=firstAcc.scrollHeight+'px';
+/* 色卡复制 */
+document.querySelectorAll('.sw').forEach(sw=>sw.addEventListener('click',()=>{
+  const hex=sw.dataset.hex;
+  (navigator.clipboard?navigator.clipboard.writeText(hex):Promise.reject()).then(
+    ()=>toast('已复制 '+hex),()=>toast(hex));
+}));
+/* 长卷轮播 */
+const car=document.getElementById('car'),carDots=[...document.querySelectorAll('#carDots button')];
+car.addEventListener('scroll',()=>{
+  const i=Math.round(car.scrollLeft/car.clientWidth);
+  carDots.forEach((d,j)=>d.classList.toggle('on',j===i));
+});
+carDots.forEach((d,j)=>d.addEventListener('click',()=>car.scrollTo({left:j*car.clientWidth,behavior:'smooth'})));
+/* 上传 */
+let upN=0;
+document.getElementById('upload').addEventListener('click',()=>{
+  upN++;
+  const f=document.createElement('div');f.className='upfile';
+  f.innerHTML='<span>水墨长卷_0'+upN+'.png</span><small>2.4 MB · 已沾墨</small>';
+  document.getElementById('upList').appendChild(f);
+  toast('已添加 1 个文件');
+});
+/* 气泡提示 */
+const tipWrap=document.getElementById('tipWrap');
+let tipTimer;
+document.getElementById('tipBtn').addEventListener('click',e=>{
+  e.stopPropagation();
+  tipWrap.classList.add('show');clearTimeout(tipTimer);
+  tipTimer=setTimeout(()=>tipWrap.classList.remove('show'),2200);
+});
+document.addEventListener('click',()=>tipWrap.classList.remove('show'));
+/* 重新盖章 */
+const stamp=document.getElementById('stamp');
+document.getElementById('restamp').addEventListener('click',()=>{
+  stamp.classList.remove('play');void stamp.offsetWidth;stamp.classList.add('play');
+  toast('已重新盖章');
+});
+</script>
+</body>
+
+</html>

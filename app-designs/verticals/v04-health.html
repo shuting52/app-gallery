@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>花期 · 生理期记录</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{background:#f3dfe6;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;color:#4a2438;display:flex;justify-content:center;min-height:100vh}
+.phone{width:100%;max-width:430px;min-height:100vh;background:#fdf2f5;position:relative;padding-bottom:82px}
+.page{display:none;padding:16px 16px 24px;animation:fin .25s ease}
+.page.active{display:block}
+@keyframes fin{from{opacity:0;transform:translateY(8px)}}
+.hd{display:flex;align-items:center;justify-content:space-between;margin:6px 2px 14px}
+.logo{font-size:20px;font-weight:800}
+.logo b{color:#e11d63}
+.hello{font-size:12px;color:#b76e8f;background:#fff;padding:5px 12px;border-radius:20px;font-weight:600}
+/* 记录 */
+.status{background:linear-gradient(135deg,#ec4899,#e11d63);color:#fff;border-radius:20px;padding:22px 18px;margin-bottom:14px;position:relative;overflow:hidden}
+.status::after{content:"🌸";position:absolute;right:14px;top:10px;font-size:56px;opacity:.35}
+.status .big{font-size:34px;font-weight:800;margin:6px 0}
+.status .sm{font-size:13px;opacity:.9}
+.logrow{display:flex;gap:10px;margin-bottom:14px}
+.logrow button{flex:1;padding:14px;border-radius:16px;font-size:14px;font-weight:800;border:0;cursor:pointer}
+.lstart{background:#e11d63;color:#fff}
+.lend{background:#fff;color:#e11d63;border:2px solid #f9a8d4!important}
+.logrow button:active{transform:scale(.96)}
+.card{background:#fff;border-radius:18px;padding:16px;margin-bottom:14px;box-shadow:0 2px 12px #e11d630f}
+.card .t{font-size:15px;font-weight:800;margin-bottom:12px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{background:#fdf2f5;border:1px solid #fbcfe8;color:#9d4a6e;padding:8px 15px;border-radius:20px;font-size:13px;cursor:pointer}
+.chip.on{background:#e11d63;color:#fff;border-color:#e11d63;font-weight:700}
+.flow{display:flex;gap:8px}
+.flow .chip{flex:1;text-align:center}
+.save{width:100%;background:linear-gradient(135deg,#ec4899,#e11d63);color:#fff;border:0;padding:14px;border-radius:16px;font-size:15px;font-weight:800;cursor:pointer}
+.save:active{transform:scale(.98)}
+/* 日历 */
+.calhead{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.calhead .m{font-size:17px;font-weight:800}
+.calhead button{background:#fff;border:1px solid #fbcfe8;color:#e11d63;width:34px;height:34px;border-radius:50%;font-size:16px;cursor:pointer}
+.cal{background:#fff;border-radius:18px;padding:14px;box-shadow:0 2px 12px #e11d630f}
+.week{display:grid;grid-template-columns:repeat(7,1fr);text-align:center;font-size:11px;color:#b76e8f;margin-bottom:6px}
+.days{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
+.day{aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:13px;border-radius:50%;position:relative;color:#4a2438}
+.day.dim{color:#d8b9c6}
+.day.period{background:#e11d63;color:#fff;font-weight:700}
+.day.fertile{background:#fce7f3}
+.day.ovu::after{content:"";position:absolute;bottom:4px;width:5px;height:5px;border-radius:50%;background:#9333ea}
+.day.today{box-shadow:0 0 0 2px #e11d63;font-weight:800}
+.day.pred{border:2px dashed #f9a8d4;color:#e11d63}
+.legend{display:flex;flex-wrap:wrap;gap:12px;margin-top:12px;font-size:11px;color:#9d4a6e}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:4px}
+/* 统计 */
+.tiles{display:flex;gap:10px;margin-bottom:14px}
+.tile{flex:1;background:#fff;border-radius:16px;padding:14px 6px;text-align:center;box-shadow:0 2px 12px #e11d630f}
+.tile b{font-size:22px;color:#e11d63;display:block}
+.tile span{font-size:11px;color:#b76e8f}
+.chart{background:#fff;border-radius:18px;padding:16px;box-shadow:0 2px 12px #e11d630f;margin-bottom:14px}
+.chart .t{font-size:14px;font-weight:800;margin-bottom:12px}
+.bars{display:flex;align-items:flex-end;gap:10px;height:110px}
+.bcol{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;height:100%;justify-content:flex-end}
+.bcol i{width:70%;background:linear-gradient(180deg,#f9a8d4,#e11d63);border-radius:6px;display:block}
+.bcol span{font-size:10px;color:#b76e8f}
+.symrow{margin-bottom:10px}
+.symrow .r{display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px}
+.symrow .bar{height:8px;background:#fce7f3;border-radius:4px;overflow:hidden}
+.symrow .bar i{display:block;height:100%;background:#ec4899;border-radius:4px}
+/* 我的 */
+.me{background:#fff;border-radius:18px;padding:18px;display:flex;gap:14px;align-items:center;margin-bottom:14px;box-shadow:0 2px 12px #e11d630f}
+.avatar{width:58px;height:58px;border-radius:50%;background:linear-gradient(135deg,#f9a8d4,#e11d63);display:flex;align-items:center;justify-content:center;font-size:30px}
+.me .nm{font-size:17px;font-weight:800}
+.me .sub{font-size:12px;color:#b76e8f;margin-top:4px}
+.set{background:#fff;border-radius:18px;padding:6px 16px;margin-bottom:14px;box-shadow:0 2px 12px #e11d630f}
+.srow{display:flex;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid #fdf2f5;font-size:14px}
+.srow:last-child{border:0}
+.srow .d{font-size:12px;color:#b76e8f;margin-top:2px}
+.sw{margin-left:auto;width:48px;height:28px;border-radius:14px;background:#f3e0e8;position:relative;cursor:pointer;transition:background .25s;flex-shrink:0}
+.sw::after{content:"";position:absolute;width:22px;height:22px;border-radius:50%;background:#fff;top:3px;left:3px;transition:left .25s;box-shadow:0 1px 4px #0003}
+.sw.on{background:#e11d63}
+.sw.on::after{left:23px}
+.menu{background:#fff;border-radius:18px;overflow:hidden;box-shadow:0 2px 12px #e11d630f}
+.mi{display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid #fdf2f5;font-size:14px;cursor:pointer}
+.mi:last-child{border:0}
+.mi .e{font-size:18px}
+.mi .a{margin-left:auto;color:#d8a9bd}
+.tabbar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:#fffffff2;backdrop-filter:blur(10px);border-top:1px solid #fbcfe8;display:flex;padding:8px 0 calc(8px + env(safe-area-inset-bottom));z-index:50}
+.tab{flex:1;background:none;border:0;color:#d8a9bd;font-size:11px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px}
+.tab .i{font-size:21px}
+.tab.on{color:#e11d63}
+.toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:#4a2438;color:#fff;padding:10px 22px;border-radius:24px;font-size:13px;opacity:0;transition:opacity .3s;z-index:99;pointer-events:none;max-width:86%;text-align:center}
+</style>
+</head>
+<body>
+<div class="phone">
+  <section class="page active" id="p-log">
+    <div class="hd"><div class="logo">🌸 花<b>期</b></div><div class="hello">小婷 · 下午好</div></div>
+    <div class="status"><div class="sm" id="stLabel">预测 · 排卵日</div><div class="big" id="stBig">今天是排卵日 💜</div><div class="sm">上次经期 10月5日 · 平均周期 28 天</div></div>
+    <div class="logrow">
+      <button class="lend" id="btnStart" onclick="logPeriod(true)">记录经期开始</button>
+      <button class="lend" id="btnEnd" onclick="logPeriod(false)">记录经期结束</button>
+    </div>
+    <div class="card"><div class="t">今日症状（多选）</div><div class="chips" id="symchips"></div></div>
+    <div class="card"><div class="t">经量</div><div class="flow" id="flowrow">
+      <div class="chip" onclick="pickFlow(this)">量少</div><div class="chip on" onclick="pickFlow(this)">中等</div><div class="chip" onclick="pickFlow(this)">量多</div>
+    </div></div>
+    <button class="save" onclick="saveDay()">保存今日记录</button>
+  </section>
+  <section class="page" id="p-cal">
+    <div class="hd"><div class="logo">📅 经期<b>日历</b></div></div>
+    <div class="calhead"><button onclick="toast('已切换到 2026 年 9 月（演示）')">‹</button><div class="m">2026 年 10 月</div><button onclick="toast('已切换到 2026 年 11 月（演示）')">›</button></div>
+    <div class="cal">
+      <div class="week"><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span><span>日</span></div>
+      <div class="days" id="days"></div>
+      <div class="legend">
+        <span><i style="background:#e11d63"></i>经期</span>
+        <span><i style="background:#fce7f3;border:1px solid #f9a8d4"></i>易孕期</span>
+        <span><i style="background:#9333ea"></i>排卵日</span>
+        <span><i style="border:2px dashed #f9a8d4;background:none"></i>预测下次</span>
+      </div>
+    </div>
+    <div class="card" style="margin-top:14px"><div class="t">周期小贴士 💡</div><div style="font-size:13px;color:#9d4a6e;line-height:1.8">排卵日前后 5 天为易孕期。经期注意保暖，避免剧烈运动，多喝温水。</div></div>
+  </section>
+  <section class="page" id="p-stats">
+    <div class="hd"><div class="logo">📊 周期<b>统计</b></div></div>
+    <div class="tiles">
+      <div class="tile"><b>28天</b><span>平均周期</span></div>
+      <div class="tile"><b>5天</b><span>平均经期</span></div>
+      <div class="tile"><b>规律</b><span>周期状态</span></div>
+    </div>
+    <div class="chart"><div class="t">近 6 次周期长度（天）</div><div class="bars" id="cbars"></div></div>
+    <div class="card"><div class="t">常见症状频率（近 3 个月）</div>
+      <div class="symrow"><div class="r"><span>腹痛</span><span>8 次</span></div><div class="bar"><i style="width:80%"></i></div></div>
+      <div class="symrow"><div class="r"><span>情绪低落</span><span>6 次</span></div><div class="bar"><i style="width:60%"></i></div></div>
+      <div class="symrow"><div class="r"><span>失眠</span><span>4 次</span></div><div class="bar"><i style="width:40%"></i></div></div>
+      <div class="symrow"><div class="r"><span>头痛</span><span>3 次</span></div><div class="bar"><i style="width:30%"></i></div></div>
+    </div>
+  </section>
+  <section class="page" id="p-mine">
+    <div class="hd"><div class="logo">👤 我<b>的</b></div></div>
+    <div class="me"><div class="avatar">🌷</div><div><div class="nm">小婷</div><div class="sub">已记录 8 个周期 · 数据连续 236 天</div></div></div>
+    <div class="set">
+      <div class="srow"><div><div>经期前 3 天提醒</div><div class="d">提前准备，安心度过</div></div><div class="sw on" onclick="this.classList.toggle('on');toast('经期提醒已'+(this.classList.contains('on')?'开启':'关闭'))"></div></div>
+      <div class="srow"><div><div>排卵日提醒</div><div class="d">掌握易孕期时间</div></div><div class="sw on" onclick="this.classList.toggle('on');toast('排卵提醒已'+(this.classList.contains('on')?'开启':'关闭'))"></div></div>
+      <div class="srow"><div><div>每日喝水提醒</div><div class="d">经期多喝温水</div></div><div class="sw" onclick="this.classList.toggle('on');toast('喝水提醒已'+(this.classList.contains('on')?'开启':'关闭'))"></div></div>
+    </div>
+    <div class="menu">
+      <div class="mi" onclick="toast('周期 28 天 · 经期 5 天（演示数据）')"><span class="e">🔄</span>周期设置<span class="a">›</span></div>
+      <div class="mi" onclick="toast('已生成 PDF 报告，可分享给医生')"><span class="e">📤</span>数据导出<span class="a">›</span></div>
+      <div class="mi" onclick="toast('数据仅保存在本机，已加密')"><span class="e">🔒</span>隐私保护<span class="a">›</span></div>
+      <div class="mi" onclick="toast('感谢反馈，我们会做得更好！')"><span class="e">💬</span>意见反馈<span class="a">›</span></div>
+    </div>
+  </section>
+  <nav class="tabbar">
+    <button class="tab on" data-t="p-log"><span class="i">🌸</span>记录</button>
+    <button class="tab" data-t="p-cal"><span class="i">📅</span>日历</button>
+    <button class="tab" data-t="p-stats"><span class="i">📊</span>统计</button>
+    <button class="tab" data-t="p-mine"><span class="i">👤</span>我的</button>
+  </nav>
+  <div class="toast" id="toast"></div>
+</div>
+<script>
+let tt;
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.style.opacity=1;clearTimeout(tt);tt=setTimeout(()=>t.style.opacity=0,1800);}
+function switchTab(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('on',b.dataset.t===id));window.scrollTo(0,0);}
+document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>switchTab(b.dataset.t));
+const qtab=new URLSearchParams(location.search).get('tab');if(qtab&&document.getElementById(qtab))switchTab(qtab);
+// 症状多选
+const syms=['腹痛','腰酸','头痛','失眠','情绪低落','食欲增加','乳房胀痛','疲劳'];
+const sc=document.getElementById('symchips');
+syms.forEach(s=>{const c=document.createElement('div');c.className='chip';c.textContent=s;c.onclick=()=>c.classList.toggle('on');sc.appendChild(c);});
+function pickFlow(el){[...document.getElementById('flowrow').children].forEach(x=>x.classList.remove('on'));el.classList.add('on');}
+function logPeriod(start){const b=start?document.getElementById('btnStart'):document.getElementById('btnEnd');
+ const on=b.classList.toggle('lstart');b.classList.toggle('lend',!on);
+ if(start){document.getElementById('stLabel').textContent='记录中 · 经期第 1 天';document.getElementById('stBig').textContent='经期开始，好好休息 🌷';}
+ toast(start?(on?'已记录：经期开始':'已取消经期开始记录'):(on?'已记录：经期结束':'已取消经期结束记录'));}
+function saveDay(){const n=[...document.querySelectorAll('#symchips .on')].length;toast('今日记录已保存'+(n?'（'+n+' 个症状）':''));}
+// 日历 2026-10（10月1日是周四，Mon-start 前空4格）
+const period=[5,6,7,8,9],fertile=[14,15,16,17,18],ovu=19,today=19,predNext=2;
+const days=document.getElementById('days');
+for(let i=0;i<4;i++){const d=document.createElement('div');d.className='day dim';d.textContent='';days.appendChild(d);}
+for(let d=1;d<=31;d++){const el=document.createElement('div');el.className='day';el.textContent=d;
+ if(period.includes(d))el.classList.add('period');
+ if(fertile.includes(d))el.classList.add('fertile');
+ if(d===ovu)el.classList.add('ovu');
+ if(d===today)el.classList.add('today');
+ days.appendChild(el);}
+// 统计柱状图
+const cyc=[['5月',28],['6月',29],['7月',27],['8月',28],['9月',30],['10月',28]];
+const cb=document.getElementById('cbars');const mn=25;
+cyc.forEach(x=>{const c=document.createElement('div');c.className='bcol';c.innerHTML='<i style="height:'+((x[1]-mn)/8*100+20)+'%"></i><span>'+x[0]+'</span>';cb.appendChild(c);});
+</script>
+</body>
+</html>

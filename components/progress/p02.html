@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>火箭燃料 · 进度指示</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:#04060f;color:#e6edf3;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;
+       min-height:100vh;display:flex;justify-content:center;align-items:flex-start;padding:36px 0}
+  .stage{width:360px;max-width:94vw;display:flex;flex-direction:column;align-items:center}
+  .head{display:flex;justify-content:space-between;align-items:baseline;width:100%;margin-bottom:14px}
+  .head h1{font-size:17px;font-weight:600;letter-spacing:2px}
+  .head .pct{font-size:15px;color:#ff9e4a;font-variant-numeric:tabular-nums}
+  .space{position:relative;width:300px;height:380px;background:radial-gradient(ellipse at 50% 120%,#0b1030 0%,#04060f 65%);
+         border:1px solid #1b2340;border-radius:14px;overflow:hidden}
+  .star{position:absolute;background:#fff;border-radius:50%;animation:tw 2.6s ease-in-out infinite alternate}
+  @keyframes tw{from{opacity:.25}to{opacity:1}}
+  .flash{position:absolute;inset:0;background:radial-gradient(circle at 50% 78%,rgba(255,220,150,.95),rgba(255,150,60,.35) 45%,transparent 70%);
+         opacity:0;pointer-events:none}
+  .cap{position:absolute;bottom:8px;left:0;right:0;text-align:center;font-size:12px;color:#8b949e;letter-spacing:1px}
+  svg.rocket{display:block;margin:26px auto 0}
+  .shake{animation:shk .12s linear infinite}
+  @keyframes shk{0%{transform:translate(0,0)}25%{transform:translate(-2px,1px)}50%{transform:translate(2px,-1px)}75%{transform:translate(-1px,-2px)}100%{transform:translate(1px,2px)}}
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="head"><h1>火箭燃料</h1><span class="pct" id="pct">0%</span></div>
+  <div class="space" id="space">
+    <div class="flash" id="flash"></div>
+    <svg class="rocket" id="rocket" width="150" height="250" viewBox="0 0 150 250">
+      <defs>
+        <clipPath id="winClip"><circle cx="75" cy="95" r="20"/></clipPath>
+        <linearGradient id="fuelG" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#ffd54a"/><stop offset="1" stop-color="#ff7a1a"/>
+        </linearGradient>
+        <linearGradient id="bodyG" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0" stop-color="#9aa7c7"/><stop offset=".5" stop-color="#e8eefc"/><stop offset="1" stop-color="#7c8aa8"/>
+        </linearGradient>
+      </defs>
+      <!-- 尾翼 -->
+      <path d="M45,150 L22,205 L52,195 Z" fill="#c33"/>
+      <path d="M105,150 L128,205 L98,195 Z" fill="#c33"/>
+      <!-- 机身 -->
+      <path d="M75,8 C100,45 105,90 105,150 L105,185 L45,185 L45,150 C45,90 50,45 75,8 Z" fill="url(#bodyG)"/>
+      <!-- 头锥 -->
+      <path d="M75,8 C88,28 96,48 99,70 L51,70 C54,48 62,28 75,8 Z" fill="#c33"/>
+      <!-- 燃料观察窗 -->
+      <circle cx="75" cy="95" r="24" fill="#0b1020" stroke="#dfe7fa" stroke-width="4"/>
+      <g clip-path="url(#winClip)">
+        <rect x="55" y="75" width="40" height="40" fill="#101c38"/>
+        <rect id="fuel" x="55" y="115" width="40" height="0" fill="url(#fuelG)"/>
+      </g>
+      <text x="75" y="132" text-anchor="middle" fill="#8b949e" font-size="11">燃料</text>
+      <!-- 尾焰 -->
+      <g id="flame" style="transform-box:fill-box;transform-origin:50% 0%">
+        <path d="M60,185 C60,215 68,235 75,248 C82,235 90,215 90,185 Z" fill="#ffb03a"/>
+        <path d="M66,185 C66,208 71,222 75,232 C79,222 84,208 84,185 Z" fill="#fff3b0"/>
+      </g>
+    </svg>
+    <div class="cap">窗内液柱 = 燃料进度 · 尾焰随进度增长</div>
+  </div>
+</div>
+<script>
+(function(){
+  var pct=document.getElementById('pct'),rocket=document.getElementById('rocket'),
+      fuel=document.getElementById('fuel'),flame=document.getElementById('flame'),
+      flash=document.getElementById('flash'),space=document.getElementById('space');
+  for(var i=0;i<55;i++){
+    var s=document.createElement('div');s.className='star';
+    var sz=Math.random()<.85?2:3;
+    s.style.width=s.style.height=sz+'px';
+    s.style.left=(Math.random()*296)+'px';s.style.top=(Math.random()*330)+'px';
+    s.style.animationDelay=(Math.random()*2.6)+'s';
+    space.appendChild(s);
+  }
+  var p=0,D=7000,HOLD=1000;
+  function render(){
+    pct.textContent=Math.round(p)+'%';
+    var r=p/100;
+    var h=40*r;
+    fuel.setAttribute('y',115-h);
+    fuel.setAttribute('height',h);
+    flame.style.transform='scaleY('+(0.15+r*1.2)+')';
+    flame.style.opacity=0.2+r*0.8;
+    if(p>=99.5){
+      rocket.classList.add('shake');
+      flash.style.opacity='0.85';
+    }else{
+      rocket.classList.remove('shake');
+      flash.style.opacity='0';
+    }
+  }
+  function tick(now){
+    if(tick.t0===undefined)tick.t0=now;
+    var e=now-tick.t0;
+    if(e>=D){p=100;render();if(e>=D+HOLD){tick.t0=now;p=0;}requestAnimationFrame(tick);return;}
+    p=e/D*100;render();requestAnimationFrame(tick);
+  }
+  if(location.hash==='#mid'){p=55;render();}
+  else{requestAnimationFrame(tick);}
+})();
+</script>
+</body>
+</html>

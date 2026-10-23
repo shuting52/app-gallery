@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>n20 · 信封 Toast</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;background:#141824;display:flex;flex-direction:column;align-items:center;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;color:#fff}
+.head{text-align:center;padding:20px 16px 12px}
+.head h1{font-size:17px;color:#f0b46a;letter-spacing:1px}
+.head p{font-size:12px;color:#8b93a7;margin-top:6px}
+.stage{width:360px;max-width:94vw;height:480px;border-radius:18px;position:relative;overflow:hidden;background:radial-gradient(circle at 50% 30%,#2e2416,#12100a 75%);border:1px solid #4d3f24;box-shadow:0 12px 40px rgba(0,0,0,.4)}
+.env{position:absolute;left:50%;top:150px;width:260px;height:170px;transform:translateX(-50%);opacity:0}
+.env.in{animation:envIn .35s forwards}
+.env.bye{animation:envOut .35s forwards}
+@keyframes envIn{to{opacity:1}}
+@keyframes envOut{from{opacity:1}to{opacity:0}}
+.envBack{position:absolute;inset:0;background:#8f5f1c;border-radius:10px;z-index:1}
+.letter{position:absolute;left:14px;right:14px;top:12px;height:120px;background:#fffdf4;border-radius:6px;z-index:2;box-shadow:0 4px 12px rgba(0,0,0,.25);padding:14px 12px;color:#5a4a2a;transform:translateY(0)}
+.letter .lh{font-size:11px;color:#a08c5a;letter-spacing:2px}
+.letter .lt{font-size:14px;font-weight:800;margin-top:8px;line-height:1.6;opacity:0}
+.letter.out{animation:letterOut .7s cubic-bezier(.3,1.1,.4,1) forwards;z-index:5}
+.letter.back{z-index:5}
+.letter.out .lt{animation:txtIn .4s .35s forwards}
+.letter.back{animation:letterBack .5s ease-in forwards}
+@keyframes letterOut{to{transform:translateY(-128px)}}
+@keyframes letterBack{from{transform:translateY(-128px)}to{transform:translateY(0)}}
+@keyframes txtIn{to{opacity:1}}
+.envFront{position:absolute;inset:0;background:linear-gradient(180deg,#d59a45,#b57e2e);clip-path:polygon(0 0,50% 42%,100% 0,100% 100%,0 100%);border-radius:10px;z-index:3}
+.flap{position:absolute;left:0;right:0;top:0;height:86px;background:linear-gradient(180deg,#c98f3d,#a96f24);clip-path:polygon(0 0,100% 0,50% 100%);transform-origin:top center;z-index:4;transform:rotateX(0)}
+.flap .sealDot{position:absolute;left:50%;top:52px;margin-left:-11px;width:22px;height:22px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#ff8a8a,#c0301c 70%);box-shadow:0 2px 5px rgba(0,0,0,.4)}
+.flap.open{animation:flapOpen .5s ease forwards}
+.flap.close{animation:flapClose .4s ease forwards}
+@keyframes flapOpen{to{transform:rotateX(180deg)}}
+@keyframes flapClose{from{transform:rotateX(180deg)}to{transform:rotateX(0)}}
+.hint{position:absolute;bottom:14px;width:100%;text-align:center;font-size:11px;color:#7a6a4a}
+</style>
+</head>
+<body>
+<div class="head"><h1>n20 · 信封</h1><p>信封出现 → 封盖翻开 → 信纸滑出展开 → 滑回、合上</p></div>
+<div class="stage">
+  <div class="env" id="env">
+    <div class="envBack"></div>
+    <div class="letter" id="letter"><div class="lh">站内信</div><div class="lt" id="lt"></div></div>
+    <div class="envFront"></div>
+    <div class="flap" id="flap"><div class="sealDot"></div></div>
+  </div>
+  <div class="hint">自动循环播放中 · 3 条通知轮播</div>
+</div>
+<script>
+const msgs=["您收到一封站内信，请查收","发票已开具，请注意查收","中奖通知：恭喜获得优惠券"];
+const env=document.getElementById('env'),flap=document.getElementById('flap'),letter=document.getElementById('letter'),lt=document.getElementById('lt');
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+async function show(i){
+  lt.textContent=msgs[i];
+  env.classList.remove('bye');void env.offsetWidth;env.classList.add('in');
+  await sleep(350);
+  flap.classList.remove('close');flap.classList.add('open');
+  await sleep(550);
+  letter.classList.remove('back');letter.classList.add('out');
+  await sleep(750);
+  await sleep(2500);
+  letter.classList.remove('out');letter.classList.add('back');
+  await sleep(550);
+  flap.classList.remove('open');flap.classList.add('close');
+  await sleep(450);
+  env.classList.remove('in');env.classList.add('bye');
+  await sleep(350);
+  env.classList.remove('bye');flap.classList.remove('close');letter.classList.remove('back');
+  await sleep(300);
+}
+(async()=>{let i=0;while(true){await show(i%msgs.length);i++;}})();
+</script>
+</body>
+</html>

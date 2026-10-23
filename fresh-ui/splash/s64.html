@@ -1,0 +1,37 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>沙漠驼铃</title><style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{width:430px;height:900px;margin:0 auto;position:relative;overflow:hidden;
+font-family:-apple-system,"PingFang SC","Microsoft YaHei","Noto Sans CJK SC",sans-serif;
+background:linear-gradient(180deg,#ffb75d 0%,#f79d4a 55%,#e07f3c 100%);color:#fff}
+.scene{position:absolute;inset:0}
+
+.dsun{position:absolute;top:150px;left:50%;transform:translateX(-50%);width:130px;height:130px;border-radius:50%;background:radial-gradient(circle at 42% 38%,#fff2c0,#ffcf5e 70%);box-shadow:0 0 80px 30px rgba(255,190,90,.55)}
+.dune{position:absolute;left:-80px;width:590px;border-radius:50%}
+.d1{bottom:-150px;height:320px;background:#d98a3e}
+.d2{bottom:-190px;height:280px;background:#c1762f}
+.sdp{position:absolute;left:-20px;width:5px;height:5px;border-radius:50%;background:rgba(255,235,200,.8);animation:sand linear infinite}
+@keyframes sand{to{transform:translateX(480px)}}
+.bellw{position:absolute;top:330px;left:50%;margin-left:-27px;transform-origin:50% 0;animation:swing 3.2s ease-in-out infinite}
+@keyframes swing{0%,100%{transform:rotate(13deg)}50%{transform:rotate(-13deg)}}
+.string{width:3px;height:30px;background:#6b4a20;margin:0 auto}
+.bell{width:56px;height:50px;background:linear-gradient(180deg,#f0c05a,#b57e22);border-radius:10px 10px 28px 28px;margin:0 auto;position:relative;box-shadow:0 6px 18px rgba(90,50,10,.35)}
+.bell::after{content:"";position:absolute;bottom:-11px;left:50%;transform:translateX(-50%);width:17px;height:17px;border-radius:50%;background:#7a5518}
+.bell::before{content:"";position:absolute;top:14px;left:50%;transform:translateX(-50%);width:30px;height:12px;border-radius:6px;background:rgba(255,240,200,.5)}
+
+.brand{position:absolute;left:0;right:0;bottom:118px;text-align:center;z-index:5;
+color:#5e3410;opacity:0;animation:brandIn 1s ease 2.2s both}
+.brand h1{font-size:34px;letter-spacing:8px;font-weight:800;text-shadow:0 2px 14px rgba(0,0,0,.35)}
+.brand p{font-size:13px;letter-spacing:3px;margin-top:10px;opacity:.85;text-shadow:0 1px 10px rgba(0,0,0,.35)}
+@keyframes brandIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.replay{position:absolute;left:50%;bottom:44px;transform:translateX(-50%);z-index:6;
+padding:10px 28px;border-radius:24px;border:1px solid rgba(255,255,255,.45);
+background:rgba(255,255,255,.14);color:#5e3410;font-size:14px;letter-spacing:2px;cursor:pointer}
+</style></head><body>
+<div class="scene"><i class="sdp" style="top:420px;animation-duration:7s;animation-delay:-1s"></i><i class="sdp" style="top:460px;animation-duration:9s;animation-delay:-4s"></i><i class="sdp" style="top:500px;animation-duration:8s;animation-delay:-2.5s"></i><i class="sdp" style="top:540px;animation-duration:10s;animation-delay:-6s"></i><i class="sdp" style="top:580px;animation-duration:7.5s;animation-delay:-3s"></i><i class="sdp" style="top:620px;animation-duration:9s;animation-delay:-5.5s"></i><div class="dsun"></div><div class="dune d2"></div><div class="dune d1"></div>
+<div class="bellw"><div class="string"></div><div class="bell"></div></div></div>
+<div class="brand"><h1>沙漠驼铃</h1><p>大漠孤烟 长河落日</p></div>
+<button class="replay" onclick="location.reload()">重新播放</button>
+</body></html>

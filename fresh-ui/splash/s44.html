@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>竹节生长</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{background:#070a12;display:flex;align-items:center;justify-content:center;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;overflow:hidden}
+.stage{position:relative;width:430px;height:900px;flex:none;overflow:hidden}
+.stage i{display:block;position:absolute}
+.brand{position:absolute;left:0;right:0;bottom:104px;text-align:center;z-index:50;animation:brandIn 1s .9s both}
+.brand h1{font-size:32px;letter-spacing:10px;text-indent:10px;color:#fff;font-weight:700;text-shadow:0 2px 24px rgba(0,0,0,.45)}
+.brand p{margin-top:10px;font-size:11px;letter-spacing:5px;color:rgba(255,255,255,.62)}
+@keyframes brandIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.replay{position:absolute;bottom:30px;left:50%;transform:translateX(-50%);z-index:60;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.35);color:#fff;font-size:12px;letter-spacing:2px;padding:9px 24px;border-radius:20px;cursor:pointer;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.shade{position:absolute;left:0;right:0;bottom:0;height:360px;background:linear-gradient(transparent,rgba(8,6,18,.78));z-index:40;pointer-events:none}
+
+.stage{background:linear-gradient(#dcefe2,#b7dcc6 58%,#8db69c)}
+
+.seg{width:36px;left:197px;border-radius:15px;background:linear-gradient(90deg,#3c8a5c,#74c184 50%,#3c8a5c);transform:scaleY(0);transform-origin:50% 100%;animation:grow .9s both;z-index:5}
+.sg1{height:130px;bottom:130px;animation-delay:.2s}.sg2{height:130px;bottom:260px;animation-delay:.8s}
+.sg3{height:130px;bottom:390px;animation-delay:1.4s}.sg4{height:110px;bottom:520px;animation-delay:2s}
+@keyframes grow{to{transform:scaleY(1)}}
+.joint{width:44px;height:10px;left:193px;border-radius:5px;background:#2f6e47;transform:scaleX(0);animation:grow2 .5s both;z-index:6}
+.j1{bottom:256px;animation-delay:.9s}.j2{bottom:386px;animation-delay:1.5s}.j3{bottom:516px;animation-delay:2.1s}
+@keyframes grow2{to{transform:scaleX(1)}}
+.bleaf{width:64px;height:24px;border-radius:50%;background:linear-gradient(135deg,#4da264,#2c6e42);transform:scale(0);animation:leafIn .6s both;z-index:6}
+.bl1{left:222px;bottom:480px;transform-origin:0 50%;animation-delay:2.3s}
+.bl2{left:140px;bottom:360px;transform:rotate(24deg);transform-origin:100% 50%;animation-delay:1.7s}
+.bl3{left:226px;bottom:250px;transform-origin:0 50%;animation-delay:1.1s}
+@keyframes leafIn{to{transform:scale(1) rotate(var(--rr,0deg))}}
+.ground{position:absolute;left:0;right:0;bottom:0;height:140px;background:linear-gradient(#7ba889,#4e7d5f);z-index:4}
+.mist{width:220px;height:70px;border-radius:50%;background:rgba(255,255,255,.5);filter:blur(14px);animation:mist 7s ease-in-out infinite alternate;z-index:7}
+.m1{left:40px;bottom:120px}.m2{left:220px;bottom:90px;animation-delay:-3.4s}
+@keyframes mist{to{transform:translateX(60px);opacity:.6}}
+.shoot{width:20px;height:60px;left:320px;bottom:130px;border-radius:50% 50% 0 0/100% 100% 0 0;background:#4da264;transform:scaleY(0);transform-origin:50% 100%;animation:grow .8s 2.4s both;z-index:5}
+
+</style></head><body>
+<div class="stage" id="stage">
+
+<i class="seg sg1"></i><i class="seg sg2"></i><i class="seg sg3"></i><i class="seg sg4"></i>
+<i class="joint j1"></i><i class="joint j2"></i><i class="joint j3"></i>
+<i class="bleaf bl1" style="--rr:18deg"></i><i class="bleaf bl2"></i><i class="bleaf bl3" style="--rr:-14deg"></i>
+<i class="shoot"></i>
+<i class="ground"></i>
+<i class="mist m1"></i><i class="mist m2"></i>
+
+<div class="shade"></div>
+<div class="brand"><h1>竹</h1><p>BAMBOO</p></div>
+<button class="replay" onclick="var s=document.getElementById('stage');s.replaceWith(s.cloneNode(true))">重新播放</button>
+</div>
+</body></html>

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>液体填充 · 按钮特效</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;display:flex;flex-direction:column;align-items:center;
+ background:radial-gradient(120% 90% at 50% 0%,#0e2a4a 0%,#081627 55%,#050c16 100%);
+ font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;color:#eaf4ff;padding:30px 16px 40px}
+h1{font-size:15px;letter-spacing:8px;color:#7fd4ff;font-weight:600;margin-bottom:6px}
+.sub{font-size:12px;color:#5b7a99;letter-spacing:2px;margin-bottom:26px}
+.stage{width:360px;max-width:100%;height:440px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:26px;
+ background:rgba(120,190,255,.04);border:1px solid rgba(127,212,255,.16);border-radius:22px;
+ box-shadow:inset 0 0 60px rgba(20,90,160,.12)}
+.btn{position:relative;width:210px;height:66px;border:none;border-radius:34px;cursor:pointer;overflow:hidden;
+ background:#10233d;color:#7fd4ff;font-size:17px;letter-spacing:6px;font-weight:600;
+ box-shadow:0 0 0 1px rgba(127,212,255,.35),0 10px 32px rgba(0,0,0,.55)}
+.btn .base{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:1}
+.btn .rise{position:absolute;left:0;right:0;bottom:0;height:0;z-index:2;overflow:hidden;
+ background:linear-gradient(180deg,#4cc9ff 0%,#1f86d8 70%,#1668b4 100%)}
+.btn .wave{position:absolute;top:0;left:0;width:200%;height:30px;
+ background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='30'%3E%3Cpath d='M0 15 Q15 2 30 15 T60 15 T90 15 T120 15 V30 H0 Z' fill='%234cc9ff'/%3E%3C/svg%3E") repeat-x;
+ background-size:120px 30px;animation:waveShift 1s linear infinite}
+.btn .inv{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:3;
+ color:#fff;clip-path:inset(100% 0 0 0)}
+.btn .bub{position:absolute;bottom:8px;border-radius:50%;background:rgba(255,255,255,.55);display:none}
+.btn .b1{left:22%;width:7px;height:7px}
+.btn .b2{left:52%;width:10px;height:10px}
+.btn .b3{left:76%;width:6px;height:6px}
+.btn.go .rise{animation:rise 3.2s ease-in-out forwards,slosh 3.2s ease-in-out}
+.btn.go .inv{animation:reveal 3.2s ease-in-out forwards}
+.btn.go .bub{display:block;animation:bubbleUp 1.3s linear infinite}
+.btn.go .b2{animation-delay:.35s}
+.btn.go .b3{animation-delay:.7s}
+@keyframes rise{0%{height:0}32%{height:100%}66%{height:100%}100%{height:0}}
+@keyframes slosh{0%,30%{transform:none}40%{transform:translateX(-9px) rotate(-2deg)}
+ 52%{transform:translateX(9px) rotate(2deg)}62%{transform:translateX(-4px) rotate(-1deg)}72%,100%{transform:none}}
+@keyframes reveal{0%{clip-path:inset(100% 0 0 0)}32%{clip-path:inset(0 0 0 0)}
+ 66%{clip-path:inset(0 0 0 0)}100%{clip-path:inset(100% 0 0 0)}}
+@keyframes waveShift{to{transform:translateX(-120px)}}
+@keyframes bubbleUp{0%{transform:translateY(0);opacity:0}25%{opacity:.9}
+ 100%{transform:translateY(-150px);opacity:0}}
+.hint{font-size:12px;color:#5b7a99;letter-spacing:3px}
+</style>
+</head>
+<body>
+<h1>液体填充</h1>
+<div class="sub">b11 · 点击按钮触发</div>
+<div class="stage">
+  <button class="btn" id="btn" type="button">
+    <span class="base">注&nbsp;水</span>
+    <span class="rise"><span class="wave"></span>
+      <span class="bub b1"></span><span class="bub b2"></span><span class="bub b3"></span>
+    </span>
+    <span class="inv">注&nbsp;水</span>
+  </button>
+  <div class="hint">点 击 按 钮 注 水</div>
+</div>
+<script>
+var btn=document.getElementById('btn');
+btn.addEventListener('click',function(){
+  btn.classList.remove('go');
+  void btn.offsetWidth;
+  btn.classList.add('go');
+});
+</script>
+</body>
+</html>

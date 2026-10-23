@@ -1,0 +1,58 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>浪潮涌起 · 启动页</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{background:#030910;display:flex;justify-content:center;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif}
+.stage{width:430px;height:900px;max-width:100vw;max-height:100vh;position:relative;overflow:hidden;
+background:linear-gradient(180deg,#0a2038 0%,#071426 50%,#040b16 100%)}
+.moon{position:absolute;left:50%;top:150px;width:90px;height:90px;margin-left:-45px;border-radius:50%;z-index:2;
+background:radial-gradient(circle at 38% 32%,#fdf6e0,#e8d9ae 70%);box-shadow:0 0 44px 12px rgba(253,240,200,.3);
+opacity:0;animation:moonIn 1.6s ease-out both}
+@keyframes moonIn{0%{opacity:0;transform:translateY(-40px)}100%{opacity:1;transform:translateY(0)}}
+.buoy{position:absolute;left:50%;top:380px;width:110px;height:110px;margin-left:-55px;z-index:5;
+border-radius:50%;background:radial-gradient(circle at 35% 30%,#8fdcff,#1f8fd0 60%,#0f5f9c);
+display:flex;align-items:center;justify-content:center;font-size:44px;color:#eaf8ff;
+box-shadow:0 0 36px rgba(80,190,255,.55);opacity:0;
+animation:buoyIn 1.2s cubic-bezier(.2,.8,.3,1.3) both .5s,bob 3.4s ease-in-out infinite .5s}
+@keyframes buoyIn{0%{opacity:0;transform:translateY(120px) scale(.7)}100%{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes bob{0%,100%{margin-top:0}50%{margin-top:-16px}}
+.sea{position:absolute;left:50%;bottom:-260px;width:900px;height:900px;margin-left:-450px;z-index:3}
+.w{position:absolute;left:0;top:0;width:900px;height:900px;border-radius:43%;display:block;
+animation:spin var(--sp) linear infinite}
+.w1{background:rgba(38,130,200,.5);--sp:11s;animation-delay:-3s}
+.w2{background:rgba(24,100,170,.55);--sp:8s;top:60px;animation-delay:-5s;animation-direction:reverse}
+.w3{background:rgba(12,70,130,.7);--sp:13s;top:120px;animation-delay:-8s}
+@keyframes spin{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}
+.foam{position:absolute;left:0;right:0;bottom:0;height:120px;z-index:4;opacity:0;animation:foamIn 1.4s ease-out both;animation-delay:1.2s}
+.foam i{position:absolute;border-radius:50%;background:rgba(220,240,255,.8);display:block;filter:blur(1px)}
+.foam i:nth-child(1){left:60px;bottom:30px;width:14px;height:14px}
+.foam i:nth-child(2){left:150px;bottom:52px;width:9px;height:9px}
+.foam i:nth-child(3){left:250px;bottom:26px;width:12px;height:12px}
+.foam i:nth-child(4){left:340px;bottom:48px;width:8px;height:8px}
+@keyframes foamIn{0%{opacity:0;transform:translateY(30px)}100%{opacity:.9;transform:translateY(0)}}
+.brand{position:absolute;left:0;right:0;top:640px;text-align:center;z-index:6;
+opacity:0;animation:fadeUp 1s ease-out both;animation-delay:1.5s}
+.brand h1{font-size:38px;font-weight:700;letter-spacing:16px;color:#eaf6ff;text-indent:16px}
+.brand p{font-size:13px;letter-spacing:6px;color:#6fa8d8;margin-top:12px;text-indent:6px}
+@keyframes fadeUp{0%{opacity:0;transform:translateY(18px)}100%{opacity:1;transform:translateY(0)}}
+.replay{position:absolute;left:50%;bottom:36px;transform:translateX(-50%);z-index:50;
+border:1px solid rgba(120,200,255,.4);background:rgba(80,160,255,.08);color:#c4e4ff;
+font-size:13px;letter-spacing:3px;padding:10px 26px;border-radius:24px;cursor:pointer}
+.replay:active{transform:translateX(-50%) scale(.94)}
+</style></head><body>
+<div class="stage">
+  <div class="moon"></div>
+  <div class="sea"><i class="w w1"></i><i class="w w2"></i><i class="w w3"></i></div>
+  <div class="buoy">汐</div>
+  <div class="foam"><i></i><i></i><i></i><i></i></div>
+  <div class="brand"><h1>汐</h1><p>乘浪而来</p></div>
+  <button class="replay">重新播放</button>
+</div>
+<script>
+function bind(){document.querySelector('.replay').addEventListener('click',()=>{
+const s=document.querySelector('.stage');const n=s.cloneNode(true);s.replaceWith(n);bind();});}
+bind();
+</script>
+</body></html>

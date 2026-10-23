@@ -1,0 +1,24 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>纸翼长空</title><style>*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{width:430px;min-height:900px;margin:0 auto;position:relative;overflow:hidden;color:#fff;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans CJK SC",sans-serif;background:linear-gradient(180deg,#5aa7e8 0%,#a5d8f5 60%,#e3f3fd 100%)}
+#app{position:absolute;inset:0}
+.brand{position:absolute;left:0;right:0;bottom:112px;text-align:center;z-index:10;opacity:0;transform:translateY(16px);animation:brandIn .9s cubic-bezier(.2,.7,.3,1.2) 2.3s both}
+.brand h1{font-size:34px;letter-spacing:10px;font-weight:800;text-indent:10px}
+.brand p{margin-top:10px;font-size:12px;letter-spacing:5px;opacity:.7;text-indent:5px}
+@keyframes brandIn{to{opacity:1;transform:none}}
+.tag{position:absolute;top:56px;left:0;right:0;text-align:center;font-size:11px;letter-spacing:8px;text-indent:8px;opacity:0;z-index:10;animation:brandIn 1s ease 2.7s both;color:rgba(255,255,255,.65)}
+.replay{position:absolute;left:50%;bottom:42px;transform:translateX(-50%);z-index:20;background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.35);color:#fff;border-radius:20px;padding:8px 24px;font-size:13px;letter-spacing:2px;cursor:pointer;backdrop-filter:blur(6px)}
+
+.plane{position:absolute;top:300px;left:-120px;width:110px;height:60px;display:block;animation:fly 6s ease-in-out -3s infinite;z-index:5}
+@keyframes fly{0%{transform:translate(-140px,30px) rotate(6deg);opacity:0}12%{transform:translate(-40px,0) rotate(4deg);opacity:1}50%{transform:translate(220px,-60px) rotate(-4deg);opacity:1}88%{transform:translate(480px,10px) rotate(6deg);opacity:1}96%,100%{transform:translate(560px,20px) rotate(8deg);opacity:0}}
+.plane .p{position:absolute;inset:0;background:linear-gradient(135deg,#ffffff,#cfe6f7);clip-path:polygon(0 0,100% 50%,0 100%,28% 50%)}
+.plane .f{position:absolute;left:28%;top:50%;width:72%;height:2px;background:#9db8cc;transform:translateY(-50%)}
+.trail{position:absolute;top:316px;left:0;width:430px;height:120px}
+.trail path{stroke:#ffffff;stroke-width:3;stroke-dasharray:10 12;fill:none;opacity:.8;stroke-dashoffset:440;animation:dash 3.4s linear .2s both}
+@keyframes dash{to{stroke-dashoffset:0}}
+.c2{position:absolute;width:110px;height:34px;display:block;background:#fff;border-radius:18px;opacity:.85;animation:drift2 30s linear infinite}
+.c2::before{content:"";position:absolute;left:22px;top:-18px;width:50px;height:50px;background:#fff;border-radius:50%}
+@keyframes drift2{from{transform:translateX(480px)}to{transform:translateX(-160px)}}
+.bird{position:absolute;font-size:20px;color:#3d6a8f;animation:flap 1.2s ease-in-out infinite}
+@keyframes flap{50%{transform:translateY(-6px) scaleY(.8)}}
+</style></head><body><div id="app"><svg class="trail" viewBox="0 0 430 120"><path d="M0,20 Q140,90 280,30 T430,60"/></svg><div class="plane"><div class="p"></div><div class="f"></div></div><div class="c2" style="top:140px;animation-delay:-8s"></div><div class="c2" style="top:520px;animation-delay:-22s"></div><span class="bird" style="left:90px;top:200px;animation-delay:-.3s">~</span><span class="bird" style="left:130px;top:180px;animation-delay:-.8s">~</span><span class="bird" style="left:330px;top:420px;animation-delay:-.5s">~</span><div class="tag">PAPER PLANE</div><div class="brand"><h1>纸翼长空</h1><p>折一纸信 · 寄往远方</p></div></div><button class="replay">&#8635; 重新播放</button><script>document.querySelector('.replay').onclick=function(){var a=document.getElementById('app');var c=a.cloneNode(true);a.replaceWith(c);};</script></body></html>

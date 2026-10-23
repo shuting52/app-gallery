@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>n16 · 拼图 Toast</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;background:#141824;display:flex;flex-direction:column;align-items:center;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;color:#fff}
+.head{text-align:center;padding:20px 16px 12px}
+.head h1{font-size:17px;color:#9df0b6;letter-spacing:1px}
+.head p{font-size:12px;color:#8b93a7;margin-top:6px}
+.stage{width:360px;max-width:94vw;height:480px;border-radius:18px;position:relative;overflow:hidden;background:linear-gradient(160deg,#1c2b22,#101711 70%);border:1px solid #2e4a38;box-shadow:0 12px 40px rgba(0,0,0,.4)}
+.pz{position:absolute;left:50%;top:140px;width:280px;height:170px;margin-left:-140px}
+.pc{position:absolute;width:140px;height:85px;opacity:0;box-shadow:inset 0 0 0 2px rgba(0,0,0,.12)}
+.p1{left:0;top:0;background:#ff9f43;border-radius:16px 0 0 0}
+.p2{left:140px;top:0;background:#4dd2ff;border-radius:0 16px 0 0}
+.p3{left:0;top:85px;background:#7bed9f;border-radius:0 0 0 16px}
+.p4{left:140px;top:85px;background:#ff6b81;border-radius:0 0 16px 0}
+.p1::before{content:"";position:absolute;right:-13px;top:50%;margin-top:-13px;width:26px;height:26px;border-radius:50%;background:inherit}
+.p2::before{content:"";position:absolute;left:50%;bottom:-13px;margin-left:-13px;width:26px;height:26px;border-radius:50%;background:inherit}
+.p3::before{content:"";position:absolute;left:50%;top:-13px;margin-left:-13px;width:26px;height:26px;border-radius:50%;background:inherit}
+.p4::before{content:"";position:absolute;left:-13px;top:50%;margin-top:-13px;width:26px;height:26px;border-radius:50%;background:inherit}
+.pz.go .p1{animation:a1 .8s cubic-bezier(.25,1.2,.4,1) forwards}
+.pz.go .p2{animation:a2 .8s cubic-bezier(.25,1.2,.4,1) .08s forwards}
+.pz.go .p3{animation:a3 .8s cubic-bezier(.25,1.2,.4,1) .16s forwards}
+.pz.go .p4{animation:a4 .8s cubic-bezier(.25,1.2,.4,1) .24s forwards}
+@keyframes a1{from{transform:translate(-300px,-280px) rotate(-140deg);opacity:0}to{transform:none;opacity:1}}
+@keyframes a2{from{transform:translate(300px,-280px) rotate(140deg);opacity:0}to{transform:none;opacity:1}}
+@keyframes a3{from{transform:translate(-300px,280px) rotate(140deg);opacity:0}to{transform:none;opacity:1}}
+@keyframes a4{from{transform:translate(300px,280px) rotate(-140deg);opacity:0}to{transform:none;opacity:1}}
+.pz.out .p1{animation:s1 .7s ease-in forwards}
+.pz.out .p2{animation:s2 .7s ease-in .06s forwards}
+.pz.out .p3{animation:s3 .7s ease-in .12s forwards}
+.pz.out .p4{animation:s4 .7s ease-in .18s forwards}
+@keyframes s1{from{transform:none;opacity:1}to{transform:translate(-320px,-300px) rotate(-160deg);opacity:0}}
+@keyframes s2{from{transform:none;opacity:1}to{transform:translate(320px,-300px) rotate(160deg);opacity:0}}
+@keyframes s3{from{transform:none;opacity:1}to{transform:translate(-320px,300px) rotate(160deg);opacity:0}}
+@keyframes s4{from{transform:none;opacity:1}to{transform:translate(320px,300px) rotate(-160deg);opacity:0}}
+.pzText{position:absolute;left:0;right:0;top:50%;transform:translateY(-50%);text-align:center;color:#fff;font-weight:800;font-size:17px;opacity:0;text-shadow:0 2px 10px rgba(0,0,0,.55);z-index:5;pointer-events:none;padding:0 24px;line-height:1.7}
+.pzText.show{animation:fadeUp .4s forwards}
+@keyframes fadeUp{from{opacity:0;transform:translateY(calc(-50% + 10px))}to{opacity:1;transform:translateY(-50%)}}
+.hint{position:absolute;bottom:14px;width:100%;text-align:center;font-size:11px;color:#5f7a68}
+</style>
+</head>
+<body>
+<div class="head"><h1>n16 · 拼图</h1><p>4 块拼图从四个方向飞入拼合 → 停留 → 散开消失</p></div>
+<div class="stage">
+  <div class="pz" id="pz"><div class="pc p1"></div><div class="pc p2"></div><div class="pc p3"></div><div class="pc p4"></div></div>
+  <div class="pzText" id="pzt"></div>
+  <div class="hint">自动循环播放中 · 3 条通知轮播</div>
+</div>
+<script>
+const msgs=["拼单成功！还差 1 人成团","拼图完成：资料已同步","四块拼图已就位，继续！"];
+const pz=document.getElementById('pz'),pzt=document.getElementById('pzt');
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+async function show(i){
+  pzt.textContent=msgs[i];
+  pz.classList.remove('out');pzt.classList.remove('show');
+  void pz.offsetWidth;pz.classList.add('go');
+  await sleep(1100);
+  pzt.classList.add('show');
+  await sleep(2400);
+  pzt.classList.remove('show');
+  pz.classList.remove('go');pz.classList.add('out');
+  await sleep(950);
+  pz.classList.remove('out');
+  await sleep(300);
+}
+(async()=>{let i=0;while(true){await show(i%msgs.length);i++;}})();
+</script>
+</body>
+</html>

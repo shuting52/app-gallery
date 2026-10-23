@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>朋友圈 · 液态App套装</title>
+<style>
+/* ============ tokens（照抄脚手架） ============ */
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --glass-radius:34px; --glass-blur:24px;
+  --glass-tint-top:rgba(255,255,255,.17); --glass-tint-mid:rgba(255,255,255,.05); --glass-tint-bot:rgba(255,255,255,.10);
+  --glass-edge-width:1.2px;
+  --glass-edge-strong:rgba(255,255,255,.95); --glass-edge-mid:rgba(255,255,255,.22);
+  --glass-edge-weak:rgba(255,255,255,.05); --glass-edge-mid2:rgba(255,255,255,.12); --glass-edge-soft:rgba(255,255,255,.78);
+  --glass-shadow-far:0 26px 60px -26px rgba(0,0,0,.85); --glass-shadow-near:0 10px 26px -14px rgba(0,0,0,.55);
+  --text-1:#fff; --text-2:rgba(255,255,255,.62); --text-3:rgba(255,255,255,.60);
+  --ease-liquid:cubic-bezier(.22,.9,.28,1.2);
+}
+html,body{height:100%}
+body{font:400 15px/1.45 -apple-system,"SF Pro Text","PingFang SC","Helvetica Neue",system-ui,sans-serif;
+  color:var(--text-1);background:#07060b;overflow-x:hidden;-webkit-font-smoothing:antialiased;
+  display:flex;justify-content:center}
+/* ============ 壁纸（照抄 LiquidWallpaper.vue） ============ */
+.wallpaper{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none}
+.wallpaper i{position:absolute;inset:-30%;display:block;
+  background:radial-gradient(42% 32% at 20% 22%,#ff3b5c 0%,transparent 62%),
+  radial-gradient(38% 30% at 84% 16%,#ff9f1c 0%,transparent 60%),
+  radial-gradient(52% 42% at 76% 74%,#ff2d55 0%,transparent 64%),
+  radial-gradient(42% 38% at 24% 82%,#6b5cff 0%,transparent 62%),
+  radial-gradient(30% 26% at 52% 48%,#ffd166 0%,transparent 68%),#140a20;
+  filter:blur(48px) saturate(150%);animation:drift 26s ease-in-out infinite alternate}
+.wallpaper i:nth-child(2){background:conic-gradient(from 200deg at 50% 55%,#ff2d55,#ff9f0a,#ffd60a,#34c759,#0a84ff,#bf5af2,#ff2d55);
+  filter:blur(110px);opacity:.5;mix-blend-mode:screen;animation-duration:34s;animation-direction:alternate-reverse}
+@keyframes drift{from{transform:translate3d(-3%,-2%,0) scale(1.05) rotate(-3deg)}
+  to{transform:translate3d(4%,3%,0) scale(1.16) rotate(4deg)}}
+/* ============ 玻璃卡（照抄 LiquidGlass.vue） ============ */
+.lg{position:relative;isolation:isolate;border-radius:var(--lg-r,var(--glass-radius));
+  background:linear-gradient(155deg,var(--glass-tint-top) 0%,var(--glass-tint-mid) 42%,var(--glass-tint-bot) 100%);
+  -webkit-backdrop-filter:blur(var(--lg-blur,var(--glass-blur))) saturate(180%) brightness(1.06);
+  backdrop-filter:blur(var(--lg-blur,var(--glass-blur))) saturate(180%) brightness(1.06);
+  box-shadow:inset 0 1px 1px -.5px rgba(255,255,255,.70),inset 0 -1px 1px -.5px rgba(255,255,255,.18),
+  inset 0 14px 22px -14px rgba(255,255,255,.45),var(--glass-shadow-far),var(--glass-shadow-near);
+  transition:transform .38s var(--ease-liquid)}
+.lg:active{transform:scale(.982)}
+.lg::before{content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;pointer-events:none;
+  mix-blend-mode:screen;opacity:.85;
+  background:radial-gradient(120% 62% at 18% -26%,rgba(255,255,255,.78),transparent 58%),
+  radial-gradient(70% 46% at 92% -12%,rgba(255,255,255,.34),transparent 60%),
+  repeating-linear-gradient(102deg,rgba(255,255,255,.055) 0 2px,transparent 2px 26px)}
+.lg::after{content:"";position:absolute;inset:0;z-index:1;border-radius:inherit;padding:var(--glass-edge-width);
+  pointer-events:none;
+  background:linear-gradient(150deg,var(--glass-edge-strong) 0%,var(--glass-edge-mid) 22%,var(--glass-edge-weak) 48%,var(--glass-edge-mid2) 72%,var(--glass-edge-soft) 100%);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;mask-composite:exclude}
+/* ============ 屏幕骨架 ============ */
+.screen{position:relative;z-index:1;width:430px;max-width:100%;min-height:900px;height:900px;overflow:hidden;
+  display:flex;flex-direction:column;padding:18px 14px 12px}
+.statusbar{display:flex;justify-content:space-between;align-items:center;font-size:13px;font-weight:600;
+  padding:2px 8px 10px;color:var(--text-1)}
+.statusbar .sic{display:flex;gap:6px;align-items:center;font-size:12px}
+.apptitle{font-size:30px;font-weight:700;letter-spacing:1px;padding:6px 4px 14px}
+.apptitle small{display:block;font-size:12px;font-weight:400;color:var(--text-2);letter-spacing:2px;margin-top:4px}
+.content{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:14px;scrollbar-width:none}
+.content::-webkit-scrollbar{display:none}
+.homebar{width:134px;height:5px;border-radius:3px;background:rgba(255,255,255,.85);margin:10px auto 4px}
+/* ============ 通用小件 ============ */
+.av{display:block;flex:none;border-radius:50%;
+  background:conic-gradient(from calc(var(--hue,0)*1deg),#ff9f0a,#ff2d55,#bf5af2,#0a84ff,#ff9f0a);
+  box-shadow:0 0 0 1px rgba(255,255,255,.4),0 6px 16px rgba(0,0,0,.4)}
+.row{display:flex;align-items:center;gap:12px;min-width:0}
+.row .main{flex:1;min-width:0}
+.row .name{font-size:16px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row .sub{font-size:13px;color:var(--text-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:3px}
+.row .time{margin-left:auto;flex:none;font-size:12px;color:var(--text-2)}
+.badge{flex:none;padding:3px 9px;border-radius:999px;font-size:11.5px;font-weight:600;color:#fff;
+  background:linear-gradient(135deg,#3b6bff,#8a3bff);
+  box-shadow:0 0 12px rgba(92,92,255,.75),inset 0 1px 0 rgba(255,255,255,.5)}
+/* ============ 封面 ============ */
+.cover{animation:rise .55s var(--ease-liquid) both}
+.cover .banner{height:92px;border-radius:33px 33px 0 0;
+  background:linear-gradient(120deg,#ff3b5c,#ff9f1c 35%,#6b5cff 70%,#0a84ff);
+  position:relative}
+.cover .banner::after{content:"";position:absolute;inset:0;border-radius:inherit;
+  background:radial-gradient(60% 90% at 80% 20%,rgba(255,255,255,.45),transparent 60%)}
+.cover .me{display:flex;align-items:flex-end;gap:12px;padding:0 18px 14px;margin-top:-26px;
+  position:relative;z-index:1}
+.cover .me .av{width:56px;height:56px;--hue:150;box-shadow:0 0 0 3px rgba(255,255,255,.35),0 6px 16px rgba(0,0,0,.4)}
+.cover .me .nm{font-size:17px;font-weight:700}
+.cover .me .bio{font-size:12px;color:var(--text-3);margin-top:2px}
+/* ============ 动态 ============ */
+.post{padding:16px 16px 13px;animation:rise .55s var(--ease-liquid) both}
+.post:nth-of-type(2){animation-delay:.07s}
+.post:nth-of-type(3){animation-delay:.14s}
+.post .hd{display:flex;align-items:center;gap:10px}
+.post .hd .av{width:40px;height:40px}
+.post .hd .nm{font-size:15px;font-weight:600}
+.post .hd .tm{font-size:11.5px;color:var(--text-3);margin-top:2px}
+.post .tx{font-size:14px;line-height:1.6;margin:10px 2px 10px;color:var(--text-1)}
+.pics{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.pics .pic{aspect-ratio:1;border-radius:12px;
+  background:linear-gradient(135deg,var(--p1),var(--p2));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.25)}
+.post .ft{display:flex;align-items:center;justify-content:space-between;margin-top:10px}
+.post .ft .when{font-size:12px;color:var(--text-3)}
+.post .ft .acts{display:flex;gap:8px}
+.post .ft .acts span{font-size:12px;color:var(--text-2);padding:5px 12px;border-radius:999px;
+  background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14)}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<div class="wallpaper" aria-hidden="true"><i></i><i></i></div>
+<div class="screen">
+  <div class="statusbar"><span>9:41</span><span class="sic">📶 📡 🔋</span></div>
+  <div class="apptitle">朋友圈<small>MOMENTS</small></div>
+  <div class="content">
+    <section class="lg cover">
+      <div class="banner"></div>
+      <div class="me">
+        <span class="av"></span>
+        <div><div class="nm">沈知遥</div><div class="bio">记录生活里发光的瞬间 ✨</div></div>
+      </div>
+    </section>
+
+    <article class="lg post">
+      <div class="hd">
+        <span class="av" style="--hue:20"></span>
+        <div><div class="nm">林晚舟</div><div class="tm">2小时前</div></div>
+      </div>
+      <p class="tx">秋日的山顶露营太治愈了，云海翻涌、日出准时赴约，凌晨四点起床一切都值了 ☁️</p>
+      <div class="pics">
+        <div class="pic" style="--p1:#ff9f1c;--p2:#ff3b5c"></div>
+        <div class="pic" style="--p1:#ffd166;--p2:#ff9f1c"></div>
+        <div class="pic" style="--p1:#6b5cff;--p2:#0a84ff"></div>
+      </div>
+      <div class="ft"><span class="when">2小时前 · 山顶营地</span>
+        <div class="acts"><span>♡ 18</span><span>💬 6</span></div></div>
+    </article>
+
+    <article class="lg post">
+      <div class="hd">
+        <span class="av" style="--hue:200"></span>
+        <div><div class="nm">陈默</div><div class="tm">5小时前</div></div>
+      </div>
+      <p class="tx">新开的社区咖啡馆打卡成功。冰美式配巴斯克蛋糕，午后三小时高效 coding，快乐就是这么简单 ☕</p>
+      <div class="pics">
+        <div class="pic" style="--p1:#8a5a2b;--p2:#d8a05e"></div>
+        <div class="pic" style="--p1:#3b6bff;--p2:#8a3bff"></div>
+        <div class="pic" style="--p1:#34c759;--p2:#30b0c7"></div>
+        <div class="pic" style="--p1:#ff5e7e;--p2:#bf5af2"></div>
+        <div class="pic" style="--p1:#0a84ff;--p2:#4de8ff"></div>
+        <div class="pic" style="--p1:#ff9f0a;--p2:#ffd60a"></div>
+      </div>
+      <div class="ft"><span class="when">5小时前 · 街角咖啡馆</span>
+        <div class="acts"><span>♡ 32</span><span>💬 11</span></div></div>
+    </article>
+
+    <article class="lg post">
+      <div class="hd">
+        <span class="av" style="--hue:320"></span>
+        <div><div class="nm">苏晴</div><div class="tm">昨天 21:40</div></div>
+      </div>
+      <p class="tx">城市美术馆新展《光的形状》，沉浸式光影房间一待就是一下午，眼睛被治愈了 ✨</p>
+      <div class="pics">
+        <div class="pic" style="--p1:#bf5af2;--p2:#ff5ec8"></div>
+        <div class="pic" style="--p1:#ffd166;--p2:#fff3c4"></div>
+        <div class="pic" style="--p1:#1a1a2e;--p2:#6b5cff"></div>
+      </div>
+      <div class="ft"><span class="when">昨天 21:40 · 城市美术馆</span>
+        <div class="acts"><span>♡ 25</span><span>💬 8</span></div></div>
+    </article>
+  </div>
+  <div class="homebar"></div>
+</div>
+</body>
+</html>

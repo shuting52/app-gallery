@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>系统与安全 · 盾甲卫士</title>
+<style>
+/* ===== 盾甲卫士 · 深海军蓝安全风 ===== */
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{margin:0;background:#070D18;color:#E6EEF7;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;display:flex;justify-content:center;font-size:15px}
+.phone{width:100%;max-width:430px;height:100dvh;background:linear-gradient(180deg,#0B1424,#080E1A);position:relative;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 0 40px rgba(0,0,0,.5)}
+.topbar{padding:14px 18px 6px;display:flex;align-items:center;gap:10px}
+.topbar h1{margin:0;font-size:20px;font-weight:800;letter-spacing:1px;flex:1}
+.shield{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#22D3EE,#0E7CFF);display:flex;align-items:center;justify-content:center;font-size:17px}
+.main{flex:1;overflow-y:auto;padding:6px 16px 90px;scrollbar-width:none}
+.main::-webkit-scrollbar{display:none}
+.screen{display:none}
+.screen.active{display:block;animation:fadeUp .3s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}}
+/* 安全评分 */
+.score{display:flex;align-items:center;gap:18px;background:rgba(34,211,238,.07);border:1px solid rgba(34,211,238,.25);border-radius:20px;padding:18px;margin:6px 0 14px}
+.ring{position:relative;width:104px;height:104px;flex-shrink:0}
+.ring svg{transform:rotate(-90deg)}
+.ring .num{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ring .num b{font-size:30px;color:#22D3EE}
+.ring .num span{font-size:11px;color:#7E93AC}
+.score h3{margin:0;font-size:16px}
+.score p{margin:6px 0 0;font-size:12.5px;color:#7E93AC;line-height:1.6}
+.card{background:#101B2E;border:1px solid #1C2B45;border-radius:18px;margin-bottom:14px;overflow:hidden}
+.card h3{margin:0;padding:14px 16px 4px;font-size:15px}
+.card .sub{padding:0 16px 6px;font-size:12px;color:#7E93AC}
+.srow{display:flex;align-items:center;gap:12px;padding:13px 16px;border-top:1px solid #16233A;cursor:pointer}
+.srow:first-of-type{border-top:0}
+.srow:active{background:#14223A}
+.sico{width:38px;height:38px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;background:#16233A}
+.srow .tx{flex:1}
+.srow .tx b{display:block;font-size:14.5px;font-weight:600}
+.srow .tx span{font-size:12px;color:#7E93AC}
+.pill{font-size:11px;padding:4px 12px;border-radius:12px;flex-shrink:0}
+.pill.ok{background:rgba(34,197,94,.15);color:#4ADE80}
+.pill.warn{background:rgba(245,158,11,.15);color:#FBBF24}
+.pill.do{background:rgba(34,211,238,.15);color:#22D3EE}
+.dev{display:flex;align-items:center;gap:12px;padding:12px 16px;border-top:1px solid #16233A}
+.dev .tx{flex:1}.dev .tx b{display:block;font-size:14px}.dev .tx span{font-size:11.5px;color:#7E93AC}
+.dev .cur{font-size:11px;color:#4ADE80}
+.risk{background:linear-gradient(135deg,rgba(245,158,11,.14),rgba(245,158,11,.04));border:1px solid rgba(245,158,11,.35);border-radius:16px;padding:14px 16px;margin-bottom:14px;font-size:13px;line-height:1.7;color:#FCD9A0}
+.risk b{color:#FBBF24}
+/* 开关 */
+.switch{width:50px;height:30px;border-radius:15px;background:#22314D;position:relative;cursor:pointer;transition:background .25s;flex-shrink:0}
+.switch::after{content:"";position:absolute;left:3px;top:3px;width:24px;height:24px;border-radius:50%;background:#8EA3BE;transition:all .25s}
+.switch.tr{background:#0E7CFF}
+.switch.tr::after{left:23px;background:#fff}
+.prow{display:flex;align-items:center;gap:12px;padding:14px 16px;border-top:1px solid #16233A}
+.prow:first-of-type{border-top:0}
+.prow .tx{flex:1}.prow .tx b{display:block;font-size:14.5px}.prow .tx span{font-size:12px;color:#7E93AC}
+.danger{margin:4px 0 14px}
+.danger button{width:100%;background:none;border:1px solid rgba(248,113,113,.5);color:#F87171;border-radius:14px;padding:13px;font-size:14px;cursor:pointer;margin-bottom:10px}
+.linkrow{display:flex;justify-content:space-between;padding:13px 16px;border-top:1px solid #16233A;font-size:14px;cursor:pointer;color:#B9C9DE}
+.linkrow span:last-child{color:#5B6F8C}
+/* 权限 */
+.perm{display:flex;align-items:center;gap:12px;padding:13px 16px;border-top:1px solid #16233A}
+.perm:first-of-type{border-top:0}
+.perm .tx{flex:1}.perm .tx b{display:block;font-size:14.5px}.perm .tx span{font-size:12px;color:#7E93AC}
+.allow{display:flex;background:#16233A;border-radius:12px;padding:3px}
+.allow button{border:0;background:none;color:#7E93AC;font-size:12px;padding:6px 12px;border-radius:9px;cursor:pointer}
+.allow button.on{background:#0E7CFF;color:#fff}
+.allow button.on.deny{background:#F87171}
+.sdk{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-top:1px solid #16233A;font-size:13.5px}
+.sdk span:last-child{font-size:11.5px;color:#5B6F8C}
+/* 日志 */
+.fchips{display:flex;gap:8px;margin:4px 0 12px}
+.fchip{border:1px solid #22314D;background:#101B2E;color:#7E93AC;border-radius:16px;padding:7px 16px;font-size:12.5px;cursor:pointer}
+.fchip.on{background:#0E7CFF;border-color:#0E7CFF;color:#fff}
+.log{background:#101B2E;border:1px solid #1C2B45;border-radius:14px;margin-bottom:10px;overflow:hidden;cursor:pointer}
+.log-h{display:flex;align-items:center;gap:10px;padding:12px 14px}
+.lv{font-size:10.5px;font-weight:800;padding:3px 9px;border-radius:8px;flex-shrink:0}
+.lv.err{background:rgba(248,113,113,.15);color:#F87171}
+.lv.warn{background:rgba(251,191,36,.15);color:#FBBF24}
+.lv.info{background:rgba(34,211,238,.15);color:#22D3EE}
+.log-h b{flex:1;font-size:13.5px;font-weight:600}
+.log-h time{font-size:11px;color:#5B6F8C}
+.log-b{display:none;padding:0 14px 12px;font-size:12px;color:#8EA3BE;line-height:1.7;font-family:ui-monospace,Menlo,monospace;background:#0B1424;margin:0 10px 10px;border-radius:8px;padding-top:10px}
+.log.open .log-b{display:block}
+.logtools{display:flex;gap:10px;margin:4px 0 14px}
+.logtools button{flex:1;border-radius:14px;padding:12px;font-size:14px;cursor:pointer}
+#reportBtn{border:0;background:linear-gradient(135deg,#22D3EE,#0E7CFF);color:#04263B;font-weight:700}
+#wipeBtn{background:none;border:1px solid #22314D;color:#7E93AC}
+/* 底部 Tab */
+.tabbar{position:absolute;left:0;right:0;bottom:0;background:rgba(11,20,36,.96);backdrop-filter:blur(10px);border-top:1px solid #1C2B45;display:flex;padding:8px 0 calc(10px + env(safe-area-inset-bottom))}
+.tab{flex:1;text-align:center;font-size:11px;color:#5B6F8C;cursor:pointer;padding:2px 0}
+.tab .ti{font-size:21px;display:block;margin-bottom:2px}
+.tab.on{color:#22D3EE;font-weight:700}
+.toast{position:absolute;left:50%;bottom:110px;transform:translateX(-50%) translateY(20px);background:rgba(20,35,58,.95);border:1px solid #22D3EE;color:#E6EEF7;padding:10px 22px;border-radius:24px;font-size:14px;opacity:0;transition:all .3s;pointer-events:none;z-index:99;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="topbar"><div class="shield">⛨</div><h1 id="pageTitle">安全中心</h1></div>
+  <div class="main">
+    <!-- 安全 -->
+    <div class="screen active" id="s0">
+      <div class="score">
+        <div class="ring">
+          <svg width="104" height="104"><circle cx="52" cy="52" r="44" fill="none" stroke="#1C2B45" stroke-width="10"/>
+          <circle cx="52" cy="52" r="44" fill="none" stroke="#22D3EE" stroke-width="10" stroke-linecap="round" stroke-dasharray="276.5" stroke-dashoffset="41.5"/></svg>
+          <div class="num"><b>85</b><span>安全分</span></div>
+        </div>
+        <div><h3>账号状态良好</h3><p>完成双重验证可提升至 95 分，进一步保障账号安全。</p></div>
+      </div>
+      <div class="risk"><b>⚠ 风险提醒：</b>检测到您的账号于 10-17 在新设备（iPhone 15）登录，如非本人操作请立即修改密码。</div>
+      <div class="card"><h3>账号安全</h3><div class="sub">建议开启全部验证方式</div>
+        <div class="srow"><div class="sico">🔑</div><div class="tx"><b>登录密码</b><span>强度：强 · 90 天前更新</span></div><span class="pill ok">已设置</span></div>
+        <div class="srow"><div class="sico">📱</div><div class="tx"><b>绑定手机</b><span>138****8888</span></div><span class="pill ok">已绑定</span></div>
+        <div class="srow"><div class="sico">✉</div><div class="tx"><b>绑定邮箱</b><span>3077****@qq.com</span></div><span class="pill ok">已绑定</span></div>
+        <div class="srow" id="mfaRow"><div class="sico">🛡</div><div class="tx"><b>双重验证</b><span>登录时需短信 + 动态口令</span></div><span class="pill warn" id="mfaPill">未开启</span></div>
+        <div class="srow"><div class="sico">🙂</div><div class="tx"><b>人脸识别登录</b><span>本机已录入</span></div><span class="pill do">去开启</span></div>
+      </div>
+      <div class="card"><h3>最近登录设备</h3>
+        <div class="dev"><div class="tx"><b>iPhone 15 Pro</b><span>杭州 · 10-19 09:12 · iOS 18</span></div><span class="cur">● 本机</span></div>
+        <div class="dev"><div class="tx"><b>Chrome · Windows</b><span>杭州 · 10-17 21:40</span></div><span class="pill do">下线</span></div>
+        <div class="dev"><div class="tx"><b>小米 14</b><span>上海 · 10-09 14:03</span></div><span class="pill do">下线</span></div>
+      </div>
+    </div>
+    <!-- 隐私 -->
+    <div class="screen" id="s1">
+      <div class="card"><h3>隐私设置</h3><div class="sub">关闭后部分个性化功能将受限</div>
+        <div class="prow"><div class="tx"><b>个性化推荐</b><span>基于浏览行为推荐内容</span></div><div class="switch tr"></div></div>
+        <div class="prow"><div class="tx"><b>位置信息</b><span>用于附近服务与天气</span></div><div class="switch tr"></div></div>
+        <div class="prow"><div class="tx"><b>通讯录匹配</b><span>帮你找到通讯录好友</span></div><div class="switch"></div></div>
+        <div class="prow"><div class="tx"><b>个性化广告</b><span>按兴趣展示广告</span></div><div class="switch"></div></div>
+        <div class="prow"><div class="tx"><b>崩溃数据上报</b><span>帮助我们改进稳定性</span></div><div class="switch tr"></div></div>
+      </div>
+      <div class="card">
+        <div class="linkrow"><span>隐私政策</span><span>›</span></div>
+        <div class="linkrow"><span>第三方信息共享清单</span><span>›</span></div>
+        <div class="linkrow"><span>我的个人信息副本</span><span>申请导出 ›</span></div>
+      </div>
+      <div class="danger"><button id="delAcc">注销账号</button></div>
+    </div>
+    <!-- 权限 -->
+    <div class="screen" id="s2">
+      <div class="card"><h3>数据权限</h3><div class="sub">按需授权，随时可改</div>
+        <div class="perm"><div class="tx"><b>相机</b><span>扫码、拍照评价时使用</span></div><div class="allow"><button class="on">允许</button><button>拒绝</button></div></div>
+        <div class="perm"><div class="tx"><b>相册</b><span>上传头像、晒单时使用</span></div><div class="allow"><button class="on">允许</button><button>拒绝</button></div></div>
+        <div class="perm"><div class="tx"><b>麦克风</b><span>语音搜索、客服通话时使用</span></div><div class="allow"><button>允许</button><button class="on deny">拒绝</button></div></div>
+        <div class="perm"><div class="tx"><b>定位</b><span>附近服务、配送时使用</span></div><div class="allow"><button class="on">允许</button><button>拒绝</button></div></div>
+        <div class="perm"><div class="tx"><b>通知</b><span>订单状态、优惠活动提醒</span></div><div class="allow"><button class="on">允许</button><button>拒绝</button></div></div>
+        <div class="perm"><div class="tx"><b>通讯录</b><span>匹配好友（未开启）</span></div><div class="allow"><button>允许</button><button class="on deny">拒绝</button></div></div>
+      </div>
+      <div class="card"><h3>数据管理</h3>
+        <div class="linkrow" id="exportData"><span>导出我的数据</span><span>JSON ›</span></div>
+        <div class="linkrow" id="wipeData"><span>删除浏览与搜索记录</span><span>›</span></div>
+      </div>
+      <div class="card"><h3>第三方 SDK</h3><div class="sub">共接入 4 个，信息共享见清单</div>
+        <div class="sdk"><span>极光推送 JPush</span><span>设备标识</span></div>
+        <div class="sdk"><span>高德定位 SDK</span><span>位置信息</span></div>
+        <div class="sdk"><span>微信分享 SDK</span><span>分享内容</span></div>
+        <div class="sdk"><span>Bugly 崩溃统计</span><span>崩溃日志</span></div>
+      </div>
+    </div>
+    <!-- 日志 -->
+    <div class="screen" id="s3">
+      <div class="fchips" id="logChips">
+        <button class="fchip on" data-l="all">全部</button><button class="fchip" data-l="err">错误</button><button class="fchip" data-l="warn">警告</button><button class="fchip" data-l="info">信息</button>
+      </div>
+      <div id="logList">
+        <div class="log" data-l="err"><div class="log-h"><span class="lv err">ERROR</span><b>支付回调超时</b><time>10-19 09:02</time></div>
+          <div class="log-b">code: PAY_TIMEOUT_504<br>order: 20261019090211<br>at PaymentGateway.callback (pay.js:212)<br>已自动重试 3 次，第 3 次成功</div></div>
+        <div class="log" data-l="warn"><div class="log-h"><span class="lv warn">WARN</span><b>图片加载降级</b><time>10-19 08:47</time></div>
+          <div class="log-b">resource: https://cdn…/banner_04.webp<br>fallback to .jpg, +320ms<br>不影响功能</div></div>
+        <div class="log" data-l="err"><div class="log-h"><span class="lv err">ERROR</span><b>定位权限被拒绝</b><time>10-18 22:15</time></div>
+          <div class="log-b">code: LOC_DENIED<br>已降级为手动选择城市<br>用户可在权限页重新授权</div></div>
+        <div class="log" data-l="info"><div class="log-h"><span class="lv info">INFO</span><b>版本更新完成</b><time>10-18 20:00</time></div>
+          <div class="log-b">v4.0.0 → v4.0.1<br>增量包 12.4MB，校验通过</div></div>
+        <div class="log" data-l="warn"><div class="log-h"><span class="lv warn">WARN</span><b>缓存占用过高</b><time>10-17 18:30</time></div>
+          <div class="log-b">cache: 412MB / 500MB<br>建议提醒用户清理</div></div>
+        <div class="log" data-l="info"><div class="log-h"><span class="lv info">INFO</span><b>双重验证提醒已发送</b><time>10-17 09:00</time></div>
+          <div class="log-b">push_id: sec_88213<br>用户尚未开启 MFA</div></div>
+      </div>
+      <div class="logtools"><button id="reportBtn">上报日志</button><button id="wipeBtn">清空日志</button></div>
+    </div>
+  </div>
+  <div class="tabbar">
+    <div class="tab on" data-t="0"><span class="ti">⛨</span>安全</div>
+    <div class="tab" data-t="1"><span class="ti">◍</span>隐私</div>
+    <div class="tab" data-t="2"><span class="ti">▤</span>权限</div>
+    <div class="tab" data-t="3"><span class="ti">≣</span>日志</div>
+  </div>
+  <div class="toast" id="toast"></div>
+</div>
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const titles=['安全中心','隐私设置','数据权限','错误日志'];
+function goTab(i){$$('.tab').forEach(t=>t.classList.toggle('on',+t.dataset.t===i));
+$$('.screen').forEach(sc=>sc.classList.remove('active'));$('#s'+i).classList.add('active');
+$('#pageTitle').textContent=titles[i];$('.main').scrollTop=0;}
+$$('.tab').forEach(t=>t.onclick=()=>goTab(+t.dataset.t));
+let toastT;function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),1800);}
+// 双重验证
+$('#mfaRow').onclick=()=>{const p=$('#mfaPill');const on=p.textContent==='已开启';
+p.textContent=on?'未开启':'已开启';p.className='pill '+(on?'warn':'ok');toast(on?'双重验证已关闭':'双重验证已开启，安全分 +10');};
+// 开关
+$$('.switch').forEach(sw=>sw.onclick=e=>{e.stopPropagation();sw.classList.toggle('tr');toast(sw.classList.contains('tr')?'已开启':'已关闭');});
+// 权限允许/拒绝
+$$('.allow').forEach(g=>g.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
+[...g.children].forEach(x=>x.classList.remove('on','deny'));b.classList.add('on');if(b.textContent==='拒绝')b.classList.add('deny');
+toast('权限已更新：'+b.textContent);}));
+// 数据管理
+$('#exportData').onclick=()=>toast('导出任务已创建，完成后将发送到您的邮箱');
+$('#wipeData').onclick=()=>toast('浏览与搜索记录已删除');
+$('#delAcc').onclick=()=>toast('注销需先完成身份核验（演示）');
+// 日志筛选
+$('#logChips').addEventListener('click',e=>{const b=e.target.closest('.fchip');if(!b)return;
+$$('#logChips .fchip').forEach(x=>x.classList.remove('on'));b.classList.add('on');
+$$('#logList .log').forEach(l=>{l.style.display=(b.dataset.l==='all'||l.dataset.l===b.dataset.l)?'':'none';});});
+// 日志展开
+$('#logList').addEventListener('click',e=>{const l=e.target.closest('.log');if(l)l.classList.toggle('open');});
+$('#reportBtn').onclick=()=>toast('日志已上报，工单 LOG-20261019');
+$('#wipeBtn').onclick=()=>{$('#logList').innerHTML='<p style="color:#5B6F8C;text-align:center;padding:30px">暂无日志记录</p>';toast('日志已清空');};
+const q=new URLSearchParams(location.search).get('tab');
+if(q!==null&&!isNaN(+q)&&+q>=0&&+q<4)goTab(+q);
+</script>
+</body>
+</html>

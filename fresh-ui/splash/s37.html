@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>蜂鸟掠影</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{background:#070a12;display:flex;align-items:center;justify-content:center;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;overflow:hidden}
+.stage{position:relative;width:430px;height:900px;flex:none;overflow:hidden}
+.stage i{display:block;position:absolute}
+.brand{position:absolute;left:0;right:0;bottom:104px;text-align:center;z-index:50;animation:brandIn 1s .9s both}
+.brand h1{font-size:32px;letter-spacing:10px;text-indent:10px;color:#fff;font-weight:700;text-shadow:0 2px 24px rgba(0,0,0,.45)}
+.brand p{margin-top:10px;font-size:11px;letter-spacing:5px;color:rgba(255,255,255,.62)}
+@keyframes brandIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.replay{position:absolute;bottom:30px;left:50%;transform:translateX(-50%);z-index:60;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.35);color:#fff;font-size:12px;letter-spacing:2px;padding:9px 24px;border-radius:20px;cursor:pointer;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.shade{position:absolute;left:0;right:0;bottom:0;height:360px;background:linear-gradient(transparent,rgba(8,6,18,.78));z-index:40;pointer-events:none}
+
+.stage{background:linear-gradient(#131b3a 0%,#3c2f5e 42%,#a3543f 66%,#e8935a 80%,#241c38 100%)}
+
+.sun{width:130px;height:130px;left:150px;top:300px;border-radius:50%;background:radial-gradient(circle at 50% 50%,#ffe9b8,#ffb35c 58%,rgba(255,179,92,0) 72%);animation:sunGlow 3s ease-in-out infinite alternate}
+@keyframes sunGlow{to{transform:scale(1.1);opacity:.9}}
+.bird{width:96px;height:64px;left:236px;top:290px;z-index:5;animation:hover 1.5s ease-in-out infinite alternate}
+@keyframes hover{to{transform:translateY(-16px)}}
+.bird .bd{width:58px;height:30px;left:18px;top:17px;border-radius:50%;background:linear-gradient(135deg,#46e6c8,#14808f)}
+.bird .bk{width:28px;height:8px;left:70px;top:24px;border-radius:0 9px 9px 0;background:#f4d35e}
+.bird .eye{width:7px;height:7px;left:58px;top:22px;border-radius:50%;background:#0e2028}
+.wing{width:66px;height:26px;top:4px;border-radius:50%;background:radial-gradient(circle at 50% 50%,rgba(200,255,246,.95),rgba(70,230,200,.12) 70%);filter:blur(2px);transform-origin:85% 80%}
+.w1{left:4px;animation:flap .15s ease-in-out infinite alternate}
+.w2{left:16px;animation:flap .15s -.075s ease-in-out infinite alternate;opacity:.65}
+@keyframes flap{from{transform:rotate(-40deg) scaleY(1)}to{transform:rotate(30deg) scaleY(.3)}}
+.flower{width:120px;height:340px;left:60px;bottom:120px;transform-origin:50% 100%;animation:sway 4s ease-in-out infinite alternate;z-index:4}
+@keyframes sway{to{transform:rotate(5deg)}}
+.flower .stem{width:7px;height:250px;left:56px;bottom:0;border-radius:4px;background:linear-gradient(90deg,#2e7d4f,#57b06e)}
+.flower .bl{width:96px;height:96px;left:12px;top:0;border-radius:50%;background:radial-gradient(circle at 50% 50%,#ffd9e6 0 20%,#f06a9a 21% 46%,#c2436f 47% 60%,rgba(194,67,111,0) 62%)}
+.flower .lf{width:44px;height:20px;left:60px;top:190px;border-radius:50%;background:#3f9e5f;transform:rotate(-24deg)}
+.pt{width:16px;height:11px;border-radius:50%;background:#f7b8cf;opacity:.9;animation:drift 7s linear infinite}
+.p1{left:120px;top:200px;animation-delay:-1s}.p2{left:200px;top:120px;animation-delay:-3.4s}
+.p3{left:90px;top:330px;animation-delay:-5.2s}.p4{left:300px;top:180px;animation-delay:-6.1s}
+@keyframes drift{0%{transform:translate(0,0) rotate(0);opacity:0}12%{opacity:.95}100%{transform:translate(-140px,220px) rotate(200deg);opacity:0}}
+
+</style></head><body>
+<div class="stage" id="stage">
+
+<i class="sun"></i>
+<i class="bird"><i class="wing w1"></i><i class="wing w2"></i><i class="bd"></i><i class="eye"></i><i class="bk"></i></i>
+<i class="flower"><i class="stem"></i><i class="bl"></i><i class="lf"></i></i>
+<i class="pt p1"></i><i class="pt p2"></i><i class="pt p3"></i><i class="pt p4"></i>
+
+<div class="shade"></div>
+<div class="brand"><h1>蜂鸟</h1><p>HUMMINGBIRD</p></div>
+<button class="replay" onclick="var s=document.getElementById('stage');s.replaceWith(s.cloneNode(true))">重新播放</button>
+</div>
+</body></html>

@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>铜锈青铜</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{min-height:100%}
+body{
+  position:relative;
+  padding:48px 18px 64px;
+  color:#ffffff;
+  font:15px/1.45 -apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sans-serif;
+  background:linear-gradient(150deg,#141210,#221d14 60%,#0d0b08);
+  background-attachment:fixed;
+  overflow-x:hidden;
+}
+.bg{
+  position:fixed;inset:-6%;z-index:0;pointer-events:none;
+  background:radial-gradient(ellipse 42% 32% at 20% 24%, rgba(90,140,120,.4), transparent 70%),radial-gradient(ellipse 40% 30% at 82% 32%, rgba(150,110,60,.38), transparent 70%),radial-gradient(ellipse 52% 38% at 55% 86%, rgba(55,45,28,.85), transparent 70%);
+  animation:drift 30s ease-in-out infinite alternate;
+  animation-delay:-15s;
+}
+@keyframes drift{
+  from{transform:translate3d(-1.5%,-1%,0) scale(1.03) rotate(0deg)}
+  to{transform:translate3d(1.5%,1.5%,0) scale(1.07) rotate(1.5deg)}
+}
+main{position:relative;z-index:1;width:min(440px,100%);margin:0 auto;display:grid;gap:18px}
+.heading{padding:4px 6px 8px}
+.eyebrow{margin:0 0 8px;color:rgba(255,255,255,.68);font-size:11px;letter-spacing:.18em}
+h1{margin:0;font-size:30px;letter-spacing:-.02em;color:#ffffff}
+.hint{margin:7px 0 0;color:rgba(255,255,255,.68)}
+.card{
+  position:relative;isolation:isolate;overflow:hidden;
+  padding:18px;border-radius:28px;
+  border:1px solid rgba(255,255,255,.28);
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='2'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.12'/%3E%3C/svg%3E"),linear-gradient(135deg, rgba(230,210,170,.13), rgba(230,210,170,.05) 48%, rgba(120,150,130,.10));
+  -webkit-backdrop-filter:blur(24px) saturate(175%);
+  backdrop-filter:blur(24px) saturate(175%);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.42),
+    inset 0 -1px 0 rgba(0,0,0,.06),
+    0 20px 48px rgba(10,7,4,.5);
+  transition:transform .25s ease,border-color .25s ease;
+}
+.card::before{
+  content:"";position:absolute;z-index:0;inset:0;border-radius:inherit;pointer-events:none;
+  background:
+    linear-gradient(118deg,
+      rgba(240,225,190,.28) 0%,
+      rgba(240,225,190,.06) 18%,
+      transparent 42%,
+      transparent 72%,
+      rgba(140,170,150,.15) 100%);
+  opacity:.8;
+  animation:sheen 9s ease-in-out infinite alternate;
+  animation-delay:-4s;
+}
+@keyframes sheen{from{opacity:.55}to{opacity:.95}}
+.card::after{
+  content:"";position:absolute;z-index:0;
+  top:-58px;right:-40px;width:188px;height:130px;
+  border:1px solid rgba(255,255,255,.22);border-radius:50%;
+  background:radial-gradient(ellipse,rgba(200,190,150,.18),transparent 68%);
+  filter:blur(2px);transform:rotate(-40pxot);pointer-events:none;
+}
+.card>*{position:relative;z-index:1}
+.card:hover{transform:translateY(-3px);border-color:rgba(255,255,255,.46)}
+.top,.title-line{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.top{margin-bottom:15px}
+.pill{
+  padding:6px 12px;border:1px solid rgba(255,255,255,.30);border-radius:999px;
+  background:rgba(255,255,255,.10);color:rgba(255,255,255,.94);font-size:12px;
+  box-shadow:inset 0 1px rgba(255,255,255,.42);white-space:nowrap;
+}
+.avatars{display:flex;align-items:center;padding-left:8px}
+.avatar{
+  display:grid;width:29px;height:29px;margin-left:-8px;place-items:center;
+  border:1px solid rgba(255,255,255,.55);border-radius:50%;
+  background:linear-gradient(135deg,#8a7a6a,#5d5a72 70%,#3f4456);
+  color:#fff;font-size:11px;font-style:normal;
+  box-shadow:0 3px 10px rgba(10,8,18,.25);
+}
+.more{margin-left:7px;color:rgba(255,255,255,.68);font-size:12px}
+.row{display:flex;align-items:center;gap:12px;min-width:0}
+.face{
+  display:grid;flex:0 0 48px;height:48px;place-items:center;
+  border:1px solid rgba(255,255,255,.45);border-radius:50%;
+  background:#6a7285;color:#fff;font-size:19px;font-weight:650;
+  box-shadow:inset 0 1px 5px rgba(255,255,255,.45),0 5px 15px rgba(10,8,20,.22);
+}
+.copy{flex:1;min-width:0}
+.title-line{margin-bottom:5px}
+.title-line strong{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#ffffff}
+time,.preview{color:rgba(255,255,255,.68);font-size:12px}
+.preview{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.unread{flex:0 0 auto;color:#e6dcff;font-size:12px;font-weight:600;white-space:nowrap}
+.dot{flex:0 0 auto;width:9px;height:9px;border-radius:50%;background:#c8a860;box-shadow:0 0 8px #c8a860}
+.actions{display:flex;gap:10px;margin-top:14px}
+.btn{
+  flex:1;padding:10px 0;text-align:center;border-radius:14px;font-size:13px;cursor:pointer;
+  border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.08);color:rgba(255,255,255,.92);
+  box-shadow:inset 0 1px rgba(255,255,255,.42);
+}
+.btn.pri{background:linear-gradient(135deg,#7a6a45,#4e4228);border-color:rgba(200,175,120,.5);color:#fff}
+.prog{height:8px;border-radius:5px;background:rgba(255,255,255,.10);margin-top:12px;overflow:hidden}
+.prog i{display:block;height:100%;width:0%;border-radius:5px;background:linear-gradient(90deg,#a8945f,#6e5f38)}
+.pmeta{display:flex;justify-content:space-between;margin-top:6px;font-size:11px;color:rgba(255,255,255,.68)}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+  .card{background:rgba(30,26,44,.92)}
+}
+@media (prefers-reduced-motion:reduce){.card,.bg,.card::before{animation:none;transition:none}}
+</style>
+</head>
+<body>
+<div class="bg"></div>
+<main>
+<header class="heading">
+<p class="eyebrow">LIQUID GLASS · 铜</p>
+<h1>铜锈青铜</h1>
+<p class="hint">千年铜绿，锈住时间的消息。</p>
+</header>
+
+<section class="card">
+  <div class="top">
+    <span class="pill">银行</span>
+    <div class="avatars" aria-label="members"><i class="avatar">工</i></div>
+  </div>
+  <div class="row">
+    <div class="face" style="background:linear-gradient(145deg,#8a7a52,#5c4f34 60%,#413724)">工</div>
+    <div class="copy">
+      <div class="title-line"><strong>工商银行</strong><time>13:45</time></div>
+      <div class="preview">尾号 8821 支出 ¥1,200.00</div>
+    </div>
+    <span class="unread"></span>
+  </div>
+  
+</section>
+
+<section class="card">
+  <div class="top">
+    <span class="pill">基金</span>
+    <div class="avatars" aria-label="members"><i class="avatar">定</i></div>
+  </div>
+  <div class="row">
+    <div class="face" style="background:linear-gradient(145deg,#6e8a72,#485c48 60%,#333f34)">定</div>
+    <div class="copy">
+      <div class="title-line"><strong>定投</strong><time>09:00</time></div>
+      <div class="preview">本月定投已扣款成功</div>
+    </div>
+    <span class="unread"></span>
+  </div>
+  
+</section>
+
+<section class="card">
+  <div class="top">
+    <span class="pill">安全</span>
+    <div class="avatars" aria-label="members"><i class="avatar">安</i></div>
+  </div>
+  <div class="row">
+    <div class="face" style="background:linear-gradient(145deg,#9a7a52,#6a5436 60%,#4a3c26)">安</div>
+    <div class="copy">
+      <div class="title-line"><strong>安全中心</strong><time>昨天</time></div>
+      <div class="preview">新设备登录提醒 · iPhone 17</div>
+    </div>
+    <span class="unread"></span>
+  </div>
+  <div class="actions"><span class="btn pri">查看详情</span><span class="btn">是我本人</span></div>
+</section>
+</main>
+</body>
+</html>

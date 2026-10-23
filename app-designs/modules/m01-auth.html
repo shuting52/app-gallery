@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>账户与身份 · 臻信通</title>
+<style>
+/* ============ 臻信通 · 账户与身份（深蓝商务 + 鎏金） ============ */
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --navy:#0A1F44; --navy2:#12295A; --navy3:#1B3670;
+  --gold:#C9A24B; --gold2:#E5C77B;
+  --bg:#F4F6FB; --card:#FFFFFF; --ink:#1A2338; --mut:#8A93A8; --line:#E7EBF3;
+  --ok:#22B573; --err:#E5484D;
+}
+html,body{background:#DDE3EE;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;color:var(--ink)}
+.phone{max-width:430px;margin:0 auto;background:var(--bg);min-height:100dvh;position:relative;
+  box-shadow:0 0 40px rgba(10,31,68,.25);padding-bottom:96px}
+.screen{display:none;animation:fadeUp .28s ease}
+.screen.active{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}}
+/* 顶栏 */
+.topbar{background:linear-gradient(135deg,var(--navy),var(--navy3));color:#fff;padding:26px 20px 30px;
+  border-radius:0 0 26px 26px;position:relative;overflow:hidden}
+.topbar::after{content:"";position:absolute;right:-50px;top:-50px;width:190px;height:190px;border-radius:50%;
+  background:radial-gradient(circle,rgba(201,162,75,.35),transparent 70%)}
+.topbar .brand{font-size:13px;letter-spacing:3px;color:var(--gold2);font-weight:600}
+.topbar h1{font-size:24px;margin-top:8px;font-weight:700;position:relative;z-index:1}
+.topbar p{font-size:12.5px;color:#B9C4DC;margin-top:6px;position:relative;z-index:1}
+/* 卡片 */
+.card{background:var(--card);border-radius:16px;margin:14px 16px 0;padding:18px;
+  box-shadow:0 4px 18px rgba(10,31,68,.07)}
+.card h3{font-size:15px;margin-bottom:4px}
+.card .sub{font-size:12px;color:var(--mut);margin-bottom:12px}
+/* 表单 */
+.fld{margin-bottom:14px}
+.fld label{display:block;font-size:12.5px;color:var(--mut);margin-bottom:6px}
+.fld input{width:100%;border:1.5px solid var(--line);border-radius:11px;padding:12px 14px;font-size:15px;
+  outline:none;transition:border .2s;background:#FBFCFE;color:var(--ink)}
+.fld input:focus{border-color:var(--gold)}
+.fld .row{display:flex;gap:10px}
+.fld .row input{flex:1}
+.codebtn{white-space:nowrap;border:1.5px solid var(--gold);color:var(--gold);background:#FFFDF6;border-radius:11px;
+  padding:0 14px;font-size:13px;cursor:pointer;font-weight:600}
+.codebtn:disabled{opacity:.45}
+.btn{display:block;width:100%;border:0;border-radius:12px;padding:14px;font-size:16px;font-weight:700;cursor:pointer}
+.btn-gold{background:linear-gradient(135deg,var(--gold),#B08A35);color:#fff;box-shadow:0 6px 16px rgba(201,162,75,.4)}
+.btn-ghost{background:#EEF1F7;color:var(--navy);margin-top:10px}
+.btn:active{transform:scale(.98)}
+.linkrow{display:flex;justify-content:space-between;margin-top:12px;font-size:13px}
+.linkrow a{color:var(--navy3);text-decoration:none}
+/* 登录方式切换 */
+.seg{display:flex;background:#EEF1F7;border-radius:12px;padding:4px;margin-bottom:16px}
+.seg button{flex:1;border:0;background:none;padding:10px;font-size:14px;border-radius:9px;color:var(--mut);cursor:pointer;font-weight:600}
+.seg button.on{background:#fff;color:var(--navy);box-shadow:0 2px 8px rgba(10,31,68,.12)}
+.oauth{display:flex;gap:14px;justify-content:center;margin-top:16px}
+.oauth .o{width:52px;height:52px;border-radius:50%;background:#fff;border:1px solid var(--line);display:flex;
+  align-items:center;justify-content:center;font-size:22px;cursor:pointer;box-shadow:0 2px 8px rgba(10,31,68,.06)}
+.agree{display:flex;gap:8px;align-items:flex-start;font-size:12px;color:var(--mut);margin-top:14px;line-height:1.6}
+.agree input{width:16px;height:16px;margin-top:2px;accent-color:var(--gold)}
+.agree a{color:var(--navy3)}
+/* 步骤条 */
+.steps{display:flex;margin:4px 0 18px}
+.steps .st{flex:1;text-align:center;position:relative;font-size:12px;color:var(--mut)}
+.steps .st .dot{width:30px;height:30px;border-radius:50%;background:#EEF1F7;color:var(--mut);display:flex;
+  align-items:center;justify-content:center;margin:0 auto 6px;font-weight:700;font-size:14px}
+.steps .st.done .dot,.steps .st.cur .dot{background:var(--gold);color:#fff}
+.steps .st.cur{color:var(--navy);font-weight:600}
+.steps .st:not(:last-child)::after{content:"";position:absolute;top:15px;left:calc(50% + 18px);right:calc(-50% + 18px);
+  height:2px;background:var(--line)}
+.steps .st.done:not(:last-child)::after{background:var(--gold)}
+.pwmeter{height:6px;border-radius:3px;background:#EEF1F7;margin-top:8px;overflow:hidden}
+.pwmeter i{display:block;height:100%;width:0;border-radius:3px;background:var(--err);transition:width .3s,background .3s}
+.success{display:text-align:center;padding:26px 10px}
+.success .ck{width:74px;height:74px;border-radius:50%;background:#E7F7EE;color:var(--ok);font-size:36px;
+  display:flex;align-items:center;justify-content:center;margin:0 auto 14px}
+/* 资料 */
+.avatar{width:84px;height:84px;border-radius:50%;background:linear-gradient(135deg,var(--navy3),var(--navy));
+  color:var(--gold2);font-size:34px;font-weight:700;display:flex;align-items:center;justify-content:center;
+  margin:0 auto 8px;border:3px solid var(--gold)}
+.prow{display:flex;align-items:center;justify-content:space-between;padding:14px 2px;border-bottom:1px solid var(--line);font-size:14.5px}
+.prow:last-child{border:0}
+.prow .k{color:var(--mut);font-size:13px}
+.prow .v{color:var(--ink);font-weight:500}
+.prow .v input{border:0;text-align:right;font-size:14.5px;outline:none;color:var(--ink);width:170px;background:none}
+/* 权限 */
+.perm{display:flex;align-items:center;gap:12px;padding:14px 2px;border-bottom:1px solid var(--line)}
+.perm:last-child{border:0}
+.perm .ic{width:44px;height:44px;border-radius:13px;background:#EEF3FB;display:flex;align-items:center;justify-content:center;font-size:21px;flex:none}
+.perm .tx{flex:1}
+.perm .tx b{font-size:14.5px;display:block}
+.perm .tx span{font-size:12px;color:var(--mut)}
+.sw{width:50px;height:30px;border-radius:15px;background:#D5DBE8;position:relative;cursor:pointer;transition:background .25s;flex:none}
+.sw::after{content:"";position:absolute;width:24px;height:24px;border-radius:50%;background:#fff;top:3px;left:3px;
+  transition:left .25s;box-shadow:0 2px 6px rgba(0,0,0,.2)}
+.sw.on{background:var(--gold)}
+.sw.on::after{left:23px}
+.note{background:#FFF8E8;border:1px solid #F0DFB8;border-radius:12px;padding:12px 14px;font-size:12.5px;color:#8A6D2B;line-height:1.7;margin:14px 16px 0}
+/* 底部 Tab */
+.tabbar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:#fff;
+  border-top:1px solid var(--line);display:flex;padding:8px 0 calc(10px + env(safe-area-inset-bottom));z-index:50}
+.tabbar button{flex:1;border:0;background:none;display:flex;flex-direction:column;align-items:center;gap:3px;
+  font-size:11px;color:var(--mut);cursor:pointer;padding:4px}
+.tabbar button .ti{font-size:21px}
+.tabbar button.on{color:var(--navy);font-weight:700}
+.tabbar button.on .ti{filter:drop-shadow(0 2px 4px rgba(201,162,75,.5))}
+/* toast */
+.toast{position:fixed;bottom:110px;left:50%;transform:translateX(-50%) translateY(20px);background:rgba(10,31,68,.94);
+  color:#fff;padding:11px 22px;border-radius:24px;font-size:14px;opacity:0;transition:all .3s;z-index:99;pointer-events:none;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+<div class="phone">
+
+  <!-- ===== 登录 ===== -->
+  <section class="screen active" id="s-login">
+    <div class="topbar"><div class="brand">ZHENXINTONG</div><h1>欢迎回来</h1><p>臻信通 · 一站式身份与权限管理</p></div>
+    <div class="card">
+      <div class="seg"><button class="on" data-lm="pwd">密码登录</button><button data-lm="sms">验证码登录</button></div>
+      <div id="lm-pwd">
+        <div class="fld"><label>手机号码</label><input id="li-phone" inputmode="numeric" maxlength="11" placeholder="请输入 11 位手机号" value="13800138000"></div>
+        <div class="fld"><label>登录密码</label><input type="password" placeholder="请输入密码" value="••••••••"></div>
+      </div>
+      <div id="lm-sms" style="display:none">
+        <div class="fld"><label>手机号码</label><input inputmode="numeric" maxlength="11" placeholder="请输入 11 位手机号"></div>
+        <div class="fld"><label>验证码</label><div class="row"><input inputmode="numeric" maxlength="6" placeholder="6 位验证码"><button class="codebtn" data-cd>获取验证码</button></div></div>
+      </div>
+      <button class="btn btn-gold" id="btn-login">登 录</button>
+      <div class="linkrow"><a href="javascript:void(0)" data-toast="已发送重置链接，请查收短信">忘记密码？</a><a href="javascript:void(0)" data-goto="register">还没有账号？去注册</a></div>
+      <div class="agree"><input type="checkbox" checked id="ag1"><label for="ag1">已阅读并同意<a href="javascript:void(0)">《用户协议》</a>与<a href="javascript:void(0)">《隐私政策》</a></label></div>
+    </div>
+    <div class="card"><h3>第三方快捷登录</h3><div class="sub">免注册，一键绑定手机号</div>
+      <div class="oauth">
+        <div class="o" data-toast="正在调起微信授权…">💬</div>
+        <div class="o" data-toast="正在调起 Apple 登录…">🍎</div>
+        <div class="o" data-toast="正在调起支付宝授权…">💙</div>
+        <div class="o" data-toast="正在调起 QQ 授权…">🐧</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 注册 ===== -->
+  <section class="screen" id="s-register">
+    <div class="topbar"><div class="brand">ZHENXINTONG</div><h1>创建账号</h1><p>三步完成注册，开启安全之旅</p></div>
+    <div class="card">
+      <div class="steps">
+        <div class="st cur" data-step="1"><div class="dot">1</div>验证手机</div>
+        <div class="st" data-step="2"><div class="dot">2</div>设置密码</div>
+        <div class="st" data-step="3"><div class="dot">3</div>完成</div>
+      </div>
+      <div id="rg-s1">
+        <div class="fld"><label>手机号码</label><input id="rg-phone" inputmode="numeric" maxlength="11" placeholder="请输入 11 位手机号"></div>
+        <div class="fld"><label>短信验证码</label><div class="row"><input inputmode="numeric" maxlength="6" placeholder="6 位验证码"><button class="codebtn" data-cd>获取验证码</button></div></div>
+        <button class="btn btn-gold" id="rg-next1">下一步</button>
+      </div>
+      <div id="rg-s2" style="display:none">
+        <div class="fld"><label>设置密码</label><input type="password" id="rg-pw" placeholder="8–20 位，含字母与数字"><div class="pwmeter"><i id="pwbar"></i></div></div>
+        <div class="fld"><label>确认密码</label><input type="password" id="rg-pw2" placeholder="再次输入密码"></div>
+        <button class="btn btn-gold" id="rg-next2">完成注册</button>
+        <button class="btn btn-ghost" id="rg-back1">返回上一步</button>
+      </div>
+      <div id="rg-s3" style="display:none">
+        <div class="success"><div class="ck">✓</div><h3>注册成功</h3><div class="sub">账号 <b id="rg-done-phone"></b> 已创建</div></div>
+        <button class="btn btn-gold" data-goto="profile">去完善个人资料</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 个人资料 ===== -->
+  <section class="screen" id="s-profile">
+    <div class="topbar"><div class="brand">ZHENXINTONG</div><h1>个人资料</h1><p>完善资料，享受个性化服务</p></div>
+    <div class="card" style="text-align:center">
+      <div class="avatar">陈</div>
+      <div style="font-size:12.5px;color:var(--mut)">点击更换头像</div>
+    </div>
+    <div class="card">
+      <div class="prow"><span class="k">昵称</span><span class="v"><input id="pf-name" value="陈淑婷" maxlength="16"></span></div>
+      <div class="prow"><span class="k">性别</span><span class="v" id="pf-gender" data-opt="男|女|保密" data-cur="女" style="cursor:pointer">女 ▾</span></div>
+      <div class="prow"><span class="k">生日</span><span class="v"><input type="date" value="1995-06-18" style="width:150px"></span></div>
+      <div class="prow"><span class="k">地区</span><span class="v" id="pf-region" style="cursor:pointer">广东省 深圳市 ▾</span></div>
+      <div class="prow"><span class="k">个性签名</span><span class="v"><input id="pf-bio" value="折腾技术，热爱生活" maxlength="30" style="width:190px"></span></div>
+    </div>
+    <div class="card">
+      <div class="prow"><span class="k">实名认证</span><span class="v" style="color:var(--ok)">✓ 已认证</span></div>
+      <div class="prow"><span class="k">绑定手机</span><span class="v">138****8000</span></div>
+      <div class="prow"><span class="k">绑定邮箱</span><span class="v">307****@qq.com</span></div>
+    </div>
+    <div style="margin:16px"><button class="btn btn-gold" id="pf-save">保存资料</button></div>
+  </section>
+
+  <!-- ===== 权限管理 ===== -->
+  <section class="screen" id="s-perm">
+    <div class="topbar"><div class="brand">ZHENXINTONG</div><h1>权限管理</h1><p>你的数据，你做主 · 已授权 4/6 项</p></div>
+    <div class="card"><h3>应用权限</h3><div class="sub">关闭后对应功能将不可用，可随时重新开启</div>
+      <div class="perm"><div class="ic">📷</div><div class="tx"><b>相机</b><span>用于扫码、拍摄头像</span></div><div class="sw on" data-p="相机"></div></div>
+      <div class="perm"><div class="ic">🖼️</div><div class="tx"><b>相册</b><span>用于上传头像、保存图片</span></div><div class="sw on" data-p="相册"></div></div>
+      <div class="perm"><div class="ic">📍</div><div class="tx"><b>定位</b><span>用于同城服务、地区展示</span></div><div class="sw on" data-p="定位"></div></div>
+      <div class="perm"><div class="ic">🔔</div><div class="tx"><b>通知</b><span>用于订单、消息推送提醒</span></div><div class="sw on" data-p="通知"></div></div>
+      <div class="perm"><div class="ic">📇</div><div class="tx"><b>通讯录</b><span>用于查找好友（未开启）</span></div><div class="sw" data-p="通讯录"></div></div>
+      <div class="perm"><div class="ic">🎙️</div><div class="tx"><b>麦克风</b><span>用于语音输入（未开启）</span></div><div class="sw" data-p="麦克风"></div></div>
+    </div>
+    <div class="note">💡 权限说明：臻信通仅在功能必需时申请系统权限，所有权限均可在系统设置中手动管理，我们不会在后台超范围采集你的个人信息。</div>
+    <div style="margin:16px"><button class="btn btn-ghost" id="btn-logout" style="color:var(--err)">退出登录</button></div>
+  </section>
+
+  <nav class="tabbar">
+    <button data-tab="login" class="on"><span class="ti">🔑</span>登录</button>
+    <button data-tab="register"><span class="ti">📝</span>注册</button>
+    <button data-tab="profile"><span class="ti">👤</span>资料</button>
+    <button data-tab="perm"><span class="ti">🛡️</span>权限</button>
+  </nav>
+  <div class="toast" id="toast"></div>
+</div>
+
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+let toastT;
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),1800);}
+function show(id){$$('.screen').forEach(x=>x.classList.remove('active'));$('#s-'+id).classList.add('active');
+  $$('.tabbar button').forEach(b=>b.classList.toggle('on',b.dataset.tab===id));window.scrollTo(0,0);}
+$$('.tabbar button').forEach(b=>b.onclick=()=>show(b.dataset.tab));
+$$('[data-goto]').forEach(b=>b.onclick=()=>show(b.dataset.goto));
+$$('[data-toast]').forEach(b=>b.onclick=()=>toast(b.dataset.toast));
+/* 登录方式切换 */
+$$('.seg button').forEach(b=>b.onclick=()=>{$$('.seg button').forEach(x=>x.classList.remove('on'));b.classList.add('on');
+  $('#lm-pwd').style.display=b.dataset.lm==='pwd'?'':'none';$('#lm-sms').style.display=b.dataset.lm==='sms'?'':'none';});
+$('#btn-login').onclick=()=>{if(!$('#ag1').checked){toast('请先同意用户协议与隐私政策');return;}
+  if(!/^\d{11}$/.test($('#li-phone').value.trim())){toast('请输入正确的 11 位手机号');return;}
+  toast('登录成功，欢迎回来');setTimeout(()=>show('profile'),900);};
+/* 验证码倒计时 */
+$$('[data-cd]').forEach(btn=>btn.onclick=()=>{let s=60;btn.disabled=true;const t=setInterval(()=>{s--;
+  btn.textContent=s+'s 后重发';if(s<=0){clearInterval(t);btn.disabled=false;btn.textContent='获取验证码';}},1000);toast('验证码已发送');});
+/* 注册流程 */
+function rgStep(n){[1,2,3].forEach(i=>{$('#rg-s'+i).style.display=i===n?'':'none';
+  const st=document.querySelector('.st[data-step="'+i+'"]');st.classList.toggle('cur',i===n);st.classList.toggle('done',i<n);});}
+$('#rg-next1').onclick=()=>{const v=$('#rg-phone').value.replace(/\D/g,'');if(v.length!==11){toast('请输入正确的 11 位手机号');return;}rgStep(2);};
+$('#rg-back1').onclick=()=>rgStep(1);
+$('#rg-pw').oninput=e=>{const v=e.target.value;let w=0;if(v.length>=8)w+=34;if(/[a-zA-Z]/.test(v)&&/\d/.test(v))w+=33;if(/[^a-zA-Z0-9]/.test(v))w+=33;
+  const bar=$('#pwbar');bar.style.width=Math.min(w,100)+'%';bar.style.background=w<40?'var(--err)':w<70?'#F5A623':'var(--ok)';};
+$('#rg-next2').onclick=()=>{const a=$('#rg-pw').value,b=$('#rg-pw2').value;
+  if(a.length<8){toast('密码至少 8 位');return;}if(a!==b){toast('两次输入的密码不一致');return;}
+  $('#rg-done-phone').textContent=$('#rg-phone').value;rgStep(3);toast('注册成功');};
+/* 资料 */
+$('#pf-gender').onclick=function(){const o=this.dataset.opt.split('|');let i=o.indexOf(this.dataset.cur);i=(i+1)%o.length;
+  this.dataset.cur=o[i];this.textContent=o[i]+' ▾';};
+$('#pf-region').onclick=()=>toast('地区选择器：广东省 深圳市（演示）');
+$('#pf-save').onclick=()=>toast('个人资料已保存');
+/* 权限开关 */
+$$('.sw').forEach(sw=>sw.onclick=()=>{sw.classList.toggle('on');
+  const on=sw.classList.contains('on');toast(sw.dataset.p+'权限'+(on?'已开启':'已关闭'));
+  const n=$$('.sw.on').length;document.querySelector('#s-perm .topbar p').textContent='你的数据，你做主 · 已授权 '+n+'/6 项';});
+$('#btn-logout').onclick=()=>{toast('已退出登录');setTimeout(()=>show('login'),900);};
+/* 深链 */
+const q=new URLSearchParams(location.search);if(q.get('tab'))show(q.get('tab'));
+</script>
+</body>
+</html>

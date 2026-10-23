@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>深蓝梦境</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#06090f;display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sans-serif;color:#dfe9f5}
+.phone{width:430px;height:900px;border-radius:44px;overflow:hidden;position:relative;background:linear-gradient(180deg,#0a1626 0%,#0b2038 34%,#123a5e 62%,#0c1e34 100%);box-shadow:0 30px 80px rgba(0,0,0,.6),0 0 0 1px rgba(255,255,255,.06);display:flex;flex-direction:column}
+@keyframes riseIn{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:translateY(0)}}
+@keyframes twinkle{0%,100%{opacity:.25;transform:scale(.8)}50%{opacity:1;transform:scale(1.15)}}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes wave{0%,100%{transform:translateX(0)}50%{transform:translateX(-18px)}}
+.statusbar{display:flex;justify-content:space-between;align-items:center;padding:18px 28px 6px;font-size:14px;color:#9db4d0;z-index:5}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:8px 24px 4px;z-index:5;animation:riseIn .8s -0.4s both}
+.topbar .greet{font-size:15px;color:#9db4d0}
+.topbar .name{font-size:22px;font-weight:700;color:#fff;margin-top:2px}
+.avatar{width:46px;height:46px;border-radius:50%;background:radial-gradient(circle at 32% 30%,#bfe3ff,#5f8fd0 60%,#2b4a73);display:block;border:2px solid rgba(160,200,255,.4)}
+.stars{position:absolute;inset:0;pointer-events:none}
+.stars i{position:absolute;display:block;width:4px;height:4px;border-radius:50%;background:#cfe4ff;animation:twinkle 4s -1s infinite}
+.sleep-main{padding:14px 24px 0;z-index:5;animation:riseIn .9s -0.2s both}
+.big-time{font-size:64px;font-weight:800;letter-spacing:2px;color:#fff;line-height:1.05}
+.big-time small{font-size:22px;font-weight:500;color:#8fb0d6}
+.sub{font-size:14px;color:#8fb0d6;margin-top:6px}
+.badge{display:inline-block;background:rgba(120,180,255,.14);border:1px solid rgba(140,190,255,.35);color:#bcd6f5;font-size:12px;padding:4px 12px;border-radius:999px;margin-top:10px}
+.hypno{margin:18px 24px 0;background:rgba(10,25,45,.55);border:1px solid rgba(130,180,235,.22);border-radius:20px;padding:16px 16px 10px;z-index:5;animation:riseIn .9s 0s both}
+.hypno .t{font-size:14px;color:#a9c4e6;margin-bottom:10px}
+.hypno .t b{color:#fff}
+.stages{display:flex;justify-content:space-between;font-size:11px;color:#7d97b8;margin-top:6px}
+.sounds{padding:18px 24px 0;z-index:5;animation:riseIn .9s .1s both}
+.sounds .t{font-size:16px;font-weight:700;color:#fff;margin-bottom:12px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.sound{border-radius:18px;padding:16px 8px 14px;text-align:center;background:rgba(20,45,80,.5);border:1.5px solid rgba(130,180,235,.2);cursor:pointer;transition:transform .25s,border-color .25s,background .25s;animation:riseIn .7s -0.3s both}
+.sound:nth-child(2){animation-delay:-0.15s}.sound:nth-child(3){animation-delay:0s}
+.sound:active{transform:scale(.94)}
+.sound .ic{width:44px;height:44px;margin:0 auto 8px;border-radius:50%;display:block;background:radial-gradient(circle at 35% 30%,#2c5a92,#16334f);position:relative}
+.sound.rain .ic::after{content:"";position:absolute;left:13px;top:8px;width:18px;height:18px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#a9d2f5,#4d80b5)}
+.sound.rain .ic::before{content:"";position:absolute;left:12px;top:26px;width:20px;height:12px;border-left:2px solid #7fb2e0;border-right:2px solid #7fb2e0;transform:skewX(-18deg)}
+.sound.sea .ic::after{content:"";position:absolute;left:8px;top:20px;width:28px;height:12px;border-bottom:3px solid #7fc4e8;border-radius:0 0 60px 60px}
+.sound.sea .ic::before{content:"";position:absolute;left:10px;top:12px;width:24px;height:10px;border-bottom:3px solid #a9d2f5;border-radius:0 0 60px 60px}
+.sound.noise .ic::after{content:"";position:absolute;left:14px;top:10px;width:16px;height:24px;background:repeating-linear-gradient(180deg,#a9d2f5 0 3px,transparent 3px 6px);border-radius:8px}
+.sound .n{font-size:13px;color:#c3d6ee}
+.sound .s{font-size:11px;color:#6f89a8;margin-top:2px}
+.sound.on{border-color:#7fc4e8;background:rgba(50,110,170,.45);box-shadow:0 0 18px rgba(110,180,240,.35);transform:translateY(-2px)}
+.sound.on .n{color:#fff}
+.sleep-btn{margin:auto 24px 18px;z-index:5;animation:riseIn .9s .2s both}
+.btn{width:100%;border:none;border-radius:999px;padding:18px;font-size:18px;font-weight:700;color:#06121f;background:linear-gradient(120deg,#8fd0ff,#5ea8e8);cursor:pointer;letter-spacing:4px;box-shadow:0 10px 30px rgba(110,180,240,.4);transition:transform .2s,box-shadow .2s;animation:bob 4s -2s infinite}
+.btn:active{transform:scale(.96)}
+.btn.sleeping{background:linear-gradient(120deg,#3d5a80,#223a58);color:#cfe4ff;letter-spacing:2px}
+.tabbar{margin:0 18px 22px;background:rgba(12,28,52,.85);backdrop-filter:blur(8px);border:1px solid rgba(130,180,235,.2);border-radius:26px;display:flex;justify-content:space-around;padding:12px 6px;z-index:5;animation:riseIn .9s .3s both}
+.tab{text-align:center;flex:1;cursor:pointer;padding:4px 0}
+.tab .d{display:block;width:26px;height:26px;margin:0 auto 4px;border-radius:8px;background:#2b4a73;position:relative;transition:background .25s}
+.tab .l{font-size:11px;color:#7d97b8}
+.tab.on .d{background:linear-gradient(135deg,#8fd0ff,#5ea8e8);box-shadow:0 0 12px rgba(140,200,250,.6)}
+.tab.on .l{color:#fff;font-weight:600}
+.tab .d.home::after{content:"";position:absolute;left:8px;top:7px;width:10px;height:9px;background:#0c1e34;clip-path:polygon(50% 0,100% 100%,0 100%)}
+.tab .d.chart::after{content:"";position:absolute;left:5px;top:13px;width:16px;height:3px;background:#0c1e34;box-shadow:0 -6px 0 #0c1e34,0 -12px 0 #0c1e34}
+.tab .d.clock::after{content:"";position:absolute;left:11px;top:5px;width:3px;height:8px;background:#0c1e34;box-shadow:-3px 6px 0 #0c1e34}
+.tab .d.me::after{content:"";position:absolute;left:9px;top:6px;width:8px;height:8px;border-radius:50%;background:#0c1e34;box-shadow:0 9px 0 -1px #0c1e34}
+.moon{position:absolute;right:36px;top:120px;width:84px;height:84px;border-radius:50%;background:radial-gradient(circle at 38% 35%,#fdf6e0,#e8d9a8 70%);box-shadow:0 0 46px rgba(250,240,200,.55);animation:bob 6s -3s infinite;z-index:1}
+.waves{position:absolute;left:0;right:0;bottom:118px;height:60px;overflow:hidden;opacity:.35;z-index:1}
+.waves svg{display:block;width:120%;height:100%;animation:wave 7s -3s linear infinite}
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="stars">
+    <i style="left:12%;top:9%"></i><i style="left:28%;top:16%;animation-delay:-2s"></i>
+    <i style="left:62%;top:7%;animation-delay:-3s"></i><i style="left:80%;top:22%;animation-delay:-1.5s"></i>
+    <i style="left:45%;top:11%;animation-delay:-.6s"></i><i style="left:88%;top:33%;animation-delay:-2.6s"></i>
+    <i style="left:6%;top:26%;animation-delay:-3.4s"></i>
+  </div>
+  <div class="moon"></div>
+  <div class="statusbar"><span>21:47</span><span>今晚宜早睡</span></div>
+  <div class="topbar">
+    <div><div class="greet">晚安</div><div class="name">今夜梦境之旅</div></div>
+    <span class="avatar"></span>
+  </div>
+  <div class="sleep-main">
+    <div class="big-time">7<small>时</small>42<small>分</small></div>
+    <div class="sub">昨晚睡眠时长 · 质量良好</div>
+    <span class="badge">深睡占比 32%</span>
+  </div>
+  <div class="hypno">
+    <div class="t">昨晚睡眠阶段 <b>已解析</b></div>
+    <svg viewBox="0 0 380 96" width="100%" height="96">
+      <polyline points="0,20 40,20 55,48 95,48 110,76 170,76 185,48 225,48 240,20 300,20 315,48 380,48"
+        fill="none" stroke="#7fc4e8" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+      <circle cx="0" cy="20" r="4" fill="#bfe3ff"/><circle cx="185" cy="76" r="4" fill="#bfe3ff"/>
+      <circle cx="380" cy="48" r="4" fill="#bfe3ff"/>
+    </svg>
+    <div class="stages"><span>清醒</span><span>浅睡</span><span>深睡</span><span>快速眼动</span></div>
+  </div>
+  <div class="sounds">
+    <div class="t">助眠声音</div>
+    <div class="grid">
+      <div class="sound rain on" data-n="雨声"><span class="ic"></span><div class="n">雨声</div><div class="s">窗外细雨</div></div>
+      <div class="sound sea" data-n="海浪"><span class="ic"></span><div class="n">海浪</div><div class="s">深夜潮汐</div></div>
+      <div class="sound noise" data-n="白噪音"><span class="ic"></span><div class="n">白噪音</div><div class="s">平稳安神</div></div>
+    </div>
+  </div>
+  <div class="sleep-btn"><button class="btn" id="sleepBtn">开始睡眠</button></div>
+  <div class="waves">
+    <svg viewBox="0 0 516 60" preserveAspectRatio="none"><path d="M0,30 Q43,10 86,30 T172,30 T258,30 T344,30 T430,30 T516,30 L516,60 L0,60 Z" fill="#7fc4e8"/></svg>
+  </div>
+  <div class="tabbar">
+    <div class="tab on"><span class="d home"></span><div class="l">首页</div></div>
+    <div class="tab"><span class="d chart"></span><div class="l">报告</div></div>
+    <div class="tab"><span class="d clock"></span><div class="l">闹钟</div></div>
+    <div class="tab"><span class="d me"></span><div class="l">我的</div></div>
+  </div>
+</div>
+<script>
+document.querySelectorAll('.sound').forEach(function(el){
+  el.addEventListener('click',function(){
+    document.querySelectorAll('.sound').forEach(function(x){x.classList.remove('on')});
+    el.classList.add('on');
+  });
+});
+var b=document.getElementById('sleepBtn'),sleeping=false;
+b.addEventListener('click',function(){
+  sleeping=!sleeping;
+  b.classList.toggle('sleeping',sleeping);
+  b.textContent=sleeping?'入睡中 · 点击结束':'开始睡眠';
+});
+document.querySelectorAll('.tab').forEach(function(el){
+  el.addEventListener('click',function(){
+    document.querySelectorAll('.tab').forEach(function(x){x.classList.remove('on')});
+    el.classList.add('on');
+  });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,35 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>绒伞远行</title><style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{width:430px;height:900px;margin:0 auto;position:relative;overflow:hidden;
+font-family:-apple-system,"PingFang SC","Microsoft YaHei","Noto Sans CJK SC",sans-serif;
+background:linear-gradient(180deg,#a8dcf2 0%,#d9f2e2 65%,#cde6c6 100%);color:#fff}
+.scene{position:absolute;inset:0}
+
+.stem{position:absolute;left:50%;top:430px;width:6px;height:280px;margin-left:-3px;background:linear-gradient(#4d8f5f,#3a7048);border-radius:3px}
+.head{position:absolute;left:50%;top:300px;width:130px;height:130px;margin-left:-65px}
+.head i{position:absolute;left:50%;top:50%;width:2px;height:62px;margin-left:-1px;background:rgba(255,255,255,.95);transform-origin:50% 0}
+.head i::after{content:"";position:absolute;top:-7px;left:50%;transform:translateX(-50%);width:9px;height:9px;border-radius:50%;background:#fff;box-shadow:0 0 8px #fff}
+.core{position:absolute;left:50%;top:50%;width:26px;height:26px;margin:-13px 0 0 -13px;border-radius:50%;background:radial-gradient(circle at 40% 35%,#fff,#d8ecce)}
+.sd{position:absolute;width:9px;height:9px;border-radius:50%;background:#fff;box-shadow:0 0 8px #fff;animation-duration:7s;animation-timing-function:linear;animation-iteration-count:infinite}
+.sd.v1{animation-name:sd1}.sd.v2{animation-name:sd2}.sd.v3{animation-name:sd3}
+@keyframes sd1{to{transform:translate(190px,-150px)}}
+@keyframes sd2{to{transform:translate(-170px,-120px)}}
+@keyframes sd3{to{transform:translate(120px,-190px)}}
+.gnd2{position:absolute;bottom:-80px;left:-60px;width:550px;height:200px;background:#a9cf9a;border-radius:50%}
+
+.brand{position:absolute;left:0;right:0;bottom:118px;text-align:center;z-index:5;
+color:#2a5a3a;opacity:0;animation:brandIn 1s ease 2.2s both}
+.brand h1{font-size:34px;letter-spacing:8px;font-weight:800;text-shadow:0 2px 14px rgba(0,0,0,.35)}
+.brand p{font-size:13px;letter-spacing:3px;margin-top:10px;opacity:.85;text-shadow:0 1px 10px rgba(0,0,0,.35)}
+@keyframes brandIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.replay{position:absolute;left:50%;bottom:44px;transform:translateX(-50%);z-index:6;
+padding:10px 28px;border-radius:24px;border:1px solid rgba(255,255,255,.45);
+background:rgba(255,255,255,.14);color:#2a5a3a;font-size:14px;letter-spacing:2px;cursor:pointer}
+</style></head><body>
+<div class="scene"><div class="gnd2"></div><div class="stem"></div><div class="head"><i style="transform:rotate(0deg)"></i><i style="transform:rotate(15deg)"></i><i style="transform:rotate(30deg)"></i><i style="transform:rotate(45deg)"></i><i style="transform:rotate(60deg)"></i><i style="transform:rotate(75deg)"></i><i style="transform:rotate(90deg)"></i><i style="transform:rotate(105deg)"></i><i style="transform:rotate(120deg)"></i><i style="transform:rotate(135deg)"></i><i style="transform:rotate(150deg)"></i><i style="transform:rotate(165deg)"></i><i style="transform:rotate(180deg)"></i><i style="transform:rotate(195deg)"></i><i style="transform:rotate(210deg)"></i><i style="transform:rotate(225deg)"></i><i style="transform:rotate(240deg)"></i><i style="transform:rotate(255deg)"></i><i style="transform:rotate(270deg)"></i><i style="transform:rotate(285deg)"></i><i style="transform:rotate(300deg)"></i><i style="transform:rotate(315deg)"></i><i style="transform:rotate(330deg)"></i><i style="transform:rotate(345deg)"></i><div class="core"></div></div><i class="sd v1" style="left:215px;top:330px;animation-delay:-1s"></i><i class="sd v2" style="left:215px;top:330px;animation-delay:-3s"></i><i class="sd v3" style="left:215px;top:330px;animation-delay:-5s"></i><i class="sd v1" style="left:215px;top:330px;animation-delay:-2.2s"></i><i class="sd v2" style="left:215px;top:330px;animation-delay:-4.4s"></i><i class="sd v3" style="left:215px;top:330px;animation-delay:-6s"></i></div>
+<div class="brand"><h1>绒伞远行</h1><p>风起时 奔赴下一场相遇</p></div>
+<button class="replay" onclick="location.reload()">重新播放</button>
+</body></html>

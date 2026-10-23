@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>弹性拉伸 · 按钮特效</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;display:flex;flex-direction:column;align-items:center;
+ background:radial-gradient(120% 90% at 50% 0%,#1d1530 0%,#100b1e 55%,#080512 100%);
+ font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;color:#f2eaff;padding:30px 16px 40px}
+h1{font-size:15px;letter-spacing:8px;color:#c9a7ff;font-weight:600;margin-bottom:6px}
+.sub{font-size:12px;color:#7a6a99;letter-spacing:2px;margin-bottom:26px}
+.stage{width:360px;max-width:100%;height:440px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:26px;
+ background:rgba(180,140,255,.05);border:1px solid rgba(201,167,255,.18);border-radius:22px;
+ box-shadow:inset 0 0 60px rgba(120,70,220,.12);touch-action:none}
+.btn{position:relative;width:210px;height:66px;border:none;border-radius:18px;cursor:pointer;
+ background:linear-gradient(160deg,#8b5cf6,#6d3ff2);color:#fff;font-size:17px;letter-spacing:6px;font-weight:700;
+ box-shadow:0 10px 30px rgba(120,70,240,.45),inset 0 1px 0 rgba(255,255,255,.35);
+ --ang:0deg;--tx:0px;--ty:0px;user-select:none;-webkit-user-select:none}
+.btn.stretch{transition:transform .14s ease-out;
+ transform:translate(var(--tx),var(--ty)) rotate(var(--ang)) scale(1.55,.58)}
+.btn.snap{animation:snapback .85s cubic-bezier(.2,.9,.3,1.2)}
+@keyframes snapback{
+ 0%{transform:translate(var(--tx),var(--ty)) rotate(var(--ang)) scale(1.55,.58)}
+ 38%{transform:translate(0,0) rotate(0deg) scale(.9,1.12)}
+ 58%{transform:scale(1.07,.93)}
+ 74%{transform:scale(.97,1.04)}
+ 88%{transform:scale(1.015,.99)}
+ 100%{transform:none}}
+.hint{font-size:12px;color:#7a6a99;letter-spacing:2px;text-align:center;line-height:2}
+</style>
+</head>
+<body>
+<h1>弹性拉伸</h1>
+<div class="sub">b12 · 按住拖向任意方向再松开</div>
+<div class="stage">
+  <button class="btn" id="btn" type="button">橡 皮 筋</button>
+  <div class="hint">按住按钮不放，朝任意方向拖动<br>松开后看它弹回来</div>
+</div>
+<script>
+var btn=document.getElementById('btn');
+function stretchTo(x,y){
+  var r=btn.getBoundingClientRect();
+  var cx=r.left+r.width/2, cy=r.top+r.height/2;
+  var dx=x-cx, dy=y-cy;
+  var ang=Math.atan2(dy,dx)*180/Math.PI;
+  var pull=Math.min(22,Math.hypot(dx,dy)*0.12);
+  var rad=ang*Math.PI/180;
+  btn.style.setProperty('--ang',ang+'deg');
+  btn.style.setProperty('--tx',(Math.cos(rad)*pull)+'px');
+  btn.style.setProperty('--ty',(Math.sin(rad)*pull)+'px');
+  btn.classList.remove('snap');
+  btn.classList.add('stretch');
+}
+function release(){
+  if(!btn.classList.contains('stretch'))return;
+  btn.classList.remove('stretch');
+  void btn.offsetWidth;
+  btn.classList.add('snap');
+}
+btn.addEventListener('pointerdown',function(e){stretchTo(e.clientX,e.clientY);});
+window.addEventListener('pointerup',release);
+window.addEventListener('pointercancel',release);
+btn.addEventListener('animationend',function(e){
+  if(e.animationName==='snapback')btn.classList.remove('snap');
+});
+</script>
+</body>
+</html>

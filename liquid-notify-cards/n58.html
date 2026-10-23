@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>高铁时刻</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      min-height: 100vh; margin: 0; padding: 48px 18px; color: #fff;
+      font: 15px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(ellipse at 80% 15%, rgba(80,110,220,.7), transparent 36%),
+        radial-gradient(ellipse at 15% 45%, rgba(50,70,160,.8), transparent 38%),
+        radial-gradient(ellipse at 55% 92%, rgba(30,45,110,.65), transparent 40%),
+        linear-gradient(150deg, #0b1030, #141b4d 55%, #080b22);
+      background-attachment: fixed;
+    }
+    main { width: min(440px, 100%); margin: 0 auto; display: grid; gap: 18px; }
+    .heading { padding: 4px 6px 8px; }
+    .eyebrow { margin: 0 0 8px; color: rgba(255,255,255,.68); font-size: 11px; letter-spacing: .18em; }
+    h1 { margin: 0; font-size: 30px; letter-spacing: -.04em; }
+    .hint { margin: 7px 0 0; color: rgba(255,255,255,.68); }
+    .card {
+      position: relative; isolation: isolate; overflow: hidden; padding: 18px;
+      border: 1px solid rgba(255,255,255,.28); border-radius: 28px;
+      background: linear-gradient(135deg, rgba(140,160,255,.20), rgba(140,160,255,.07) 48%, rgba(100,120,255,.13));
+      -webkit-backdrop-filter: blur(24px) saturate(175%);
+      backdrop-filter: blur(24px) saturate(175%);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.42), inset 0 -1px 0 rgba(255,255,255,.08), 0 20px 48px rgba(8,8,24,.28);
+      transition: transform .25s ease, border-color .25s ease;
+    }
+    .card::before {
+      content: ""; position: absolute; z-index: 0; inset: 0; border-radius: inherit; pointer-events: none;
+      background: linear-gradient(118deg, rgba(190,200,255,.34) 0%, rgba(190,200,255,.08) 18%, transparent 42%, transparent 72%, rgba(150,170,255,.16) 100%);
+      opacity: .8;
+    }
+    .card::after {
+      content: ""; position: absolute; z-index: 0; top:-48px;right:-52px;;
+      width: 190px; height: 130px; border: 1px solid rgba(255,255,255,.22); border-radius: 50%;
+      background: radial-gradient(ellipse, rgba(255,255,255,.22), transparent 68%);
+      filter: blur(2px); transform: rotate(-35deg); pointer-events: none;
+    }
+    .card > * { position: relative; z-index: 1; }
+    .card:hover { transform: translateY(-3px); border-color: rgba(255,255,255,.46); }
+    .top, .title-line { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .top { margin-bottom: 15px; }
+    .pill { padding: 6px 12px; border: 1px solid rgba(255,255,255,.30); border-radius: 999px;
+      background: rgba(255,255,255,.10); color: rgba(255,255,255,.94); font-size: 12px;
+      box-shadow: inset 0 1px rgba(255,255,255,.18); white-space: nowrap; }
+    .pill.hot { background: linear-gradient(135deg,#6a8bff,#4457ff); border-color: transparent; font-weight: 700; }
+    .row { display: flex; align-items: center; gap: 12px; min-width: 0; }
+    .face { display: grid; flex: 0 0 52px; width: 52px; height: 52px; place-items: center;
+      border: 1px solid rgba(255,255,255,.45); border-radius: 18px;
+      background: linear-gradient(145deg, #5a70d8, #3a4ba8 60%, #242e72); color: #fff;
+      box-shadow: inset 0 1px 5px rgba(255,255,255,.5), 0 5px 15px rgba(15,12,35,.2); }
+    .face svg { width: 30px; height: 30px; display: block; }
+    .copy { flex: 1; min-width: 0; }
+    .title-line { margin-bottom: 5px; }
+    .title-line strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 16px; }
+    time, .preview { color: rgba(255,255,255,.72); font-size: 12px; }
+    .preview { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .unread { flex: 0 0 auto; color: #ffd9a8; font-size: 12px; font-weight: 700; }
+    .big { font-size: 34px; font-weight: 800; letter-spacing: -.02em; line-height: 1.1; }
+    .big small { font-size: 14px; font-weight: 400; opacity: .7; }
+    .sub { color: rgba(255,255,255,.72); font-size: 12px; margin-top: 4px; }
+    .bar { height: 8px; border-radius: 4px; background: rgba(255,255,255,.14); margin-top: 12px; overflow: hidden; }
+    .bar i { display: block; height: 100%; border-radius: 4px; background: linear-gradient(135deg,#6a8bff,#4457ff); width: 38%; }
+    .tl { display: flex; align-items: center; gap: 0; margin-top: 14px; }
+    .tl .st { text-align: center; flex: 0 0 auto; }
+    .tl .st b { display: block; font-size: 17px; }
+    .tl .st span { font-size: 11px; color: rgba(255,255,255,.65); }
+    .tl .ln { flex: 1; height: 2px; background: rgba(255,255,255,.2); margin: 0 10px; position: relative; border-radius: 2px; }
+    .tl .ln i { position: absolute; left: 0; top: 0; bottom: 0; width: 38%; border-radius: 2px; background: linear-gradient(135deg,#6a8bff,#4457ff); }
+    .btns { display: flex; gap: 10px; margin-top: 14px; }
+    .btn { flex: 1; text-align: center; padding: 10px 0; border-radius: 14px; font-size: 13px; font-weight: 700;
+      border: 1px solid rgba(255,255,255,.3); background: rgba(255,255,255,.10); color: #fff; }
+    .btn.pri { background: linear-gradient(135deg,#6a8bff,#4457ff); border-color: transparent; }
+    .chips { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+    .chip { font-size: 11px; padding: 5px 10px; border-radius: 999px; background: rgba(255,255,255,.12);
+      border: 1px solid rgba(255,255,255,.2); color: rgba(255,255,255,.85); }
+    .dot { width: 8px; height: 8px; border-radius: 50%; background: #ff5f56; box-shadow: 0 0 8px #ff5f56; display: inline-block; margin-right: 6px; }
+    @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+      .card { background: rgba(43,35,68,.88); }
+    }
+    
+
+  </style>
+</head>
+<body>
+  <main>
+    <header class="heading">
+      <p class="eyebrow">LIQUID GLASS · 出行</p>
+      <h1>高铁时刻</h1>
+      <p class="hint">G101 次列车运行信息实时更新。</p>
+    </header>
+
+    <section class="card">
+      <div class="top">
+        <span class="pill hot">列车</span>
+        <time>8 站台检票</time>
+      </div>
+      <div class="row">
+        <div class="face"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="3" width="12" height="13" rx="3"/><path d="M6 10h12M9 20l-2 2M15 20l2 2"/><circle cx="9.5" cy="13.5" r="1" fill="#fff"/><circle cx="14.5" cy="13.5" r="1" fill="#fff"/></svg></div>
+        <div class="copy">
+          <div class="title-line"><strong>G101 · 北京南 → 上海</strong><time>08:00 发车</time></div>
+          <div class="preview">正点运行 · 当前时速 348 km/h</div>
+        </div>
+        <span class="unread">运行中</span>
+      </div>
+      <div class="tl"><div class="st"><b>北京南</b><span>08:00</span></div><div class="ln"><i></i></div><div class="st"><b>上海</b><span>13:28</span></div></div>
+      <div class="bar"><i></i></div>
+    </section>
+
+    <section class="card">
+      <div class="top">
+        <span class="pill">到站服务</span>
+        <time>刚刚</time>
+      </div>
+      <div class="row">
+        <div class="face"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 16l1.5-5A2 2 0 0 1 8.4 9.5h7.2a2 2 0 0 1 1.9 1.5L19 16"/><path d="M4 16h16v3h-2.5M4 19h2.5"/><circle cx="8" cy="19" r="1.6"/><circle cx="16" cy="19" r="1.6"/></svg></div>
+        <div class="copy">
+          <div class="title-line"><strong>出站接驳</strong><time>刚刚</time></div>
+          <div class="preview">上海站南广场网约车上车点 B2，步行约 6 分钟</div>
+        </div>
+      </div>
+      <div class="btns"><span class="btn pri">预约接站车</span><span class="btn">站内导航</span></div>
+    </section>
+  </main>
+</body>
+</html>

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>故障 glitch · 按钮特效</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body {
+    min-height: 100vh; background: #0a0d14; color: #e8f0ff;
+    font-family: "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+    display: flex; flex-direction: column; align-items: center; overflow: hidden; user-select: none;
+  }
+  .title { margin: 44px 0 6px; font-size: 22px; letter-spacing: 8px; font-weight: 700; color: #e8f0ff; }
+  .sub { font-size: 12px; letter-spacing: 3px; color: #5b6b8c; margin-bottom: 26px; }
+  .stage {
+    width: 360px; max-width: 92vw; height: 420px; border-radius: 20px;
+    background: #0e1420; border: 1px solid rgba(90,140,255,.16);
+    display: flex; align-items: center; justify-content: center; position: relative;
+  }
+  .stage::after { content: ""; position: absolute; inset: 0; border-radius: 20px; pointer-events: none;
+    background: repeating-linear-gradient(0deg, rgba(255,255,255,.025) 0 1px, transparent 1px 3px); }
+  .glitch-btn {
+    position: relative; padding: 20px 60px; font-size: 20px; letter-spacing: 8px; font-weight: 800;
+    color: #fff; background: #161d2e; border: 1px solid #3b5bff; border-radius: 10px; cursor: pointer;
+  }
+  .glitch-btn .real { position: relative; z-index: 1; }
+  .glitch-btn .ghost { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+    font-size: 20px; letter-spacing: 8px; font-weight: 800; opacity: 0; pointer-events: none; }
+  .glitch-btn .ghost.r { color: #ff2b4e; }
+  .glitch-btn .ghost.c { color: #2be8ff; }
+  /* 故障态：红/青错位副本 + clip-path 切片抖动，约 0.6s */
+  .glitch-btn.glitching { animation: shake .6s steps(2, end) 1; }
+  .glitch-btn.glitching .ghost { opacity: .85; }
+  .glitch-btn.glitching .ghost.r { animation: sliceR .6s steps(2, end) 1; }
+  .glitch-btn.glitching .ghost.c { animation: sliceC .6s steps(2, end) 1; }
+  .glitch-btn.glitching .real { animation: sliceReal .6s steps(2, end) 1; }
+  @keyframes shake {
+    0%,100% { transform: translate(0); }
+    10% { transform: translate(-3px, 1px) skewX(-4deg); }
+    20% { transform: translate(4px, -2px); }
+    30% { transform: translate(-5px, 0) skewX(3deg); }
+    40% { transform: translate(3px, 2px); }
+    50% { transform: translate(-4px, -1px) skewX(-3deg); }
+    60% { transform: translate(5px, 1px); }
+    70% { transform: translate(-2px, 2px); }
+    80% { transform: translate(3px, -2px) skewX(2deg); }
+    90% { transform: translate(-3px, 0); }
+  }
+  @keyframes sliceR {
+    0% { transform: translate(0); clip-path: inset(0 0 100% 0); }
+    15% { transform: translate(-9px, 2px); clip-path: inset(8% 0 62% 0); }
+    30% { transform: translate(7px, -3px); clip-path: inset(52% 0 28% 0); }
+    45% { transform: translate(-11px, 1px); clip-path: inset(30% 0 48% 0); }
+    60% { transform: translate(9px, 3px); clip-path: inset(70% 0 8% 0); }
+    75% { transform: translate(-7px, -2px); clip-path: inset(15% 0 70% 0); }
+    90% { transform: translate(5px, 1px); clip-path: inset(45% 0 40% 0); }
+    100% { transform: translate(0); clip-path: inset(0 0 100% 0); }
+  }
+  @keyframes sliceC {
+    0% { transform: translate(0); clip-path: inset(0 0 100% 0); }
+    15% { transform: translate(10px, -2px); clip-path: inset(60% 0 18% 0); }
+    30% { transform: translate(-8px, 3px); clip-path: inset(12% 0 68% 0); }
+    45% { transform: translate(12px, -1px); clip-path: inset(40% 0 38% 0); }
+    60% { transform: translate(-10px, -3px); clip-path: inset(5% 0 78% 0); }
+    75% { transform: translate(8px, 2px); clip-path: inset(72% 0 10% 0); }
+    90% { transform: translate(-6px, -1px); clip-path: inset(28% 0 55% 0); }
+    100% { transform: translate(0); clip-path: inset(0 0 100% 0); }
+  }
+  @keyframes sliceReal {
+    0%,100% { clip-path: inset(0 0 0 0); }
+    25% { clip-path: inset(22% 0 58% 0); }
+    50% { clip-path: inset(58% 0 22% 0); }
+    75% { clip-path: inset(10% 0 74% 0); }
+  }
+  .hint { margin-top: 22px; font-size: 12px; letter-spacing: 2px; color: #5b6b8c; }
+</style>
+</head>
+<body>
+  <div class="title">故障 glitch</div>
+  <div class="sub">SIGNAL ERROR · RGB 分离 · 0.6s</div>
+  <div class="stage">
+    <button class="glitch-btn" id="btn" data-text="触发故障">
+      <span class="ghost r" aria-hidden="true">触发故障</span>
+      <span class="ghost c" aria-hidden="true">触发故障</span>
+      <span class="real">触发故障</span>
+    </button>
+  </div>
+  <div class="hint">点击按钮 · 信号故障 0.6 秒后自动恢复</div>
+<script>
+  var btn = document.getElementById('btn');
+  var timer = null;
+  btn.addEventListener('click', function () {
+    btn.classList.remove('glitching');
+    void btn.offsetWidth;
+    btn.classList.add('glitching');
+    clearTimeout(timer);
+    // 动画结束后清理类，保证可重复触发且无残留
+    timer = setTimeout(function () { btn.classList.remove('glitching'); }, 650);
+  });
+</script>
+</body>
+</html>

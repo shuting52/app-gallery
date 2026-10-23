@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>n15 · 翻页 Toast</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;background:#141824;display:flex;flex-direction:column;align-items:center;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;color:#fff}
+.head{text-align:center;padding:20px 16px 12px}
+.head h1{font-size:17px;color:#f2d38a;letter-spacing:1px}
+.head p{font-size:12px;color:#8b93a7;margin-top:6px}
+.stage{width:360px;max-width:94vw;height:480px;border-radius:18px;position:relative;overflow:hidden;background:radial-gradient(circle at 50% 30%,#2a2417,#141210 75%);border:1px solid #4a3f28;box-shadow:0 12px 40px rgba(0,0,0,.4)}
+.book{position:absolute;left:50%;top:120px;transform:translateX(-50%);width:280px;perspective:900px}
+.spine{position:absolute;left:-10px;top:0;bottom:0;width:10px;background:#0b0906;border-radius:5px;box-shadow:2px 0 6px rgba(0,0,0,.6)}
+.page{transform-origin:left center;background:linear-gradient(105deg,#fffdf4,#f1e7cc);color:#4a3f28;border-radius:4px 12px 12px 4px;padding:26px 22px;box-shadow:10px 12px 28px rgba(0,0,0,.5);transform:rotateY(-100deg);opacity:0;min-height:170px}
+.page .k{font-size:11px;color:#a08c5a;letter-spacing:3px}
+.page .t{font-size:17px;font-weight:800;margin-top:10px;line-height:1.6}
+.page .lines{margin-top:14px}
+.page .lines i{display:block;height:6px;border-radius:3px;background:#e2d5b4;margin-top:8px}
+.page .lines i:nth-child(2){width:82%}.page .lines i:nth-child(3){width:64%}
+.page.flip{animation:flip .7s cubic-bezier(.3,.9,.3,1) forwards}
+.page.back{animation:flipBack .5s ease-in forwards}
+@keyframes flip{0%{transform:rotateY(-100deg);opacity:0}30%{opacity:1}100%{transform:rotateY(0);opacity:1}}
+@keyframes flipBack{from{transform:rotateY(0);opacity:1}to{transform:rotateY(-100deg);opacity:0}}
+.hint{position:absolute;bottom:14px;width:100%;text-align:center;font-size:11px;color:#6b5f45}
+</style>
+</head>
+<body>
+<div class="head"><h1>n15 · 翻页</h1><p>书页从右侧翻过来揭示通知 → 停留 → 翻回去</p></div>
+<div class="stage">
+  <div class="book"><div class="spine"></div>
+    <div class="page" id="page"><div class="k" id="pk"></div><div class="t" id="pt"></div><div class="lines"><i></i><i></i><i></i></div></div>
+  </div>
+  <div class="hint">自动循环播放中 · 3 条通知轮播</div>
+</div>
+<script>
+const msgs=[
+  ["销售日报","今日销售额 ¥12,860"],
+  ["订单动态","新增订单 37 笔"],
+  ["售后处理","退货 1 笔已处理完毕"]
+];
+const page=document.getElementById('page'),pk=document.getElementById('pk'),pt=document.getElementById('pt');
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+async function show(i){
+  pk.textContent=msgs[i][0];pt.textContent=msgs[i][1];
+  page.classList.remove('back');void page.offsetWidth;page.classList.add('flip');
+  await sleep(750);
+  await sleep(2500);
+  page.classList.remove('flip');page.classList.add('back');
+  await sleep(550);
+  page.classList.remove('back');
+  await sleep(300);
+}
+(async()=>{let i=0;while(true){await show(i%msgs.length);i++;}})();
+</script>
+</body>
+</html>

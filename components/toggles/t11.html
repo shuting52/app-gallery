@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>磁铁吸附</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;display:flex;align-items:center;justify-content:center;background:#0e0f13;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;color:#e8eaf0;padding:20px}
+body.freeze *{transition:none!important;animation:none!important}
+.stage{width:360px;max-width:100%;text-align:center}
+h2{font-size:17px;letter-spacing:3px;margin-bottom:4px}
+.sub{font-size:12px;color:#8a8fa3;margin-bottom:20px}
+.device{cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent}
+.lab{width:300px;height:350px;margin:0 auto;border-radius:20px;position:relative;overflow:hidden;background:linear-gradient(180deg,#0f1526,#1a2342 70%,#141a30);box-shadow:0 12px 32px rgba(0,0,0,.5)}
+.magnet{position:absolute;top:30px;left:50%;width:150px;height:96px;margin-left:-75px;transition:filter .5s}
+.bar{position:absolute;top:0;left:0;right:0;height:40px;border-radius:10px;background:linear-gradient(180deg,#e05252,#a02323);box-shadow:inset 0 2px 0 rgba(255,255,255,.35)}
+.bar::after{content:'N · S';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;letter-spacing:6px;color:rgba(255,255,255,.85)}
+.leg{position:absolute;top:36px;width:38px;height:60px;background:linear-gradient(180deg,#c74343,#8f1d1d)}
+.leg.l{left:6px;border-radius:0 0 0 8px}.leg.r{right:6px;border-radius:0 0 8px 0}
+.tip{position:absolute;bottom:0;left:0;right:0;height:20px;background:linear-gradient(180deg,#f0f3f8,#9aa2b5)}
+.device.on .magnet{filter:drop-shadow(0 0 20px rgba(255,90,90,.85))}
+.field{position:absolute;top:14px;left:50%;width:230px;height:150px;margin-left:-115px;opacity:0;transition:opacity .6s;pointer-events:none}
+.device.on .field{opacity:1;animation:pls 1.4s ease-in-out infinite}
+@keyframes pls{50%{transform:scale(1.06);opacity:.65}}
+.ball{position:absolute;bottom:34px;left:50%;width:46px;height:46px;margin-left:-23px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#f4f7fb,#98a1b5 55%,#59617a);box-shadow:0 8px 18px rgba(0,0,0,.6);transition:transform .6s cubic-bezier(.3,1.45,.45,1)}
+.device.on .ball{transform:translateY(-196px)}
+.ground{position:absolute;bottom:0;left:0;right:0;height:26px;background:linear-gradient(180deg,#2c3348,#1a1f30)}
+.ground::before{content:'';position:absolute;top:6px;left:50%;width:70px;height:12px;margin-left:-35px;border-radius:50%;background:rgba(0,0,0,.4);transition:all .6s}
+.device.on .ground::before{width:40px;margin-left:-20px;opacity:.4}
+.tag{position:absolute;top:12px;left:12px;font-size:11px;letter-spacing:2px;color:#8a8fa3;background:rgba(0,0,0,.35);padding:5px 10px;border-radius:12px}
+.status{margin-top:18px;font-size:14px;color:#9aa0b4}
+.status b{color:#ffd479}
+.hint{font-size:11px;color:#5c6172;margin-top:6px}
+</style>
+</head>
+<body>
+<div class="stage">
+<h2>磁铁吸附</h2>
+<div class="sub">点击给磁铁通电 / 断电</div>
+<div class="device" id="dev">
+<div class="lab">
+<div class="tag">电磁铁</div>
+<svg class="field" viewBox="0 0 230 150" fill="none" stroke="#ff7a7a" stroke-width="2.5" stroke-dasharray="7 7" opacity=".8">
+<path d="M40,140 C40,70 70,40 115,40 C160,40 190,70 190,140"/>
+<path d="M20,140 C20,50 60,18 115,18 C170,18 210,50 210,140"/>
+<path d="M62,140 C62,86 86,62 115,62 C144,62 168,86 168,140"/>
+</svg>
+<div class="magnet"><div class="bar"></div><div class="leg l"><div class="tip"></div></div><div class="leg r"><div class="tip"></div></div></div>
+<div class="ball"></div>
+<div class="ground"></div>
+</div>
+</div>
+<div class="status">状态：<b id="st">关 · 断电</b></div>
+<div class="hint">点击磁铁切换</div>
+</div>
+<script>
+var dev=document.getElementById('dev'),st=document.getElementById('st'),on=location.search.indexOf('s=1')>-1;
+function render(){dev.classList.toggle('on',on);st.textContent=on?'开 · 通电吸附':'关 · 断电';}
+if(on)document.body.classList.add('freeze');
+dev.addEventListener('click',function(){on=!on;render();});
+render();
+</script>
+</body>
+</html>

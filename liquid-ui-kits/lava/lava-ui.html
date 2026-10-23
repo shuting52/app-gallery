@@ -1,0 +1,1054 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>LAVA UI · 熔岩流体</title>
+<style>
+/* ============ LAVA UI · 熔岩流体 ============ */
+:root{
+  --magma:#ff5a1f; --ember:#ffb347; --crimson:#ff2d55; --gold:#ffd166;
+  --bg:#0d0705; --surface:#170c07; --surface2:#241109;
+  --cream:#fff3e8; --muted:#c99e7e; --danger:#ff3b3b;
+  --r:1.1rem;
+  --drop:polygon(50% 0%,88% 38%,100% 62%,82% 100%,18% 100%,0% 62%,12% 38%);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{
+  margin:0;background:#050302;color:var(--cream);
+  font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sans-serif;
+  display:flex;align-items:center;justify-content:center;
+}
+.phone{
+  position:relative;width:100%;max-width:430px;height:100dvh;
+  background:var(--bg);overflow:hidden;display:flex;flex-direction:column;
+}
+@media(min-width:520px){
+  body{padding:24px}
+  .phone{height:min(880px,94dvh);border:1px solid rgba(255,122,47,.35);border-radius:2.2rem;
+    box-shadow:0 0 0 4px #120805,0 0 60px rgba(255,90,31,.25),0 30px 80px rgba(0,0,0,.8)}
+}
+/* 熔岩背景：流动斑块 + 上升火星 */
+.lavabg{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+.lavabg .blob{position:absolute;border-radius:50%;filter:blur(70px);opacity:.5;animation:drift 16s ease-in-out infinite alternate}
+.lavabg .blob.b1{width:340px;height:340px;left:-110px;top:-90px;background:radial-gradient(circle,#ff2d55aa,transparent 70%)}
+.lavabg .blob.b2{width:300px;height:300px;right:-100px;top:32%;background:radial-gradient(circle,#ff5a1fcc,transparent 70%);animation-delay:-6s}
+.lavabg .blob.b3{width:380px;height:380px;left:-60px;bottom:-140px;background:radial-gradient(circle,#b34700aa,transparent 70%);animation-delay:-11s}
+@keyframes drift{to{transform:translate(46px,34px) scale(1.12)}}
+.lavabg .emb{position:absolute;display:block;border-radius:50%;
+  background:radial-gradient(circle,#ffd166,#ff5a1f 70%,transparent);
+  animation:rise linear infinite;opacity:0}
+@keyframes rise{0%{transform:translateY(30px);opacity:0}25%{opacity:.9}100%{transform:translateY(-140px);opacity:0}}
+/* 顶部栏 */
+.appbar{
+  flex:0 0 auto;display:flex;align-items:center;gap:.7rem;position:relative;z-index:5;
+  padding:calc(.9rem + env(safe-area-inset-top)) 1.1rem .9rem;
+  background:rgba(23,12,7,.72);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  border-bottom:1px solid rgba(255,122,47,.28);
+}
+.appbar .logo{width:34px;height:34px;flex:0 0 auto;position:relative}
+.appbar .logo i{position:absolute;inset:0;background:linear-gradient(160deg,#ffd166,#ff5a1f 55%,#ff2d55);
+  clip-path:var(--drop);filter:drop-shadow(0 0 8px rgba(255,122,31,.9));animation:flick 2.4s ease-in-out infinite}
+@keyframes flick{0%,100%{transform:scale(1)}50%{transform:scale(1.08) rotate(-3deg)}}
+.appbar h1{margin:0;font-size:1.05rem;letter-spacing:.03em}
+.appbar h1 small{display:block;font-size:.66rem;font-weight:400;color:var(--muted);letter-spacing:.1em}
+.appbar .sp{flex:1}
+/* 页面滚动区 */
+.screens{flex:1;position:relative;overflow:hidden;z-index:1}
+.screen{position:absolute;inset:0;overflow-y:auto;padding:1.1rem 1.1rem 1.4rem;display:none;scrollbar-width:none}
+.screen::-webkit-scrollbar{display:none}
+.screen.active{display:block;animation:screen-in .25s ease}
+@keyframes screen-in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.sec{margin:0 0 1.6rem}
+.sec-t{display:flex;align-items:center;gap:.5rem;margin:0 0 .8rem;font-size:.8rem;letter-spacing:.14em;color:var(--ember);font-weight:700}
+.sec-t::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,rgba(255,122,47,.6),transparent)}
+.sec-t .n{background:linear-gradient(135deg,var(--crimson),var(--magma));color:#fff;font-size:.68rem;min-width:1.35rem;height:1.35rem;border-radius:.5rem;display:inline-flex;align-items:center;justify-content:center;padding:0 .3rem;box-shadow:0 0 10px rgba(255,80,30,.6)}
+/* 底部 Tab 栏 · 悬浮玻璃胶囊 + 滑动熔岩 pill */
+.tabbar{
+  position:relative;flex:0 0 auto;display:flex;z-index:5;
+  background:rgba(23,12,7,.78);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  border:1px solid rgba(255,122,47,.35);border-radius:2rem;
+  margin:.55rem .9rem calc(.75rem + env(safe-area-inset-bottom));padding:.35rem;
+  box-shadow:0 8px 28px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,190,130,.18);
+}
+.tab-pill{
+  position:absolute;top:.35rem;bottom:.35rem;left:.35rem;width:60px;border-radius:1.4rem;
+  background:linear-gradient(135deg,#ff2d55,#ff5a1f 55%,#ffb347);background-size:200% 200%;
+  animation:lavaflow 4s ease infinite;box-shadow:0 0 16px rgba(255,110,40,.75),inset 0 1px 0 rgba(255,255,255,.5);
+  transition:left .32s cubic-bezier(.55,1.45,.45,1),width .32s ease;z-index:0;
+}
+.tab{flex:1;border:0;background:none;color:var(--muted);font-family:inherit;cursor:pointer;
+  display:flex;flex-direction:column;align-items:center;gap:.15rem;
+  font-size:.62rem;font-weight:500;padding:.45rem 0 .3rem;border-radius:1.2rem;position:relative;z-index:1}
+.tab svg{width:22px;height:22px}
+.tab.on{color:#fff8f0;font-weight:700;text-shadow:0 0 8px rgba(255,120,40,.9)}
+.tab:not(.on):active{transform:translateY(2px)}
+@keyframes lavaflow{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+/* ============ 按钮 ============ */
+.btn-lava{
+  --pad:.8rem 1.5rem;--fs:.95rem;
+  position:relative;overflow:hidden;cursor:pointer;border:0;font-family:inherit;
+  display:inline-flex;align-items:center;justify-content:center;gap:.45rem;
+  font-weight:700;line-height:1;font-size:var(--fs);color:#220c02;
+  padding:var(--pad);border-radius:var(--r);white-space:nowrap;
+  background:linear-gradient(120deg,#ff2d55,#ff5a1f 35%,#ffb347 65%,#ff2d55);
+  background-size:220% 220%;animation:lavaflow 5s ease infinite;
+  box-shadow:0 0 0 1px rgba(255,150,70,.55),0 6px 24px rgba(255,90,31,.5),inset 0 1px 0 rgba(255,255,255,.55);
+  transition:transform .12s,box-shadow .2s;
+}
+.btn-lava:hover{box-shadow:0 0 0 1px rgba(255,170,90,.8),0 8px 32px rgba(255,100,35,.75),inset 0 1px 0 rgba(255,255,255,.6)}
+.btn-lava:active{transform:scale(.95)}
+.btn-lava .rip{position:absolute;border-radius:50%;background:rgba(255,255,255,.5);
+  transform:scale(0);animation:rip .55s ease-out forwards;pointer-events:none}
+@keyframes rip{to{transform:scale(3.2);opacity:0}}
+.btn-lava.sm{--pad:.55rem 1rem;--fs:.82rem}
+.btn-lava.lg{--pad:1rem 1.8rem;--fs:1.12rem}
+.btn-lava.block{width:100%}
+.btn-lava[disabled]{cursor:not-allowed;filter:grayscale(.85) brightness(.55);animation:none}
+.btn-lava.loading{pointer-events:none}
+.btn-lava.loading .spin{width:1em;height:1em;border-radius:50%;flex:0 0 auto;
+  border:2px solid rgba(60,20,0,.35);border-top-color:#2a0e00;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+/* 次按钮 · 炽金玻璃 */
+.btn-sec{
+  display:inline-flex;align-items:center;justify-content:center;gap:.45rem;cursor:pointer;
+  font-family:inherit;font-weight:700;font-size:.95rem;color:var(--gold);white-space:nowrap;
+  padding:.8rem 1.5rem;border-radius:var(--r);position:relative;overflow:hidden;
+  background:rgba(255,209,102,.07);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  border:1.5px solid rgba(255,209,102,.55);
+  box-shadow:inset 0 1px 0 rgba(255,220,150,.25),0 4px 16px rgba(255,180,60,.15);
+  transition:transform .12s,box-shadow .2s;
+}
+.btn-sec:active{transform:scale(.95)}
+.btn-sec:hover{box-shadow:inset 0 1px 0 rgba(255,220,150,.35),0 4px 22px rgba(255,180,60,.35)}
+.btn-sec .rip{position:absolute;border-radius:50%;background:rgba(255,209,102,.4);
+  transform:scale(0);animation:rip .55s ease-out forwards;pointer-events:none}
+/* 幽灵按钮 */
+.btn-ghost{
+  display:inline-flex;align-items:center;justify-content:center;gap:.45rem;cursor:pointer;
+  font-family:inherit;font-weight:600;font-size:.95rem;color:var(--cream);white-space:nowrap;
+  padding:.8rem 1.5rem;border-radius:var(--r);position:relative;overflow:hidden;
+  background:rgba(255,255,255,.04);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  border:1.5px solid rgba(255,122,47,.45);transition:transform .12s,border-color .2s,box-shadow .2s;
+}
+.btn-ghost:active{transform:scale(.95)}
+.btn-ghost:hover{border-color:var(--magma);box-shadow:0 0 18px rgba(255,110,40,.35)}
+.btn-ghost .rip{position:absolute;border-radius:50%;background:rgba(255,122,47,.35);
+  transform:scale(0);animation:rip .55s ease-out forwards;pointer-events:none}
+/* 危险按钮 */
+.btn-danger{
+  display:inline-flex;align-items:center;justify-content:center;gap:.45rem;cursor:pointer;border:0;
+  font-family:inherit;font-weight:700;font-size:.95rem;color:#fff;white-space:nowrap;
+  padding:.8rem 1.5rem;border-radius:var(--r);
+  background:linear-gradient(135deg,#c81e4a,#ff2d55);
+  box-shadow:0 6px 20px rgba(255,45,85,.45),inset 0 1px 0 rgba(255,255,255,.4);
+  transition:transform .12s;
+}
+.btn-danger:active{transform:scale(.95)}
+/* 熔岩填充按钮：悬停时岩浆自下涌上 */
+.btn-fill{
+  display:inline-flex;align-items:center;justify-content:center;cursor:pointer;
+  font-family:inherit;font-weight:700;font-size:.95rem;color:var(--ember);white-space:nowrap;
+  padding:.8rem 1.5rem;border-radius:var(--r);position:relative;overflow:hidden;
+  background:rgba(255,90,31,.06);border:1.5px solid var(--magma);transition:color .25s,transform .12s;
+}
+.btn-fill::before{content:"";position:absolute;inset:-2px;
+  background:linear-gradient(120deg,#ff2d55,#ff5a1f 50%,#ffb347);background-size:200% 200%;animation:lavaflow 4s ease infinite;
+  transform:translateY(102%);transition:transform .38s cubic-bezier(.55,0,.3,1);border-radius:.7rem}
+.btn-fill:hover::before{transform:none}
+.btn-fill:active{transform:scale(.95)}
+.btn-fill span{position:relative;z-index:1}
+.btn-fill:hover{color:#220c02}
+/* 磁吸按钮 */
+.btn-mag{
+  display:inline-flex;align-items:center;justify-content:center;cursor:pointer;
+  font-family:inherit;font-weight:700;font-size:.95rem;color:#fff;white-space:nowrap;
+  padding:.8rem 1.5rem;border-radius:var(--r);border:0;position:relative;
+  background:radial-gradient(circle at 50% 30%,#ff8a3d,#ff5a1f 60%,#d63c0e);
+  box-shadow:0 0 22px rgba(255,110,40,.6),inset 0 1px 0 rgba(255,255,255,.45);
+  transition:box-shadow .2s;
+}
+/* 图标按钮 */
+.icobtn{
+  width:46px;height:46px;border-radius:1rem;cursor:pointer;flex:0 0 auto;
+  background:rgba(255,122,47,.08);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  border:1.5px solid rgba(255,122,47,.5);color:var(--ember);
+  display:inline-flex;align-items:center;justify-content:center;font-family:inherit;
+  box-shadow:0 0 14px rgba(255,110,40,.25),inset 0 1px 0 rgba(255,190,130,.25);
+  transition:transform .12s,box-shadow .2s;
+}
+.icobtn svg{width:20px;height:20px}
+.icobtn:active{transform:scale(.9)}
+.icobtn:hover{box-shadow:0 0 22px rgba(255,110,40,.5),inset 0 1px 0 rgba(255,190,130,.35)}
+.icobtn.round{border-radius:50%}
+.icobtn.gold{color:var(--gold);border-color:rgba(255,209,102,.5)}
+</style>
+<style>
+/* ============ 卡片 / 玻璃 ============ */
+.card{
+  background:linear-gradient(150deg,rgba(255,110,40,.10),rgba(20,9,5,.55));
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  border:1px solid rgba(255,122,47,.32);border-radius:var(--r);
+  padding:1rem;position:relative;overflow:hidden;
+  box-shadow:inset 0 1px 0 rgba(255,190,130,.22),0 10px 30px rgba(0,0,0,.45);
+}
+.card h3{margin:.2rem 0 .4rem;font-size:1rem}
+.card p{margin:0;color:var(--muted);font-size:.85rem;line-height:1.55}
+.card .media{height:110px;border-radius:.7rem;margin:-.2rem -.2rem .8rem;position:relative;overflow:hidden;
+  background:linear-gradient(135deg,#3d0d02,#ff2d55 55%,#ffb347);
+  border:1px solid rgba(255,150,70,.4)}
+.card .media::after{content:"";position:absolute;inset:-40%;filter:blur(24px);opacity:.7;
+  background:radial-gradient(circle,#ffd16688,transparent 60%),radial-gradient(circle at 70% 60%,#ff2d5588,transparent 60%);
+  animation:drift 9s ease-in-out infinite alternate}
+.card .media .badge{position:absolute;left:.7rem;top:.7rem;z-index:1;background:rgba(10,4,2,.65);
+  backdrop-filter:blur(6px);color:var(--ember);font-size:.68rem;font-weight:700;
+  padding:.28rem .65rem;border-radius:2rem;border:1px solid rgba(255,150,70,.5)}
+.card.press{transition:transform .12s}
+.card.press:active{transform:scale(.97)}
+/* 芯片 / 徽标 / 头像 */
+.chip{
+  border:1px solid rgba(255,122,47,.4);background:rgba(255,110,40,.07);color:var(--cream);
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  font-family:inherit;font-weight:500;font-size:.78rem;padding:.45rem .9rem;border-radius:2rem;cursor:pointer;
+  transition:all .15s;
+}
+.chip.on{background:linear-gradient(135deg,#ff2d55,#ff5a1f);color:#fff;font-weight:700;border-color:transparent;
+  box-shadow:0 0 14px rgba(255,100,35,.6)}
+.chip:active{transform:scale(.93)}
+.tag{display:inline-flex;align-items:center;gap:.35rem;font-size:.7rem;font-weight:700;
+  padding:.3rem .7rem;border-radius:2rem;border:1px solid rgba(255,122,47,.4)}
+.tag.lava{background:linear-gradient(135deg,#ff2d55,#ff5a1f);color:#fff;box-shadow:0 0 10px rgba(255,100,35,.5)}
+.tag.gold{background:rgba(255,209,102,.12);color:var(--gold);border-color:rgba(255,209,102,.45)}
+.tag.ghost{background:rgba(255,255,255,.04);color:var(--muted);border-color:rgba(255,255,255,.14)}
+.tag .dot{width:.5rem;height:.5rem;border-radius:50%;background:currentColor;box-shadow:0 0 6px currentColor}
+.avatar{width:52px;height:52px;border-radius:50%;flex:0 0 auto;padding:2.5px;
+  background:conic-gradient(from 40deg,#ff2d55,#ff5a1f,#ffb347,#ff2d55);
+  display:inline-flex;align-items:center;justify-content:center}
+.avatar b{width:100%;height:100%;border-radius:50%;background:#1c0d06;display:flex;align-items:center;justify-content:center;
+  font-size:1.05rem;color:var(--ember)}
+.avatar.stack{margin-left:-14px}
+/* ============ 表单 ============ */
+.field{margin-bottom:1rem}
+.field label{display:block;font-size:.78rem;font-weight:700;margin-bottom:.45rem;letter-spacing:.04em;color:var(--ember)}
+.field label small{color:var(--muted);font-weight:400}
+.inp,textarea.inp{
+  width:100%;background:rgba(255,110,40,.06);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  border:1.5px solid rgba(255,122,47,.3);border-radius:.85rem;
+  color:var(--cream);font-family:inherit;font-size:.92rem;padding:.75rem .9rem;outline:none;
+  transition:border-color .15s,box-shadow .15s;
+}
+.inp::placeholder{color:#8a5f45}
+.inp:focus{border-color:var(--magma);box-shadow:0 0 0 3px rgba(255,110,40,.22),0 0 16px rgba(255,110,40,.3)}
+textarea.inp{min-height:84px;resize:vertical}
+select.inp{appearance:none;-webkit-appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffb347' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right .8rem center;background-size:18px;padding-right:2.4rem}
+select.inp option{background:#1c0d06}
+.searchbar{display:flex;align-items:center;gap:.6rem;background:rgba(255,110,40,.06);
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  border:1.5px solid rgba(255,122,47,.3);border-radius:2rem;padding:.7rem 1rem;transition:border-color .15s,box-shadow .15s}
+.searchbar:focus-within{border-color:var(--magma);box-shadow:0 0 16px rgba(255,110,40,.3)}
+.searchbar svg{width:18px;height:18px;color:var(--ember);flex:0 0 auto}
+.searchbar input{flex:1;background:none;border:0;outline:none;color:var(--cream);font-family:inherit;font-size:.9rem}
+/* 上传 */
+.upload{display:flex;align-items:center;justify-content:center;gap:.6rem;flex-direction:column;
+  border:1.5px dashed rgba(255,122,47,.5);border-radius:.9rem;padding:1.3rem;cursor:pointer;
+  background:rgba(255,110,40,.05);color:var(--muted);font-size:.83rem;transition:border-color .15s,background .15s}
+.upload:hover{border-color:var(--magma);background:rgba(255,110,40,.1)}
+.upload svg{width:26px;height:26px;color:var(--ember)}
+.upload input{display:none}
+.upload b{color:var(--ember)}
+/* 开关 */
+.switch{position:relative;display:inline-flex;align-items:center;cursor:pointer}
+.switch input{position:absolute;opacity:0;inset:0;cursor:pointer;margin:0}
+.switch .tr{width:58px;height:32px;border-radius:2rem;position:relative;flex:0 0 auto;
+  background:rgba(255,255,255,.07);border:1.5px solid rgba(255,122,47,.35);
+  transition:background .2s,box-shadow .2s,border-color .2s}
+.switch .tr::after{content:"";position:absolute;top:2.5px;left:3px;width:23px;height:23px;border-radius:50%;
+  background:radial-gradient(circle at 35% 30%,#ffe9d2,#c99e7e);transition:left .2s cubic-bezier(.6,1.5,.4,1),background .2s;
+  box-shadow:0 2px 6px rgba(0,0,0,.4)}
+.switch input:checked+.tr{background:linear-gradient(135deg,#ff2d55,#ff5a1f);
+  border-color:transparent;box-shadow:0 0 14px rgba(255,110,40,.65),inset 0 1px 0 rgba(255,255,255,.4)}
+.switch input:checked+.tr::after{left:28px;background:radial-gradient(circle at 35% 30%,#fff,#ffd166)}
+.switch input:focus-visible+.tr{outline:2px dashed var(--ember);outline-offset:3px}
+.switch.lb{gap:.7rem;font-size:.9rem;font-weight:500}
+/* 复选 / 单选 */
+.check{display:flex;align-items:center;gap:.7rem;padding:.6rem .2rem;cursor:pointer;font-size:.9rem;position:relative}
+.check input{position:absolute;opacity:0}
+.check .box{width:26px;height:26px;border-radius:.6rem;border:1.5px solid rgba(255,122,47,.5);
+  background:rgba(255,110,40,.07);display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;transition:all .15s}
+.check .box svg{width:15px;height:15px;color:#fff;opacity:0;transform:scale(.4);transition:all .15s}
+.check input:checked+.box{background:linear-gradient(135deg,#ff2d55,#ff5a1f);border-color:transparent;box-shadow:0 0 12px rgba(255,100,35,.55)}
+.check input:checked+.box svg{opacity:1;transform:scale(1)}
+.check input:focus-visible+.box{outline:2px dashed var(--ember);outline-offset:3px}
+.check .box.radio{border-radius:50%}
+.check .box.radio::before{content:"";width:11px;height:11px;border-radius:50%;background:#fff;opacity:0;transform:scale(.4);transition:all .15s;box-shadow:0 0 8px #fff}
+.check input:checked+.box.radio::before{opacity:1;transform:scale(1)}
+.check input:checked+.box.radio{background:linear-gradient(135deg,#ffb347,#ff5a1f);border-color:transparent;box-shadow:0 0 12px rgba(255,150,50,.6)}
+/* 滑杆 */
+.slider-row{display:flex;align-items:center;gap:.8rem}
+input[type=range].slider{flex:1;-webkit-appearance:none;appearance:none;height:14px;border-radius:1rem;cursor:pointer;
+  border:1px solid rgba(255,122,47,.4);
+  background:linear-gradient(to right,#ff2d55,#ff5a1f var(--v,50%),rgba(255,255,255,.08) var(--v,50%));
+  outline-offset:4px}
+input[type=range].slider::-webkit-slider-thumb{-webkit-appearance:none;width:28px;height:28px;border-radius:50%;
+  background:radial-gradient(circle at 35% 30%,#ffe9c4,#ffb347 45%,#ff5a1f);
+  border:2px solid rgba(255,255,255,.5);box-shadow:0 0 14px rgba(255,140,50,.9);cursor:pointer}
+input[type=range].slider::-moz-range-thumb{width:26px;height:26px;border-radius:50%;
+  background:radial-gradient(circle at 35% 30%,#ffe9c4,#ffb347 45%,#ff5a1f);border:2px solid rgba(255,255,255,.5);cursor:pointer}
+.slider-val{min-width:3.4rem;text-align:center;font-weight:700;color:#fff;font-size:.82rem;
+  background:linear-gradient(135deg,#ff2d55,#ff5a1f);border-radius:.6rem;padding:.35rem .4rem;
+  box-shadow:0 0 12px rgba(255,100,35,.5)}
+/* 步进器 */
+.stepper{display:inline-flex;align-items:center;gap:.15rem;border-radius:1rem;padding:.25rem;
+  background:rgba(255,110,40,.07);border:1px solid rgba(255,122,47,.35);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.stepper button{width:38px;height:38px;border-radius:.75rem;border:0;cursor:pointer;color:#fff;font-size:1.15rem;font-weight:700;
+  font-family:inherit;line-height:1;background:linear-gradient(135deg,#ff2d55,#ff5a1f);box-shadow:0 0 10px rgba(255,100,35,.45)}
+.stepper button:active{transform:scale(.9)}
+.stepper b{min-width:2.6rem;text-align:center;font-size:1rem;color:var(--ember)}
+/* 分段选择 */
+.segmented{display:flex;gap:.25rem;padding:.25rem;border-radius:1rem;
+  background:rgba(255,110,40,.07);border:1px solid rgba(255,122,47,.35)}
+.segmented button{flex:1;border:0;background:none;color:var(--muted);font-family:inherit;font-weight:500;
+  font-size:.85rem;padding:.6rem 0;border-radius:.75rem;cursor:pointer;transition:all .15s}
+.segmented button.on{background:linear-gradient(135deg,#ff2d55,#ff5a1f);color:#fff;font-weight:700;
+  box-shadow:0 0 12px rgba(255,100,35,.5)}
+/* 评分 · 火滴 */
+.rating{display:flex;gap:.5rem}
+.rating button{border:0;background:none;cursor:pointer;padding:0;width:44px;height:44px;position:relative;transition:transform .12s}
+.rating button i{position:absolute;inset:2px;background:#3a2114;clip-path:var(--drop);transition:all .18s}
+.rating button.lit i{background:linear-gradient(160deg,#ffd166,#ff5a1f 55%,#ff2d55);
+  filter:drop-shadow(0 0 10px rgba(255,130,40,.95));animation:flick 1.6s ease-in-out infinite}
+.rating button:active{transform:scale(1.25)}
+/* ============ 进度条 · 熔岩波浪 ============ */
+.progress{height:20px;border-radius:1rem;position:relative;overflow:hidden;
+  background:rgba(255,255,255,.07);border:1px solid rgba(255,122,47,.35)}
+.progress i{display:block;height:100%;border-radius:1rem;
+  background:linear-gradient(90deg,#ff2d55,#ff5a1f 40%,#ffb347 70%,#ff5a1f);
+  background-size:200% 100%;animation:lavaflow 2.6s linear infinite;
+  box-shadow:0 0 14px rgba(255,110,40,.8),inset 0 2px 3px rgba(255,255,255,.4);transition:width .4s ease;position:relative}
+.progress i::after{content:"";position:absolute;inset:0;
+  background:radial-gradient(circle at 8px 50%,rgba(255,255,255,.55) 0 5px,transparent 6px);
+  background-size:26px 100%;animation:bubbleup 1.4s linear infinite}
+@keyframes bubbleup{to{background-position:26px 0}}
+/* ============ 列表行 ============ */
+.rows{border-radius:var(--r);overflow:hidden;
+  background:linear-gradient(150deg,rgba(255,110,40,.08),rgba(20,9,5,.5));
+  border:1px solid rgba(255,122,47,.3);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.row-it{display:flex;align-items:center;gap:.85rem;padding:.85rem 1rem;border:0;width:100%;
+  background:none;color:var(--cream);font-family:inherit;text-align:left;cursor:pointer;font-size:.92rem}
+.row-it+.row-it{border-top:1px solid rgba(255,122,47,.18)}
+.row-it .ri{width:40px;height:40px;border-radius:.9rem;flex:0 0 auto;
+  display:flex;align-items:center;justify-content:center;color:#fff;
+  background:linear-gradient(135deg,#ff2d55,#ff5a1f);box-shadow:0 0 10px rgba(255,100,35,.45)}
+.row-it .ri.gold{background:linear-gradient(135deg,#ffb347,#ff8a1f)}
+.row-it .ri.glass{background:rgba(255,110,40,.12);border:1px solid rgba(255,122,47,.4);color:var(--ember);box-shadow:none}
+.row-it .ri svg{width:19px;height:19px}
+.row-it .tx{flex:1;min-width:0}
+.row-it .tx b{display:block;font-size:.9rem}
+.row-it .tx small{color:var(--muted);font-size:.74rem}
+.row-it>svg{width:18px;height:18px;color:var(--muted);flex:0 0 auto}
+.row-it:active{background:rgba(255,110,40,.1)}
+/* 手风琴 */
+.acc{border-radius:var(--r);overflow:hidden;margin-bottom:.7rem;
+  background:rgba(255,110,40,.06);border:1px solid rgba(255,122,47,.3)}
+.acc>button{width:100%;display:flex;align-items:center;gap:.6rem;padding:.9rem 1rem;background:none;border:0;
+  color:var(--cream);font-family:inherit;font-size:.92rem;font-weight:700;cursor:pointer;text-align:left}
+.acc>button svg{margin-left:auto;width:18px;height:18px;transition:transform .2s;color:var(--ember);flex:0 0 auto}
+.acc.open>button svg{transform:rotate(180deg)}
+.acc .body{max-height:0;overflow:hidden;transition:max-height .25s ease}
+.acc .body p{margin:0;padding:0 1rem 1rem;color:var(--muted);font-size:.85rem;line-height:1.6}
+/* 顶部页签 */
+.ttabs{display:flex;gap:.5rem;margin-bottom:.9rem}
+.ttabs button{flex:1;border:1px solid rgba(255,122,47,.35);background:rgba(255,110,40,.07);color:var(--muted);
+  font-family:inherit;font-weight:700;font-size:.82rem;padding:.6rem 0;border-radius:.8rem;cursor:pointer;transition:all .15s}
+.ttabs button.on{background:linear-gradient(135deg,#ff2d55,#ff5a1f);color:#fff;border-color:transparent;
+  box-shadow:0 0 12px rgba(255,100,35,.5)}
+/* 轮播 */
+.caro{position:relative;border-radius:var(--r);overflow:hidden;border:1px solid rgba(255,122,47,.35)}
+.caro .track{display:flex;transition:transform .35s cubic-bezier(.5,0,.3,1)}
+.caro .slide{flex:0 0 100%;height:150px;display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-end;
+  padding:1rem;position:relative;overflow:hidden}
+.caro .slide::after{content:"";position:absolute;inset:-30%;filter:blur(26px);opacity:.8;animation:drift 8s ease-in-out infinite alternate}
+.caro .slide.s1{background:linear-gradient(135deg,#2a0a02,#ff2d55)}
+.caro .slide.s1::after{background:radial-gradient(circle,#ffb347aa,transparent 65%)}
+.caro .slide.s2{background:linear-gradient(135deg,#1c0603,#ff5a1f)}
+.caro .slide.s2::after{background:radial-gradient(circle at 70% 30%,#ff2d55aa,transparent 65%)}
+.caro .slide.s3{background:linear-gradient(135deg,#160702,#b34700)}
+.caro .slide.s3::after{background:radial-gradient(circle at 30% 70%,#ffd16699,transparent 65%)}
+.caro .slide b,.caro .slide small{position:relative;z-index:1}
+.caro .slide b{font-size:1.05rem}
+.caro .slide small{color:rgba(255,240,225,.85);font-size:.74rem;margin-top:.2rem}
+.caro .dots{position:absolute;bottom:.6rem;left:0;right:0;display:flex;justify-content:center;gap:.4rem;z-index:1}
+.caro .dots i{display:block;width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.35);cursor:pointer;transition:all .2s}
+.caro .dots i.on{width:22px;border-radius:4px;background:#fff;box-shadow:0 0 8px rgba(255,150,60,.9)}
+/* 表格 */
+.tbl{width:100%;border-collapse:collapse;font-size:.83rem}
+.tbl th,.tbl td{padding:.65rem .5rem;text-align:left;border-bottom:1px solid rgba(255,122,47,.16)}
+.tbl th{color:var(--ember);font-size:.72rem;letter-spacing:.08em;font-weight:700}
+.tbl tr:last-child td{border-bottom:0}
+.tbl td.num{color:var(--gold);font-weight:700;font-variant-numeric:tabular-nums}
+/* 骨架屏 */
+.skel{border-radius:.6rem;background:linear-gradient(90deg,rgba(255,110,40,.08) 25%,rgba(255,140,60,.28) 50%,rgba(255,110,40,.08) 75%);
+  background-size:200% 100%;animation:sk 1.3s infinite}
+@keyframes sk{to{background-position:-200% 0}}
+/* 空状态 */
+.empty{text-align:center;padding:2.2rem 1rem}
+.empty .st{position:relative;width:96px;height:96px;margin:0 auto .9rem}
+.empty .st i{position:absolute;inset:0;background:linear-gradient(160deg,#3a2114,#1c0d06);
+  clip-path:var(--drop);border:0}
+.empty .st i::after{content:"";position:absolute;inset:0}
+.empty .st b{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:2rem;z-index:1;
+  background:linear-gradient(160deg,#ffd166,#ff5a1f);-webkit-background-clip:text;background-clip:text;color:transparent;
+  filter:drop-shadow(0 0 10px rgba(255,130,40,.8))}
+.empty p{color:var(--muted);font-size:.85rem;margin:.3rem 0 1.1rem}
+</style>
+<style>
+/* ============ 反馈层 ============ */
+.scrim{position:absolute;inset:0;background:rgba(8,3,1,.66);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);
+  opacity:0;pointer-events:none;transition:opacity .22s;z-index:20}
+.scrim.show{opacity:1;pointer-events:auto}
+.modal{position:absolute;left:1.1rem;right:1.1rem;top:50%;z-index:21;
+  background:linear-gradient(160deg,rgba(60,20,6,.92),rgba(20,8,4,.94));
+  backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+  border:1px solid rgba(255,122,47,.45);border-radius:1.2rem;padding:1.3rem;
+  box-shadow:0 0 0 1px rgba(0,0,0,.4),0 0 34px rgba(255,100,30,.35),inset 0 1px 0 rgba(255,190,130,.3);
+  transform:translateY(-50%) scale(.92);opacity:0;pointer-events:none;transition:all .22s cubic-bezier(.5,1.5,.5,1)}
+.modal.show{transform:translateY(-50%) scale(1);opacity:1;pointer-events:auto}
+.modal::before{content:"";position:absolute;top:0;left:12%;right:12%;height:3px;border-radius:0 0 6px 6px;
+  background:linear-gradient(90deg,transparent,#ffb347,#ff5a1f,#ffb347,transparent);
+  filter:drop-shadow(0 0 8px rgba(255,150,50,.9))}
+.modal .mdrop{position:relative;width:60px;height:60px;margin:-2.9rem auto .6rem}
+.modal .mdrop i{position:absolute;inset:0;background:linear-gradient(160deg,#ffd166,#ff5a1f 55%,#ff2d55);
+  clip-path:var(--drop);filter:drop-shadow(0 0 14px rgba(255,130,40,.95));animation:flick 2s ease-in-out infinite}
+.modal .mdrop b{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:1.5rem;z-index:1;color:#2a0e00}
+.modal h3{margin:.2rem 0 .5rem;text-align:center}
+.modal p{text-align:center;color:var(--muted);font-size:.85rem;line-height:1.6;margin:0 0 1.1rem}
+.modal .mrow{display:flex;gap:.7rem}
+.modal .mrow .btn-lava,.modal .mrow .btn-ghost{flex:1;--pad:.7rem 1rem;--fs:.88rem;padding:.7rem 1rem;font-size:.88rem}
+.sheet{position:absolute;left:0;right:0;bottom:0;z-index:21;
+  background:linear-gradient(180deg,rgba(52,20,8,.96),rgba(18,8,4,.97));
+  backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+  border-top:1px solid rgba(255,122,47,.45);border-radius:1.4rem 1.4rem 0 0;
+  padding:.7rem 1.1rem calc(1.2rem + env(safe-area-inset-bottom));
+  box-shadow:0 -12px 40px rgba(255,90,30,.18);
+  transform:translateY(105%);transition:transform .28s cubic-bezier(.5,1.2,.4,1)}
+.sheet.show{transform:none}
+.sheet .grab{width:44px;height:5px;border-radius:3px;background:rgba(255,150,70,.5);margin:0 auto .8rem}
+.sheet .opt{display:flex;align-items:center;gap:.8rem;width:100%;padding:.85rem .4rem;background:none;border:0;
+  color:var(--cream);font-family:inherit;font-size:.92rem;cursor:pointer;border-radius:.7rem;text-align:left}
+.sheet .opt:active{background:rgba(255,110,40,.12)}
+.sheet .opt svg{width:20px;height:20px;color:var(--ember)}
+.toast{position:absolute;left:50%;bottom:6.2rem;transform:translate(-50%,24px) scale(.92);z-index:22;
+  background:linear-gradient(160deg,rgba(60,22,8,.94),rgba(22,9,4,.94));
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  color:var(--cream);border:1px solid rgba(255,150,70,.55);border-radius:2rem;
+  padding:.65rem 1.2rem;font-size:.85rem;font-weight:500;display:flex;align-items:center;gap:.55rem;
+  box-shadow:0 0 20px rgba(255,110,40,.4),inset 0 1px 0 rgba(255,190,130,.25);
+  opacity:0;pointer-events:none;transition:all .28s cubic-bezier(.5,1.4,.5,1);white-space:nowrap;max-width:92%}
+.toast.show{opacity:1;transform:translate(-50%,0) scale(1)}
+.toast .bub{width:.6rem;height:.6rem;border-radius:50%;flex:0 0 auto;
+  background:radial-gradient(circle at 35% 30%,#ffe9c4,#ff8a1f 60%,#ff2d55);
+  box-shadow:0 0 10px rgba(255,140,50,.95);animation:bubpop .5s ease}
+@keyframes bubpop{0%{transform:scale(.3)}60%{transform:scale(1.35)}100%{transform:scale(1)}}
+.banner{display:flex;gap:.7rem;align-items:flex-start;border-radius:.9rem;
+  padding:.8rem .9rem;font-size:.83rem;line-height:1.5;margin-bottom:.7rem;
+  background:rgba(255,110,40,.06);border:1px solid rgba(255,122,47,.35);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.banner svg{width:18px;height:18px;flex:0 0 auto;margin-top:.1rem}
+.banner.ok{border-color:rgba(255,209,102,.55)}
+.banner.ok svg{color:var(--gold)}
+.banner.warn{border-color:rgba(255,45,85,.6)}
+.banner.warn svg{color:var(--crimson)}
+.banner b{display:block;margin-bottom:.15rem}
+.banner p{margin:0;color:var(--muted)}
+/* 加载动画 */
+.loaders{display:flex;gap:1.4rem;align-items:center;justify-content:center;padding:1.2rem .5rem}
+.loader{width:44px;height:44px;border-radius:50%;flex:0 0 auto;
+  border:4px solid rgba(255,110,40,.18);border-top-color:var(--magma);
+  animation:spin .9s linear infinite;box-shadow:0 0 16px rgba(255,110,40,.35)}
+.drip{width:34px;height:44px;flex:0 0 auto;position:relative}
+.drip i{position:absolute;left:50%;top:0;width:26px;height:34px;margin-left:-13px;
+  background:linear-gradient(160deg,#ffd166,#ff5a1f 55%,#ff2d55);clip-path:var(--drop);
+  filter:drop-shadow(0 0 10px rgba(255,130,40,.9));animation:dripfall 1.6s ease-in infinite}
+@keyframes dripfall{0%{transform:translateY(-6px) scale(.7);opacity:0}25%{opacity:1}80%{opacity:1}100%{transform:translateY(22px) scale(1.05);opacity:0}}
+.orb{width:44px;height:44px;border-radius:50%;flex:0 0 auto;
+  background:radial-gradient(circle at 35% 30%,#ffe9c4,#ff8a1f 45%,#ff2d55 75%);
+  box-shadow:0 0 22px rgba(255,120,40,.85);animation:orbpulse 1.8s ease-in-out infinite}
+@keyframes orbpulse{0%,100%{transform:scale(1)}50%{transform:scale(1.14)}}
+/* 结果页 */
+.result{text-align:center;padding:1.6rem 1rem}
+.result .ok{width:76px;height:76px;border-radius:50%;margin:0 auto 1rem;position:relative;
+  background:radial-gradient(circle at 35% 30%,#ffe9c4,#ffb347 45%,#ff5a1f);
+  box-shadow:0 0 30px rgba(255,140,50,.8),inset 0 2px 6px rgba(255,255,255,.5);
+  display:flex;align-items:center;justify-content:center;animation:bubpop .5s ease}
+.result .ok svg{width:36px;height:36px;color:#2a0e00}
+.result h3{margin:.2rem 0 .4rem}
+.result p{color:var(--muted);font-size:.85rem;margin:0 0 1.1rem}
+/* ============ 总览页 ============ */
+.hero{position:relative;overflow:hidden;text-align:center;padding:2.2rem 1.2rem 0;margin-bottom:1.4rem;
+  background:linear-gradient(165deg,rgba(255,80,30,.14),rgba(20,8,4,.4));
+  border:1px solid rgba(255,122,47,.35);border-radius:1.2rem;
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  box-shadow:inset 0 1px 0 rgba(255,190,130,.25),0 12px 34px rgba(0,0,0,.45)}
+.hero .flow{position:absolute;inset:-40%;filter:blur(50px);opacity:.55;pointer-events:none;
+  background:radial-gradient(circle at 30% 30%,#ff2d5599,transparent 60%),radial-gradient(circle at 70% 60%,#ff8a1f99,transparent 60%);
+  animation:drift 10s ease-in-out infinite alternate}
+.hero h2{position:relative;margin:0 0 .3rem;font-size:1.9rem;letter-spacing:.06em;font-weight:800}
+.hero h2 em{font-style:normal;background:linear-gradient(100deg,#ffd166,#ff5a1f 45%,#ff2d55,#ffd166);
+  background-size:220% auto;-webkit-background-clip:text;background-clip:text;color:transparent;
+  animation:lavaflow 4s linear infinite}
+.hero p{position:relative;color:var(--muted);font-size:.85rem;margin:0 0 1.2rem;line-height:1.7}
+.hero .wave{display:block;width:100%;height:34px;margin:1rem -1.2rem 0;position:relative}
+.swatches{display:grid;grid-template-columns:repeat(3,1fr);gap:.7rem}
+.sw{border:1px solid rgba(255,122,47,.3);border-radius:.8rem;overflow:hidden;cursor:pointer;
+  background:rgba(20,9,5,.5);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);transition:transform .12s}
+.sw:active{transform:scale(.95)}
+.sw i{display:block;height:52px}
+.sw span{display:block;font-size:.66rem;padding:.4rem .5rem 0;color:var(--muted);font-weight:500}
+.sw b{display:block;font-size:.72rem;color:var(--cream);padding:.1rem .5rem .5rem;font-weight:700;font-family:ui-monospace,monospace}
+.type-row{padding:.55rem 0;border-bottom:1px dashed rgba(255,122,47,.25)}
+.type-row:last-child{border:0}
+.type-row small{display:block;color:var(--muted);font-size:.68rem;margin-bottom:.15rem;letter-spacing:.06em}
+.idx{display:flex;align-items:center;gap:.85rem;width:100%;padding:.85rem .4rem;background:none;border:0;
+  color:var(--cream);font-family:inherit;cursor:pointer;text-align:left;border-bottom:1px solid rgba(255,122,47,.2);font-size:.9rem}
+.idx:last-child{border-bottom:0}
+.idx .n{width:34px;height:34px;border-radius:.7rem;flex:0 0 auto;
+  display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.85rem;color:#fff}
+.idx small{display:block;color:var(--muted);font-size:.72rem;font-weight:400}
+.idx>svg{margin-left:auto;width:18px;height:18px;color:var(--muted)}
+.demo-row{display:flex;flex-wrap:wrap;gap:.8rem;align-items:center;margin-bottom:1rem}
+.demo-row.center{justify-content:center;padding:1.2rem .5rem;border-radius:var(--r);
+  background:rgba(255,110,40,.05);border:1px dashed rgba(255,122,47,.4)}
+.note{font-size:.75rem;color:var(--muted);line-height:1.6}
+code.k{font-family:ui-monospace,monospace;font-size:.72rem;background:rgba(0,0,0,.5);color:var(--ember);
+  padding:.15rem .45rem;border-radius:.4rem;border:1px solid rgba(255,122,47,.3)}
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="lavabg" aria-hidden="true">
+    <i class="blob b1"></i><i class="blob b2"></i><i class="blob b3"></i>
+    <i class="emb" style="left:12%;bottom:8%;width:7px;height:7px;animation-duration:7s;animation-delay:-2s"></i>
+    <i class="emb" style="left:28%;bottom:4%;width:5px;height:5px;animation-duration:9s;animation-delay:-5s"></i>
+    <i class="emb" style="left:47%;bottom:10%;width:8px;height:8px;animation-duration:6s;animation-delay:-1s"></i>
+    <i class="emb" style="left:63%;bottom:6%;width:5px;height:5px;animation-duration:8s;animation-delay:-4s"></i>
+    <i class="emb" style="left:78%;bottom:12%;width:6px;height:6px;animation-duration:7.5s;animation-delay:-3s"></i>
+    <i class="emb" style="left:88%;bottom:5%;width:4px;height:4px;animation-duration:9.5s;animation-delay:-6s"></i>
+    <i class="emb" style="left:20%;bottom:14%;width:4px;height:4px;animation-duration:10s;animation-delay:-7s"></i>
+    <i class="emb" style="left:55%;bottom:3%;width:6px;height:6px;animation-duration:6.5s;animation-delay:-.5s"></i>
+  </div>
+  <header class="appbar">
+    <span class="logo"><i></i></span>
+    <h1>LAVA UI<small>熔岩流体 · v1.0</small></h1>
+    <span class="sp"></span>
+    <button class="icobtn round" style="width:38px;height:38px" onclick="toast('v1.0 · 纯手写 CSS，无框架')" aria-label="关于">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M12 11v5"/></svg>
+    </button>
+  </header>
+
+  <main class="screens">
+    <!-- ============ 总览 ============ -->
+    <section class="screen active" data-screen="home">
+      <div class="hero">
+        <div class="flow"></div>
+        <h2>LAVA <em>UI</em></h2>
+        <p>一套「熔岩流体」App 组件库<br>流动岩浆 · 玻璃拟态 · 灼热发光 · 上升火星</p>
+        <button class="btn-lava rip-btn" data-goto="buttons"><span>开始浏览组件</span></button>
+        <svg class="wave" viewBox="0 0 430 34" preserveAspectRatio="none"><path d="M0 20 Q 54 4 108 20 T 216 20 T 324 20 T 430 20 V34 H0 Z" fill="rgba(255,90,31,.35)"/><path d="M0 24 Q 54 10 108 24 T 216 24 T 324 24 T 430 24 V34 H0 Z" fill="rgba(255,45,85,.3)"/></svg>
+      </div>
+
+      <div class="sec">
+        <h4 class="sec-t">设计 TOKENS</h4>
+        <div class="swatches">
+          <div class="sw" data-hex="#FF5A1F"><i style="background:linear-gradient(135deg,#ff8a3d,#ff5a1f)"></i><span>熔岩橙</span><b>#FF5A1F</b></div>
+          <div class="sw" data-hex="#FFB347"><i style="background:linear-gradient(135deg,#ffd166,#ffb347)"></i><span>火星金</span><b>#FFB347</b></div>
+          <div class="sw" data-hex="#FF2D55"><i style="background:linear-gradient(135deg,#ff5a7a,#ff2d55)"></i><span>岩浆红</span><b>#FF2D55</b></div>
+          <div class="sw" data-hex="#0D0705"><i style="background:#0d0705;border-bottom:1px solid rgba(255,122,47,.3)"></i><span>玄岩黑</span><b>#0D0705</b></div>
+          <div class="sw" data-hex="#FFF3E8"><i style="background:#fff3e8"></i><span>岩灰白</span><b>#FFF3E8</b></div>
+          <div class="sw" data-hex="#241109"><i style="background:#241109"></i><span>熔岩床</span><b>#241109</b></div>
+        </div>
+        <p class="note" style="margin-top:.6rem">点色卡可复制色值 · 背景常年有三团岩浆在缓慢流动，火星粒子持续上升</p>
+      </div>
+
+      <div class="sec">
+        <h4 class="sec-t">字阶</h4>
+        <div class="card">
+          <div class="type-row"><small>DISPLAY / 800</small><span style="font-size:1.7rem;font-weight:800">熔岩翻涌时刻</span></div>
+          <div class="type-row"><small>TITLE / 700</small><span style="font-size:1.15rem;font-weight:700">组件全览 Demo</span></div>
+          <div class="type-row"><small>BODY / 400</small><span style="font-size:.9rem">所有按钮都带着岩浆的光，点下去会有波纹荡开。</span></div>
+          <div class="type-row"><small>CAPTION / 500</small><span style="font-size:.72rem;color:var(--muted)">玻璃拟态 · 灼热外发光 · 流体渐变</span></div>
+        </div>
+      </div>
+
+      <div class="sec">
+        <h4 class="sec-t">组件索引</h4>
+        <div class="rows">
+          <button class="idx" data-goto="buttons"><span class="n" style="background:linear-gradient(135deg,#ff2d55,#ff5a1f)">●</span><span>按钮 Buttons<small>熔岩主按钮 · 液态特效 · 图标按钮</small></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></button>
+          <button class="idx" data-goto="forms"><span class="n" style="background:linear-gradient(135deg,#ffb347,#ff8a1f)">✎</span><span>表单 Forms<small>输入框 · 开关 · 滑杆 · 火滴评分</small></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></button>
+          <button class="idx" data-goto="showcase"><span class="n" style="background:linear-gradient(135deg,#ff8a3d,#b34700)">▦</span><span>展示 Display<small>卡片 · 轮播 · 表格 · 列表</small></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></button>
+          <button class="idx" data-goto="feedback"><span class="n" style="background:linear-gradient(135deg,#ff5a7a,#ff2d55)">◉</span><span>反馈 Feedback<small>弹窗 · 动作表 · 气泡 Toast</small></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></button>
+        </div>
+      </div>
+    </section>
+    <!-- ============ 按钮 ============ -->
+    <section class="screen" data-screen="buttons">
+      <div class="sec">
+        <h4 class="sec-t"><span class="n">8</span>熔岩主按钮 · 液态波纹</h4>
+        <div class="demo-row center">
+          <button class="btn-lava rip-btn"><span>熔岩主按钮</span></button>
+        </div>
+        <p class="note">渐变岩浆持续流动 · 点击泛起白色波纹 · 按压缩放回弹</p>
+      </div>
+      <div class="sec">
+        <h4 class="sec-t">变体</h4>
+        <div class="demo-row">
+          <button class="btn-sec rip-btn"><span>炽金次按钮</span></button>
+          <button class="btn-ghost rip-btn"><span>幽灵按钮</span></button>
+        </div>
+        <div class="demo-row">
+          <button class="btn-danger"><span>危险操作</span></button>
+          <button class="btn-lava" disabled><span>禁用态</span></button>
+        </div>
+        <div class="demo-row">
+          <button class="btn-lava loading"><span class="spin"></span><span>岩浆凝固中…</span></button>
+        </div>
+      </div>
+      <div class="sec">
+        <h4 class="sec-t">液态特效</h4>
+        <div class="demo-row">
+          <button class="btn-fill"><span>悬停·岩浆上涌</span></button>
+          <button class="btn-mag" id="magBtn"><span>磁吸按钮·靠近我</span></button>
+        </div>
+        <p class="note">填充按钮：岩浆从底部涌上淹没按钮 · 磁吸按钮：会朝你的手指偏一点</p>
+      </div>
+      <div class="sec">
+        <h4 class="sec-t">尺寸</h4>
+        <div class="demo-row">
+          <button class="btn-lava sm rip-btn"><span>小号</span></button>
+          <button class="btn-lava rip-btn"><span>中号</span></button>
+          <button class="btn-lava lg rip-btn"><span>大号</span></button>
+        </div>
+        <button class="btn-lava block rip-btn" style="margin-top:.2rem"><span>通栏按钮 Block</span></button>
+      </div>
+      <div class="sec">
+        <h4 class="sec-t">图标按钮</h4>
+        <div class="demo-row">
+          <button class="icobtn" aria-label="搜索" onclick="toast('搜索：熔岩')" ><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></button>
+          <button class="icobtn gold" aria-label="收藏" onclick="toast('已收藏到岩浆池')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-4.5-9.5-9C.8 8.6 2.6 5 6 5c2 0 3.4 1.1 4 2.2C10.6 6.1 12 5 14 5c3.4 0 5.2 3.6 3.5 7-2.5 4.5-9.5 9-9.5 9z"/></svg></button>
+          <button class="icobtn round" aria-label="播放" onclick="toast('岩浆开始流动')"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></button>
+          <button class="icobtn round gold" aria-label="火焰" onclick="toast('火力全开')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2c1 4-4 5.5-4 10a4 4 0 0 0 8 .5C16.5 8 12 6 12 2z"/><path d="M12 22a6 6 0 0 1-6-6c0-1 .2-2 .6-2.8"/></svg></button>
+        </div>
+        <p class="note">用法：<code class="k">.btn-lava</code> 自带流动渐变 + <code class="k">.rip-btn</code> 获得点击波纹；变体 <code class="k">.btn-sec</code> <code class="k">.btn-ghost</code> <code class="k">.btn-danger</code> <code class="k">.btn-fill</code> <code class="k">.btn-mag</code></p>
+      </div>
+    </section>
+
+    <!-- ============ 表单 ============ -->
+    <section class="screen" data-screen="forms">
+      <div class="sec">
+        <h4 class="sec-t">输入</h4>
+        <div class="field">
+          <label>火山名 <small>· 聚焦试试灼热光环</small></label>
+          <input class="inp" placeholder="给你的火山起个名字">
+        </div>
+        <div class="field">
+          <label>搜索</label>
+          <div class="searchbar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+            <input placeholder="搜索组件、颜色、用法…">
+          </div>
+        </div>
+        <div class="field">
+          <label>喷发记录</label>
+          <textarea class="inp" placeholder="记录下这次喷发的壮观场面…"></textarea>
+        </div>
+        <div class="field">
+          <label>选择岩浆房</label>
+          <select class="inp" id="magmaRoom">
+            <option>主岩浆房 · 1200°C</option>
+            <option>东侧支流 · 980°C</option>
+            <option>深层地幔 · 1400°C</option>
+            <option>冷却中的岩床</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>上传岩浆样本</label>
+          <label class="upload">
+            <input type="file" id="fileInp">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 16V4m0 0l-4 4m4-4l4 4"/><path d="M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></svg>
+            <span id="fileTip"><b>点击上传</b> 或把样本拖进来</span>
+          </label>
+        </div>
+      </div>
+      <div class="sec">
+        <h4 class="sec-t">开关 · 复选 · 单选</h4>
+        <div class="demo-row">
+          <label class="switch lb"><input type="checkbox" checked><span class="tr"></span>岩浆持续流动</label>
+        </div>
+        <div class="demo-row">
+          <label class="switch lb"><input type="checkbox"><span class="tr"></span>火星粒子特效</label>
+        </div>
+        <div class="card" style="margin-top:.4rem">
+          <label class="check"><input type="checkbox" checked><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span>记住我的火山</label>
+          <label class="check"><input type="checkbox"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span>喷发前提醒我</label>
+          <label class="check"><input type="radio" name="flow" checked><span class="box radio"></span>缓慢流淌</label>
+          <label class="check"><input type="radio" name="flow"><span class="box radio"></span>剧烈喷发</label>
+        </div>
+      </div>
+      <div class="sec">
+        <h4 class="sec-t">滑杆 · 步进器 · 分段</h4>
+        <div class="field">
+          <label>岩浆温度 <small id="speedLabel">· 1200°C</small></label>
+          <div class="slider-row">
+            <input type="range" class="slider" min="600" max="1600" value="1200" step="10" id="speed">
+            <span class="slider-val" id="speedVal">1200°</span>
+          </div>
+        </div>
+        <div class="field">
+          <label>火山口数量</label>
+          <div class="stepper">
+            <button id="stepMinus" aria-label="减少">−</button><b id="stepNum">1</b><button id="stepPlus" aria-label="增加">＋</button>
+          </div>
+        </div>
+        <div class="segmented" id="segDemo">
+          <button class="on">按温度</button><button>按流量</button><button>按深度</button>
+        </div>
+      </div>
+      <div class="sec">
+        <h4 class="sec-t">火滴评分</h4>
+        <div class="demo-row center">
+          <div class="rating" id="ratingDemo" role="radiogroup" aria-label="评分">
+            <button aria-label="1滴"><i></i></button><button aria-label="2滴"><i></i></button><button aria-label="3滴"><i></i></button><button aria-label="4滴"><i></i></button><button aria-label="5滴"><i></i></button>
+          </div>
+        </div>
+        <p class="note" style="text-align:center" id="ratingTip">点一点火滴试试</p>
+      </div>
+    </section>
+    <!-- ============ 展示 ============ -->
+    <section class="screen" data-screen="showcase">
+      <div class="sec">
+        <h4 class="sec-t">卡片</h4>
+        <div class="card" style="margin-bottom:.9rem">
+          <span class="tag lava" style="margin-bottom:.5rem"><span class="dot"></span>ERUPTING</span>
+          <h3>玻璃拟态卡片</h3>
+          <p>毛玻璃底 + 熔岩色描边 + 顶部内高光，悬停可加 <code class="k">.press</code> 获得按压回弹。</p>
+        </div>
+        <div class="card press" style="margin-bottom:.9rem" onclick="toast('岩浆正在翻涌…')">
+          <div class="media"><span class="badge">● LIVE</span></div>
+          <h3>火山口直播 · 可按压</h3>
+          <p>封面里有三团岩浆在缓慢漂移，点我试试按压效果。</p>
+        </div>
+      </div>
+      <div class="sec">
+        <h4 class="sec-t">芯片 · 徽标 · 头像</h4>
+        <div class="demo-row" id="chipRow">
+          <button class="chip on">全部</button><button class="chip">按钮</button><button class="chip">表单</button><button class="chip">反馈</button>
+        </div>
+        <div class="demo-row">
+          <span class="tag lava"><span class="dot"></span>喷发中</span>
+          <span class="tag gold">v1.0</span>
+          <span class="tag ghost">冷却中</span>
+        </div>
+        <div class="demo-row">
+          <span class="avatar"><b>熔</b></span>
+          <span class="avatar stack"><b>岩</b></span>
+          <span class="avatar stack"><b>池</b></span>
+          <span class="avatar stack"><b style="color:var(--gold)">+9</b></span>
+        </div>
+      </div>
+      <div class="sec">
+        <h4 class="sec-t">轮播</h4>
+        <div class="caro" id="caro">
+          <div class="track" id="caroTrack">
+            <div class="slide s1"><b>主火山口</b><small>实时温度 1240°C · 流量稳定</small></div>
+            <div class="slide s2"><b>东侧支流</b><small>岩浆正在缓慢推进</small></div>
+            <div class="slide s3"><b>深层地幔</b><small>压力积聚 · 密切关注</small></div>
+          </div>
+          <div class="dots" id="caroDots"><i class="on"></i><i></i><i></i></div>
+        </div>
+      </div>
+      <div class="sec">
+        <h4 class="sec-t">进度条 · 熔岩波浪</h4>
+        <div class="field"><label>岩浆充能 · 72%</label><div class="progress"><i style="width:72%"></i></div></div>
+        <div class="field"><label>冷却进度 · 45%</label><div class="progress"><i style="width:45%"></i></div></div>
+      </div>
+      <div class="sec">
+        <h4 class="sec-t">列表行</h4>
+        <div class="rows">
+          <button class="row-it" onclick="toast('打开：我的火山')"><span class="ri"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2c1 4-4 5.5-4 10a4 4 0 0 0 8 .5C16.5 8 12 6 12 2z"/></svg></span><span class="tx"><b>我的火山</b><small>3 座正在喷发</small></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></button>
+          <button class="row-it" onclick="toast('打开：喷发日志')"><span class="ri gold"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v5l3 2"/><circle cx="12" cy="12" r="9"/></svg></span><span class="tx"><b>喷发日志</b><small>昨日 14:02 · 小规模</small></span><span class="tag lava">NEW</span></button>
+          <button class="row-it" onclick="toast('打开：设置')"><span class="ri glass"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9L17 7M7 17l-2.1 2.1"/></svg></span><span class="tx"><b>设置</b><small>温度单位 · 提醒</small></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></button>
+        </div>
+      </div>
+      <div class="sec">
+        <h4 class="sec-t">手风琴 · 顶部页签</h4>
+        <div class="acc open">
+          <button>熔岩按钮的渐变为什么会流动？<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></button>
+          <div class="body"><p>背景用了 220% 大小的三色岩浆渐变，<code class="k">lavaflow</code> 关键帧让 background-position 来回漂移，看起来就像岩浆在涌动。</p></div>
+        </div>
+        <div class="acc">
+          <button>玻璃拟态是怎么做到的？<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></button>
+          <div class="body"><p>半透明深色底 + <code class="k">backdrop-filter: blur(14px)</code> + 1px 熔岩色描边 + 顶部内高光，背后流动的岩浆斑块透出来就是玻璃感。</p></div>
+        </div>
+        <div class="ttabs" id="ttabsDemo" style="margin-top:1rem">
+          <button class="on">说明</button><button>参数</button><button>代码</button>
+        </div>
+        <div class="card" id="ttabPanel"><p>页签内容面板：点上面切换。这里是「说明」。</p></div>
+      </div>
+      <div class="sec">
+        <h4 class="sec-t">表格</h4>
+        <div class="card" style="padding:.4rem .8rem">
+          <table class="tbl">
+            <tr><th>火山口</th><th>温度</th><th>状态</th></tr>
+            <tr><td>主峰</td><td class="num">1240°C</td><td><span class="tag lava">喷发中</span></td></tr>
+            <tr><td>东支流</td><td class="num">980°C</td><td><span class="tag gold">活跃</span></td></tr>
+            <tr><td>西岩床</td><td class="num">320°C</td><td><span class="tag ghost">冷却中</span></td></tr>
+          </table>
+        </div>
+      </div>
+      <div class="sec">
+        <h4 class="sec-t">骨架屏 · 空状态</h4>
+        <div class="card" style="margin-bottom:.9rem">
+          <div class="skel" style="height:18px;width:55%;margin-bottom:.7rem"></div>
+          <div class="skel" style="height:14px;width:90%;margin-bottom:.5rem"></div>
+          <div class="skel" style="height:14px;width:75%"></div>
+        </div>
+        <div class="card">
+          <div class="empty">
+            <div class="st"><i></i><b>!</b></div>
+            <h3 style="margin:.2rem 0">岩浆池空了</h3>
+            <p>去按钮页点一团岩浆，把它带回来吧</p>
+            <button class="btn-lava sm rip-btn" data-goto="buttons"><span>去逛逛</span></button>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- ============ 反馈 ============ -->
+    <section class="screen" data-screen="feedback">
+      <div class="sec">
+        <h4 class="sec-t">内联横幅</h4>
+        <div class="banner ok">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5L16 9.5"/></svg>
+          <div><b>充能完成</b><p>岩浆池已升至 1240°C，可以开始喷发了。</p></div>
+        </div>
+        <div class="banner warn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l10 17H2z"/><path d="M12 10v4M12 17.5h.01"/></svg>
+          <div><b>地幔压力过高</b><p>请留意西侧岩床，避免站在下风口。</p></div>
+        </div>
+      </div>
+      <div class="sec">
+        <h4 class="sec-t">弹层演示</h4>
+        <div class="demo-row">
+          <button class="btn-lava sm rip-btn" id="openModal"><span>打开弹窗</span></button>
+          <button class="btn-sec" id="openConfirm"><span>确认对话框</span></button>
+        </div>
+        <div class="demo-row">
+          <button class="btn-ghost" id="openSheet"><span>底部动作表</span></button>
+          <button class="btn-lava sm rip-btn" id="showToast"><span>显示 Toast</span></button>
+        </div>
+        <p class="note">弹窗带熔滴顶饰，确认框双按钮，动作表从底部滑入，Toast 像气泡一样浮上来，2 秒后消失。</p>
+      </div>
+      <div class="sec">
+        <h4 class="sec-t">加载动画</h4>
+        <div class="card">
+          <div class="loaders">
+            <div class="loader" aria-label="旋转加载"></div>
+            <div class="drip"><i></i></div>
+            <div class="orb" aria-label="熔岩球呼吸"></div>
+          </div>
+          <p class="note" style="text-align:center;margin:0">熔环 · 熔滴坠落 · 岩浆球呼吸</p>
+        </div>
+      </div>
+      <div class="sec">
+        <h4 class="sec-t">结果页</h4>
+        <div class="card">
+          <div class="result">
+            <div class="ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M4.5 12.5l5 5L19.5 7"/></svg></div>
+            <h3>喷发成功</h3>
+            <p>岩浆已平稳流入预定河道，无人员受伤。</p>
+            <button class="btn-lava sm rip-btn" onclick="toast('已生成喷发报告')"><span>查看报告</span></button>
+          </div>
+        </div>
+      </div>
+      <div class="sec">
+        <h4 class="sec-t">使用说明</h4>
+        <div class="card">
+          <p>整套组件只用 <code class="k">3</code> 个主色 + <code class="k">1</code> 条流动渐变 + <code class="k">2</code> 种玻璃拟态拼出来：</p>
+          <p style="margin-top:.6rem">① <code class="k">.btn-lava</code> + <code class="k">lavaflow</code> = 会流动的岩浆<br>② <code class="k">backdrop-filter: blur()</code> = 玻璃拟态卡片与胶囊<br>③ <code class="k">clip-path: var(--drop)</code> = 随处可用的熔滴<br>④ <code class="k">.lavabg</code> = 背景的岩浆斑块与上升火星</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- 底部 Tab -->
+  <nav class="tabbar" id="tabbar">
+    <span class="tab-pill" id="tabPill"></span>
+    <button class="tab on" data-tab="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>总览</button>
+    <button class="tab" data-tab="buttons"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11.5V5.5a1.5 1.5 0 0 1 3 0v5m0-2a1.5 1.5 0 0 1 3 0v2m0-1a1.5 1.5 0 0 1 3 0v4c0 3-2 5.5-5.5 5.5S7 18 6 15.5l-1.2-3.2a1.5 1.5 0 0 1 2.6-1.4L9 13.5"/></svg>按钮</button>
+    <button class="tab" data-tab="forms"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 8h10M18 8h2M4 16h2M10 16h10"/><circle cx="16" cy="8" r="2.2"/><circle cx="8" cy="16" r="2.2"/></svg>表单</button>
+    <button class="tab" data-tab="showcase"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2c1 4-4 5.5-4 10a4 4 0 0 0 8 .5C16.5 8 12 6 12 2z"/></svg>展示</button>
+    <button class="tab" data-tab="feedback"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 8-3 8h18s-3-1-3-8"/><path d="M10.3 21a2 2 0 0 0 3.4 0"/></svg>反馈</button>
+  </nav>
+
+  <!-- 弹层 -->
+  <div class="scrim" id="scrim"></div>
+  <div class="modal" id="modal" role="dialog" aria-modal="true">
+    <div class="mdrop"><i></i><b>!</b></div>
+    <h3 id="modalTitle">熔岩弹窗</h3>
+    <p id="modalMsg">这是一个标准弹窗：熔滴顶饰、标题、描述、双按钮。点遮罩或取消可关闭。</p>
+    <div class="mrow">
+      <button class="btn-ghost" data-close><span>取消</span></button>
+      <button class="btn-lava rip-btn" data-close onclick="toast('已确认，岩浆开始流动')"><span>确认</span></button>
+    </div>
+  </div>
+  <div class="sheet" id="sheet">
+    <div class="grab"></div>
+    <button class="opt" data-close onclick="toast('已分享给火山学家')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 10.5l6.8-4M8.6 13.5l6.8 4"/></svg>分享给朋友</button>
+    <button class="opt" data-close onclick="toast('已收藏这座火山')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2c1 4-4 5.5-4 10a4 4 0 0 0 8 .5C16.5 8 12 6 12 2z"/></svg>加入收藏</button>
+    <button class="opt" data-close onclick="toast('已删除')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2m3 0l-.8 12.2a1 1 0 0 1-1 .8H7.8a1 1 0 0 1-1-.8L6 7"/></svg>删除</button>
+  </div>
+  <div class="toast" id="toast"><span class="bub"></span><span id="toastMsg"></span></div>
+</div>
+
+<script>
+/* Tab 切换 + ?tab= 深链 */
+const tabs=[...document.querySelectorAll('#tabbar .tab')];
+const screens=[...document.querySelectorAll('.screen')];
+const tabPill=document.getElementById('tabPill');
+function movePill(){
+  const t=document.querySelector('#tabbar .tab.on');if(!t||!tabPill)return;
+  tabPill.style.left=t.offsetLeft+'px';tabPill.style.width=t.offsetWidth+'px';
+}
+function goto(name){
+  tabs.forEach(t=>t.classList.toggle('on',t.dataset.tab===name));
+  screens.forEach(s=>s.classList.toggle('active',s.dataset.screen===name));
+  const sc=document.querySelector('.screen.active'); if(sc) sc.scrollTop=0;
+  movePill();
+}
+tabs.forEach(t=>t.addEventListener('click',()=>goto(t.dataset.tab)));
+document.querySelectorAll('[data-goto]').forEach(b=>b.addEventListener('click',()=>goto(b.dataset.goto)));
+const qtab=new URLSearchParams(location.search).get('tab');
+if(qtab&&document.querySelector(`[data-tab="${qtab}"]`)) goto(qtab);
+movePill();
+window.addEventListener('resize',movePill);
+window.addEventListener('load',movePill);
+
+/* Toast */
+let toastTimer;
+function toast(msg){
+  const el=document.getElementById('toast');
+  document.getElementById('toastMsg').textContent=msg;
+  el.classList.remove('show');void el.offsetWidth;el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>el.classList.remove('show'),2000);
+}
+/* 弹层 */
+const scrim=document.getElementById('scrim'),
+      modal=document.getElementById('modal'),
+      sheet=document.getElementById('sheet');
+function openLayer(el){scrim.classList.add('show');el.classList.add('show')}
+function closeLayers(){scrim.classList.remove('show');modal.classList.remove('show');sheet.classList.remove('show')}
+document.getElementById('openModal').onclick=()=>{
+  document.getElementById('modalTitle').textContent='熔岩弹窗';
+  document.getElementById('modalMsg').textContent='这是一个标准弹窗：熔滴顶饰、标题、描述、双按钮。点遮罩或取消可关闭。';
+  openLayer(modal)};
+document.getElementById('openConfirm').onclick=()=>{
+  document.getElementById('modalTitle').textContent='确定要引爆吗？';
+  document.getElementById('modalMsg').textContent='岩浆将冲出火山口，此操作不可撤销。';
+  openLayer(modal)};
+document.getElementById('openSheet').onclick=()=>openLayer(sheet);
+document.getElementById('showToast').onclick=()=>toast('岩浆气泡：咕嘟咕嘟');
+scrim.onclick=closeLayers;
+document.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click',closeLayers));
+
+/* 液态波纹：点击在按钮上荡开 */
+document.querySelectorAll('.rip-btn').forEach(btn=>{
+  btn.addEventListener('click',e=>{
+    const r=btn.getBoundingClientRect(),d=Math.max(r.width,r.height);
+    const rip=document.createElement('span');rip.className='rip';
+    rip.style.width=rip.style.height=d+'px';
+    rip.style.left=(e.clientX-r.left-d/2)+'px';rip.style.top=(e.clientY-r.top-d/2)+'px';
+    btn.appendChild(rip);setTimeout(()=>rip.remove(),600);
+  });
+});
+/* 磁吸按钮 */
+const mag=document.getElementById('magBtn');
+if(mag){
+  mag.addEventListener('pointermove',e=>{
+    const r=mag.getBoundingClientRect();
+    const x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;
+    mag.style.transform=`translate(${x*10}px,${y*8}px)`;
+  });
+  mag.addEventListener('pointerleave',()=>{mag.style.transform='';});
+  mag.addEventListener('click',()=>toast('被岩浆吸住了'));
+}
+/* 芯片单选 */
+document.getElementById('chipRow').addEventListener('click',e=>{
+  const c=e.target.closest('.chip');if(!c)return;
+  document.querySelectorAll('#chipRow .chip').forEach(x=>x.classList.remove('on'));
+  c.classList.add('on');toast('筛选：'+c.textContent);
+});
+/* 分段 */
+document.getElementById('segDemo').addEventListener('click',e=>{
+  const b=e.target.closest('button');if(!b)return;
+  document.querySelectorAll('#segDemo button').forEach(x=>x.classList.remove('on'));
+  b.classList.add('on');
+});
+/* 顶部页签 */
+const tpanels={0:'页签内容面板：点上面切换。这里是「说明」。',1:'参数：--magma #FF5A1F · --ember #FFB347 · --crimson #FF2D55 · 圆角 1.1rem。',2:'代码：<code class="k">backdrop-filter: blur(14px)</code> 一行即得玻璃。'};
+document.getElementById('ttabsDemo').addEventListener('click',e=>{
+  const b=e.target.closest('button');if(!b)return;
+  const bs=[...document.querySelectorAll('#ttabsDemo button')];
+  bs.forEach(x=>x.classList.remove('on'));b.classList.add('on');
+  document.getElementById('ttabPanel').innerHTML='<p>'+tpanels[bs.indexOf(b)]+'</p>';
+});
+/* 轮播 */
+let caroI=0;const caroTrack=document.getElementById('caroTrack'),
+      caroDots=[...document.querySelectorAll('#caroDots i')];
+function caroGo(i){
+  caroI=(i+3)%3;
+  caroTrack.style.transform=`translateX(-${caroI*100}%)`;
+  caroDots.forEach((d,j)=>d.classList.toggle('on',j===caroI));
+}
+caroDots.forEach((d,j)=>d.addEventListener('click',()=>caroGo(j)));
+setInterval(()=>caroGo(caroI+1),3600);
+/* 滑杆 · 温度 */
+const speed=document.getElementById('speed');
+function syncSpeed(){
+  const v=+speed.value,pct=(v-600)/(1600-600)*100;
+  speed.style.setProperty('--v',pct+'%');
+  document.getElementById('speedVal').textContent=v+'°';
+  document.getElementById('speedLabel').textContent='· '+v+'°C';
+}
+speed.addEventListener('input',syncSpeed);syncSpeed();
+/* 步进器 */
+let stepN=1;const stepNum=document.getElementById('stepNum');
+document.getElementById('stepPlus').onclick=()=>{stepN=Math.min(12,stepN+1);stepNum.textContent=stepN};
+document.getElementById('stepMinus').onclick=()=>{stepN=Math.max(0,stepN-1);stepNum.textContent=stepN};
+/* 评分 · 火滴 */
+const rbs=[...document.querySelectorAll('#ratingDemo button')];
+rbs.forEach((b,i)=>b.addEventListener('click',()=>{
+  rbs.forEach((x,j)=>x.classList.toggle('lit',j<=i));
+  document.getElementById('ratingTip').textContent='热度 '+(i+1)+' 滴 · '+(i>=3?'滚烫！':'还可以更热');
+}));
+/* 手风琴 */
+document.querySelectorAll('.acc>button').forEach(btn=>btn.addEventListener('click',()=>{
+  const acc=btn.parentElement,body=acc.querySelector('.body'),open=acc.classList.toggle('open');
+  body.style.maxHeight=open?body.scrollHeight+'px':'0';
+}));
+const firstAcc=document.querySelector('.acc.open .body');
+if(firstAcc) firstAcc.style.maxHeight=firstAcc.scrollHeight+'px';
+/* 上传 */
+document.getElementById('fileInp').addEventListener('change',e=>{
+  const f=e.target.files[0];
+  if(f){document.getElementById('fileTip').innerHTML='<b>已选择</b> '+f.name;toast('样本已收入岩浆池');}
+});
+/* 色卡复制 */
+document.querySelectorAll('.sw').forEach(sw=>sw.addEventListener('click',()=>{
+  const hex=sw.dataset.hex;
+  (navigator.clipboard?navigator.clipboard.writeText(hex):Promise.reject()).then(
+    ()=>toast('已复制 '+hex),()=>toast(hex));
+}));
+</script>
+</body>
+</html>

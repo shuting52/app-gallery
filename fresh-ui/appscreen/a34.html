@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>知识货架</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#100c07;display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sans-serif;color:#3e2f1e}
+.phone{width:430px;height:900px;border-radius:44px;overflow:hidden;position:relative;background:linear-gradient(180deg,#f3e6cf 0%,#efdfc2 40%,#e7d2ae 100%);box-shadow:0 30px 80px rgba(0,0,0,.6),0 0 0 1px rgba(255,255,255,.12);display:flex;flex-direction:column}
+@keyframes riseIn{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+@keyframes barGrow{from{width:0}to{width:68%}}
+@keyframes glowLamp{0%,100%{opacity:.7}50%{opacity:1}}
+.statusbar{display:flex;justify-content:space-between;align-items:center;padding:18px 28px 6px;font-size:14px;color:#9a7f58;z-index:5}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:8px 24px 2px;z-index:5;animation:riseIn .8s -0.4s both}
+.topbar .t{font-size:23px;font-weight:800;color:#3e2f1e}
+.topbar .s{font-size:13px;color:#9a7f58;margin-top:2px}
+.bell{display:block;width:44px;height:44px;border-radius:50%;background:#fff8ea;border:1px solid #e0cba0;position:relative;cursor:pointer}
+.bell::after{content:"";position:absolute;left:16px;top:11px;width:12px;height:13px;border:2.5px solid #8a6b42;border-bottom:none;border-radius:10px 10px 0 0}
+.bell::before{content:"";position:absolute;left:20px;top:26px;width:4px;height:4px;background:#8a6b42;border-radius:50%;box-shadow:0 -1px 0 3px #8a6b42;clip-path:polygon(0 0,100% 0,50% 60%)}
+.report{margin:12px 20px 0;background:linear-gradient(135deg,#6b4f2e,#4a3520);border-radius:20px;padding:18px 20px;color:#f3e6cf;position:relative;overflow:hidden;z-index:5;animation:riseIn .9s -0.25s both;box-shadow:0 10px 22px rgba(80,58,30,.3)}
+.report::before{content:"";position:absolute;right:-30px;top:-30px;width:130px;height:130px;border-radius:50%;background:radial-gradient(circle,rgba(242,198,109,.4),transparent 70%)}
+.report .lab{font-size:12px;color:#d8bd8a;letter-spacing:2px}
+.report .big{font-size:40px;font-weight:800;margin:6px 0 2px}
+.report .big small{font-size:15px;font-weight:500;color:#d8bd8a}
+.report .tip{font-size:13px;color:#e7d2ae}
+.shelf-title{margin:18px 24px 0;font-size:17px;font-weight:800;color:#3e2f1e;display:flex;justify-content:space-between;align-items:center;z-index:5;animation:riseIn .8s -0.1s both}
+.shelf-title span{font-size:12px;color:#9a7f58;font-weight:400}
+.shelf{display:flex;gap:14px;margin:12px 0 0;padding:2px 20px 14px;overflow:hidden;z-index:5}
+.book{flex:none;width:150px;background:#fffaf0;border-radius:14px;overflow:hidden;cursor:pointer;border:1px solid #e3d0a8;animation:riseIn .7s -0.3s both;transition:transform .25s;box-shadow:0 8px 16px rgba(120,90,50,.14)}
+.book:nth-child(2){animation-delay:-0.16s}.book:nth-child(3){animation-delay:-0.04s}
+.book:active{transform:scale(.95)}
+.book.sel{outline:3px solid #c98f3d;transform:translateY(-4px)}
+.cover{height:104px;position:relative;display:block}
+.cover.c1{background:linear-gradient(135deg,#7d9fc4,#3e5f86)}
+.cover.c2{background:linear-gradient(135deg,#d9a05f,#9c5f2a)}
+.cover.c3{background:linear-gradient(135deg,#8fc49a,#3f7a55)}
+.cover::after{content:"";position:absolute;left:14px;top:0;bottom:0;width:5px;background:rgba(0,0,0,.18)}
+.cover .ct{position:absolute;left:28px;right:12px;top:14px;font-size:14px;font-weight:700;color:#fff;line-height:1.5}
+.book .bi{padding:10px 12px 12px}
+.book .bi .cn{font-size:13px;font-weight:600;color:#3e2f1e}
+.book .bi .cm{font-size:11px;color:#9a7f58;margin-top:4px}
+.continue{margin:6px 20px 0;background:#fffaf0;border:1px solid #e3d0a8;border-radius:18px;padding:16px 18px;z-index:5;animation:riseIn .9s 0s both;box-shadow:0 8px 16px rgba(120,90,50,.12)}
+.continue .lab{font-size:12px;color:#9a7f58;letter-spacing:2px}
+.continue .cn{font-size:16px;font-weight:700;color:#3e2f1e;margin:6px 0 4px}
+.continue .cs{font-size:12px;color:#9a7f58;margin-bottom:10px}
+.pbar{height:12px;border-radius:999px;background:#e8d9ba;overflow:hidden}
+.pbar .fill{display:block;height:100%;width:68%;border-radius:999px;background:linear-gradient(90deg,#e0a94f,#c98f3d);animation:barGrow 1.6s -0.6s both}
+.prow{display:flex;justify-content:space-between;font-size:12px;color:#9a7f58;margin-top:6px}
+.prow b{color:#c98f3d}
+.menu{margin:14px 20px 0;display:grid;grid-template-columns:repeat(4,1fr);gap:10px;z-index:5;animation:riseIn .9s .1s both}
+.mi{background:#fffaf0;border:1px solid #e3d0a8;border-radius:14px;padding:12px 4px;text-align:center;cursor:pointer;transition:transform .2s}
+.mi:active{transform:scale(.93)}
+.mi .ic{display:block;width:34px;height:34px;margin:0 auto 6px;border-radius:10px;background:linear-gradient(135deg,#e8c87e,#c98f3d);position:relative}
+.mi .l{font-size:11px;color:#7a5f3a}
+.tabbar{margin:auto 18px 22px;background:#3e2f1e;border-radius:26px;display:flex;justify-content:space-around;padding:12px 6px;z-index:5;animation:riseIn .9s .2s both;box-shadow:0 10px 22px rgba(50,38,20,.4)}
+.tab{text-align:center;flex:1;cursor:pointer}
+.tab .d{display:block;width:26px;height:26px;margin:0 auto 4px;border-radius:8px;background:#5d4a30;position:relative;transition:background .25s}
+.tab.on .d{background:#f2c66d}
+.tab .l{font-size:11px;color:#b39a70}
+.tab.on .l{color:#f7efdd;font-weight:600}
+.tab .d.bk::after{content:"";position:absolute;left:7px;top:5px;width:12px;height:15px;background:#3e2f1e;border-radius:2px;box-shadow:inset 3px 0 0 #5d4a30}
+.tab .d.hd::after{content:"";position:absolute;left:5px;top:9px;width:16px;height:3px;background:#3e2f1e;box-shadow:0 -5px 0 #3e2f1e}
+.tab .d.me::after{content:"";position:absolute;left:9px;top:6px;width:8px;height:8px;border-radius:50%;background:#3e2f1e;box-shadow:0 9px 0 -1px #3e2f1e}
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="statusbar"><span>20:05</span><span>图书馆 · 静音区</span></div>
+  <div class="topbar">
+    <div><div class="t">知识货架</div><div class="s">每天进步一点点</div></div>
+    <span class="bell"></span>
+  </div>
+  <div class="report">
+    <div class="lab">本周学习周报</div>
+    <div class="big">3.5<small> 小时</small></div>
+    <div class="tip">比上周多学了 40 分钟，继续保持</div>
+  </div>
+  <div class="shelf-title">课程货架 <span>左滑查看更多 ›</span></div>
+  <div class="shelf">
+    <div class="book sel"><span class="cover c1"><span class="ct">摄影构图<br>十二讲</span></span><div class="bi"><div class="cn">摄影构图十二讲</div><div class="cm">24 节 · 已学 16 节</div></div></div>
+    <div class="book"><span class="cover c2"><span class="ct">咖啡拉花<br>入门课</span></span><div class="bi"><div class="cn">咖啡拉花入门</div><div class="cm">18 节 · 已学 5 节</div></div></div>
+    <div class="book"><span class="cover c3"><span class="ct">城市阳台<br>种菜指南</span></span><div class="bi"><div class="cn">阳台种菜指南</div><div class="cm">12 节 · 新课</div></div></div>
+  </div>
+  <div class="continue">
+    <div class="lab">继续学习</div>
+    <div class="cn">摄影构图十二讲 · 第 17 节</div>
+    <div class="cs">三分法在街头摄影中的运用</div>
+    <div class="pbar"><span class="fill"></span></div>
+    <div class="prow"><span>已完成 68%</span><b>继续播放 ›</b></div>
+  </div>
+  <div class="menu">
+    <div class="mi"><span class="ic"></span><div class="l">我的课程</div></div>
+    <div class="mi"><span class="ic"></span><div class="l">学习计划</div></div>
+    <div class="mi"><span class="ic"></span><div class="l">笔记</div></div>
+    <div class="mi"><span class="ic"></span><div class="l">证书</div></div>
+  </div>
+  <div class="tabbar">
+    <div class="tab on"><span class="d bk"></span><div class="l">书架</div></div>
+    <div class="tab"><span class="d hd"></span><div class="l">发现</div></div>
+    <div class="tab"><span class="d me"></span><div class="l">我的</div></div>
+  </div>
+</div>
+<script>
+document.querySelectorAll('.book').forEach(function(el){
+  el.addEventListener('click',function(){
+    document.querySelectorAll('.book').forEach(function(x){x.classList.remove('sel')});
+    el.classList.add('sel');
+  });
+});
+document.querySelectorAll('.tab,.mi').forEach(function(el){
+  el.addEventListener('click',function(){
+    if(el.classList.contains('tab')){
+      document.querySelectorAll('.tab').forEach(function(x){x.classList.remove('on')});
+      el.classList.add('on');
+    }else{
+      el.style.transform='scale(.9)';
+      setTimeout(function(){el.style.transform=''},180);
+    }
+  });
+});
+</script>
+</body>
+</html>

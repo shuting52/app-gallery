@@ -1,0 +1,20 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>磁吸粒子 · 加载动画</title><style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;background:radial-gradient(600px 400px at 50% 40%,#200d0d,#0b0505 70%);display:flex;flex-direction:column;align-items:center;justify-content:center;
+font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;color:#e8eaf0;padding:24px 12px}
+h1{font-size:15px;font-weight:600;letter-spacing:4px;color:#fbbf24;margin-bottom:6px}
+.sub{font-size:11px;color:#8a90a6;margin-bottom:30px;letter-spacing:3px}
+.stage{width:360px;max-width:94vw;height:300px;position:relative;display:flex;align-items:center;justify-content:center}
+.magw{width:300px;height:300px;position:relative}
+.mag{position:absolute;top:50%;left:50%;width:104px;height:52px;margin:-26px 0 0 -52px;border-radius:10px;
+background:linear-gradient(90deg,#ef4444 50%,#f8fafc 50%);box-shadow:0 0 26px rgba(239,68,68,.5);
+animation:mgp 2.4s ease-in-out infinite;display:flex;align-items:center;justify-content:center}
+.mag b{font-size:12px;color:#0f172a;letter-spacing:2px}
+@keyframes mgp{50%{transform:scale(1.1);box-shadow:0 0 40px rgba(239,68,68,.8)}}
+.w{position:absolute;top:50%;left:50%;width:0;height:0}
+.pt{position:absolute;top:-6px;left:118px;width:12px;height:12px;margin-top:-6px;border-radius:50%;
+background:#fbbf24;box-shadow:0 0 12px #fbbf24;animation:att 2.4s ease-in-out infinite}
+@keyframes att{0%,100%{transform:translateX(0);opacity:.85}50%{transform:translateX(-66px);opacity:1}}
+</style></head><body><h1>磁吸粒子</h1><div class="sub">LOADING · 加载中</div><div class="stage"><div class="magw"><div class="mag"><b>N · S</b></div><div class="w" style="transform:rotate(0deg)"><i class="pt" style="animation-delay:0.00s"></i></div><div class="w" style="transform:rotate(36deg)"><i class="pt" style="animation-delay:0.24s"></i></div><div class="w" style="transform:rotate(72deg)"><i class="pt" style="animation-delay:0.48s"></i></div><div class="w" style="transform:rotate(108deg)"><i class="pt" style="animation-delay:0.72s"></i></div><div class="w" style="transform:rotate(144deg)"><i class="pt" style="animation-delay:0.96s"></i></div><div class="w" style="transform:rotate(180deg)"><i class="pt" style="animation-delay:1.20s"></i></div><div class="w" style="transform:rotate(216deg)"><i class="pt" style="animation-delay:1.44s"></i></div><div class="w" style="transform:rotate(252deg)"><i class="pt" style="animation-delay:1.68s"></i></div><div class="w" style="transform:rotate(288deg)"><i class="pt" style="animation-delay:1.92s"></i></div><div class="w" style="transform:rotate(324deg)"><i class="pt" style="animation-delay:2.16s"></i></div></div></div></body></html>

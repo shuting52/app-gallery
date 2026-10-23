@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>沙漏 · 流沙进度</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:#0d141c; color:#e8f4f8; font-family:"PingFang SC","Microsoft YaHei",sans-serif;
+         min-height:100vh; display:flex; align-items:center; justify-content:center; }
+  .stage { width:360px; max-width:94vw; background:#141e29; border-radius:18px;
+           padding:22px 20px 26px; box-shadow:0 10px 40px rgba(0,0,0,.5); }
+  .stage h2 { font-size:17px; font-weight:600; letter-spacing:1px; text-align:center; }
+  .stage .pct { text-align:center; font-size:40px; font-weight:700; color:#f2d06b;
+                margin:6px 0 10px; font-variant-numeric:tabular-nums; }
+  .svg-wrap { text-align:center; }
+  .grain { fill:#f2d06b; }
+  .flip { text-align:center; font-size:15px; color:#f2d06b; font-weight:600; min-height:26px;
+          letter-spacing:2px; margin-top:8px; }
+  .tip { text-align:center; color:#8aa0b4; font-size:12px; margin-top:8px; letter-spacing:1px; }
+</style>
+</head>
+<body>
+<div class="stage">
+  <h2>⏳ 沙漏 · 流沙进度</h2>
+  <div class="pct" id="pct">0%</div>
+  <div class="svg-wrap">
+    <svg id="glass" width="240" height="300" viewBox="0 0 240 300">
+      <!-- 木框 -->
+      <rect x="30" y="6" width="180" height="14" rx="7" fill="#5a4632"/>
+      <rect x="30" y="280" width="180" height="14" rx="7" fill="#5a4632"/>
+      <rect x="34" y="20" width="14" height="260" rx="6" fill="#5a4632"/>
+      <rect x="192" y="20" width="14" height="260" rx="6" fill="#5a4632"/>
+      <!-- 玻璃外形 -->
+      <path d="M55 26 L185 26 L185 60 C185 110 130 130 124 146 C130 162 185 182 185 232 L185 274 L55 274 L55 232 C55 182 110 162 116 146 C110 130 55 110 55 60 Z"
+            fill="rgba(180,220,255,.10)" stroke="#9fd8f5" stroke-width="3"/>
+      <!-- 顶部沙堆：高度 ∝ (100-p) -->
+      <path id="sandTop" class="grain" d=""/>
+      <!-- 底部沙堆：高度 ∝ p -->
+      <path id="sandBot" class="grain" d=""/>
+      <!-- 沙流细线 -->
+      <rect x="118.5" y="140" width="3" height="18" fill="#f2d06b" opacity="0.85"/>
+      <!-- 下落沙粒 -->
+      <g id="grains"></g>
+    </svg>
+  </div>
+  <div class="flip" id="flip"></div>
+  <div class="tip">流沙落尽之时，即是翻转之刻</div>
+</div>
+<script>
+var p = 0;
+var pctEl = document.getElementById('pct');
+var sandTop = document.getElementById('sandTop');
+var sandBot = document.getElementById('sandBot');
+var flipEl = document.getElementById('flip');
+var grainG = document.getElementById('grains');
+var grains = [];
+for (var i = 0; i < 6; i++) {
+  var c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+  c.setAttribute('r', '3.2');
+  c.setAttribute('fill', '#f2d06b');
+  c.dataset.t = Math.random();          // 相位
+  c.setAttribute('cx', '120');
+  c.setAttribute('cy', '180');            // 初始位置：沙流颈部，避免未定位时堆在 (0,0)
+  grainG.appendChild(c);
+  grains.push(c);
+}
+// 顶部沙堆：倒三角区域内，高度 h 从腰部(146)向上
+function topPath(h) {
+  if (h <= 0) return '';
+  var w = 60 * (h / 100);               // 沙堆半宽随高度放大
+  return 'M' + (120 - w) + ' 146 L' + (120 + w) + ' 146 L120 ' + (146 - h) + ' Z';
+}
+// 底部沙堆：正三角区域内，高度 h 从底边(268)向上堆
+function botPath(h) {
+  if (h <= 0) return '';
+  var w = 62 * (h / 108);
+  return 'M' + (120 - w) + ' 268 L' + (120 + w) + ' 268 L120 ' + (268 - h) + ' Z';
+}
+function render() {
+  var th = (100 - p) / 100 * 100;       // 顶部沙堆高度 ∝ (100-p)
+  var bh = p / 100 * 108;               // 底部沙堆高度 ∝ p
+  sandTop.setAttribute('d', topPath(th));
+  sandBot.setAttribute('d', botPath(bh));
+  pctEl.textContent = Math.round(p) + '%';
+  flipEl.textContent = p >= 100 ? '🔄 时间到！请翻转沙漏' : '';
+}
+var start = Date.now();
+function loop() {
+  var t = (Date.now() - start) / 1000;
+  if (t < 7) p = t / 7 * 100;
+  else { p = 100; if (t > 8) start = Date.now(); }
+  render();
+  // 沙粒下落（装饰性 rAF）
+  for (var i = 0; i < grains.length; i++) {
+    var g = grains[i];
+    g.dataset.t = (parseFloat(g.dataset.t) + 0.025) % 1;
+    var tt = parseFloat(g.dataset.t);
+    g.setAttribute('cx', 120 + Math.sin(tt * 20) * 2);
+    g.setAttribute('cy', 158 + tt * 100);
+    g.setAttribute('opacity', p >= 100 ? '0' : String(1 - tt * 0.4));
+  }
+  requestAnimationFrame(loop);
+}
+render();
+if (location.hash === '#mid') { p = 55; render(); }
+else { requestAnimationFrame(loop); }
+</script>
+</body>
+</html>

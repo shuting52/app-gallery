@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>风暴之眼</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{background:#070a12;display:flex;align-items:center;justify-content:center;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;overflow:hidden}
+.stage{position:relative;width:430px;height:900px;flex:none;overflow:hidden}
+.stage i{display:block;position:absolute}
+.brand{position:absolute;left:0;right:0;bottom:104px;text-align:center;z-index:50;animation:brandIn 1s .9s both}
+.brand h1{font-size:32px;letter-spacing:10px;text-indent:10px;color:#fff;font-weight:700;text-shadow:0 2px 24px rgba(0,0,0,.45)}
+.brand p{margin-top:10px;font-size:11px;letter-spacing:5px;color:rgba(255,255,255,.62)}
+@keyframes brandIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.replay{position:absolute;bottom:30px;left:50%;transform:translateX(-50%);z-index:60;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.35);color:#fff;font-size:12px;letter-spacing:2px;padding:9px 24px;border-radius:20px;cursor:pointer;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.shade{position:absolute;left:0;right:0;bottom:0;height:360px;background:linear-gradient(transparent,rgba(8,6,18,.78));z-index:40;pointer-events:none}
+
+.stage{background:linear-gradient(#0c1420,#1b2940 58%,#0a1018)}
+
+.ring{border:3px dashed rgba(150,190,230,.5);border-radius:50%;left:50%;top:36%;transform:translate(-50%,-50%)}
+.r1{width:210px;height:210px;left:50%;animation:spin 14s linear infinite}
+.r2{width:310px;height:310px;left:50%;animation:spinR 22s linear infinite;border-color:rgba(150,190,230,.32)}
+.r3{width:410px;height:410px;left:50%;animation:spin 34s linear infinite;border-color:rgba(150,190,230,.2)}
+@keyframes spin{to{transform:translate(-50%,-50%) rotate(360deg)}}
+@keyframes spinR{to{transform:translate(-50%,-50%) rotate(-360deg)}}
+.eye{width:96px;height:96px;left:50%;top:36%;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle at 50% 50%,#fdf6e3,#ffd166 55%,rgba(255,209,102,0) 74%);animation:pulse 2.4s ease-in-out infinite alternate;z-index:5}
+@keyframes pulse{to{transform:translate(-50%,-50%) scale(1.12)}}
+.rain{position:absolute;left:-40px;right:-40px;top:-60px;bottom:-60px;background:repeating-linear-gradient(100deg,transparent 0 16px,rgba(170,205,245,.13) 16px 18px);animation:rain .45s linear infinite}
+@keyframes rain{to{transform:translateY(26px)}}
+.flash{position:absolute;inset:0;background:radial-gradient(circle at 70% 20%,rgba(200,220,255,.5),transparent 45%);opacity:0;animation:flash 5s ease-in-out infinite}
+@keyframes flash{0%,88%,100%{opacity:0}92%,94%{opacity:.8}}
+
+</style></head><body>
+<div class="stage" id="stage">
+
+<i class="rain"></i><i class="flash"></i>
+<i class="ring r1"></i><i class="ring r2"></i><i class="ring r3"></i><i class="eye"></i>
+
+<div class="shade"></div>
+<div class="brand"><h1>风暴眼</h1><p>STORM EYE</p></div>
+<button class="replay" onclick="var s=document.getElementById('stage');s.replaceWith(s.cloneNode(true))">重新播放</button>
+</div>
+</body></html>

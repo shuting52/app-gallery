@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>充电 · 电池电量</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:#0d141c; color:#e8f4f8; font-family:"PingFang SC","Microsoft YaHei",sans-serif;
+         min-height:100vh; display:flex; align-items:center; justify-content:center; }
+  .stage { width:360px; max-width:94vw; background:#141e29; border-radius:18px;
+           padding:22px 20px 26px; box-shadow:0 10px 40px rgba(0,0,0,.5); }
+  .stage h2 { font-size:17px; font-weight:600; letter-spacing:1px; text-align:center; }
+  .stage .pct { text-align:center; font-size:40px; font-weight:700; color:#b6f09c;
+                margin:6px 0 16px; font-variant-numeric:tabular-nums; }
+  .batt-wrap { display:flex; align-items:center; justify-content:center; padding:30px 0 10px; }
+  .batt { position:relative; width:280px; height:120px; border:5px solid #3a4a5c; border-radius:14px;
+          display:flex; align-items:center; padding:10px 12px; gap:6px; background:#0a0f16; }
+  .batt .cap { position:absolute; right:-16px; top:50%; width:12px; height:46px; margin-top:-23px;
+               background:#3a4a5c; border-radius:0 6px 6px 0; }
+  .cell { flex:1; height:100%; border-radius:6px; background:#1b2531; }
+  .cell.on { background:linear-gradient(180deg,#c8ffa8,#7ee787 60%,#4ade80);
+             box-shadow:0 0 14px rgba(126,231,135,.7); }
+  .bolt { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+          font-size:52px; color:#ffe066; text-shadow:0 0 18px rgba(255,224,102,.9); pointer-events:none; }
+  .done { text-align:center; font-size:18px; font-weight:700; color:#4ade80; min-height:30px;
+          letter-spacing:2px; margin-top:6px; }
+  .tip { text-align:center; color:#8aa0b4; font-size:12px; margin-top:10px; letter-spacing:1px; }
+</style>
+</head>
+<body>
+<div class="stage">
+  <h2>🔋 充电 · 电池电量</h2>
+  <div class="pct" id="pct">0%</div>
+  <div class="batt-wrap">
+    <div class="batt" id="batt">
+      <div class="cap"></div>
+      <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+      <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+      <div class="cell"></div><div class="cell"></div>
+      <div class="bolt" id="bolt">⚡</div>
+    </div>
+  </div>
+  <div class="done" id="done"></div>
+  <div class="tip">十格电量逐格点亮</div>
+</div>
+<script>
+var p = 0;
+var cells = document.querySelectorAll('.cell');
+var pctEl = document.getElementById('pct');
+var batt = document.getElementById('batt');
+var bolt = document.getElementById('bolt');
+var done = document.getElementById('done');
+function render() {
+  var lit = Math.floor(p / 10);            // 每格 10%
+  for (var i = 0; i < cells.length; i++) {
+    cells[i].className = i < lit ? 'cell on' : 'cell';
+  }
+  pctEl.textContent = Math.round(p) + '%';
+  if (p >= 100) {
+    done.textContent = '✅ 已充满';
+    batt.style.borderColor = '#4ade80';
+    batt.style.boxShadow = '0 0 28px rgba(74,222,128,.65)';
+    bolt.style.display = 'none';
+  } else {
+    done.textContent = '';
+    batt.style.borderColor = '#3a4a5c';
+    batt.style.boxShadow = 'none';
+    bolt.style.display = 'block';
+  }
+}
+var start = Date.now();
+function loop() {
+  var t = (Date.now() - start) / 1000;
+  if (t < 6.5) p = t / 6.5 * 100;
+  else { p = 100; if (t > 7.5) start = Date.now(); }
+  render();
+  requestAnimationFrame(loop);
+}
+// 闪电明灭（装饰性微动画）
+setInterval(function () {
+  if (p < 100) bolt.style.opacity = bolt.style.opacity === '0.25' ? '1' : '0.25';
+}, 420);
+render();
+if (location.hash === '#mid') { p = 55; render(); }
+else { requestAnimationFrame(loop); }
+</script>
+</body>
+</html>

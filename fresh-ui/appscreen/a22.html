@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>星野漫游</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{background:#02030a;display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sans-serif}
+.phone{width:430px;height:900px;background:linear-gradient(180deg,#060a24,#0a1038 55%,#131a4a);border-radius:44px;overflow:hidden;position:relative;box-shadow:0 30px 80px rgba(0,0,0,.8),0 0 0 1px rgba(255,255,255,.08);display:flex;flex-direction:column}
+.star{position:absolute;background:#fff;border-radius:50%;animation:tw 2.8s ease-in-out infinite;display:block}
+@keyframes tw{0%,100%{opacity:.15;transform:scale(.8)}50%{opacity:.9;transform:scale(1.15)}}
+.topbar{padding:56px 24px 0;position:relative;z-index:5;display:flex;justify-content:space-between;align-items:center}
+.topbar .t{font-size:20px;font-weight:700;color:#fff;letter-spacing:2px}
+.topbar .loc{font-size:12px;color:#8f97c9;margin-top:4px}
+.radar{width:46px;height:46px;border-radius:50%;border:1px solid rgba(150,170,255,.4);display:flex;align-items:center;justify-content:center;font-size:20px;color:#cdd6ff;background:rgba(150,170,255,.08);cursor:pointer;position:relative;overflow:hidden}
+.radar::after{content:"";position:absolute;inset:0;background:conic-gradient(from 0deg,rgba(150,170,255,.5),transparent 30%);animation:spin 2.4s linear infinite;display:block}
+@keyframes spin{to{transform:rotate(360deg)}}
+.stage{flex:1;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:4}
+.const{position:absolute;inset:0;pointer-events:none}
+.hero{font-size:44px;font-weight:800;color:#fff;letter-spacing:8px;text-shadow:0 0 30px rgba(150,170,255,.8);animation:rise 1s ease both;animation-delay:-.3s}
+@keyframes rise{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+.hero-sub{font-size:14px;color:#aab2e0;margin-top:12px;letter-spacing:3px}
+.objname{font-size:26px;font-weight:700;color:#ffd97a;margin-top:34px;text-shadow:0 0 24px rgba(255,217,122,.6);transition:opacity .3s}
+.objinfo{font-size:13px;color:#aab2e0;margin-top:10px;text-align:center;line-height:1.8;padding:0 48px;transition:opacity .3s;min-height:70px}
+.objinfo b{color:#fff}
+.fading{opacity:0}
+.hscroll{display:flex;gap:14px;overflow-x:auto;padding:6px 24px 22px;scrollbar-width:none;position:relative;z-index:5}
+.hscroll::-webkit-scrollbar{display:none}
+.obj{flex-shrink:0;width:128px;background:rgba(255,255,255,.06);border:1px solid rgba(150,170,255,.25);border-radius:18px;padding:14px;cursor:pointer;text-align:center;transition:all .3s;backdrop-filter:blur(4px)}
+.obj.on{background:rgba(150,170,255,.16);border-color:#9aa5ff;box-shadow:0 0 22px rgba(150,170,255,.35);transform:translateY(-4px)}
+.obj .em{font-size:38px;display:block;animation:float 3.4s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.obj .n{font-size:14px;font-weight:700;color:#fff;margin-top:8px}
+.obj .d{font-size:11px;color:#8f97c9;margin-top:4px}
+.tabbar{display:flex;background:rgba(6,10,36,.92);border-top:1px solid rgba(150,170,255,.15);padding:12px 8px 34px;position:relative;z-index:5}
+.tab{flex:1;text-align:center;color:#5b6285;font-size:11px;cursor:pointer;padding:6px 0}
+.tab .ic{font-size:22px;display:block;margin-bottom:4px;transition:transform .25s}
+.tab.on{color:#9aa5ff}
+.tab.on .ic{transform:translateY(-3px) scale(1.15)}
+</style>
+</head>
+<body>
+<div class="phone" id="phone">
+  <div class="topbar">
+    <div><div class="t">星野漫游</div><div class="loc">📍 上海 · 能见度极佳 · 无月光干扰</div></div>
+    <div class="radar" id="radar">📡</div>
+  </div>
+  <div class="stage">
+    <svg class="const" viewBox="0 0 430 560" preserveAspectRatio="none">
+      <g stroke="#9aa5ff" stroke-width="1.4" opacity=".55">
+        <line x1="70" y1="120" x2="140" y2="70"/><line x1="140" y1="70" x2="220" y2="110"/>
+        <line x1="220" y1="110" x2="180" y2="190"/><line x1="180" y1="190" x2="90" y2="200"/>
+        <line x1="90" y1="200" x2="70" y2="120"/>
+        <line x1="300" y1="300" x2="350" y2="250"/><line x1="350" y1="250" x2="380" y2="330"/><line x1="380" y1="330" x2="300" y2="300"/>
+      </g>
+      <g fill="#fff">
+        <circle cx="70" cy="120" r="3.4"/><circle cx="140" cy="70" r="4.2"/><circle cx="220" cy="110" r="3"/>
+        <circle cx="180" cy="190" r="3.8"/><circle cx="90" cy="200" r="2.6"/>
+        <circle cx="300" cy="300" r="3.2"/><circle cx="350" cy="250" r="4"/><circle cx="380" cy="330" r="2.8"/>
+      </g>
+      <text x="150" y="140" fill="#aab2e0" font-size="13">天鹅座</text>
+      <text x="318" y="300" fill="#aab2e0" font-size="13">天琴座</text>
+    </svg>
+    <div class="hero">今晚可见</div>
+    <div class="hero-sub">10月19日 · 晴 · 3 个推荐目标</div>
+    <div class="objname" id="objName">盈凸月</div>
+    <div class="objinfo" id="objInfo">月龄 <b>11.2</b> 天 · 照亮 <b>84%</b><br>最佳观测 <b>21:00</b> 后 · 东南方天空</div>
+  </div>
+  <div class="hscroll" id="objs">
+    <div class="obj on" data-k="moon"><span class="em">🌔</span><div class="n">盈凸月</div><div class="d">照亮 84%</div></div>
+    <div class="obj" data-k="mars"><span class="em">🔴</span><div class="n">火星</div><div class="d">视星等 -0.8</div></div>
+    <div class="obj" data-k="milky"><span class="em">🌌</span><div class="n">银河</div><div class="d">中心升起 23:00</div></div>
+    <div class="obj" data-k="saturn"><span class="em">🪐</span><div class="n">土星</div><div class="d">光环倾角 12°</div></div>
+  </div>
+  <div class="tabbar" id="tabbar">
+    <div class="tab on"><span class="ic">🔭</span>观星</div>
+    <div class="tab"><span class="ic">🗺️</span>星图</div>
+    <div class="tab"><span class="ic">📸</span>星野</div>
+    <div class="tab"><span class="ic">👤</span>我的</div>
+  </div>
+</div>
+<script>
+(function(){
+  var p=document.getElementById('phone');
+  for(var i=0;i<90;i++){var s=document.createElement('i');s.className='star';
+    var sz=(Math.random()*2.4+1).toFixed(1);
+    s.style.cssText='left:'+(Math.random()*100)+'%;top:'+(Math.random()*100)+'%;width:'+sz+'px;height:'+sz+'px;animation-delay:-'+(Math.random()*2.8).toFixed(1)+'s;';
+    p.appendChild(s);}
+  var data={
+    moon:{n:'盈凸月',info:'月龄 <b>11.2</b> 天 · 照亮 <b>84%</b><br>最佳观测 <b>21:00</b> 后 · 东南方天空'},
+    mars:{n:'火星',info:'视星等 <b>-0.8</b> · 视直径 <b>9.4″</b><br>位于 <b>双鱼座</b> · 整夜可见'},
+    milky:{n:'银河中心',info:'银心升起 <b>23:00</b> · 方位 <b>西南</b><br>建议前往 <b>暗夜保护区</b> 拍摄'},
+    saturn:{n:'土星',info:'视星等 <b>0.6</b> · 光环倾角 <b>12°</b><br>位于 <b>水瓶座</b> · 小型望远镜可见光环'}
+  };
+  var nm=document.getElementById('objName'),inf=document.getElementById('objInfo');
+  document.getElementById('objs').addEventListener('click',function(e){
+    var o=e.target.closest('.obj');if(!o)return;
+    this.querySelectorAll('.obj').forEach(function(x){x.classList.remove('on')});
+    o.classList.add('on');
+    nm.classList.add('fading');inf.classList.add('fading');
+    setTimeout(function(){var d=data[o.dataset.k];nm.innerHTML=d.n;inf.innerHTML=d.info;
+      nm.classList.remove('fading');inf.classList.remove('fading');},220);
+  });
+  document.getElementById('radar').addEventListener('click',function(){
+    this.style.transform='scale(1.15)';var t=this;setTimeout(function(){t.style.transform='';},200);
+  });
+  var tb=document.getElementById('tabbar');
+  tb.addEventListener('click',function(e){
+    var t=e.target.closest('.tab');if(!t)return;
+    tb.querySelectorAll('.tab').forEach(function(x){x.classList.remove('on')});
+    t.classList.add('on');
+  });
+})();
+</script>
+</body>
+</html>

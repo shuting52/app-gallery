@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>安康医疗 · 预约挂号</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{background:#dfe7f2;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;color:#1f2430}
+.phone{max-width:430px;margin:0 auto;min-height:100dvh;background:#f2f6fb;position:relative;padding-bottom:84px}
+.screen{display:none;animation:fade .25s}
+.screen.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}}
+.hd{background:linear-gradient(135deg,#1b7fe0,#12b5a5);color:#fff;padding:18px 16px 22px;border-radius:0 0 22px 22px}
+.hd .loc{font-size:13px;opacity:.92}
+.search{margin-top:12px;background:#fff;border-radius:12px;padding:11px 14px;font-size:14px;color:#9aa3b5;display:flex;gap:8px;align-items:center}
+.banner{margin:14px 16px;background:#fff;border-radius:16px;padding:16px;display:flex;align-items:center;gap:12px;box-shadow:0 4px 14px rgba(27,127,224,.10)}
+.banner .t1{font-size:16px;font-weight:700}
+.banner .t2{font-size:12px;color:#8a90a3;margin-top:4px}
+.banner .go{margin-left:auto;background:#1b7fe0;color:#fff;border:0;border-radius:20px;padding:9px 18px;font-size:13px}
+.sec{margin:18px 16px 0}
+.sec h3{font-size:15px;margin-bottom:10px}
+.grid8{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.dept{background:#fff;border-radius:14px;padding:14px 4px;text-align:center;font-size:12px;box-shadow:0 2px 8px rgba(20,40,80,.05)}
+.dept .e{font-size:24px;display:block;margin-bottom:6px}
+.hosp{background:#fff;border-radius:14px;padding:14px;margin-bottom:10px;display:flex;gap:12px;align-items:center;box-shadow:0 2px 8px rgba(20,40,80,.05)}
+.hosp .av{width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,#1b7fe0,#12b5a5);color:#fff;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;flex:none}
+.hosp .nm{font-size:15px;font-weight:700}
+.hosp .tag{font-size:10px;color:#1b7fe0;border:1px solid #1b7fe0;border-radius:4px;padding:1px 5px;margin-left:6px}
+.hosp .ad{font-size:12px;color:#8a90a3;margin-top:4px}
+.hosp .has{margin-left:auto;font-size:11px;color:#0a9b4c;background:#e5f7ec;border-radius:12px;padding:5px 10px;flex:none}
+.back{background:none;border:0;color:#1b7fe0;font-size:15px;padding:14px 16px;cursor:pointer}
+.page-hd{padding:4px 16px 12px}
+.page-hd h2{font-size:20px}
+.doc{background:#fff;border-radius:14px;padding:14px;margin:0 16px 10px;display:flex;gap:12px;align-items:center}
+.doc .av{width:52px;height:52px;border-radius:50%;background:#dbe9fb;color:#1b7fe0;font-weight:700;display:flex;align-items:center;justify-content:center;font-size:18px;flex:none}
+.doc .nm{font-size:15px;font-weight:700}
+.doc .on{font-size:11px;color:#0a9b4c}
+.doc .fee{font-size:12px;color:#8a90a3;margin-top:3px}
+.doc button{margin-left:auto;background:#1b7fe0;color:#fff;border:0;border-radius:18px;padding:8px 16px;font-size:13px;flex:none}
+.qtype{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 16px}
+.qtype div{background:#fff;border-radius:14px;padding:16px 6px;text-align:center;font-size:13px;font-weight:600}
+.qtype .e{font-size:26px;display:block;margin-bottom:8px}
+.qtype .p{font-size:11px;color:#e0632f;font-weight:400;margin-top:4px;display:block}
+.rep{background:#fff;border-radius:14px;padding:14px 16px;margin:0 16px 10px;display:flex;align-items:center;gap:10px}
+.rep .dot{width:10px;height:10px;border-radius:50%;background:#0a9b4c;flex:none}
+.rep .dot.wait{background:#f0a22e}
+.rep .t{font-size:14px;font-weight:600}
+.rep .d{font-size:12px;color:#8a90a3;margin-top:3px}
+.rep .st{margin-left:auto;font-size:12px;color:#0a9b4c;flex:none}
+table.idx{width:calc(100% - 32px);margin:0 16px;background:#fff;border-radius:14px;overflow:hidden;font-size:13px;border-collapse:collapse}
+table.idx th,table.idx td{padding:11px 10px;text-align:left;border-bottom:1px solid #eef1f6}
+table.idx th{background:#f6f9fd;color:#8a90a3;font-weight:400;font-size:12px}
+.up{color:#e0632f;font-weight:700}.okv{color:#0a9b4c}
+.me-hd{background:linear-gradient(135deg,#1b7fe0,#12b5a5);color:#fff;padding:26px 18px;border-radius:0 0 22px 22px;display:flex;gap:14px;align-items:center}
+.me-hd .av{width:60px;height:60px;border-radius:50%;background:rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;font-size:26px}
+.menu{background:#fff;border-radius:14px;margin:14px 16px;overflow:hidden}
+.menu button{width:100%;display:flex;align-items:center;gap:12px;padding:15px 16px;border:0;border-bottom:1px solid #f0f2f7;background:#fff;font-size:14px;text-align:left}
+.menu button:last-child{border-bottom:0}
+.menu .arw{margin-left:auto;color:#c3c9d8}
+.slot{background:#fff;border-radius:14px;padding:14px 16px;margin:0 16px 10px;display:flex;align-items:center}
+.slot .dpt{font-size:15px;font-weight:700}
+.slot .n{font-size:12px;color:#8a90a3;margin-top:3px}
+.slot button{margin-left:auto;border:1px solid #1b7fe0;color:#1b7fe0;background:#fff;border-radius:16px;padding:7px 16px;font-size:13px}
+.slot button.full{border-color:#d4d9e3;color:#b6bccb}
+.tabbar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:#fff;border-top:1px solid #e5e7ef;display:flex;z-index:50}
+.tab{flex:1;padding:8px 0 12px;text-align:center;font-size:11px;color:#8a90a3;border:0;background:none;cursor:pointer}
+.tab .ic{font-size:22px;display:block;margin-bottom:2px}
+.tab.on{color:#1b7fe0;font-weight:700}
+.toast{position:fixed;bottom:96px;left:50%;transform:translateX(-50%) translateY(16px);background:rgba(20,24,34,.93);color:#fff;padding:11px 22px;border-radius:24px;font-size:13px;opacity:0;transition:.3s;z-index:99;pointer-events:none;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+<div class="phone">
+
+<!-- 挂号首页 -->
+<div class="screen active" id="s-home">
+  <div class="hd">
+    <div class="loc">📍 北京市 ▾</div>
+    <div class="search">🔍&nbsp;搜索医院 / 科室 / 医生</div>
+  </div>
+  <div class="banner">
+    <div><div class="t1">预约挂号 · 3 步搞定</div><div class="t2">覆盖全市 128 家三甲医院号源</div></div>
+    <button class="go" data-go="s-hosp">去挂号</button>
+  </div>
+  <div class="sec"><h3>按科室挂号</h3>
+    <div class="grid8">
+      <div class="dept"><span class="e">🩺</span>内科</div><div class="dept"><span class="e">🔪</span>外科</div>
+      <div class="dept"><span class="e">👶</span>儿科</div><div class="dept"><span class="e">🤰</span>妇产科</div>
+      <div class="dept"><span class="e">👁️</span>眼科</div><div class="dept"><span class="e">🦷</span>口腔科</div>
+      <div class="dept"><span class="e">🧴</span>皮肤科</div><div class="dept"><span class="e">🌿</span>中医科</div>
+    </div>
+  </div>
+  <div class="sec"><h3>推荐医院</h3>
+    <div class="hosp" data-go="s-hosp"><div class="av">协</div><div><div class="nm">北京协和医院<span class="tag">三甲</span></div><div class="ad">东城区帅府园1号 · 距您 3.2km</div></div><div class="has">有号</div></div>
+    <div class="hosp" data-go="s-hosp"><div class="av">301</div><div><div class="nm">解放军总医院<span class="tag">三甲</span></div><div class="ad">海淀区复兴路28号 · 距您 6.8km</div></div><div class="has">有号</div></div>
+    <div class="hosp" data-go="s-hosp"><div class="av">北</div><div><div class="nm">北医三院<span class="tag">三甲</span></div><div class="ad">海淀区花园北路49号 · 距您 5.1km</div></div><div class="has">有号</div></div>
+  </div>
+</div>
+
+<!-- 医院详情 -->
+<div class="screen" id="s-hosp">
+  <button class="back" data-go="s-home">‹ 返回</button>
+  <div class="page-hd"><h2>北京协和医院</h2><div style="font-size:12px;color:#8a90a3;margin-top:4px">三甲 · 综合医院 · 东城区帅府园1号</div></div>
+  <div class="sec" style="margin-top:6px"><h3>今日号源（10月19日）</h3></div>
+  <div class="slot"><div><div class="dpt">心血管内科</div><div class="n">王建国 主任医师 · 剩余 12 号</div></div><button data-toast="已加入挂号单">预约</button></div>
+  <div class="slot"><div><div class="dpt">皮肤科</div><div class="n">李晓梅 副主任医师 · 剩余 5 号</div></div><button data-toast="已加入挂号单">预约</button></div>
+  <div class="slot"><div><div class="dpt">眼科</div><div class="n">张伟 主任医师 · 已约满</div></div><button class="full">约满</button></div>
+  <div class="slot"><div><div class="dpt">儿科</div><div class="n">刘芳 主治医师 · 剩余 20 号</div></div><button data-toast="已加入挂号单">预约</button></div>
+</div>
+
+<!-- 问诊 -->
+<div class="screen" id="s-consult">
+  <div class="page-hd" style="padding-top:18px"><h2>在线问诊</h2><div style="font-size:12px;color:#8a90a3;margin-top:4px">三甲医生 · 平均 3 分钟响应</div></div>
+  <div class="qtype">
+    <div><span class="e">💬</span>图文问诊<span class="p">¥39 起</span></div>
+    <div><span class="e">📞</span>电话问诊<span class="p">¥59 起</span></div>
+    <div><span class="e">🎥</span>视频问诊<span class="p">¥99 起</span></div>
+  </div>
+  <div class="sec"><h3>推荐医生</h3></div>
+  <div class="doc"><div class="av">王</div><div><div class="nm">王建国 <span style="font-size:12px;color:#8a90a3;font-weight:400">主任医师 · 心内科</span></div><div class="on">● 在线</div><div class="fee">⭐4.9 · 问诊 3200+ 次 · ¥59/次</div></div><button data-toast="已发起问诊，等待医生接诊">去问诊</button></div>
+  <div class="doc"><div class="av">李</div><div><div class="nm">李晓梅 <span style="font-size:12px;color:#8a90a3;font-weight:400">副主任医师 · 皮肤科</span></div><div class="on">● 在线</div><div class="fee">⭐4.8 · 问诊 2100+ 次 · ¥39/次</div></div><button data-toast="已发起问诊，等待医生接诊">去问诊</button></div>
+  <div class="doc"><div class="av">刘</div><div><div class="nm">刘芳 <span style="font-size:12px;color:#8a90a3;font-weight:400">主治医师 · 儿科</span></div><div style="font-size:11px;color:#8a90a3">○ 忙碌中</div><div class="fee">⭐5.0 · 问诊 1800+ 次 · ¥39/次</div></div><button data-toast="已发起问诊，等待医生接诊">去问诊</button></div>
+</div>
+
+<!-- 报告 -->
+<div class="screen" id="s-report">
+  <div class="page-hd" style="padding-top:18px"><h2>检查报告</h2></div>
+  <div class="rep" data-go="s-report-detail"><div class="dot"></div><div><div class="t">血常规 + 生化全项</div><div class="d">北京协和医院 · 2026-10-15</div></div><div class="st">已出 ›</div></div>
+  <div class="rep" data-go="s-report-detail"><div class="dot"></div><div><div class="t">心电图（十二导联）</div><div class="d">北京协和医院 · 2026-10-15</div></div><div class="st">已出 ›</div></div>
+  <div class="rep"><div class="dot wait"></div><div><div class="t">胸部 CT 平扫</div><div class="d">北医三院 · 2026-10-18</div></div><div class="st" style="color:#f0a22e">报告中</div></div>
+  <div class="rep" data-go="s-report-detail"><div class="dot"></div><div><div class="t">甲状腺功能五项</div><div class="d">北京协和医院 · 2026-09-02</div></div><div class="st">已出 ›</div></div>
+</div>
+
+<!-- 报告详情 -->
+<div class="screen" id="s-report-detail">
+  <button class="back" data-go="s-report">‹ 返回</button>
+  <div class="page-hd"><h2>血常规 + 生化全项</h2><div style="font-size:12px;color:#8a90a3;margin-top:4px">2026-10-15 · 北京协和医院检验科</div></div>
+  <table class="idx">
+    <tr><th>项目</th><th>结果</th><th>参考范围</th><th>提示</th></tr>
+    <tr><td>白细胞</td><td>6.8</td><td>4.0–10.0</td><td class="okv">正常</td></tr>
+    <tr><td>血红蛋白</td><td>142</td><td>120–160</td><td class="okv">正常</td></tr>
+    <tr><td>总胆固醇</td><td>5.9</td><td>2.8–5.2</td><td class="up">↑ 偏高</td></tr>
+    <tr><td>甘油三酯</td><td>2.1</td><td>0.4–1.7</td><td class="up">↑ 偏高</td></tr>
+    <tr><td>空腹血糖</td><td>5.4</td><td>3.9–6.1</td><td class="okv">正常</td></tr>
+    <tr><td>谷丙转氨酶</td><td>28</td><td>9–50</td><td class="okv">正常</td></tr>
+  </table>
+  <div class="sec"><div class="banner" style="margin:14px 0"><div><div class="t1" style="font-size:14px">AI 解读</div><div class="t2">血脂两项偏高，建议低脂饮食，3 个月后复查。</div></div><button class="go" data-toast="已为你预约内科复诊号">问医生</button></div></div>
+</div>
+
+<!-- 我的 -->
+<div class="screen" id="s-me">
+  <div class="me-hd"><div class="av">👤</div><div><div style="font-size:18px;font-weight:700">张伟</div><div style="font-size:12px;opacity:.85;margin-top:4px">就诊卡 · 010-88886666</div></div></div>
+  <div class="menu">
+    <button data-toast="打开挂号记录">📋 挂号记录 <span class="arw">›</span></button>
+    <button data-toast="打开家庭成员">👨‍👩‍👧 家庭成员 <span class="arw">›</span></button>
+    <button data-toast="打开我的医生">🩺 我的医生 <span class="arw">›</span></button>
+    <button data-toast="打开电子就诊卡">💳 电子就诊卡 <span class="arw">›</span></button>
+  </div>
+  <div class="menu">
+    <button data-toast="打开设置">⚙️ 设置 <span class="arw">›</span></button>
+    <button data-toast="联系客服 400-100-1200">🎧 客服帮助 <span class="arw">›</span></button>
+  </div>
+</div>
+
+<nav class="tabbar">
+  <button class="tab on" data-go="s-home"><span class="ic">🏥</span>挂号</button>
+  <button class="tab" data-go="s-consult"><span class="ic">💬</span>问诊</button>
+  <button class="tab" data-go="s-report"><span class="ic">📄</span>报告</button>
+  <button class="tab" data-go="s-me"><span class="ic">👤</span>我的</button>
+</nav>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+function go(id){document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('active',s.id===id));window.scrollTo(0,0);
+document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('on',t.dataset.go===id));}
+document.querySelectorAll('[data-go]').forEach(el=>el.addEventListener('click',()=>go(el.dataset.go)));
+let tt;function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('show'),1800);}
+document.querySelectorAll('[data-toast]').forEach(el=>el.addEventListener('click',e=>{e.stopPropagation();toast(el.dataset.toast);}));
+if(location.hash){const id=location.hash.slice(1);if(document.getElementById(id))go(id);}
+</script>
+</body>
+</html>

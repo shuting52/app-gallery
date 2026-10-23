@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>纸质标签 · 底部Tab</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{background:#c9bfa8;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;display:flex;justify-content:center}
+.preload *{transition:none!important;animation:none!important}
+.phone{width:430px;height:900px;background:#f5f1e6;position:relative;display:flex;flex-direction:column;overflow:hidden}
+.status{height:42px;display:flex;justify-content:space-between;align-items:center;padding:0 24px;font-size:13px;font-weight:600;color:#4a4132;flex-shrink:0}
+.nav{height:52px;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:700;color:#4a4132;flex-shrink:0}
+.list{flex:1;overflow:hidden;padding:8px 0}
+.chat{display:flex;align-items:center;background:#fffdf4;border:1px solid #e7dcc0;margin:0 12px 8px;padding:11px 12px;border-radius:4px;box-shadow:0 1px 3px rgba(120,95,50,.12)}
+.av{width:46px;height:46px;border-radius:50%;color:#fff;font-weight:700;font-size:18px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.mid{flex:1;margin-left:11px;min-width:0}
+.n{font-size:15px;color:#3d3423;font-weight:500}
+.m{font-size:12.5px;color:#a2937a;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rt{text-align:right;flex-shrink:0}
+.t{font-size:11px;color:#bfae8d}
+.bdg{display:inline-block;min-width:17px;height:17px;line-height:17px;padding:0 5px;border-radius:9px;background:#d65454;color:#fff;font-size:11px;margin-top:5px}
+/* ---- 纸质标签 ---- */
+.dockzone{flex-shrink:0;background:
+repeating-linear-gradient(0deg,rgba(120,90,40,.06) 0 2px,transparent 2px 6px),
+linear-gradient(180deg,#efe3c2,#e9d9b4);border-top:2px dashed #c9b586;padding:20px 12px 30px}
+.paper{display:flex;gap:10px}
+.ptab{flex:1;position:relative;background:#fffdf4;border:1px solid #ddd0ae;border-radius:5px;padding:12px 0 9px;display:flex;flex-direction:column;align-items:center;gap:3px;color:#7a6a4d;font-size:11px;cursor:pointer;box-shadow:0 3px 6px rgba(120,90,40,.20);transition:transform .32s cubic-bezier(.34,1.4,.64,1),color .25s}
+.ptab:nth-child(odd){transform:rotate(-2.5deg)}
+.ptab:nth-child(even){transform:rotate(2.5deg)}
+.ptab .ic{font-size:22px;line-height:1}
+.ptab.on{transform:rotate(0deg) translateY(-7px);color:#3d3423}
+.ptab.on::before{content:"";position:absolute;top:-10px;left:50%;width:58px;height:19px;transform:translateX(-50%) rotate(-4deg);background:rgba(255,213,130,.78);border-left:1px dashed rgba(170,130,70,.7);border-right:1px dashed rgba(170,130,70,.7);box-shadow:0 1px 2px rgba(120,90,40,.3);animation:tape .34s ease-out}
+@keyframes tape{from{transform:translateX(-50%) rotate(-4deg) scaleX(0)}to{transform:translateX(-50%) rotate(-4deg) scaleX(1)}}
+.ptab.stick{animation:stick .34s}
+@keyframes stick{0%{transform:rotate(0) translateY(-7px) scale(1)}40%{transform:rotate(0) translateY(-7px) scale(.93,.9)}100%{transform:rotate(0) translateY(-7px) scale(1)}}
+</style>
+</head>
+<body>
+<div class="phone">
+<div class="status"><span>21:56</span><span>5G ▮▮▮</span></div>
+<div class="nav">纸质标签</div>
+<div class="list">
+<div class="chat"><div class="av" style="background:linear-gradient(135deg,#ff9a5a,#ff5a7a)">林</div><div class="mid"><div class="n">林晚</div><div class="m">那版海报我改好了，你看下</div></div><div class="rt"><div class="t">21:40</div><span class="bdg">2</span></div></div>
+<div class="chat"><div class="av" style="background:linear-gradient(135deg,#4a9eff,#7a5aff)">产</div><div class="mid"><div class="n">产品交流群(12)</div><div class="m">@所有人 明天10点对需求</div></div><div class="rt"><div class="t">21:12</div><span class="bdg">12</span></div></div>
+<div class="chat"><div class="av" style="background:linear-gradient(135deg,#2fd48f,#0ea5a5)">默</div><div class="mid"><div class="n">陈默</div><div class="m">[图片]</div></div><div class="rt"><div class="t">20:58</div></div></div>
+<div class="chat"><div class="av" style="background:linear-gradient(135deg,#f5b942,#f07b3f)">周</div><div class="mid"><div class="n">老周</div><div class="m">团建投票截止今晚</div></div><div class="rt"><div class="t">20:31</div></div></div>
+<div class="chat"><div class="av" style="background:linear-gradient(135deg,#ff7ab8,#c94b8f)">妈</div><div class="mid"><div class="n">妈妈</div><div class="m">天冷了多穿点</div></div><div class="rt"><div class="t">19:02</div><span class="bdg">5</span></div></div>
+<div class="chat"><div class="av" style="background:linear-gradient(135deg,#8a93a8,#5d6a84)">快</div><div class="mid"><div class="n">快递小哥</div><div class="m">您的快递到驿站了</div></div><div class="rt"><div class="t">18:47</div></div></div>
+<div class="chat"><div class="av" style="background:linear-gradient(135deg,#3ddad7,#2a9db8)">王</div><div class="mid"><div class="n">房东王姐</div><div class="m">水电费单发你了</div></div><div class="rt"><div class="t">17:20</div></div></div>
+<div class="chat"><div class="av" style="background:linear-gradient(135deg,#b07df5,#7a4fe0)">十</div><div class="mid"><div class="n">十年同学群(3)</div><div class="m">老地方聚餐接龙</div></div><div class="rt"><div class="t">16:05</div><span class="bdg">3</span></div></div>
+</div>
+<div class="dockzone">
+<div class="paper" id="paper">
+<div class="ptab" data-i="0"><span class="ic">🏠</span>首页</div>
+<div class="ptab" data-i="1"><span class="ic">🧭</span>发现</div>
+<div class="ptab" data-i="2"><span class="ic">💬</span>消息</div>
+<div class="ptab" data-i="3"><span class="ic">👤</span>我</div>
+</div>
+</div>
+</div>
+<script>
+var tabs=document.querySelectorAll('#paper .ptab');
+function go(i,anim){
+  tabs.forEach(function(t,j){
+    var on=i===j;
+    t.classList.toggle('on',on);
+    if(on&&anim){t.classList.remove('stick');void t.offsetWidth;t.classList.add('stick');}
+  });
+}
+tabs.forEach(function(t){t.addEventListener('click',function(){go(+t.dataset.i,true);});});
+document.body.classList.add('preload');
+var n=parseInt(new URLSearchParams(location.search).get('tab')||'0',10);
+go(n>=0&&n<4?n:0,false);
+void document.body.offsetWidth;
+document.body.classList.remove('preload');
+</script>
+</body>
+</html>

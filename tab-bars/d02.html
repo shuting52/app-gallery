@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>d02 · 果冻弹性底栏</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{background:#10141c;display:flex;justify-content:center;align-items:center;min-height:100vh;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif}
+.phone{width:430px;height:900px;max-height:100vh;background:#fff7f0;position:relative;overflow:hidden}
+.status{height:40px;display:flex;align-items:center;justify-content:space-between;padding:0 22px;font-size:12px;font-weight:600;color:#111}
+.nav{height:50px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:#111}
+.feed{position:absolute;top:90px;bottom:110px;left:0;right:0;overflow:hidden}
+.card{margin:10px 12px;border-radius:14px;padding:14px;background:#fff;border:2px solid #ffe3c2;display:flex;gap:12px;align-items:center}
+.av{width:52px;height:52px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:#fff;font-size:20px;font-weight:700}
+.tt{font-size:14px;font-weight:600;color:#222}
+.dd{font-size:12px;color:#999;margin-top:4px}
+/* ---- 果冻底栏 ---- */
+.tabbar{position:absolute;left:0;right:0;bottom:0;height:92px;background:#fff;border-top:2px solid #ffe3c2;display:flex;z-index:5;border-radius:26px 26px 0 0;box-shadow:0 -6px 20px rgba(255,150,60,.15)}
+.tab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:#b09a80;font-size:11px;cursor:pointer}
+.tab .ic{font-size:26px;display:inline-block}
+.tab.on{color:#ff7a1a;font-weight:700}
+.tab.on .ic{animation:jelly .55s}
+@keyframes jelly{0%{transform:scale(1,1)}25%{transform:scale(1.3,.7)}45%{transform:scale(.7,1.3)}65%{transform:scale(1.15,.85)}80%{transform:scale(.92,1.08)}100%{transform:scale(1,1)}}
+.tab .lbl{transition:transform .2s}
+.tab.on .lbl{transform:translateY(-1px)}
+</style>
+</head>
+<body>
+<div class="phone">
+<div class="status"><span>21:56</span><span>5G 🔋</span></div>
+<div class="nav">果冻弹性 · 底栏演示</div>
+<div class="feed" id="feed"></div>
+<div class="tabbar">
+<div class="tab on" data-i="0"><span class="ic">🏠</span><span class="lbl">首页</span></div>
+<div class="tab" data-i="1"><span class="ic">🧭</span><span class="lbl">发现</span></div>
+<div class="tab" data-i="2"><span class="ic">✉️</span><span class="lbl">消息</span></div>
+<div class="tab" data-i="3"><span class="ic">👤</span><span class="lbl">我</span></div>
+</div>
+</div>
+<script>
+var rows=[["布丁杯","焦糖布丁教程","#ffb84d","丁"],["气泡水","夏日特调三款","#4dd2ff","泡"],["芝士挞","流心芝士挞","#ff9a5a","挞"],["舒芙蕾","云朵舒芙蕾","#c99aff","芙"],["蛋挞","葡式蛋挞","#ff8a7a","挞"],["奶茶杯","黑糖珍珠奶茶","#d9a066","茶"],["果冻","彩虹果冻杯","#5ae0c8","冻"]];
+var h="";
+for(var i=0;i<rows.length;i++){h+='<div class="card"><div class="av" style="background:linear-gradient(135deg,'+rows[i][2]+','+rows[i][2]+'aa)">'+rows[i][3]+'</div><div><div class="tt">'+rows[i][0]+'</div><div class="dd">'+rows[i][1]+'</div></div></div>';}
+document.getElementById('feed').innerHTML=h;
+var tabs=document.querySelectorAll('.tab');
+function go(n){for(var i=0;i<tabs.length;i++){var on=i===n;tabs[i].classList.toggle('on',on);if(on){var ic=tabs[i].querySelector('.ic');ic.style.animation='none';void ic.offsetWidth;ic.style.animation='';}}}
+for(var i=0;i<tabs.length;i++){(function(k){tabs[k].addEventListener('click',function(){go(k);});})(i);}
+try{var q=new URLSearchParams(location.search).get('tab');if(q!==null&&+q>=0&&+q<4){go(+q);}}catch(e){}
+</script>
+</body>
+</html>

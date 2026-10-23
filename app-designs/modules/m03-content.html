@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>内容与信息 · 知岛</title>
+<style>
+/* ============ 知岛 · 内容与信息（纸质阅读 + 朱砂印） ============ */
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --paper:#F7F3EA; --paper2:#EFE8D8; --ink:#2B2620; --mut:#9A8F7D; --line:#E4DCC9;
+  --red:#B54434; --red2:#D4654F; --gold:#A8842C; --card:#FFFDF7;
+}
+html,body{background:#D9D2BE;font-family:-apple-system,"PingFang SC","Microsoft YaHei",serif;color:var(--ink)}
+.phone{max-width:430px;margin:0 auto;background:var(--paper);min-height:100dvh;position:relative;
+  box-shadow:0 0 40px rgba(43,38,32,.3);padding-bottom:100px}
+.screen{display:none;animation:fadeUp .25s ease}
+.screen.active{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}}
+.serif{font-family:"Songti SC","STSong","Noto Serif SC",serif}
+/* 顶栏 */
+.topbar{padding:22px 20px 8px;display:flex;align-items:center;justify-content:space-between}
+.topbar .logo{font-size:22px;font-weight:800;letter-spacing:4px}
+.topbar .logo i{font-style:normal;color:var(--red)}
+.topbar .date{font-size:12px;color:var(--mut)}
+.rule{height:1px;background:var(--line);margin:10px 20px;position:relative}
+.rule::after{content:"❖";position:absolute;left:50%;top:-9px;transform:translateX(-50%);background:var(--paper);padding:0 10px;color:var(--red);font-size:12px}
+/* 头图 */
+.hero{margin:6px 20px 0;border-radius:14px;overflow:hidden;position:relative;height:190px;
+  background:linear-gradient(135deg,#3A3227,#6B5B3E);color:#F7F3EA}
+.hero .tx{position:absolute;left:18px;bottom:16px;right:18px}
+.hero .tag{display:inline-block;background:var(--red);font-size:11px;padding:3px 10px;border-radius:4px;margin-bottom:8px}
+.hero h2{font-size:20px;line-height:1.45;font-weight:700}
+/* 文章卡 */
+.art{background:var(--card);border:1px solid var(--line);border-radius:14px;margin:12px 20px 0;padding:16px;cursor:pointer;transition:transform .15s}
+.art:active{transform:scale(.985)}
+.art .tag{font-size:11px;color:var(--red);border:1px solid var(--red);border-radius:4px;padding:2px 8px;display:inline-block;margin-bottom:8px}
+.art h3{font-size:17px;line-height:1.5;font-weight:700;margin-bottom:8px}
+.art .ex{font-size:13.5px;color:var(--mut);line-height:1.7;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.art .meta{display:flex;gap:12px;margin-top:10px;font-size:12px;color:var(--mut)}
+.art .meta .like{margin-left:auto}
+/* 分类 */
+.cats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 20px 0}
+.cats button{border:1px solid var(--line);background:var(--card);border-radius:12px;padding:14px 6px;font-size:14px;cursor:pointer;color:var(--ink)}
+.cats button .e{font-size:22px;display:block;margin-bottom:6px}
+.cats button.on{border-color:var(--red);color:var(--red);font-weight:700;background:#FBF3EC}
+.sect{margin:18px 20px 0;font-size:15px;font-weight:800;letter-spacing:2px;display:flex;align-items:center;gap:8px}
+.sect::before{content:"";width:4px;height:16px;background:var(--red);border-radius:2px}
+/* 搜索 */
+.sbar{margin:14px 20px 0;display:flex;gap:8px}
+.sbar input{flex:1;border:1px solid var(--line);background:var(--card);border-radius:22px;padding:12px 18px;font-size:14px;outline:none;color:var(--ink)}
+.sbar input:focus{border-color:var(--red)}
+.hot{margin:6px 20px 0}
+.hot .h{display:flex;align-items:center;gap:12px;padding:11px 2px;border-bottom:1px dashed var(--line);font-size:14px;cursor:pointer}
+.hot .h:last-child{border:0}
+.hot .n{width:22px;height:22px;border-radius:6px;background:var(--paper2);color:var(--mut);font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;flex:none}
+.hot .h:nth-child(-n+3) .n{background:var(--red);color:#fff}
+.hot .fire{margin-left:auto;font-size:12px;color:var(--mut)}
+.hist{display:flex;flex-wrap:wrap;gap:8px;margin:10px 20px 0}
+.hist span{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:6px 14px;font-size:13px;color:var(--mut)}
+/* 详情 */
+.detail{position:fixed;top:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;height:100dvh;
+  background:var(--paper);z-index:80;overflow-y:auto;display:none;padding-bottom:90px}
+.detail.show{display:block;animation:slideIn .3s ease}
+@keyframes slideIn{from{transform:translateX(-50%) translateX(60px);opacity:0}}
+.d-top{position:sticky;top:0;background:rgba(247,243,234,.96);backdrop-filter:blur(6px);padding:14px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--line);z-index:2}
+.d-top button{border:0;background:none;font-size:20px;cursor:pointer;color:var(--ink)}
+.d-top span{font-size:13px;color:var(--mut)}
+.d-body{padding:20px 22px}
+.d-body .tag{font-size:11px;color:var(--red);border:1px solid var(--red);border-radius:4px;padding:2px 8px}
+.d-body h1{font-size:23px;line-height:1.5;margin:12px 0;font-weight:800}
+.d-meta{display:flex;gap:10px;align-items:center;font-size:12.5px;color:var(--mut);padding-bottom:14px;border-bottom:1px solid var(--line)}
+.d-meta .av{width:34px;height:34px;border-radius:50%;background:var(--red);color:#fff;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700}
+.d-body p{font-size:16px;line-height:2;margin:14px 0;color:#3A342A;text-align:justify}
+.d-body p.quote{border-left:3px solid var(--red);padding-left:14px;color:var(--mut);font-size:14.5px}
+.d-bar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:var(--card);
+  border-top:1px solid var(--line);display:flex;padding:12px 20px calc(14px + env(safe-area-inset-bottom));z-index:81}
+.d-bar button{flex:1;border:0;background:none;font-size:13px;color:var(--mut);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px}
+.d-bar button .e{font-size:20px}
+.d-bar button.liked{color:var(--red)}
+.rel{margin:4px 20px 0}
+/* 我的 */
+.me{margin:14px 20px 0;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;display:flex;gap:14px;align-items:center}
+.me .av{width:60px;height:60px;border-radius:50%;background:var(--ink);color:var(--paper);font-size:24px;font-weight:800;display:flex;align-items:center;justify-content:center}
+.me b{font-size:17px}
+.me span{font-size:12.5px;color:var(--mut)}
+.stats{display:flex;margin:14px 20px 0;background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.stats div{flex:1;text-align:center;padding:14px 0;border-right:1px solid var(--line)}
+.stats div:last-child{border:0}
+.stats b{font-size:19px;display:block}
+.stats span{font-size:12px;color:var(--mut)}
+.mrow{display:flex;align-items:center;gap:12px;margin:0 20px;padding:14px 2px;border-bottom:1px solid var(--line);font-size:14.5px;cursor:pointer;background:transparent}
+.mrow .arr{margin-left:auto;color:var(--mut)}
+/* tabbar */
+.tabbar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:var(--card);
+  border-top:1px solid var(--line);display:flex;padding:8px 0 calc(10px + env(safe-area-inset-bottom));z-index:50}
+.tabbar button{flex:1;border:0;background:none;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11px;color:var(--mut);cursor:pointer;padding:4px}
+.tabbar button .ti{font-size:21px}
+.tabbar button.on{color:var(--red);font-weight:700}
+.toast{position:fixed;bottom:110px;left:50%;transform:translateX(-50%) translateY(20px);background:rgba(43,38,32,.94);
+  color:var(--paper);padding:11px 22px;border-radius:24px;font-size:14px;opacity:0;transition:all .3s;z-index:99;pointer-events:none;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+<div class="phone">
+
+  <!-- ===== 推荐 ===== -->
+  <section class="screen active" id="s-feed">
+    <div class="topbar"><div class="logo serif">知<i>岛</i></div><div class="date">10月19日 星期一<br>宜 深度阅读</div></div>
+    <div class="rule"></div>
+    <div class="hero" data-open="0"><div class="tx"><span class="tag">本期专题</span><h2 class="serif">AI 正在重写创造的规则：<br>我们与机器的分工史</h2></div></div>
+    <div id="feed-list"></div>
+  </section>
+
+  <!-- ===== 分类 ===== -->
+  <section class="screen" id="s-cats">
+    <div class="topbar"><div class="logo serif">知<i>岛</i></div><div class="date">全部分类</div></div>
+    <div class="rule"></div>
+    <div class="cats" id="cat-grid"></div>
+    <div class="sect">本类精选</div>
+    <div id="cat-list"></div>
+  </section>
+
+  <!-- ===== 搜索 ===== -->
+  <section class="screen" id="s-search">
+    <div class="topbar"><div class="logo serif">知<i>岛</i></div><div class="date">搜索岛上的一切</div></div>
+    <div class="rule"></div>
+    <div class="sbar"><input id="q" placeholder="搜索文章、作者、话题…"></div>
+    <div id="search-home">
+      <div class="sect">热搜榜</div>
+      <div class="hot" id="hot-list"></div>
+      <div class="sect">搜索历史 <span style="margin-left:auto;font-size:12px;color:var(--mut);font-weight:400" id="clear-hist">清空</span></div>
+      <div class="hist" id="hist-list"><span>大模型</span><span>城市漫步</span><span>睡眠科学</span></div>
+    </div>
+    <div id="search-result" style="display:none"></div>
+  </section>
+
+  <!-- ===== 我的 ===== -->
+  <section class="screen" id="s-mine">
+    <div class="topbar"><div class="logo serif">知<i>岛</i></div><div class="date">我的岛屿</div></div>
+    <div class="rule"></div>
+    <div class="me"><div class="av">陈</div><div><b>陈淑婷</b><span>岛龄 3 年 · 连续阅读 128 天</span></div></div>
+    <div class="stats"><div><b>486</b><span>收藏</span></div><div><b>1.2k</b><span>阅读</span></div><div><b>38</b><span>关注</span></div></div>
+    <div style="margin-top:14px">
+      <div class="mrow">📑 我的收藏<span class="arr">›</span></div>
+      <div class="mrow">🕰️ 阅读历史<span class="arr">›</span></div>
+      <div class="mrow">🔔 推送设置<span class="arr">›</span></div>
+      <div class="mrow">⚙️ 通用设置<span class="arr">›</span></div>
+    </div>
+  </section>
+
+  <nav class="tabbar">
+    <button data-tab="feed" class="on"><span class="ti">📰</span>推荐</button>
+    <button data-tab="cats"><span class="ti">🗂️</span>分类</button>
+    <button data-tab="search"><span class="ti">🔍</span>搜索</button>
+    <button data-tab="mine"><span class="ti">👤</span>我的</button>
+  </nav>
+  <div class="toast" id="toast"></div>
+</div>
+
+<!-- ===== 文章详情 ===== -->
+<div class="detail" id="detail">
+  <div class="d-top"><button id="d-back">‹</button><span>正文</span></div>
+  <div class="d-body" id="d-body"></div>
+  <div class="d-bar">
+    <button id="d-like"><span class="e">👍</span><span>点赞 <b id="like-n">2.3k</b></span></button>
+    <button data-toast="评论区（演示）"><span class="e">💬</span><span>评论 486</span></button>
+    <button id="d-fav"><span class="e">⭐</span><span>收藏</span></button>
+    <button data-toast="已生成分享海报（演示）"><span class="e">↗️</span><span>分享</span></button>
+  </div>
+</div>
+
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+let toastT;function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),1800);}
+function show(id){$$('.screen').forEach(x=>x.classList.remove('active'));$('#s-'+id).classList.add('active');
+  $$('.tabbar button').forEach(b=>b.classList.toggle('on',b.dataset.tab===id));window.scrollTo(0,0);}
+$$('.tabbar button').forEach(b=>b.onclick=()=>show(b.dataset.tab));
+$$('[data-toast]').forEach(b=>b.onclick=()=>toast(b.dataset.toast));
+/* ---- 数据 ---- */
+const ARTS=[
+ {tag:'科技',t:'AI 正在重写创造的规则：我们与机器的分工史',ex:'从蒸汽机到生成式 AI，每一次技术跃迁都在重新定义"创造"的边界。这一次，轮到我们回答：人还剩下什么不可替代？',a:'林深',time:'2 小时前',read:'12.4k',c:214},
+ {tag:'商业',t:'县城贵妇撑起一个千亿市场',ex:'下沉市场不再是"低端"的代名词。一群县城里的消费主力，正在用真金白银投票，改写品牌们的增长故事。',a:'沈南',time:'4 小时前',read:'8.1k',c:156},
+ {tag:'科学',t:'睡眠科学家：熬夜的债，补觉还不起',ex:'最新研究证实，碎片化的补觉无法修复深度睡眠缺失带来的认知损伤。关于睡眠，这 5 个真相你应该知道。',a:'顾晓',time:'6 小时前',read:'21.7k',c:342},
+ {tag:'文化',t:'重访西南联大：在炮火中读书意味着什么',ex:'八十多年前，一群年轻人在昆明的小土屋里读柏拉图、算微积分。战火纷飞的年代，书桌为什么是最坚固的堡垒？',a:'周砚',time:'昨天',read:'6.3k',c:98},
+ {tag:'生活',t:'Citywalk 爆火背后：年轻人重新发现城市',ex:'没有攻略、没有打卡清单，一场说走就走的城市漫步，为什么成了这一代人的精神刚需？',a:'苏青',time:'昨天',read:'9.8k',c:187},
+ {tag:'观点',t:'效率至上之后，我们开始为"慢"付费',ex:'从慢直播到手冲咖啡馆，"慢"正在成为一种新的奢侈品。这届消费者，到底在为什么买单？',a:'陆遥',time:'2 天前',read:'5.2k',c:76}];
+const CATS=[['🤖','科技'],['💼','商业'],['🔬','科学'],['📚','文化'],['☕','生活'],['💡','观点']];
+const HOT=[['大模型年度盘点',2.1],['县城消费力',1.8],['睡眠革命',1.5],['西南联大',1.2],['Citywalk 路线',0.9],['慢生活',0.7]];
+/* ---- 推荐 ---- */
+$('#feed-list').innerHTML=ARTS.map((a,i)=>`<div class="art" data-open="${i}"><span class="tag">${a.tag}</span><h3 class="serif">${a.t}</h3><div class="ex">${a.ex}</div><div class="meta"><span>${a.a}</span><span>${a.time}</span><span>阅读 ${a.read}</span><span class="like">💬 ${a.c}</span></div></div>`).join('');
+/* ---- 分类 ---- */
+let curCat='科技';
+$('#cat-grid').innerHTML=CATS.map(c=>`<button data-c="${c[1]}" class="${c[1]===curCat?'on':''}"><span class="e">${c[0]}</span>${c[1]}</button>`).join('');
+function renderCat(){const r=ARTS.filter(a=>a.tag===curCat);
+  $('#cat-list').innerHTML=(r.length?r:ARTS.slice(0,2)).map(a=>{const i=ARTS.indexOf(a);
+    return `<div class="art" data-open="${i}"><span class="tag">${a.tag}</span><h3 class="serif">${a.t}</h3><div class="ex">${a.ex}</div><div class="meta"><span>${a.a}</span><span>${a.time}</span><span>阅读 ${a.read}</span></div></div>`;}).join('');
+  bindOpen();}
+$$('#cat-grid button').forEach(b=>b.onclick=()=>{$$('#cat-grid button').forEach(x=>x.classList.remove('on'));b.classList.add('on');curCat=b.dataset.c;renderCat();});
+renderCat();
+/* ---- 搜索 ---- */
+$('#hot-list').innerHTML=HOT.map(h=>`<div class="h" data-kw="${h[0]}"><span class="n">${HOT.indexOf(h)+1}</span>${h[0]}<span class="fire">🔥 ${h[1]}w</span></div>`).join('');
+function doSearch(kw){kw=kw.trim();if(!kw)return;
+  const r=ARTS.filter(a=>(a.t+a.ex+a.tag+a.a).includes(kw));
+  $('#search-home').style.display='none';const sr=$('#search-result');sr.style.display='';
+  sr.innerHTML=`<div class="sect">搜索「${kw}」· ${r.length} 篇</div>`+(r.length?r.map(a=>{const i=ARTS.indexOf(a);
+    return `<div class="art" data-open="${i}"><span class="tag">${a.tag}</span><h3 class="serif">${a.t}</h3><div class="ex">${a.ex}</div><div class="meta"><span>${a.a}</span><span>${a.time}</span></div></div>`;}).join('')
+    :'<div style="text-align:center;color:var(--mut);padding:40px;font-size:13px">岛上还没有这篇内容，换个词试试</div>');
+  bindOpen();}
+$('#q').addEventListener('keydown',e=>{if(e.key==='Enter')doSearch(e.target.value);});
+$$('#hot-list .h').forEach(h=>h.onclick=()=>{$('#q').value=h.dataset.kw;doSearch(h.dataset.kw);});
+$$('#hist-list span').forEach(h=>h.onclick=()=>{$('#q').value=h.textContent;doSearch(h.textContent);});
+$('#clear-hist').onclick=()=>{$('#hist-list').innerHTML='';toast('已清空搜索历史');};
+/* ---- 详情 ---- */
+const BODY=`<p>技术史上有句老话：我们总是高估一项技术的短期影响，而低估它的长期影响。生成式 AI 带来的震荡，正在验证这句话的后半句。</p><p>过去两年，从文本到图像，从代码到视频，机器的"创作半径"以肉眼可见的速度扩张。争论也随之而来：设计师会失业吗？写作者还有价值吗？</p><p class="quote">「工具从不取代目的，只取代手段。」—— 一位受访的建筑师这样说。</p><p>更值得关注的，或许不是"谁会被替代"，而是"分工"本身的重构：机器接管了执行的规模，人类则被推向了定义问题的源头。品味、判断、意图——这些曾被视为"软技能"的东西，正在成为最硬的通货。</p><p>历史总是押韵的。蒸汽机没有消灭工匠，而是催生了设计师；计算器没有消灭数学家，而是解放了数学。这一次，AI 递出的或许是一面镜子：照见的不是机器的强大，而是我们究竟想成为什么样的人。</p>`;
+function openDetail(i){const a=ARTS[i];
+  $('#d-body').innerHTML=`<span class="tag">${a.tag}</span><h1 class="serif">${a.t}</h1>
+  <div class="d-meta"><div class="av">${a.a[0]}</div><div><b>${a.a}</b> · ${a.time}<br>阅读 ${a.read} · 评论 ${a.c}</div></div>${BODY}
+  <div class="sect">相关推荐</div>`+ARTS.filter((_,j)=>j!==i).slice(0,2).map(x=>{const k=ARTS.indexOf(x);
+    return `<div class="art rel" data-open="${k}" style="margin-left:0;margin-right:0"><span class="tag">${x.tag}</span><h3 class="serif">${x.t}</h3></div>`;}).join('');
+  $('#detail').classList.add('show');document.body.style.overflow='hidden';bindOpen();
+  $('#d-like').classList.remove('liked');$('#like-n').textContent='2.3k';$('#d-fav').classList.remove('liked');}
+function bindOpen(){$$('[data-open]').forEach(el=>el.onclick=e=>{e.stopPropagation();openDetail(+el.dataset.open);});}
+bindOpen();
+$('#d-back').onclick=()=>{$('#detail').classList.remove('show');document.body.style.overflow='';};
+$('#d-like').onclick=function(){this.classList.toggle('liked');$('#like-n').textContent=this.classList.contains('liked')?'2.3k+1':'2.3k';};
+$('#d-fav').onclick=function(){this.classList.toggle('liked');toast(this.classList.contains('liked')?'已加入收藏':'已取消收藏');};
+$$('.mrow').forEach(r=>r.onclick=()=>toast(r.textContent.replace('›','').trim()+'（演示）'));
+const q=new URLSearchParams(location.search);if(q.get('tab'))show(q.get('tab'));if(q.get('detail')!==null)openDetail(0);
+</script>
+</body>
+</html>

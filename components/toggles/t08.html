@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>花开</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;display:flex;align-items:center;justify-content:center;background:#0e0f13;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;color:#e8eaf0;padding:20px}
+body.freeze *{transition:none!important;animation:none!important}
+.stage{width:360px;max-width:100%;text-align:center}
+h2{font-size:17px;letter-spacing:3px;margin-bottom:4px}
+.sub{font-size:12px;color:#8a8fa3;margin-bottom:20px}
+.device{cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent}
+.garden{width:300px;height:320px;margin:0 auto;position:relative;border-radius:20px;background:linear-gradient(180deg,#0d1626 0%,#12233d 70%,#0e1a12 100%);overflow:hidden;box-shadow:0 12px 32px rgba(0,0,0,.5)}
+.firefly{position:absolute;width:5px;height:5px;border-radius:50%;background:#ffe98a;opacity:.7;animation:fl 3s ease-in-out infinite}
+.firefly.f1{top:40px;left:50px}.firefly.f2{top:90px;left:250px;animation-delay:1s}.firefly.f3{top:150px;left:40px;animation-delay:2s}
+@keyframes fl{50%{transform:translateY(-14px);opacity:.2}}
+.stem{position:absolute;bottom:56px;left:50%;width:9px;height:140px;margin-left:-4px;border-radius:5px;background:linear-gradient(90deg,#37b06a,#1e7a44)}
+.leaf{position:absolute;bottom:96px;left:50%;width:52px;height:26px;background:linear-gradient(90deg,#37b06a,#25945a);border-radius:50% 50% 50% 50%/60% 60% 40% 40%}
+.leaf.l1{margin-left:-56px;transform:rotate(-24deg)}
+.leaf.l2{margin-left:4px;transform:rotate(24deg) scaleX(-1)}
+.head{position:absolute;bottom:186px;left:50%;width:0;height:0}
+.petal{position:absolute;bottom:0;left:50%;width:46px;height:96px;margin-left:-23px;transform-origin:50% 100%;border-radius:50% 50% 46% 46%/62% 62% 38% 38%;background:radial-gradient(ellipse at 50% 28%,#ffc4e0,#ef5ba1 70%,#d63d86);box-shadow:inset 0 -8px 14px rgba(150,20,80,.35);transform:rotate(calc(var(--i)*45deg)) scale(.22);transition:transform .9s cubic-bezier(.3,1.35,.45,1);transition-delay:calc(var(--i)*70ms)}
+.device.on .petal{transform:rotate(calc(var(--i)*45deg)) scale(1)}
+.core{position:absolute;bottom:-17px;left:50%;width:38px;height:38px;margin-left:-19px;border-radius:50%;background:radial-gradient(circle at 40% 35%,#fff3b0,#f5b301 70%);transform:scale(.55);transition:transform .7s ease .3s,box-shadow .7s}
+.device.on .core{transform:scale(1);box-shadow:0 0 30px 8px rgba(255,200,60,.65)}
+.spark{position:absolute;bottom:0;left:50%;width:8px;height:8px;margin-left:-4px;border-radius:50%;background:#ffe98a;opacity:0}
+.device.on .spark{animation:spk 1.6s ease-out infinite;animation-delay:calc(var(--i)*.22s)}
+.spark.s1{--dx:-46px}.spark.s2{--dx:46px}.spark.s3{--dx:-30px}.spark.s4{--dx:30px}
+@keyframes spk{0%{opacity:0;transform:translate(0,0) scale(.5)}25%{opacity:1}100%{opacity:0;transform:translate(var(--dx),-90px) scale(1.2)}}
+.pot{position:absolute;bottom:0;left:50%;width:150px;height:62px;margin-left:-75px;background:linear-gradient(180deg,#b0603c,#7e3f22);clip-path:polygon(8% 0,92% 0,80% 100%,20% 100%)}
+.pot::before{content:'';position:absolute;top:0;left:2%;right:2%;height:12px;background:#8f4a2a;border-radius:4px}
+.status{margin-top:18px;font-size:14px;color:#9aa0b4}
+.status b{color:#ffd479}
+.hint{font-size:11px;color:#5c6172;margin-top:6px}
+</style>
+</head>
+<body>
+<div class="stage">
+<h2>花开</h2>
+<div class="sub">点击让花朵绽放 / 收拢</div>
+<div class="device" id="dev">
+<div class="garden">
+<span class="firefly f1"></span><span class="firefly f2"></span><span class="firefly f3"></span>
+<div class="stem"></div><div class="leaf l1"></div><div class="leaf l2"></div>
+<div class="head">
+<span class="petal" style="--i:0"></span><span class="petal" style="--i:1"></span><span class="petal" style="--i:2"></span><span class="petal" style="--i:3"></span><span class="petal" style="--i:4"></span><span class="petal" style="--i:5"></span><span class="petal" style="--i:6"></span><span class="petal" style="--i:7"></span>
+<div class="core"></div>
+<span class="spark s1" style="--i:0"></span><span class="spark s2" style="--i:1"></span><span class="spark s3" style="--i:2"></span><span class="spark s4" style="--i:3"></span>
+</div>
+<div class="pot"></div>
+</div>
+</div>
+<div class="status">状态：<b id="st">关 · 花苞</b></div>
+<div class="hint">点击花朵切换</div>
+</div>
+<script>
+var dev=document.getElementById('dev'),st=document.getElementById('st'),on=location.search.indexOf('s=1')>-1;
+function render(){dev.classList.toggle('on',on);st.textContent=on?'开 · 盛放':'关 · 花苞';}
+if(on)document.body.classList.add('freeze');
+dev.addEventListener('click',function(){on=!on;render();});
+render();
+</script>
+</body>
+</html>

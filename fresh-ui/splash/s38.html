@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>孔雀羽屏</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{background:#070a12;display:flex;align-items:center;justify-content:center;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;overflow:hidden}
+.stage{position:relative;width:430px;height:900px;flex:none;overflow:hidden}
+.stage i{display:block;position:absolute}
+.brand{position:absolute;left:0;right:0;bottom:104px;text-align:center;z-index:50;animation:brandIn 1s .9s both}
+.brand h1{font-size:32px;letter-spacing:10px;text-indent:10px;color:#fff;font-weight:700;text-shadow:0 2px 24px rgba(0,0,0,.45)}
+.brand p{margin-top:10px;font-size:11px;letter-spacing:5px;color:rgba(255,255,255,.62)}
+@keyframes brandIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.replay{position:absolute;bottom:30px;left:50%;transform:translateX(-50%);z-index:60;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.35);color:#fff;font-size:12px;letter-spacing:2px;padding:9px 24px;border-radius:20px;cursor:pointer;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.shade{position:absolute;left:0;right:0;bottom:0;height:360px;background:linear-gradient(transparent,rgba(8,6,18,.78));z-index:40;pointer-events:none}
+
+.stage{background:radial-gradient(circle at 50% 28%,#10414b,#071418 78%)}
+
+.fan{width:0;height:0;left:215px;bottom:210px;z-index:5}
+.feather{left:-8px;bottom:0;width:16px;height:330px;border-radius:50% 50% 0 0/100% 100% 0 0;background:linear-gradient(#35d9ab,#0d7a64);transform:rotate(var(--r)) scaleY(0);transform-origin:50% 100%;animation:open 1.3s var(--dl) both}
+@keyframes open{to{transform:rotate(var(--r)) scaleY(1)}}
+.feather::after{content:"";position:absolute;top:16px;left:50%;transform:translateX(-50%);width:30px;height:38px;border-radius:50%;background:radial-gradient(circle at 50% 34%,#8ffce6,#189a7d 52%,#0a3a32 78%);animation:eye 2.6s ease-in-out infinite alternate}
+@keyframes eye{to{box-shadow:0 0 18px 4px rgba(120,250,220,.55)}}
+.pbody{width:74px;height:110px;left:178px;bottom:120px;border-radius:50%;background:linear-gradient(135deg,#1f8f76,#0c4a3f);z-index:6;animation:brandIn 1s .9s both}
+.pbody .hd{width:34px;height:34px;left:20px;top:-16px;border-radius:50%;background:#27a985}
+.pbody .hd::after{content:"";position:absolute;left:24px;top:8px;width:12px;height:7px;border-radius:0 7px 7px 0;background:#f4d35e}
+.spark{width:6px;height:6px;border-radius:50%;background:#aef7e4;animation:tw 2s ease-in-out infinite alternate}
+.s1{left:80px;top:180px}.s2{left:340px;top:240px;animation-delay:-.7s}.s3{left:150px;top:120px;animation-delay:-1.3s}.s4{left:290px;top:90px;animation-delay:-.4s}
+@keyframes tw{to{opacity:.15;transform:scale(.6)}}
+
+</style></head><body>
+<div class="stage" id="stage">
+<i class="fan"><i class="feather" style="--r:-80deg;--dl:0.9s"></i></i><i class="fan"><i class="feather" style="--r:-60deg;--dl:0.75s"></i></i><i class="fan"><i class="feather" style="--r:-40deg;--dl:0.6s"></i></i><i class="fan"><i class="feather" style="--r:-20deg;--dl:0.45s"></i></i><i class="fan"><i class="feather" style="--r:0deg;--dl:0.3s"></i></i><i class="fan"><i class="feather" style="--r:20deg;--dl:0.45s"></i></i><i class="fan"><i class="feather" style="--r:40deg;--dl:0.6s"></i></i><i class="fan"><i class="feather" style="--r:60deg;--dl:0.75s"></i></i><i class="fan"><i class="feather" style="--r:80deg;--dl:0.9s"></i></i>
+<i class="pbody"><i class="hd"></i></i>
+<i class="spark s1"></i><i class="spark s2"></i><i class="spark s3"></i><i class="spark s4"></i>
+
+<div class="shade"></div>
+<div class="brand"><h1>孔雀</h1><p>PEACOCK</p></div>
+<button class="replay" onclick="var s=document.getElementById('stage');s.replaceWith(s.cloneNode(true))">重新播放</button>
+</div>
+</body></html>

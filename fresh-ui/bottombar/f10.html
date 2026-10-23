@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>极光帘幕 · 底部栏</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{display:flex;align-items:center;justify-content:center;background:#03040a;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans CJK SC",sans-serif}
+.phone{width:430px;height:900px;max-width:100vw;max-height:100vh;border-radius:44px;overflow:hidden;position:relative;display:flex;flex-direction:column;background:linear-gradient(180deg,#0a1024 0%,#070b1a 60%,#04060f 100%)}
+.stars{position:absolute;inset:0;background:
+ radial-gradient(1.6px 1.6px at 18% 12%,#fff,transparent),
+ radial-gradient(1px 1px at 72% 8%,#fff,transparent),
+ radial-gradient(1.4px 1.4px at 42% 22%,#fff,transparent),
+ radial-gradient(1px 1px at 88% 28%,#fff,transparent),
+ radial-gradient(1.6px 1.6px at 60% 38%,#fff,transparent),
+ radial-gradient(1px 1px at 8% 44%,#fff,transparent),
+ radial-gradient(1.2px 1.2px at 30% 55%,#fff,transparent),
+ radial-gradient(1px 1px at 80% 60%,#cfe6ff,transparent);opacity:.75;pointer-events:none}
+.content{flex:1;padding:64px 26px 20px;position:relative;z-index:1}
+.kicker{font-size:12px;letter-spacing:4px;color:#6fd6b8;margin-bottom:10px}
+h1{font-size:32px;font-weight:700;color:#eef4ff;margin-bottom:24px;text-shadow:0 0 26px rgba(111,214,184,.4)}
+.card{background:rgba(20,28,52,.55);border:1px solid rgba(110,200,170,.22);border-radius:18px;min-height:112px;margin-bottom:14px;display:flex;align-items:center;justify-content:center;color:#7f9cc9;font-size:14px;letter-spacing:2px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.tabbar{position:relative;display:flex;height:104px;padding:12px 6px 24px;background:rgba(8,12,26,.55);border-top:1px solid rgba(140,220,200,.25);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);overflow:hidden;z-index:2}
+.aurora{position:absolute;inset:-46px -30px;pointer-events:none;filter:blur(30px);opacity:.85;z-index:0}
+.band{position:absolute;border-radius:50%}
+.band.b1{width:280px;height:96px;left:-60px;top:24px;background:radial-gradient(ellipse,rgba(64,224,160,.6),transparent 70%);animation:drift1 9s ease-in-out infinite alternate;animation-delay:-3s}
+.band.b2{width:320px;height:110px;left:60px;top:44px;background:radial-gradient(ellipse,rgba(150,110,255,.55),transparent 70%);animation:drift2 13s ease-in-out infinite alternate;animation-delay:-8s}
+.band.b3{width:240px;height:88px;left:180px;top:6px;background:radial-gradient(ellipse,rgba(70,150,255,.55),transparent 70%);animation:drift3 11s ease-in-out infinite alternate;animation-delay:-5s}
+@keyframes drift1{from{transform:translateX(-36px) rotate(-7deg)}to{transform:translateX(200px) rotate(9deg)}}
+@keyframes drift2{from{transform:translateX(60px) rotate(6deg)}to{transform:translateX(-180px) rotate(-8deg)}}
+@keyframes drift3{from{transform:translateX(-90px) rotate(-5deg)}to{transform:translateX(120px) rotate(7deg)}}
+.tab{flex:1;position:relative;background:none;border:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;color:#8b96b8;font-family:inherit;transition:color .35s;z-index:1}
+.tab svg{width:26px;height:26px;display:block}
+.tab span{font-size:11px;display:block;letter-spacing:1px}
+.beam{position:absolute;top:-14px;left:50%;transform:translateX(-50%);width:46px;height:86px;background:linear-gradient(180deg,rgba(200,245,235,.8),rgba(200,245,235,0));filter:blur(7px);opacity:0;transition:opacity .45s;pointer-events:none}
+.tab.active .beam{opacity:1}
+.tab.active{color:#eafcf6;text-shadow:0 0 14px rgba(140,255,215,.95)}
+.tab.active svg{filter:drop-shadow(0 0 8px rgba(140,255,215,.9))}
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="stars"></div>
+  <div class="content">
+    <div class="kicker">AURORA VEIL</div>
+    <h1 id="ctitle">极夜漫游</h1>
+    <div class="card">冰原 · 占位卡片一</div>
+    <div class="card">星海 · 占位卡片二</div>
+    <div class="card">雪原 · 占位卡片三</div>
+  </div>
+  <nav class="tabbar">
+    <div class="aurora"><i class="band b1"></i><i class="band b2"></i><i class="band b3"></i></div>
+    <button class="tab"><i class="beam"></i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11l8-7 8 7"/><path d="M6 9.5V20h12V9.5"/></svg><span>首页</span></button>
+    <button class="tab"><i class="beam"></i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.7 5.8 6.3.8-4.6 4.3 1.2 6.1-5.6-3.1-5.6 3.1 1.2-6.1L3 9.6l6.3-.8z"/></svg><span>星图</span></button>
+    <button class="tab"><i class="beam"></i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/></svg><span>发现</span></button>
+    <button class="tab"><i class="beam"></i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H9l-5 4V6z"/></svg><span>消息</span></button>
+    <button class="tab"><i class="beam"></i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg><span>我的</span></button>
+  </nav>
+</div>
+<script>
+const T=[{t:'首页',h:'极夜漫游'},{t:'星图',h:'极光星图'},{t:'发现',h:'冰原发现'},{t:'消息',h:'雪信消息'},{t:'我的',h:'我的营地'}];
+const btns=[...document.querySelectorAll('.tab')];
+const h1=document.getElementById('ctitle');
+function act(k){
+  k=Math.max(0,Math.min(T.length-1,k));
+  btns.forEach((b,i)=>b.classList.toggle('active',i===k));
+  h1.textContent=T[k].h;
+  try{history.replaceState(null,'','?tab='+k)}catch(e){}
+}
+btns.forEach((b,i)=>b.addEventListener('click',()=>act(i)));
+let k=parseInt(new URLSearchParams(location.search).get('tab'),10);
+if(isNaN(k))k=0;
+act(k);
+</script>
+</body>
+</html>

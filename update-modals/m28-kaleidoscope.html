@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>万花筒更新 · v4.0.0</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    min-height: 100vh; background: #08080f; color: #fff;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    display: flex; align-items: center; justify-content: center; padding: 24px 16px;
+  }
+  body.notrans * { transition: none !important; animation: none !important; }
+  .modal {
+    width: 340px; background: rgba(20,20,34,.86);
+    backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+    border: 1px solid rgba(255,255,255,.12); border-radius: 26px;
+    padding: 24px 22px; display: flex; flex-direction: column; align-items: center;
+    box-shadow: 0 24px 60px rgba(0,0,0,.5);
+  }
+  .modal.hidden { display: none; }
+  .m-head { width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+  .m-title { font-size: 17px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+  .ver { font-size: 11px; color: #c9a7ff; border: 1px solid rgba(201,167,255,.5); border-radius: 99px; padding: 3px 10px; background: rgba(201,167,255,.08); }
+  .x { background: none; border: none; color: rgba(255,255,255,.4); font-size: 24px; cursor: pointer; line-height: 1; }
+  .m-sub { width: 100%; font-size: 14px; color: rgba(255,255,255,.72); margin-bottom: 4px; text-align: left; }
+  .m-meta { width: 100%; font-size: 12px; color: rgba(255,255,255,.38); margin-bottom: 10px; text-align: left; font-variant-numeric: tabular-nums; }
+  .stage { position: relative; width: 300px; height: 300px; }
+  .stage canvas { width: 300px; height: 300px; display: block; border-radius: 50%; transition: opacity .4s; }
+  .stage.dim canvas { opacity: .4; }
+  .pct-wrap {
+    position: absolute; inset: 0; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; pointer-events: none;
+    transition: opacity .4s;
+  }
+  .pct-wrap.fade { opacity: 0; }
+  .pct { font-size: 40px; font-weight: 800; font-variant-numeric: tabular-nums; text-shadow: 0 0 18px rgba(201,167,255,.5); }
+  .lbl { font-size: 12px; color: rgba(255,255,255,.55); margin-top: 6px; letter-spacing: 4px; }
+  .done-badge {
+    position: absolute; inset: 0; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 10px;
+    opacity: 0; pointer-events: none; transition: opacity .5s;
+  }
+  .done-badge.show { opacity: 1; }
+  .done-badge .ring {
+    width: 110px; height: 110px; border-radius: 50%;
+    border: 3px solid #7dffb0; display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 0 34px rgba(125,255,176,.55), inset 0 0 22px rgba(125,255,176,.25);
+    font-size: 52px; color: #7dffb0;
+  }
+  .done-badge .t { font-size: 15px; font-weight: 700; letter-spacing: 3px; color: #7dffb0; }
+  .main-btn {
+    width: 100%; margin-top: 18px; padding: 14px 0; border-radius: 99px; border: none;
+    font-size: 16px; font-weight: 600; cursor: pointer;
+    background: rgba(255,255,255,.1); color: #fff; border: 1px solid rgba(255,255,255,.16);
+    transition: all .25s;
+  }
+  .main-btn:hover { background: rgba(255,255,255,.18); }
+  .main-btn.gold { background: linear-gradient(135deg, #d9b8ff, #8f6bff); color: #fff; border: none; box-shadow: 0 8px 26px rgba(143,107,255,.4); }
+  .main-btn:disabled { opacity: .45; cursor: default; }
+  .replay { margin-top: 12px; background: none; border: none; cursor: pointer; color: rgba(255,255,255,.35); font-size: 12.5px; }
+  .replay:hover { color: #c9a7ff; }
+  .toast {
+    position: fixed; top: 26px; left: 50%; transform: translateX(-50%) translateY(-16px);
+    background: rgba(20,22,36,.94); color: #fff; border: 1px solid rgba(255,255,255,.14);
+    padding: 10px 22px; border-radius: 99px; font-size: 14px; opacity: 0; pointer-events: none;
+    transition: opacity .25s, transform .25s; z-index: 60;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+
+<div class="modal" id="modal">
+  <div class="m-head">
+    <div class="m-title">✦ 万花筒更新 <span class="ver">v4.0.0</span></div>
+    <button class="x" id="xBtn">×</button>
+  </div>
+  <div class="m-sub" id="statusText">正在收集光影碎片…</div>
+  <div class="m-meta" id="metaText">0.0MB / 156.8MB · -- MB/s</div>
+  <div class="stage" id="stage">
+    <canvas id="cv" width="600" height="600"></canvas>
+    <div class="pct-wrap" id="pctWrap">
+      <div class="pct" id="pctText">0%</div>
+      <div class="lbl" id="stageLabel">下载中</div>
+    </div>
+    <div class="done-badge" id="doneBadge">
+      <div class="ring">✓</div>
+      <div class="t">曼陀罗已绽放</div>
+    </div>
+  </div>
+  <button class="main-btn" id="mainBtn">取消更新</button>
+  <button class="replay" id="replayBtn">↺ 重新演示</button>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+  const cv = document.getElementById('cv'), ctx = cv.getContext('2d');
+  const S = 600, C = 300, R = 288;
+  const pctText = document.getElementById('pctText'), stageLabel = document.getElementById('stageLabel');
+  const pctWrap = document.getElementById('pctWrap'), doneBadge = document.getElementById('doneBadge');
+  const statusText = document.getElementById('statusText'), metaText = document.getElementById('metaText');
+  const mainBtn = document.getElementById('mainBtn'), modal = document.getElementById('modal');
+  const stage = document.getElementById('stage'), toast = document.getElementById('toast');
+
+  const TOTAL = 156.8;
+  let progress = 0, pShow = 0, vtime = 0, spin = 0;
+  let state = 'downloading', timer = null, showSpeed = 0, frozen = false, rafOn = true;
+
+  function drawK() {
+    const p = pShow;
+    const N = Math.max(4, Math.round(4 + p / 100 * 8));      // 4→12 扇区
+    const blobs = 3 + Math.floor(p / 100 * 5);               // 色彩层次增加
+    ctx.clearRect(0, 0, S, S);
+    const bg = ctx.createRadialGradient(C, C, 0, C, C, C);
+    bg.addColorStop(0, '#151530'); bg.addColorStop(1, '#06060d');
+    ctx.fillStyle = bg; ctx.beginPath(); ctx.arc(C, C, C, 0, 7); ctx.fill();
+    ctx.save(); ctx.translate(C, C);
+    for (let i = 0; i < N; i++) {
+      ctx.save();
+      ctx.rotate(i * 2 * Math.PI / N + spin);
+      if (i % 2 === 1) ctx.scale(1, -1);
+      ctx.beginPath(); ctx.moveTo(0, 0);
+      ctx.arc(0, 0, R, -Math.PI / N - 0.02, Math.PI / N + 0.02);
+      ctx.closePath(); ctx.clip();
+      for (let k = 0; k < blobs; k++) {
+        const ang = (k / blobs - 0.5) * (1.5 * Math.PI / N) + Math.sin(vtime * 0.0004 + k * 2.1) * 0.12;
+        const rad = 70 + 150 * Math.abs(Math.sin(vtime * 0.00035 + k * 1.7 + 1));
+        const x = Math.cos(ang) * rad, y = Math.sin(ang) * rad;
+        const hue = (vtime * 0.02 + k * 53 + i * 17 + p * 1.5) % 360;
+        const rr = Math.abs(30 + 22 * Math.sin(vtime * 0.0009 + k * 1.3)) + 8;
+        const g = ctx.createRadialGradient(x, y, 0, x, y, rr);
+        g.addColorStop(0, 'hsla(' + hue + ',90%,64%,.8)');
+        g.addColorStop(1, 'hsla(' + ((hue + 40) % 360) + ',90%,55%,0)');
+        ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, y, rr, 0, 7); ctx.fill();
+      }
+      ctx.restore();
+    }
+    ctx.restore();
+    // 中央 medallion 随进度长大
+    const mr = 14 + p / 100 * 30;
+    const mh = (vtime * 0.02 + p * 1.5) % 360;
+    const mg = ctx.createRadialGradient(C, C, 0, C, C, mr);
+    mg.addColorStop(0, 'hsla(' + mh + ',95%,72%,.95)');
+    mg.addColorStop(1, 'hsla(0,0%,0%,0)');
+    ctx.fillStyle = mg; ctx.beginPath(); ctx.arc(C, C, mr, 0, 7); ctx.fill();
+    // 外圈进度弧
+    ctx.lineWidth = 10; ctx.lineCap = 'round';
+    ctx.strokeStyle = 'rgba(255,255,255,.1)';
+    ctx.beginPath(); ctx.arc(C, C, R - 10, 0, Math.PI * 2); ctx.stroke();
+    if (p > 0.3) {
+      ctx.strokeStyle = 'hsla(' + ((210 - p * 1.65 + 360) % 360) + ',90%,66%,.95)';
+      ctx.beginPath(); ctx.arc(C, C, R - 10, -Math.PI / 2, -Math.PI / 2 + p / 100 * Math.PI * 2); ctx.stroke();
+    }
+  }
+
+  function frame(ts) {
+    if (!rafOn) return;
+    if (!frozen) {
+      const dt = Math.min(ts - (frame._l || ts), 50); frame._l = ts;
+      vtime += dt;
+      spin += dt * 0.00035 * (state === 'installing' ? 6 : 1);
+      pShow += (progress - pShow) * 0.08;
+      if (Math.abs(progress - pShow) < 0.05) pShow = progress;
+    }
+    drawK();
+    requestAnimationFrame(frame);
+  }
+
+  function showToast(m) {
+    toast.textContent = m; toast.classList.add('show');
+    clearTimeout(showToast._t); showToast._t = setTimeout(() => toast.classList.remove('show'), 1800);
+  }
+  function render() {
+    pctText.textContent = Math.floor(pShow) + '%';
+    const mb = (pShow / 100 * TOTAL).toFixed(1);
+    metaText.textContent = mb + 'MB / ' + TOTAL + 'MB · ' + (state === 'downloading' ? showSpeed.toFixed(1) + ' MB/s' : '-- MB/s');
+  }
+  function setMain(t, gold, dis) {
+    mainBtn.textContent = t; mainBtn.classList.toggle('gold', !!gold); mainBtn.disabled = !!dis;
+  }
+
+  function tick() {
+    if (state !== 'downloading') return;
+    const sp = 8 * (0.6 + Math.random() * 0.8);
+    showSpeed = showSpeed * 0.7 + sp * 0.3;
+    progress += sp * 0.1 / TOTAL * 100;
+    vtime += 100; pShow = progress; drawK();   // tick 驱动，保证测试环境可见
+    if (progress >= 100) { progress = 100; pShow = 100; drawK(); enterInstalling(); return; }
+    render();
+  }
+  function startTimer() { clearInterval(timer); timer = setInterval(tick, 100); }
+
+  function enterDownloading(reset) {
+    if (reset) {
+      progress = 0; pShow = 0; vtime = 0; spin = 0; showSpeed = 0; frozen = false;
+      stage.classList.remove('dim'); pctWrap.classList.remove('fade'); doneBadge.classList.remove('show');
+      drawK();
+    }
+    state = 'downloading'; frozen = false;
+    statusText.textContent = '正在收集光影碎片…'; stageLabel.textContent = '下载中';
+    setMain('取消更新', false, false); startTimer(); render();
+  }
+  function enterCancelled() {
+    state = 'cancelled'; clearInterval(timer); frozen = true;
+    stage.classList.add('dim');
+    statusText.textContent = '光影已散去'; stageLabel.textContent = '已取消';
+    metaText.textContent = (pShow / 100 * TOTAL).toFixed(1) + 'MB / ' + TOTAL + 'MB · 已停止';
+    setMain('重新下载', false, false); showToast('已取消更新');
+  }
+  function enterInstalling() {
+    state = 'installing'; clearInterval(timer);
+    statusText.textContent = '正在定格曼陀罗…'; stageLabel.textContent = '安装中';
+    metaText.textContent = TOTAL + 'MB / ' + TOTAL + 'MB · 校验完成';
+    setMain('安装中…', false, true); render();
+    setTimeout(() => { if (state === 'installing') enterDone(); }, 2000);
+  }
+  function enterDone() {
+    state = 'done'; frozen = true; pShow = 100; progress = 100; drawK();
+    statusText.textContent = '万花筒已绽放'; stageLabel.textContent = '已完成';
+    metaText.textContent = 'v4.0.0 已安装 · 对称度 100%';
+    pctWrap.classList.add('fade'); doneBadge.classList.add('show');
+    setMain('立即体验', true, false); showToast('已更新到 v4.0.0'); render();
+  }
+
+  mainBtn.addEventListener('click', () => {
+    if (state === 'downloading') enterCancelled();
+    else if (state === 'cancelled') enterDownloading(true);
+    else if (state === 'done') { modal.classList.add('hidden'); showToast('已进入 v4.0.0'); }
+  });
+  document.getElementById('xBtn').addEventListener('click', () => {
+    if (state === 'downloading') enterCancelled(); else modal.classList.add('hidden');
+  });
+  document.getElementById('replayBtn').addEventListener('click', () => {
+    modal.classList.remove('hidden'); enterDownloading(true);
+  });
+
+  window.addEventListener('load', () => {
+    if (location.hash === '#done') {
+      document.body.classList.add('notrans');
+      progress = 100; pShow = 100; drawK(); enterInstalling();
+      setTimeout(() => enterDone(), 300);
+    } else if (location.hash === '#mid') {
+      progress = 55; pShow = 55; vtime = 4000; showSpeed = 8.4;
+      enterDownloading(false); progress = 55; pShow = 55; drawK(); render();
+    } else { enterDownloading(false); }
+    requestAnimationFrame(frame);
+  });
+</script>
+</body>
+</html>

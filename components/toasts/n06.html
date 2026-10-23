@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>通知 Toast · 液态展开</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{background:radial-gradient(1000px 700px at 50% 110%,#0a2f4a 0%,#081522 55%,#050b13 100%);color:#d6ecff;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;display:flex;justify-content:center;padding:16px 0;min-height:100vh}
+.stage{width:360px;max-width:94vw}
+.head{text-align:center;padding:8px 0 12px}
+.head .no{display:inline-block;font-size:11px;letter-spacing:3px;color:#7cc7ff;border:1px solid rgba(124,199,255,.45);border-radius:20px;padding:3px 12px;margin-bottom:8px}
+.head h1{font-size:20px}
+.head p{font-size:12px;color:#6f8fb3;margin-top:6px}
+.screen{position:relative;height:540px;border-radius:22px;overflow:hidden;background:linear-gradient(180deg,#0a1a2b,#060d16);border:1px solid rgba(124,199,255,.16);box-shadow:0 24px 60px rgba(0,0,0,.55)}
+.ring{position:absolute;left:50%;top:150px;width:120px;height:120px;margin:-60px 0 0 -60px;border:1px dashed rgba(124,199,255,.3);border-radius:50%;z-index:1}
+.ring span{position:absolute;top:-22px;left:50%;transform:translateX(-50%);font-size:11px;color:#54748f;letter-spacing:2px;white-space:nowrap}
+.drop{position:absolute;background:linear-gradient(135deg,#3aa0ff,#7c5cff);box-shadow:0 10px 30px rgba(58,160,255,.35);overflow:hidden;visibility:hidden;z-index:3;will-change:width,height,border-radius,opacity}
+.drop .inner{position:absolute;left:0;right:0;top:0;bottom:0;display:flex;gap:12px;align-items:center;padding:0 16px;opacity:0}
+.drop .ic{flex:0 0 40px;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.22);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:#fff}
+.drop .tt{font-size:14px;font-weight:700;color:#fff;white-space:nowrap}
+.drop .bd{font-size:12px;color:#dcecff;margin-top:3px;white-space:nowrap}
+.foot{text-align:center;font-size:11px;color:#54748f;padding:12px 0;letter-spacing:2px}
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="head"><div class="no">N06 · 通知 TOAST</div><h1>液态展开</h1><p>一小团液滴膨胀成圆角矩形 · 收起时收缩回液滴</p></div>
+  <div class="screen" id="screen">
+    <div class="ring"><span>液态舱 LIQUID</span></div>
+    <div class="drop" id="drop"><div class="inner" id="inner"><div class="ic" id="dic">水</div><div><div class="tt" id="dtt"></div><div class="bd" id="dbd"></div></div></div></div>
+  </div>
+  <div class="foot">自动循环 · 每条展示约 2.5 秒</div>
+</div>
+<script>
+(function(){
+  var drop=document.getElementById('drop'),
+      inner=document.getElementById('inner'),
+      dic=document.getElementById('dic'),
+      dtt=document.getElementById('dtt'),
+      dbd=document.getElementById('dbd');
+  var msgs=[
+    {ic:'水',t:'饮水提醒',b:'今日饮水目标已完成 80%'},
+    {ic:'波',t:'电台更新',b:'海洋白噪音电台正在播放'},
+    {ic:'泡',t:'清理完成',b:'已释放 1.2GB 空间，手机更流畅'}
+  ];
+  /* 液滴锚点：舞台顶部中央 */
+  var CX=180,TOPY=96,W0=56,H0=56,W1=328,H1=78;
+  function tw(dur,update,done){
+    var n=Math.max(1,Math.round(dur/16)),i=0;
+    (function tick(){
+      i++;var p=Math.min(1,i/n);update(p);
+      if(p<1){setTimeout(tick,16);}else if(done){done();}
+    })();
+  }
+  function easeOutBack(x){var c=1.5;return 1+(c+1)*Math.pow(x-1,3)+c*Math.pow(x-1,2);}
+  function place(w,h,r){
+    drop.style.width=w.toFixed(1)+'px';
+    drop.style.height=h.toFixed(1)+'px';
+    drop.style.left=(CX-w/2).toFixed(1)+'px';
+    drop.style.top=TOPY.toFixed(1)+'px';
+    drop.style.borderRadius=r;
+  }
+  var idx=0;
+  function show(m,cb){
+    dic.textContent=m.ic;dtt.textContent=m.t;dbd.textContent=m.b;
+    drop.style.visibility='visible';
+    drop.style.opacity='1';
+    inner.style.opacity='0';
+    tw(650,function(p){
+      var e=easeOutBack(p);
+      var w=W0+(W1-W0)*e, h=H0+(H1-H0)*e;
+      /* border-radius 从 50% 形变到 20px，中途加一点果冻抖动 */
+      var wob=Math.sin(p*Math.PI*3)*(1-p)*6;
+      place(w,h,'50%');
+      drop.style.borderRadius=Math.max(18,50*(1-e)+wob).toFixed(1)+'px';
+      if(p>0.55){inner.style.opacity=((p-0.55)/0.45).toFixed(2);}
+    },function(){
+      place(W1,H1,'20px');inner.style.opacity='1';cb();
+    });
+  }
+  function hide(cb){
+    tw(300,function(p){inner.style.opacity=(1-p).toFixed(2);},function(){
+      tw(480,function(p){
+        var e=p*p;
+        var w=W1+(W0-W1)*e, h=H1+(H0-H1)*e;
+        place(w,h,'20px');
+        drop.style.borderRadius=(20+(60-20)*e).toFixed(1)+'px';
+        drop.style.opacity=(1-Math.max(0,(p-0.6)/0.4)).toFixed(2);
+      },function(){drop.style.visibility='hidden';cb();});
+    });
+  }
+  (function loop(){
+    show(msgs[idx],function(){
+      setTimeout(function(){
+        hide(function(){idx=(idx+1)%msgs.length;loop();});
+      },2500);
+    });
+  })();
+})();
+</script>
+</body>
+</html>

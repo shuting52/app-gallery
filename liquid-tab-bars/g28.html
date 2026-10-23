@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>薄荷冰滴</title>
+<style>*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sans-serif;background:#07090d;display:flex;justify-content:center;color:#eef2f8}
+.phone{width:430px;height:900px;position:relative;overflow:hidden;background:var(--bg,#0d1117)}
+.phone::before{content:'';position:absolute;inset:-60px;pointer-events:none;background:var(--blobs);filter:blur(70px);opacity:var(--blobo,.5);animation:drift 18s ease-in-out infinite alternate;animation-delay:-9s}
+@keyframes drift{from{transform:translate(-30px,-20px) scale(1)}to{transform:translate(30px,26px) scale(1.12)}}
+.hd{position:relative;z-index:2;padding:54px 22px 10px;background:linear-gradient(180deg,var(--hd1,rgba(255,255,255,.08)),transparent)}
+.hd h1{font-size:22px;letter-spacing:2px}
+.hd p{font-size:12px;opacity:.55;margin-top:6px;letter-spacing:1px}
+.bd{position:relative;z-index:2;padding:16px 18px;display:flex;flex-direction:column;gap:14px}
+.cardx{border-radius:16px;padding:16px;background:var(--cx,rgba(255,255,255,.05));border:1px solid var(--cb,rgba(255,255,255,.08))}
+.sk{height:12px;border-radius:6px;background:linear-gradient(90deg,var(--s1,rgba(255,255,255,.14)),var(--s2,rgba(255,255,255,.05)));margin:8px 0}
+.sk.w60{width:60%}.sk.w80{width:80%}
+.tabbar{position:absolute;left:0;right:0;bottom:0;display:flex;align-items:flex-end;justify-content:center;background:var(--tb,rgba(16,20,28,.92));backdrop-filter:blur(18px) saturate(1.6);-webkit-backdrop-filter:blur(18px) saturate(1.6);border-top:1px solid var(--tbd,rgba(255,255,255,.1));padding:8px 6px calc(22px + env(safe-area-inset-bottom));box-shadow:inset 0 1px 0 rgba(255,255,255,.14);z-index:3}
+.tabbar.float{left:18px;right:18px;bottom:26px;border:1px solid var(--tbd,rgba(255,255,255,.12));border-radius:30px;padding:8px 10px}
+.tab{flex:1;background:none;border:0;color:var(--tc,#8b93a5);display:flex;flex-direction:column;align-items:center;gap:5px;font-size:11px;cursor:pointer;font-family:inherit;position:relative;padding:8px 0 4px;transition:color .25s,transform .25s}
+.tab .ic{width:26px;height:26px;display:block;transition:filter .25s}
+.tab .ic svg{width:100%;height:100%;display:block}
+.tab.on{color:var(--ac,#ffd479)}
+.tab.on .ic{filter:drop-shadow(0 0 6px var(--acg,rgba(255,212,121,.8)))}
+.tab.fab{flex:none;display:flex;align-items:center;justify-content:center;position:relative;margin:-34px 12px 0;padding:0;cursor:pointer}
+.tab.fab .ic{width:30px;height:30px;color:#fff;display:block;z-index:2}
+.tab.fab:active{transform:scale(.92)}
+@keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes rise{0%{transform:translateY(0) scale(1);opacity:0}15%{opacity:.9}100%{transform:translateY(-46px) scale(.4);opacity:0}}
+@keyframes ripple{0%{transform:scale(.7);opacity:.85}100%{transform:scale(1.6);opacity:0}}
+@keyframes twinkle{0%,100%{opacity:.25}50%{opacity:1}}
+@keyframes shine{from{transform:translateX(-130%) skewX(-18deg)}to{transform:translateX(230%) skewX(-18deg)}}
+@keyframes jelly{0%{transform:scale(1)}40%{transform:scale(1.18)}70%{transform:scale(.94)}100%{transform:scale(1)}}
+
+.g28 .fab .bub{display:block}
+.g28 .fab{width:62px;height:62px;border-radius:50% 50% 50% 10px;transform:rotate(45deg);background:radial-gradient(circle at 35% 30%,#f0fdfa,#6ee7b7 45%,#0d9488 100%);box-shadow:0 0 28px rgba(110,231,183,.7),inset -3px -3px 10px rgba(0,80,70,.35),inset 2px 2px 8px rgba(255,255,255,.6);margin:-38px 12px -4px}
+.g28 .fab .ic{transform:rotate(-45deg);color:#065f55}
+.g28 .fab .tw{position:absolute;width:7px;height:7px;border-radius:50%;background:#fff;box-shadow:0 0 8px #fff;animation:twinkle 2.2s ease-in-out infinite;z-index:2}
+.g28 .fab .t1{top:14px;left:20px;animation-delay:-.6s}
+.g28 .fab .t2{bottom:16px;right:18px;animation-delay:-1.5s}
+.g28 .cardx,.g28 .hd h1{color:#123b33}
+body.g28{color:#123b33}</style></head>
+<body class="g28"><div class="phone" style="--bg:#f0faf5;--blobs:radial-gradient(circle at 20% 85%,rgba(110,231,183,.8),transparent 55%),radial-gradient(circle at 85% 75%,rgba(153,246,228,.8),transparent 55%),radial-gradient(circle at 55% 95%,rgba(186,230,253,.7),transparent 60%);--tb:rgba(255,255,255,.72);--tbd:rgba(45,190,160,.3);--tc:#7d948c;--ac:#0d9488;--acg:rgba(13,148,136,.6);--cx:rgba(10,90,75,.06);--cb:rgba(10,90,75,.1);--s1:rgba(10,90,75,.16);--s2:rgba(10,90,75,.05);--hd1:rgba(10,90,75,.1);">
+<div class="hd"><h1>新鲜 UI 画廊</h1><p>FRESH · BOTTOMBAR · 薄荷冰滴</p></div>
+<div class="bd"><div class="cardx"><div class="sk w60"></div><div class="sk"></div><div class="sk w80"></div></div>
+<div class="cardx"><div class="sk w80"></div><div class="sk w60"></div></div>
+<div class="cardx"><div class="sk"></div><div class="sk w60"></div><div class="sk w80"></div></div>
+<div class="cardx"><div class="sk"></div><div class="sk w80"></div><div class="sk w60"></div></div></div>
+<nav class="tabbar float"></nav>
+<script>const nav=document.querySelector('.tabbar');
+const LBL={home:'首页',find:'发现',msg:'消息',me:'我的'};
+const IC={home:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11l8-7 8 7v9h-5v-5h-6v5H4z"/></svg>',find:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="8"/><path d="M15.5 8.5l-2.2 4.8-4.8 2.2 2.2-4.8z"/></svg>',msg:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16v10H9l-5 4z"/></svg>',me:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c1.2-4 4.2-6 8-6s6.8 2 8 6"/></svg>',fab:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.9 5.6L19.5 10l-5.6 1.9L12 17.5l-1.9-5.6L4.5 10l5.6-1.4z"/><path d="M18.5 15.5l.9 2.6 2.6.9-2.6.9-.9 2.6-.9-2.6-2.6-.9 2.6-.9z"/></svg>'};
+const T=[{k:'home'},{k:'find'},{k:'fab',fab:1},{k:'msg'},{k:'me'}];
+T.forEach((t,idx)=>{const b=document.createElement('button');
+b.className='tab'+(t.fab?' fab':'');
+b.innerHTML='<span class="ic">'+IC[t.k]+'</span>'+(t.fab?'<i class="tw t1"></i><i class="tw t2"></i>':'<span>'+LBL[t.k]+'</span>');
+nav.appendChild(b);});
+const tabs=[...document.querySelectorAll('.tab')];
+let cur=0;
+function act(i){cur=i;tabs.forEach((t,j)=>{t.classList.toggle('on',i===j);
+if(t.classList.contains('fab')&&i===j){t.style.animation='none';void t.offsetWidth;t.style.animation='jelly .5s ease';}});}
+tabs.forEach((t,i)=>t.addEventListener('click',()=>{act(i);try{history.replaceState(null,'','?tab='+i);}catch(e){}}));
+(function(){const n=+new URLSearchParams(location.search).get('tab');
+act(Number.isInteger(n)&&n>=0&&n<tabs.length?n:0);})();
+
+</script>
+</div></body></html>

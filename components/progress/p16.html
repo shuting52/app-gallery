@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>潮汐 · 进度指示</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    min-height:100vh; background:#0b1020; color:#e8ecf5;
+    display:flex; align-items:center; justify-content:center;
+    font-family:"PingFang SC","Microsoft YaHei",sans-serif; padding:16px;
+  }
+  .stage { width:360px; max-width:100%; }
+  .head { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:10px; }
+  .head h2 { font-size:16px; font-weight:600; letter-spacing:2px; }
+  .head .pct { font-size:26px; font-weight:700; color:#7fd4ff; font-variant-numeric:tabular-nums; }
+  .scene {
+    position:relative; width:100%; height:460px; border-radius:16px; overflow:hidden;
+    background:linear-gradient(180deg,#0d1430 0%,#14224d 55%,#0e1a3d 100%);
+    border:1px solid #24335e;
+  }
+  .moon {
+    position:absolute; top:34px; right:44px; width:52px; height:52px; border-radius:50%;
+    background:radial-gradient(circle at 35% 35%, #fffbe8, #e8dd9e 70%, #cbbf7a);
+    box-shadow:0 0 30px 10px rgba(255,248,200,.35);
+  }
+  .star { position:absolute; width:3px; height:3px; border-radius:50%; background:#cfe0ff; opacity:.8; }
+  .seabed {
+    position:absolute; left:0; right:0; bottom:0; height:340px;
+  }
+  .sea {
+    position:absolute; left:0; right:0; bottom:0; height:0%;
+    background:linear-gradient(180deg, rgba(64,160,220,.95) 0%, rgba(20,70,150,.98) 40%, #0a2a66 100%);
+  }
+  .sea::before {
+    content:""; position:absolute; top:-9px; left:0; right:0; height:14px;
+    background:radial-gradient(circle at 12px 8px, rgba(140,220,255,.9) 9px, transparent 10px);
+    background-size:36px 14px; background-repeat:repeat-x;
+  }
+  .gauge { position:absolute; left:14px; bottom:0; height:340px; width:64px; z-index:3; }
+  .mark { position:absolute; left:0; width:64px; display:flex; align-items:center; gap:6px; transform:translateY(50%); }
+  .mark .tick { width:22px; height:2px; background:#9fb3d9; }
+  .mark .lab { font-size:11px; color:#9fb3d9; }
+  .mark.wet .tick { background:#4df0ff; box-shadow:0 0 6px #4df0ff; }
+  .mark.wet .lab { color:#4df0ff; }
+  .done {
+    position:absolute; left:0; right:0; top:44%; text-align:center; z-index:4;
+    font-size:24px; font-weight:700; letter-spacing:6px; color:#fff;
+    text-shadow:0 0 18px #4df0ff; display:none;
+  }
+  .hint { margin-top:8px; font-size:11px; color:#5b6b8f; text-align:center; }
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="head"><h2>🌊 潮汐</h2><div class="pct" id="pct">0%</div></div>
+  <div class="scene">
+    <div class="moon"></div>
+    <div class="star" style="top:30px;left:60px"></div>
+    <div class="star" style="top:80px;left:140px"></div>
+    <div class="star" style="top:52px;left:230px"></div>
+    <div class="star" style="top:110px;left:40px"></div>
+    <div class="star" style="top:100px;left:300px"></div>
+    <div class="star" style="top:20px;left:180px"></div>
+    <div class="seabed">
+      <div class="sea" id="sea"></div>
+      <div class="gauge" id="gauge"></div>
+    </div>
+    <div class="done" id="done">涨潮完成</div>
+  </div>
+  <div class="hint">月亮牵引 · 海平面随进度上涨 · 淹没刻度</div>
+</div>
+<script>
+(function(){
+  var pct = document.getElementById('pct');
+  var sea = document.getElementById('sea');
+  var gauge = document.getElementById('gauge');
+  var done = document.getElementById('done');
+  var marks = [0,25,50,75,100];
+  var els = [];
+  marks.forEach(function(v){
+    var d = document.createElement('div');
+    d.className = 'mark';
+    d.style.bottom = (v * 3.4) + 'px';
+    d.innerHTML = '<span class="tick"></span><span class="lab">' + v + '</span>';
+    gauge.appendChild(d);
+    els.push({v:v, el:d});
+  });
+  var p = 0;
+  function render(){
+    pct.textContent = Math.round(p) + '%';
+    sea.style.height = p + '%';
+    els.forEach(function(m){
+      if (p >= m.v) m.el.classList.add('wet'); else m.el.classList.remove('wet');
+    });
+    done.style.display = (p >= 100) ? 'block' : 'none';
+  }
+  if (location.hash === '#mid') { p = 55; render(); return; }
+  render();
+  var step = 100 / (7000 / 70), hold = false;
+  setInterval(function(){
+    if (hold) return;
+    p += step;
+    if (p >= 100) {
+      p = 100; render(); hold = true;
+      setTimeout(function(){ p = 0; hold = false; render(); }, 1000);
+      return;
+    }
+    render();
+  }, 70);
+})();
+</script>
+</body>
+</html>

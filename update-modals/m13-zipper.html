@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>拉链拉合 · 版本更新</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    min-height: 100vh; display: flex; align-items: center; justify-content: center;
+    background: linear-gradient(160deg, #efe4d2 0%, #e2d3ba 100%);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    padding: 20px; color: #3a2f24;
+  }
+  .modal {
+    width: 340px; background: rgba(255,253,248,.92);
+    backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(120,90,50,.25); border-radius: 26px;
+    padding: 24px; box-shadow: 0 24px 60px rgba(90,60,20,.25);
+    display: flex; flex-direction: column; align-items: center;
+  }
+  .modal.hidden { display: none; }
+  .head { width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+  .title { font-size: 18px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+  .ver { font-size: 11px; color: #a5762a; border: 1px solid rgba(165,118,42,.55); border-radius: 99px; padding: 3px 10px; background: rgba(165,118,42,.1); }
+  .x { background: none; border: none; color: #a08c6c; font-size: 24px; cursor: pointer; line-height: 1; }
+  .x:hover { color: #3a2f24; }
+  .sub { width: 100%; font-size: 14px; color: #6b5b44; margin-bottom: 4px; }
+  .meta { width: 100%; font-size: 12px; color: #a08c6c; margin-bottom: 2px; font-variant-numeric: tabular-nums; }
+  .pct { font-size: 40px; font-weight: 800; font-variant-numeric: tabular-nums; margin: 2px 0 6px; color: #3a2f24; }
+  .stage { width: 220px; }
+  .stage svg { display: block; width: 100%; height: auto; }
+  #sliderG.tug { animation: tug .45s ease-in-out 2; }
+  @keyframes tug { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-9px); } }
+  .done-badge { opacity: 0; transform: scale(.6); transition: all .35s cubic-bezier(.3,1.5,.5,1); transform-origin: 100px 26px; }
+  .done-badge.show { opacity: 1; transform: scale(1); }
+  .main-btn {
+    width: 100%; margin-top: 16px; padding: 15px 0; border: none; border-radius: 99px;
+    font-size: 16px; font-weight: 600; letter-spacing: 2px; cursor: pointer;
+    background: #e8dcc4; color: #6b5320; border: 1px solid #cbb37e;
+    transition: all .25s;
+  }
+  .main-btn:hover { background: #dfcfae; }
+  .main-btn.gold { background: linear-gradient(135deg, #e8b93f, #c98f1b); color: #fff; border: none; box-shadow: 0 8px 28px rgba(201,143,27,.45); }
+  .main-btn:disabled { opacity: .45; cursor: default; }
+  .replay { margin-top: 12px; background: none; border: none; cursor: pointer; color: #a08c6c; font-size: 12.5px; letter-spacing: 1px; }
+  .replay:hover { color: #6b5320; }
+  .toast {
+    position: fixed; top: 26px; left: 50%; transform: translateX(-50%) translateY(-16px);
+    background: rgba(58,47,36,.94); color: #fff;
+    padding: 10px 22px; border-radius: 99px; font-size: 14px; opacity: 0; pointer-events: none; z-index: 60;
+    transition: opacity .25s, transform .25s;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+<div class="modal" id="modal">
+  <div class="head">
+    <div class="title">🤐 拉链拉合 <span class="ver">v4.0.0</span></div>
+    <button class="x" id="xBtn">×</button>
+  </div>
+  <div class="sub" id="statusText">正在把新版本拉上…</div>
+  <div class="meta" id="metaText">0.0MB / 156.8MB · -- MB/s</div>
+  <div class="pct" id="pctText">0%</div>
+  <div class="stage">
+    <svg viewBox="0 0 200 260" id="zipSvg">
+      <defs>
+        <linearGradient id="brass" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0" stop-color="#9a741f"/><stop offset=".5" stop-color="#f0cd6e"/><stop offset="1" stop-color="#9a741f"/>
+        </linearGradient>
+      </defs>
+      <!-- 布片 -->
+      <rect x="14" y="8" width="68" height="244" rx="10" fill="#46618c"/>
+      <rect x="118" y="8" width="68" height="244" rx="10" fill="#46618c"/>
+      <line x1="26" y1="16" x2="26" y2="244" stroke="#d9c08a" stroke-width="2" stroke-dasharray="6 5" opacity=".7"/>
+      <line x1="174" y1="16" x2="174" y2="244" stroke="#d9c08a" stroke-width="2" stroke-dasharray="6 5" opacity=".7"/>
+      <!-- 顶部止 -->
+      <rect x="92" y="4" width="16" height="10" rx="3" fill="#8a93a5"/>
+      <!-- 齿（JS 生成） -->
+      <g id="teeth"></g>
+      <!-- 底部止 -->
+      <rect x="92" y="246" width="16" height="10" rx="3" fill="#8a93a5"/>
+      <!-- 完成徽章 -->
+      <g class="done-badge" id="doneBadge">
+        <circle cx="100" cy="30" r="17" fill="#e8b93f" stroke="#fff" stroke-width="3"/>
+        <path d="M92,30 L98,36 L110,24" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+      </g>
+      <!-- 拉头 -->
+      <g id="sliderG">
+        <rect x="80" y="-15" width="40" height="30" rx="9" fill="url(#brass)" stroke="#7a5c14" stroke-width="1.5"/>
+        <rect x="85" y="15" width="30" height="42" rx="11" fill="url(#brass)" stroke="#7a5c14" stroke-width="1.5"/>
+        <circle cx="100" cy="24" r="4" fill="#3a2f24" opacity=".55"/>
+        <text id="zipPct" x="100" y="48" text-anchor="middle" font-size="12" font-weight="700" fill="#3a2f24">0%</text>
+      </g>
+    </svg>
+  </div>
+  <button class="main-btn" id="mainBtn">取消更新</button>
+  <button class="replay" id="replayBtn">↺ 重新演示</button>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+  const pctText = document.getElementById('pctText');
+  const zipPct = document.getElementById('zipPct');
+  const statusText = document.getElementById('statusText');
+  const metaText = document.getElementById('metaText');
+  const mainBtn = document.getElementById('mainBtn');
+  const modal = document.getElementById('modal');
+  const toast = document.getElementById('toast');
+  const sliderG = document.getElementById('sliderG');
+  const doneBadge = document.getElementById('doneBadge');
+  const teethG = document.getElementById('teeth');
+
+  // 生成拉链齿：22 排；每排有 open（左右分开）/ closed（中间咬合）两种画法
+  const N = 22, TOP_Y = 16, ROW_H = 10, rows = [];
+  const NS = 'http://www.w3.org/2000/svg';
+  for (let i = 0; i < N; i++) {
+    const y = TOP_Y + i * ROW_H;
+    const mk = (x, w, fill) => {
+      const r = document.createElementNS(NS, 'rect');
+      r.setAttribute('x', x); r.setAttribute('y', y + 1);
+      r.setAttribute('width', w); r.setAttribute('height', 8); r.setAttribute('rx', 2.5);
+      r.setAttribute('fill', fill); teethG.appendChild(r); return r;
+    };
+    const openL = mk(86, 10, '#c3ccd6'), openR = mk(104, 10, '#c3ccd6');
+    const closed = mk(93, 14, '#98a2ad');
+    rows.push({ y: y + 5, openL, openR, closed });
+  }
+  const sliderY = p => 232 - p / 100 * 216;   // 0%→底部 100%→顶部
+
+  const TOTAL = 156.8;
+  let progress = 0, state = 'downloading', timer = null, showSpeed = 0;
+
+  function render(p) {
+    const sy = sliderY(p);
+    sliderG.setAttribute('transform', 'translate(0,' + sy + ')');
+    rows.forEach(rw => {
+      const closed = rw.y > sy + 4;
+      rw.openL.style.display = closed ? 'none' : '';
+      rw.openR.style.display = closed ? 'none' : '';
+      rw.closed.style.display = closed ? '' : 'none';
+    });
+    const t = Math.floor(p) + '%';
+    pctText.textContent = t; zipPct.textContent = t;
+    const mb = (p / 100 * TOTAL).toFixed(1);
+    metaText.textContent = mb + 'MB / ' + TOTAL + 'MB · ' + (state === 'downloading' ? showSpeed.toFixed(1) + ' MB/s' : '-- MB/s');
+  }
+  function showToast(m) { toast.textContent = m; toast.classList.add('show'); clearTimeout(showToast._t); showToast._t = setTimeout(() => toast.classList.remove('show'), 1800); }
+  function setMain(t, gold, dis) { mainBtn.textContent = t; mainBtn.classList.toggle('gold', !!gold); mainBtn.disabled = !!dis; }
+
+  function tick() {
+    if (state !== 'downloading') return;
+    const sp = 8 * (0.6 + Math.random() * 0.8);
+    showSpeed = showSpeed * 0.7 + sp * 0.3;
+    progress += sp * 0.1 / TOTAL * 100;
+    if (progress >= 100) { progress = 100; render(progress); enterInstalling(); return; }
+    render(progress);
+  }
+  function startTimer() { clearInterval(timer); timer = setInterval(tick, 100); }
+
+  function enterDownloading(reset) {
+    if (reset) { progress = 0; showSpeed = 0; doneBadge.classList.remove('show'); sliderG.classList.remove('tug'); }
+    state = 'downloading';
+    statusText.textContent = '正在把新版本拉上…';
+    setMain('取消更新', false, false);
+    startTimer(); render(progress);
+  }
+  function enterCancelled() {
+    state = 'cancelled'; clearInterval(timer);
+    statusText.textContent = '拉链退回，新版本先不装了';
+    setMain('重新下载', false, false);
+    showToast('已取消更新');
+  }
+  function enterInstalling() {
+    state = 'installing'; clearInterval(timer);
+    sliderG.classList.add('tug');
+    statusText.textContent = '拉到底，正在固定…';
+    setMain('安装中…', false, true);
+    setTimeout(() => { if (state === 'installing') enterDone(); }, 1800);
+  }
+  function enterDone() {
+    state = 'done';
+    sliderG.classList.remove('tug');
+    doneBadge.classList.add('show');
+    render(100);
+    statusText.textContent = '拉链拉满，新版本穿戴完毕';
+    setMain('立即体验', true, false);
+    showToast('已更新到 v4.0.0');
+  }
+
+  mainBtn.addEventListener('click', () => {
+    if (state === 'downloading') { progress = 0; render(0); enterCancelled(); }
+    else if (state === 'cancelled') enterDownloading(true);
+    else if (state === 'done') { modal.classList.add('hidden'); showToast('已进入 v4.0.0'); }
+  });
+  document.getElementById('xBtn').addEventListener('click', () => {
+    if (state === 'downloading') { progress = 0; render(0); enterCancelled(); }
+    else modal.classList.add('hidden');
+  });
+  document.getElementById('replayBtn').addEventListener('click', () => { modal.classList.remove('hidden'); enterDownloading(true); });
+
+  window.addEventListener('load', () => {
+    if (location.hash.includes('notrans')) { const st = document.createElement('style'); st.textContent = '*{transition:none!important;animation:none!important}'; document.head.appendChild(st); }
+    enterDownloading(false);
+    if (location.hash.includes('mid')) { clearInterval(timer); progress = 55; render(55); }
+    if (location.hash.includes('done')) { progress = 100; render(100); enterInstalling(); }
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>音乐播放器</title>
+<style>
+/* ============ tokens（照抄脚手架） ============ */
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --glass-radius:34px; --glass-blur:24px;
+  --glass-tint-top:rgba(255,255,255,.17); --glass-tint-mid:rgba(255,255,255,.05); --glass-tint-bot:rgba(255,255,255,.10);
+  --glass-edge-width:1.2px;
+  --glass-edge-strong:rgba(255,255,255,.95); --glass-edge-mid:rgba(255,255,255,.22);
+  --glass-edge-weak:rgba(255,255,255,.05); --glass-edge-mid2:rgba(255,255,255,.12); --glass-edge-soft:rgba(255,255,255,.78);
+  --glass-shadow-far:0 26px 60px -26px rgba(0,0,0,.85); --glass-shadow-near:0 10px 26px -14px rgba(0,0,0,.55);
+  --text-1:#fff; --text-2:rgba(255,255,255,.62); --text-3:rgba(255,255,255,.60);
+  --ease-liquid:cubic-bezier(.22,.9,.28,1.2);
+}
+html,body{height:100%}
+body{font:400 15px/1.45 -apple-system,"SF Pro Text","PingFang SC","Helvetica Neue",system-ui,sans-serif;
+  color:var(--text-1);background:#07060b;overflow-x:hidden;-webkit-font-smoothing:antialiased;
+  display:flex;justify-content:center}
+/* ============ 壁纸（照抄 LiquidWallpaper.vue） ============ */
+.wallpaper{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none}
+.wallpaper i{position:absolute;inset:-30%;display:block;
+  background:radial-gradient(42% 32% at 20% 22%,#ff3b5c 0%,transparent 62%),
+  radial-gradient(38% 30% at 84% 16%,#ff9f1c 0%,transparent 60%),
+  radial-gradient(52% 42% at 76% 74%,#ff2d55 0%,transparent 64%),
+  radial-gradient(42% 38% at 24% 82%,#6b5cff 0%,transparent 62%),
+  radial-gradient(30% 26% at 52% 48%,#ffd166 0%,transparent 68%),#140a20;
+  filter:blur(48px) saturate(150%);animation:drift 26s ease-in-out infinite alternate}
+.wallpaper i:nth-child(2){background:conic-gradient(from 200deg at 50% 55%,#ff2d55,#ff9f0a,#ffd60a,#34c759,#0a84ff,#bf5af2,#ff2d55);
+  filter:blur(110px);opacity:.5;mix-blend-mode:screen;animation-duration:34s;animation-direction:alternate-reverse}
+@keyframes drift{from{transform:translate3d(-3%,-2%,0) scale(1.05) rotate(-3deg)}
+  to{transform:translate3d(4%,3%,0) scale(1.16) rotate(4deg)}}
+/* ============ 玻璃卡（照抄 LiquidGlass.vue） ============ */
+.lg{position:relative;isolation:isolate;border-radius:var(--lg-r,var(--glass-radius));
+  background:linear-gradient(155deg,var(--glass-tint-top) 0%,var(--glass-tint-mid) 42%,var(--glass-tint-bot) 100%);
+  -webkit-backdrop-filter:blur(var(--lg-blur,var(--glass-blur))) saturate(180%) brightness(1.06);
+  backdrop-filter:blur(var(--lg-blur,var(--glass-blur))) saturate(180%) brightness(1.06);
+  box-shadow:inset 0 1px 1px -.5px rgba(255,255,255,.70),inset 0 -1px 1px -.5px rgba(255,255,255,.18),
+  inset 0 14px 22px -14px rgba(255,255,255,.45),var(--glass-shadow-far),var(--glass-shadow-near);
+  transition:transform .38s var(--ease-liquid)}
+.lg:active{transform:scale(.982)}
+.lg::before{content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;pointer-events:none;
+  mix-blend-mode:screen;opacity:.85;
+  background:radial-gradient(120% 62% at 18% -26%,rgba(255,255,255,.78),transparent 58%),
+  radial-gradient(70% 46% at 92% -12%,rgba(255,255,255,.34),transparent 60%),
+  repeating-linear-gradient(102deg,rgba(255,255,255,.055) 0 2px,transparent 2px 26px)}
+.lg::after{content:"";position:absolute;inset:0;z-index:1;border-radius:inherit;padding:var(--glass-edge-width);
+  pointer-events:none;
+  background:linear-gradient(150deg,var(--glass-edge-strong) 0%,var(--glass-edge-mid) 22%,var(--glass-edge-weak) 48%,var(--glass-edge-mid2) 72%,var(--glass-edge-soft) 100%);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;mask-composite:exclude}
+/* ============ 屏幕骨架 ============ */
+.screen{position:relative;z-index:1;width:430px;max-width:100%;min-height:900px;height:900px;overflow:hidden;
+  display:flex;flex-direction:column;padding:18px 14px 12px}
+.statusbar{display:flex;justify-content:space-between;align-items:center;font-size:13px;font-weight:600;
+  padding:2px 8px 10px;color:var(--text-1)}
+.statusbar .sic{display:flex;gap:6px;align-items:center;font-size:12px}
+.apptitle{font-size:30px;font-weight:700;letter-spacing:1px;padding:6px 4px 14px}
+.apptitle small{display:block;font-size:12px;font-weight:400;color:var(--text-2);letter-spacing:2px;margin-top:4px}
+.content{flex:1;overflow:hidden;display:flex;flex-direction:column;gap:12px}
+.homebar{width:134px;height:5px;border-radius:3px;background:rgba(255,255,255,.85);margin:10px auto 4px}
+/* ============ 本页 ============ */
+.album{padding:20px 22px 22px;display:flex;flex-direction:column;align-items:center}
+.cover{width:172px;height:172px;border-radius:26px;flex:none;display:grid;place-items:center;
+  font-size:64px;color:rgba(255,255,255,.85);text-shadow:0 4px 18px rgba(0,0,0,.35);
+  background:radial-gradient(120% 90% at 20% 8%,rgba(255,255,255,.38),transparent 52%),
+    linear-gradient(150deg,#6b5cff 0%,#ff2d55 58%,#ff9f0a 100%);
+  box-shadow:0 18px 40px -12px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.5)}
+.song{margin-top:14px;text-align:center}
+.song .t{font-size:20px;font-weight:700;letter-spacing:1px}
+.song .a{font-size:13px;color:var(--text-2);margin-top:4px;letter-spacing:2px}
+.pbar{margin-top:14px;width:100%;height:6px;border-radius:3px;background:rgba(255,255,255,.16);position:relative}
+.pfill{width:62%;height:100%;border-radius:3px;background:linear-gradient(90deg,#ff9f0a,#ff2d55);
+  box-shadow:0 0 10px rgba(255,90,90,.6)}
+.pknob{position:absolute;top:50%;left:62%;width:14px;height:14px;border-radius:50%;background:#fff;
+  transform:translate(-50%,-50%);box-shadow:0 2px 8px rgba(0,0,0,.5)}
+.times{margin-top:6px;width:100%;display:flex;justify-content:space-between;font-size:11.5px;color:var(--text-2)}
+.controls{margin-top:14px;display:flex;align-items:center;gap:26px}
+.cbtn{width:48px;height:48px;border-radius:50%;border:1px solid rgba(255,255,255,.3);
+  background:rgba(255,255,255,.12);color:#fff;font-size:19px;display:grid;place-items:center;cursor:pointer;
+  -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+.cbtn.play{width:66px;height:66px;font-size:25px;border:0;color:#fff;
+  background:linear-gradient(135deg,#ff9f0a,#ff2d55);
+  box-shadow:0 10px 28px rgba(255,80,90,.5),inset 0 1px 0 rgba(255,255,255,.55)}
+.playlist{padding:16px 18px}
+.pl-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.pl-head b{font-size:15px;letter-spacing:1px}
+.pl-head span{font-size:11.5px;color:var(--text-2)}
+.pl-rows{display:flex;flex-direction:column;gap:6px}
+.pl-row{display:flex;align-items:center;gap:12px;padding:4px 2px;min-width:0}
+.mini{width:48px;height:48px;border-radius:13px;flex:none;display:grid;place-items:center;
+  font-size:21px;color:rgba(255,255,255,.9);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.4),0 4px 12px rgba(0,0,0,.35)}
+.mini.c1{background:linear-gradient(135deg,#ff9f0a,#ff2d55)}
+.mini.c2{background:linear-gradient(135deg,#0a84ff,#34c759)}
+.mini.c3{background:linear-gradient(135deg,#bf5af2,#ff5ec8)}
+.mini.c4{background:linear-gradient(135deg,#ffd166,#ff7a3c)}
+.pl-row .main{flex:1;min-width:0}
+.pl-row .n{font-size:14.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pl-row .s{font-size:12px;color:var(--text-3);margin-top:2px}
+.pl-row .d{flex:none;font-size:12px;color:var(--text-2)}
+.now{flex:none;font-size:10.5px;font-weight:700;color:#fff;padding:3px 8px;border-radius:99px;
+  background:linear-gradient(135deg,#ff9f0a,#ff2d55);letter-spacing:1px}
+</style>
+</head>
+<body>
+<div class="wallpaper" aria-hidden="true"><i></i><i></i></div>
+<div class="screen">
+  <div class="statusbar"><span>9:41</span><span class="sic">📶 📡 🔋</span></div>
+  <div class="apptitle">音乐播放器<small>LIQUID GLASS · MUSIC</small></div>
+  <div class="content">
+    <section class="lg album">
+      <div class="cover">♪</div>
+      <div class="song">
+        <div class="t">夜航星</div>
+        <div class="a">沈知遥 · 星海漫游</div>
+      </div>
+      <div class="pbar"><div class="pfill"></div><div class="pknob"></div></div>
+      <div class="times"><span>2:41</span><span>4:17</span></div>
+      <div class="controls">
+        <button class="cbtn" aria-label="上一曲">⏮</button>
+        <button class="cbtn play" aria-label="播放">▶</button>
+        <button class="cbtn" aria-label="下一曲">⏭</button>
+      </div>
+    </section>
+    <section class="lg playlist">
+      <div class="pl-head"><b>播放列表</b><span>共 4 首</span></div>
+      <div class="pl-rows">
+        <div class="pl-row">
+          <div class="mini c1">♫</div>
+          <div class="main"><div class="n">雾中山</div><div class="s">林晚晴</div></div>
+          <span class="now">播放中</span><span class="d">3:42</span>
+        </div>
+        <div class="pl-row">
+          <div class="mini c2">♫</div>
+          <div class="main"><div class="n">纸飞机</div><div class="s">陈默乐队</div></div>
+          <span class="d">4:05</span>
+        </div>
+        <div class="pl-row">
+          <div class="mini c3">♫</div>
+          <div class="main"><div class="n">晚风告白</div><div class="s">苏蔓</div></div>
+          <span class="d">3:28</span>
+        </div>
+        <div class="pl-row">
+          <div class="mini c4">♫</div>
+          <div class="main"><div class="n">银河便利店</div><div class="s">陆九</div></div>
+          <span class="d">4:17</span>
+        </div>
+      </div>
+    </section>
+  </div>
+  <div class="homebar"></div>
+</div>
+</body>
+</html>

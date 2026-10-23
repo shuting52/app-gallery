@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>拨杆开关</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;display:flex;align-items:center;justify-content:center;background:#0e0f13;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;color:#e8eaf0;padding:20px}
+body.freeze *{transition:none!important;animation:none!important}
+.stage{width:360px;max-width:100%;text-align:center}
+h2{font-size:17px;letter-spacing:3px;margin-bottom:4px}
+.sub{font-size:12px;color:#8a8fa3;margin-bottom:20px}
+.device{cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent}
+.panel{width:280px;height:250px;margin:0 auto;position:relative;border-radius:18px;background:linear-gradient(180deg,#454c5c,#2a2f3b);box-shadow:0 14px 34px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.12)}
+.screw{position:absolute;width:16px;height:16px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#c9cfdb,#6e7688 70%);box-shadow:inset 0 -2px 3px rgba(0,0,0,.5)}
+.screw::after{content:'';position:absolute;top:7px;left:2px;right:2px;height:2px;background:#3a3f4d;transform:rotate(38deg)}
+.s1{top:10px;left:10px}.s2{top:10px;right:10px}.s3{bottom:10px;left:10px}.s4{bottom:10px;right:10px}
+.slot{position:absolute;left:50%;top:34px;bottom:64px;width:30px;margin-left:-15px;border-radius:15px;background:#101319;box-shadow:inset 0 3px 10px #000,inset 0 -1px 0 rgba(255,255,255,.06)}
+.tag{position:absolute;left:50%;transform:translateX(-50%);font-size:11px;letter-spacing:2px;color:#8a8fa3}
+.tag.off{top:14px}.tag.on{bottom:44px}
+.device.on .tag.on{color:#7dffb0}
+.lever{position:absolute;left:50%;bottom:60px;width:30px;height:140px;margin-left:-15px;transform-origin:50% calc(100% - 4px);transform:rotate(-34deg);transition:transform .5s cubic-bezier(.3,1.7,.45,1)}
+.device.on .lever{transform:rotate(34deg)}
+.arm{position:absolute;inset:0;border-radius:14px;background:linear-gradient(90deg,#8f97a9,#dfe4ee 45%,#8f97a9);box-shadow:0 4px 10px rgba(0,0,0,.5)}
+.pivot{position:absolute;bottom:-14px;left:50%;width:52px;height:30px;margin-left:-26px;border-radius:8px;background:radial-gradient(circle at 50% 35%,#5a6274,#2c313d 75%);box-shadow:0 3px 8px rgba(0,0,0,.6)}
+.knob{position:absolute;top:-30px;left:50%;width:48px;height:48px;margin-left:-24px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#ff9a9a,#c62f2f 65%,#8f1d1d);box-shadow:0 6px 14px rgba(0,0,0,.55),inset 0 2px 3px rgba(255,255,255,.4)}
+.lamp{position:absolute;top:12px;right:16px;width:20px;height:20px;border-radius:50%;background:#3a2126;border:2px solid #171a22;transition:all .4s}
+.device.on .lamp{background:radial-gradient(circle at 40% 35%,#c8ffd9,#2fbf71 70%);box-shadow:0 0 16px 4px rgba(60,220,130,.7)}
+.lamp-lb{position:absolute;top:36px;right:8px;font-size:10px;color:#8a8fa3;letter-spacing:1px}
+.status{margin-top:18px;font-size:14px;color:#9aa0b4}
+.status b{color:#ffd479}
+.hint{font-size:11px;color:#5c6172;margin-top:6px}
+</style>
+</head>
+<body>
+<div class="stage">
+<h2>拨杆开关</h2>
+<div class="sub">点击扳动工业拨杆</div>
+<div class="device" id="dev">
+<div class="panel">
+<span class="screw s1"></span><span class="screw s2"></span><span class="screw s3"></span><span class="screw s4"></span>
+<div class="tag off">OFF</div><div class="tag on">ON</div>
+<div class="slot"></div>
+<div class="lever"><div class="arm"></div><div class="knob"></div><div class="pivot"></div></div>
+<div class="lamp"></div><div class="lamp-lb">电源</div>
+</div>
+</div>
+<div class="status">状态：<b id="st">关</b></div>
+<div class="hint">点击拨杆切换</div>
+</div>
+<script>
+var dev=document.getElementById('dev'),st=document.getElementById('st'),on=location.search.indexOf('s=1')>-1;
+function render(){dev.classList.toggle('on',on);st.textContent=on?'开':'关';}
+if(on)document.body.classList.add('freeze');
+dev.addEventListener('click',function(){on=!on;render();});
+render();
+</script>
+</body>
+</html>

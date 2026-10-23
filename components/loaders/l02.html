@@ -1,0 +1,17 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>液态合并 · 加载动画</title><style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;background:radial-gradient(600px 400px at 50% 40%,#1d1440,#0a0716 70%);display:flex;flex-direction:column;align-items:center;justify-content:center;
+font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;color:#e8eaf0;padding:24px 12px}
+h1{font-size:15px;font-weight:600;letter-spacing:4px;color:#a78bfa;margin-bottom:6px}
+.sub{font-size:11px;color:#8a90a6;margin-bottom:30px;letter-spacing:3px}
+.stage{width:360px;max-width:94vw;height:300px;position:relative;display:flex;align-items:center;justify-content:center}
+.goo{width:220px;height:220px;position:relative;filter:url(#goof)}
+.goo .b{position:absolute;width:46px;height:46px;top:87px;left:87px;border-radius:50%;background:#a78bfa}
+.goo .c{animation:gp 2.6s ease-in-out infinite}
+.goo .s{animation:gm 2.6s ease-in-out infinite}
+.goo .s1{--dx:74px;--dy:0}.goo .s2{--dx:-74px;--dy:0}.goo .s3{--dx:0;--dy:74px}.goo .s4{--dx:0;--dy:-74px}
+@keyframes gm{0%,100%{transform:translate(0,0)}50%{transform:translate(var(--dx),var(--dy))}}
+@keyframes gp{0%,100%{transform:scale(1)}50%{transform:scale(1.25)}}
+</style></head><body><h1>液态合并</h1><div class="sub">LOADING · 加载中</div><div class="stage"><svg width="0" height="0" style="position:absolute"><defs><filter id="goof"><feGaussianBlur in="SourceGraphic" stdDeviation="14" result="b"/><feColorMatrix in="b" values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 22 -12"/></filter></defs></svg><div class="goo"><div class="b c"></div><div class="b s s1"></div><div class="b s s2"></div><div class="b s s3"></div><div class="b s s4"></div></div></div></body></html>

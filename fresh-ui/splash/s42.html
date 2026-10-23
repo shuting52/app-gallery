@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>蛛网晨露</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{background:#070a12;display:flex;align-items:center;justify-content:center;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;overflow:hidden}
+.stage{position:relative;width:430px;height:900px;flex:none;overflow:hidden}
+.stage i{display:block;position:absolute}
+.brand{position:absolute;left:0;right:0;bottom:104px;text-align:center;z-index:50;animation:brandIn 1s .9s both}
+.brand h1{font-size:32px;letter-spacing:10px;text-indent:10px;color:#fff;font-weight:700;text-shadow:0 2px 24px rgba(0,0,0,.45)}
+.brand p{margin-top:10px;font-size:11px;letter-spacing:5px;color:rgba(255,255,255,.62)}
+@keyframes brandIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.replay{position:absolute;bottom:30px;left:50%;transform:translateX(-50%);z-index:60;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.35);color:#fff;font-size:12px;letter-spacing:2px;padding:9px 24px;border-radius:20px;cursor:pointer;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.shade{position:absolute;left:0;right:0;bottom:0;height:360px;background:linear-gradient(transparent,rgba(8,6,18,.78));z-index:40;pointer-events:none}
+
+.stage{background:linear-gradient(#f9dcae,#eda87e 52%,#96657a)}
+
+.web{left:50%;top:60px;transform:translateX(-50%);z-index:4}
+.web line,.web polygon{stroke:rgba(255,255,255,.85);stroke-width:2;fill:none;stroke-dasharray:100;stroke-dashoffset:100;animation:draw 2.2s .2s both}
+.web .r2{animation-delay:.5s}.web .r3{animation-delay:.8s}.web .r4{animation-delay:1.1s}
+@keyframes draw{to{stroke-dashoffset:0}}
+.dew{width:13px;height:13px;border-radius:50%;background:radial-gradient(circle at 32% 30%,#fff,rgba(190,225,255,.35) 60%,rgba(160,200,240,.15));box-shadow:0 0 8px rgba(255,255,255,.7);z-index:5;animation:tw2 2.2s ease-in-out infinite alternate}
+.d1{left:196px;top:150px}.d2{left:238px;top:196px;animation-delay:-.6s}.d3{left:158px;top:230px;animation-delay:-1.2s}
+.d4{left:262px;top:258px;animation-delay:-.3s}.d5{left:206px;top:292px;animation-delay:-1.7s}
+@keyframes tw2{to{transform:scale(1.25);opacity:.75}}
+.thread{width:2px;height:120px;left:300px;top:0;background:rgba(255,255,255,.7);transform-origin:50% 0;animation:sway2 3.4s ease-in-out infinite alternate;z-index:5}
+@keyframes sway2{to{transform:rotate(7deg)}}
+.spider{width:26px;height:32px;left:287px;top:118px;border-radius:50%;background:radial-gradient(circle at 50% 35%,#5a4a68,#241d2e 75%);transform-origin:50% -118px;animation:sway2 3.4s ease-in-out infinite alternate;z-index:5}
+.leaf{width:150px;height:60px;left:-30px;bottom:130px;border-radius:50%;background:linear-gradient(#4a7d3f,#2c5a2c);transform:rotate(-14deg);z-index:3}
+.leaf2{width:170px;height:66px;left:300px;bottom:90px;border-radius:50%;background:linear-gradient(#557f42,#2f5c2b);transform:rotate(12deg);z-index:3}
+
+</style></head><body>
+<div class="stage" id="stage">
+
+<svg class="web" width="300" height="340" viewBox="0 0 300 340">
+<polygon class="r1" pathLength="100" points="150,20 256,80 256,200 150,260 44,200 44,80"/>
+<polygon class="r2" pathLength="100" points="150,70 222,112 222,196 150,238 78,196 78,112"/>
+<polygon class="r3" pathLength="100" points="150,112 193,137 193,187 150,212 107,187 107,137"/>
+<polygon class="r4" pathLength="100" points="150,146 172,159 172,185 150,198 128,185 128,159"/>
+<line pathLength="100" x1="150" y1="0" x2="150" y2="280"/>
+<line pathLength="100" x1="30" y1="60" x2="270" y2="220"/>
+<line pathLength="100" x1="270" y1="60" x2="30" y2="220"/>
+<line pathLength="100" x1="80" y1="20" x2="220" y2="270"/>
+<line pathLength="100" x1="220" y1="20" x2="80" y2="270"/>
+</svg>
+<i class="thread"></i><i class="spider"></i>
+<i class="dew d1"></i><i class="dew d2"></i><i class="dew d3"></i><i class="dew d4"></i><i class="dew d5"></i>
+<i class="leaf"></i><i class="leaf2"></i>
+
+<div class="shade"></div>
+<div class="brand"><h1>蛛网</h1><p>DEWDROP</p></div>
+<button class="replay" onclick="var s=document.getElementById('stage');s.replaceWith(s.cloneNode(true))">重新播放</button>
+</div>
+</body></html>

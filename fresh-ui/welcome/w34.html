@@ -1,0 +1,70 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>w34 · 等级成长</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC",sans-serif;background:#05070c;display:flex;justify-content:center;color:#fff;overflow:hidden}
+.stage{width:430px;height:900px;position:relative;overflow:hidden;flex-shrink:0;background:radial-gradient(120% 90% at 50% 0%,#3a1f10 0%,#221208 55%,#0b0e16 100%)}
+.mock{position:absolute;inset:0;filter:blur(6px) brightness(.55)}
+.sb{height:46px;display:flex;justify-content:space-between;align-items:center;padding:0 26px;font-size:13px;font-weight:600}
+.sic{width:70px;height:12px;border-radius:6px;background:#2a3040}
+.mh{display:flex;align-items:center;gap:10px;padding:14px 20px}
+.mh i{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,#5c3a20,#3a2414);display:block}
+.mh em{width:110px;height:14px;border-radius:7px;background:#463020;display:block}
+.banner{height:150px;margin:6px 20px 14px;border-radius:18px;background:linear-gradient(135deg,#4a2d16,#2c1b0c)}
+.row{display:flex;gap:12px;align-items:center;margin:0 20px 12px}
+.row i{width:52px;height:52px;border-radius:14px;background:#463020;display:block;flex-shrink:0}
+.row b{display:block;width:150px;height:13px;border-radius:6px;background:#54402a;margin-bottom:8px}
+.row s{display:block;width:100px;height:10px;border-radius:5px;background:#38291a;text-decoration:none}
+.tabbar{position:absolute;bottom:0;left:0;right:0;height:84px;background:rgba(34,18,8,.9);display:flex;justify-content:space-around;align-items:center;border-top:1px solid #463020}
+.tabbar i{width:26px;height:26px;border-radius:8px;background:#54402a;display:block}
+.ov{position:absolute;inset:0;z-index:10;display:flex;align-items:center;justify-content:center;background:rgba(22,12,6,.55);animation:fadeIn .4s both}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.modal{width:330px;border-radius:26px;padding:32px 26px 28px;text-align:center;position:relative;background:linear-gradient(165deg,#4a2c16,#241408);border:1px solid rgba(255,170,90,.3);box-shadow:0 30px 80px rgba(0,0,0,.55),0 0 50px rgba(240,140,60,.15);animation:pop .55s cubic-bezier(.2,1.4,.4,1) both;animation-delay:.12s}
+@keyframes pop{from{opacity:0;transform:scale(.7) translateY(30px)}to{opacity:1;transform:none}}
+.x{position:absolute;top:14px;right:14px;width:30px;height:30px;border-radius:50%;border:0;background:rgba(255,255,255,.12);color:#fff;font-size:15px;cursor:pointer;z-index:3}
+.lv{width:110px;height:110px;margin:2px auto;border-radius:50%;background:radial-gradient(circle at 35% 30%,#ffd98a,#f08c3c 65%,#b25a1e);display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 0 40px rgba(240,140,60,.5),inset 0 0 0 6px rgba(255,255,255,.18);animation:lvpop .6s cubic-bezier(.2,1.6,.4,1) both;animation-delay:.4s}
+@keyframes lvpop{from{transform:scale(.3);opacity:0}to{transform:scale(1);opacity:1}}
+.lv b{font-size:30px;color:#5e2f10}
+.lv span{font-size:11px;color:#7a4416;font-weight:700}
+.xpbar{height:16px;border-radius:8px;background:rgba(255,255,255,.1);margin:20px 0 6px;overflow:hidden;position:relative}
+.xpbar i{display:block;height:100%;width:0;border-radius:8px;background:linear-gradient(90deg,#ffd98a,#f08c3c);box-shadow:0 0 12px rgba(240,140,60,.7);animation:xpfill 1.3s cubic-bezier(.3,.8,.3,1) both;animation-delay:.6s;position:relative}
+@keyframes xpfill{to{width:78%}}
+.xpbar i::after{content:"";position:absolute;inset:0;background:linear-gradient(100deg,transparent 30%,rgba(255,255,255,.55) 50%,transparent 70%);background-size:200% 100%;animation:shimmer 1.6s linear infinite}
+@keyframes shimmer{from{background-position:200% 0}to{background-position:-100% 0}}
+.xpnum{display:flex;justify-content:space-between;font-size:11px;color:#c99a68}
+h2{font-size:21px;margin:14px 0 6px}
+p.sub{font-size:13px;color:#d8b48e;line-height:1.7}
+.rw{display:flex;gap:8px;margin-top:14px}
+.rw div{flex:1;background:rgba(255,170,90,.08);border:1px solid rgba(255,170,90,.25);border-radius:12px;padding:9px 4px;font-size:11px;color:#e8c9a0}
+.rw div b{display:block;font-size:16px;margin-bottom:2px}
+.btn{display:block;width:100%;border:0;border-radius:16px;padding:14px;font-size:16px;font-weight:700;cursor:pointer;margin-top:18px;background:linear-gradient(180deg,#ffcf7a,#f08c3c);color:#5e2f10;box-shadow:0 8px 22px rgba(240,140,60,.45)}
+.btn:active{transform:scale(.97)}
+.replay{position:absolute;bottom:24px;left:50%;transform:translateX(-50%);z-index:20;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.1);color:#fff;border-radius:999px;padding:10px 22px;font-size:13px;cursor:pointer;backdrop-filter:blur(8px)}
+</style></head>
+<body><div class="stage">
+<div class="mock"><div class="sb"><span>9:41</span><span class="sic"></span></div>
+<div class="mh"><i></i><em></em></div><div class="banner"></div>
+<div class="row"><i></i><div><b></b><s></s></div></div>
+<div class="row"><i></i><div><b></b><s></s></div></div>
+<div class="tabbar"><i></i><i></i><i></i><i></i></div></div>
+<div class="ov" id="ov"><div class="modal">
+<button class="x" id="x">✕</button>
+<div class="lv"><b>LV.5</b><span>见习达人</span></div>
+<h2>等级提升！</h2>
+<p class="sub">注册即获 780 经验值<br>再完成 2 个任务升至 LV.6</p>
+<div class="xpbar"><i></i></div>
+<div class="xpnum"><span>780 / 1000 XP</span><span>LV.6</span></div>
+<div class="rw"><div><b>🎖️</b>等级徽章</div><div><b>💰</b>50 积分</div><div><b>🎫</b>优惠券</div></div>
+<button class="btn" id="go">领取升级奖励</button>
+</div></div>
+<button class="replay" id="replay">重新弹出</button>
+</div>
+<script>
+const ov=document.getElementById('ov');
+document.getElementById('go').onclick=()=>ov.style.display='none';
+document.getElementById('x').onclick=()=>ov.style.display='none';
+document.getElementById('replay').onclick=()=>{ov.style.display='flex';
+const m=ov.querySelector('.modal');m.style.animation='none';void m.offsetWidth;m.style.animation='';};
+</script></body></html>

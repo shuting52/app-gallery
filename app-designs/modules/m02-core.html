@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>核心功能 · 闪传</title>
+<style>
+/* ============ 闪传 · 核心功能（活力橙 + 深空灰） ============ */
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --org:#FF6B2C; --org2:#FF8F5C; --dark:#1A1D24; --dark2:#23262F;
+  --bg:#F5F6F8; --card:#fff; --ink:#1E2128; --mut:#9AA0AE; --line:#ECEEF2;
+  --ok:#22B573; --blue:#2B7FFF;
+}
+html,body{background:#D8DBE0;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;color:var(--ink)}
+.phone{max-width:430px;margin:0 auto;background:var(--bg);min-height:100dvh;position:relative;
+  box-shadow:0 0 40px rgba(26,29,36,.3);padding-bottom:100px}
+.screen{display:none;animation:fadeUp .25s ease}
+.screen.active{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}}
+/* 顶栏 */
+.topbar{background:linear-gradient(135deg,var(--dark),#2E333F);color:#fff;padding:24px 20px 34px;
+  border-radius:0 0 24px 24px;position:relative;overflow:hidden}
+.topbar::before{content:"";position:absolute;width:220px;height:220px;border-radius:50%;right:-70px;top:-80px;
+  background:radial-gradient(circle,rgba(255,107,44,.45),transparent 70%)}
+.topbar .app{font-size:13px;font-weight:800;letter-spacing:2px;color:var(--org2)}
+.topbar h1{font-size:23px;margin-top:6px;position:relative}
+.topbar p{font-size:12.5px;color:#AEB4C2;margin-top:5px;position:relative}
+.card{background:var(--card);border-radius:16px;margin:14px 16px 0;padding:16px;box-shadow:0 3px 14px rgba(26,29,36,.06)}
+.card h3{font-size:15px}
+.card .sub{font-size:12px;color:var(--mut);margin:4px 0 12px}
+.btn{display:block;width:100%;border:0;border-radius:12px;padding:13px;font-size:15px;font-weight:700;cursor:pointer;background:var(--org);color:#fff;
+  box-shadow:0 6px 16px rgba(255,107,44,.35)}
+.btn:active{transform:scale(.98)}
+.btn.dark{background:var(--dark)}
+.btn.ghost{background:#F0F1F4;color:var(--ink);box-shadow:none;margin-top:10px}
+/* 设备 */
+.dev{display:flex;align-items:center;gap:12px;background:var(--dark);border-radius:14px;padding:14px;color:#fff}
+.dev .ic{width:48px;height:48px;border-radius:12px;background:#2E333F;display:flex;align-items:center;justify-content:center;font-size:24px}
+.dev b{font-size:15px;display:block}
+.dev span{font-size:12px;color:#9AA0AE}
+.dev .st{margin-left:auto;font-size:12px;color:var(--ok);font-weight:700}
+.dev .st.off{color:var(--mut)}
+/* 扫码 */
+.scanbox{height:150px;border-radius:14px;background:var(--dark);margin-top:12px;position:relative;overflow:hidden;display:none}
+.scanbox.show{display:block}
+.scanbox .frame{position:absolute;inset:22px 70px;border:2px solid var(--org);border-radius:10px}
+.scanbox .beam{position:absolute;left:70px;right:70px;height:3px;background:var(--org);box-shadow:0 0 12px var(--org);animation:beam 1.6s ease-in-out infinite}
+@keyframes beam{0%,100%{top:24px}50%{top:124px}}
+.scanbox .tip{position:absolute;bottom:10px;width:100%;text-align:center;color:#9AA0AE;font-size:12px}
+/* 文件 */
+.file{display:flex;align-items:center;gap:12px;padding:11px 2px;border-bottom:1px solid var(--line);font-size:14px}
+.file:last-child{border:0}
+.file .fi{width:42px;height:42px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:20px;flex:none}
+.file .tx{flex:1;min-width:0}
+.file .tx b{display:block;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.file .tx span{font-size:12px;color:var(--mut)}
+.ck{width:22px;height:22px;border-radius:7px;border:2px solid #D5D9E0;flex:none;cursor:pointer;position:relative}
+.ck.on{background:var(--org);border-color:var(--org)}
+.ck.on::after{content:"✓";position:absolute;inset:0;color:#fff;font-size:14px;display:flex;align-items:center;justify-content:center}
+/* 进度 */
+.prog{height:8px;border-radius:4px;background:#F0F1F4;overflow:hidden;margin-top:8px}
+.prog i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--org),var(--org2));border-radius:4px;transition:width .2s}
+.ring{width:110px;height:110px;margin:6px auto;position:relative}
+.ring svg{transform:rotate(-90deg)}
+.ring .pct{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800}
+/* 搜索 */
+.sbar{display:flex;gap:8px;margin:14px 16px 0}
+.sbar input{flex:1;border:0;border-radius:12px;padding:13px 16px;font-size:14.5px;outline:none;background:#fff;box-shadow:0 2px 10px rgba(26,29,36,.06)}
+.chips{display:flex;gap:8px;margin:12px 16px 0;overflow-x:auto;padding-bottom:2px}
+.chips button{flex:none;border:1.5px solid var(--line);background:#fff;border-radius:18px;padding:7px 15px;font-size:13px;color:var(--mut);cursor:pointer}
+.chips button.on{border-color:var(--org);color:var(--org);font-weight:700;background:#FFF4EC}
+/* 工具 */
+.tool{border:1.5px solid var(--line);border-radius:14px;padding:14px;margin-bottom:12px}
+.tool:last-child{margin:0}
+.tool .th{display:flex;align-items:center;gap:12px}
+.tool .th .ic{width:46px;height:46px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:23px;flex:none}
+.tool .th b{font-size:15px;display:block}
+.tool .th span{font-size:12px;color:var(--mut)}
+.tool .go{margin-left:auto;flex:none}
+.tool .body{display:none;margin-top:12px;border-top:1px dashed var(--line);padding-top:12px}
+.tool.open .body{display:block}
+/* 我的 */
+.me{display:flex;align-items:center;gap:14px}
+.me .av{width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,var(--org),#FFB25C);color:#fff;
+  font-size:26px;font-weight:800;display:flex;align-items:center;justify-content:center}
+.me b{font-size:17px;display:block}
+.me span{font-size:12.5px;color:var(--mut)}
+.mrow{display:flex;align-items:center;gap:12px;padding:13px 2px;border-bottom:1px solid var(--line);font-size:14.5px;cursor:pointer}
+.mrow:last-child{border:0}
+.mrow .ic{font-size:19px}
+.mrow .arr{margin-left:auto;color:#C6CBD4}
+/* tabbar */
+.tabbar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:#fff;
+  border-top:1px solid var(--line);display:flex;padding:8px 0 calc(10px + env(safe-area-inset-bottom));z-index:50}
+.tabbar button{flex:1;border:0;background:none;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11px;color:var(--mut);cursor:pointer;padding:4px}
+.tabbar button .ti{font-size:21px}
+.tabbar button.on{color:var(--org);font-weight:700}
+.toast{position:fixed;bottom:110px;left:50%;transform:translateX(-50%) translateY(20px);background:rgba(26,29,36,.94);
+  color:#fff;padding:11px 22px;border-radius:24px;font-size:14px;opacity:0;transition:all .3s;z-index:99;pointer-events:none;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.empty{text-align:center;color:var(--mut);font-size:13px;padding:26px 0}
+</style>
+</head>
+<body>
+<div class="phone">
+
+  <!-- ===== 快传 ===== -->
+  <section class="screen active" id="s-transfer">
+    <div class="topbar"><div class="app">⚡ SHANTRAN</div><h1>扫码快传</h1><p>面对面极速互传 · 无需流量 · 120MB/s</p></div>
+    <div class="card"><h3>我的设备</h3><div class="sub">与电脑 / 平板配对后开始传输</div>
+      <div class="dev"><div class="ic">💻</div><div><b id="dev-name">未连接设备</b><span id="dev-sub">点击扫码连接附近设备</span></div><div class="st off" id="dev-st">未连接</div></div>
+      <button class="btn ghost" id="btn-scan" style="margin-top:12px">📷 扫码连接设备</button>
+      <div class="scanbox" id="scanbox"><div class="frame"></div><div class="beam"></div><div class="tip">将取景框对准对方设备的二维码</div></div>
+    </div>
+    <div class="card"><h3>发送文件</h3><div class="sub">已选 <b id="sel-n" style="color:var(--org)">0</b> 个文件</div>
+      <div id="send-list"></div>
+      <button class="btn" id="btn-send" style="margin-top:12px">🚀 开始发送</button>
+      <div id="send-prog" style="display:none;margin-top:10px">
+        <div style="display:flex;justify-content:space-between;font-size:13px"><span>正在传输…</span><b id="send-pct" style="color:var(--org)">0%</b></div>
+        <div class="prog"><i id="send-bar"></i></div>
+      </div>
+    </div>
+    <div class="card"><h3>接收文件</h3><div class="sub">对方发来的文件会出现在这里</div>
+      <div class="file"><div class="fi" style="background:#E8F3FF">🎬</div><div class="tx"><b>团队团建vlog.mp4</b><span>328MB · 2 分钟前</span></div></div>
+      <div class="file"><div class="fi" style="background:#FFF4E0">📊</div><div class="tx"><b>Q3销售数据.xlsx</b><span>4.2MB · 昨天</span></div></div>
+    </div>
+  </section>
+
+  <!-- ===== 智能搜索 ===== -->
+  <section class="screen" id="s-search">
+    <div class="topbar"><div class="app">⚡ SHANTRAN</div><h1>智能搜索</h1><p>全设备文件，一搜即达</p></div>
+    <div class="sbar"><input id="q" placeholder="搜索文件名，如：合同、vlog…"></div>
+    <div class="chips" id="chips">
+      <button class="on" data-c="all">全部</button><button data-c="doc">文档</button><button data-c="img">图片</button>
+      <button data-c="vid">视频</button><button data-c="aud">音频</button>
+    </div>
+    <div class="card"><div id="sr-list"></div></div>
+  </section>
+
+  <!-- ===== 工具箱 ===== -->
+  <section class="screen" id="s-tools">
+    <div class="topbar"><div class="app">⚡ SHANTRAN</div><h1>一键工具箱</h1><p>清理 · 压缩 · 加密，一触即达</p></div>
+    <div class="card">
+      <div class="tool" id="t-clean">
+        <div class="th"><div class="ic" style="background:#E8F7EE">🧹</div><div><b>一键清理</b><span>扫描缓存与垃圾文件</span></div><button class="btn go" style="width:auto;padding:9px 18px">去清理</button></div>
+        <div class="body">
+          <div class="ring"><svg width="110" height="110"><circle cx="55" cy="55" r="46" fill="none" stroke="#F0F1F4" stroke-width="10"/><circle id="clean-arc" cx="55" cy="55" r="46" fill="none" stroke="var(--org)" stroke-width="10" stroke-linecap="round" stroke-dasharray="289" stroke-dashoffset="289"/></svg><div class="pct" id="clean-pct">0%</div></div>
+          <div style="text-align:center;font-size:13px;color:var(--mut)" id="clean-tip">点击开始扫描</div>
+          <button class="btn" id="clean-start" style="margin-top:10px">开始扫描</button>
+          <button class="btn dark" id="clean-do" style="margin-top:10px;display:none">清理 2.3GB 垃圾</button>
+        </div>
+      </div>
+      <div class="tool" id="t-zip">
+        <div class="th"><div class="ic" style="background:#E8F3FF">🗜️</div><div><b>文件压缩</b><span>批量压缩，节省 60% 空间</span></div><button class="btn go" style="width:auto;padding:9px 18px">去压缩</button></div>
+        <div class="body">
+          <div style="font-size:13.5px;margin-bottom:8px">已选 <b style="color:var(--org)">12</b> 个文件 · 共 856MB</div>
+          <div class="prog"><i id="zip-bar"></i></div>
+          <div style="font-size:13px;color:var(--mut);margin-top:8px" id="zip-tip">待压缩</div>
+          <button class="btn" id="zip-start" style="margin-top:10px">开始压缩</button>
+        </div>
+      </div>
+      <div class="tool" id="t-lock">
+        <div class="th"><div class="ic" style="background:#FFF0E8">🔒</div><div><b>隐私加密</b><span>为重要文件加把锁</span></div><button class="btn go" style="width:auto;padding:9px 18px">去加密</button></div>
+        <div class="body">
+          <div class="file"><div class="fi" style="background:#FFF4E0">📕</div><div class="tx"><b>户口本扫描件.pdf</b><span>8.6MB</span></div></div>
+          <div style="display:flex;gap:8px;margin-top:10px"><input id="lock-pw" type="password" placeholder="设置加密密码" style="flex:1;border:1.5px solid var(--line);border-radius:10px;padding:11px 13px;font-size:14px;outline:none"></div>
+          <button class="btn" id="lock-start" style="margin-top:10px">加密文件</button>
+          <div style="font-size:13px;color:var(--ok);margin-top:8px;display:none" id="lock-done">✓ 已加密，打开需验证密码</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 我的 ===== -->
+  <section class="screen" id="s-mine">
+    <div class="topbar"><div class="app">⚡ SHANTRAN</div><h1>我的</h1><p>闪传会员 · 高速通道已开启</p></div>
+    <div class="card"><div class="me"><div class="av">陈</div><div><b>陈淑婷</b><span>138****8000 · LV.6 极速达人</span></div></div>
+      <div style="margin-top:14px"><div style="display:flex;justify-content:space-between;font-size:12.5px;color:var(--mut)"><span>本机存储</span><span>38.2GB / 128GB</span></div>
+      <div class="prog"><i style="width:30%"></i></div></div>
+    </div>
+    <div class="card">
+      <div class="mrow"><span class="ic">📜</span>传输记录<span class="arr">›</span></div>
+      <div class="mrow"><span class="ic">☁️</span>云端备份<span class="arr">›</span></div>
+      <div class="mrow"><span class="ic">⚙️</span>设置<span class="arr">›</span></div>
+      <div class="mrow"><span class="ic">❓</span>帮助与反馈<span class="arr">›</span></div>
+      <div class="mrow"><span class="ic">ℹ️</span>关于闪传<span class="arr" style="color:var(--mut);font-size:12px">v3.2.1</span></div>
+    </div>
+  </section>
+
+  <nav class="tabbar">
+    <button data-tab="transfer" class="on"><span class="ti">⚡</span>快传</button>
+    <button data-tab="search"><span class="ti">🔍</span>搜索</button>
+    <button data-tab="tools"><span class="ti">🧰</span>工具箱</button>
+    <button data-tab="mine"><span class="ti">👤</span>我的</button>
+  </nav>
+  <div class="toast" id="toast"></div>
+</div>
+
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+let toastT;function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),1800);}
+function show(id){$$('.screen').forEach(x=>x.classList.remove('active'));$('#s-'+id).classList.add('active');
+  $$('.tabbar button').forEach(b=>b.classList.toggle('on',b.dataset.tab===id));window.scrollTo(0,0);}
+$$('.tabbar button').forEach(b=>b.onclick=()=>show(b.dataset.tab));
+/* ---- 快传：文件选择 ---- */
+const FILES=[['📄','项目计划书.docx','2.4MB · 文档','#E8F3FF'],['🖼️','产品渲染图.png','8.1MB · 图片','#F0E8FF'],
+  ['🎬','发布会回放.mp4','512MB · 视频','#E8F3FF'],['🎵','播客第12期.mp3','46MB · 音频','#E8FFF0'],['📊','用户调研.xlsx','1.8MB · 文档','#FFF4E0']];
+const sel=new Set();
+$('#send-list').innerHTML=FILES.map((f,i)=>`<div class="file"><div class="fi" style="background:${f[3]}">${f[0]}</div><div class="tx"><b>${f[1]}</b><span>${f[2]}</span></div><div class="ck" data-i="${i}"></div></div>`).join('');
+$$('#send-list .ck').forEach(c=>c.onclick=()=>{c.classList.toggle('on');const i=+c.dataset.i;
+  c.classList.contains('on')?sel.add(i):sel.delete(i);$('#sel-n').textContent=sel.size;});
+/* ---- 扫码连接 ---- */
+let linked=false;
+$('#btn-scan').onclick=()=>{if(linked){toast('已连接 MacBook Pro');return;}
+  $('#scanbox').classList.add('show');$('#btn-scan').textContent='扫描中…';
+  setTimeout(()=>{$('#scanbox').classList.remove('show');linked=true;
+    $('#dev-name').textContent='MacBook Pro';$('#dev-sub').textContent='同一 Wi-Fi · 信号优';
+    const st=$('#dev-st');st.textContent='已连接';st.classList.remove('off');
+    $('#btn-scan').textContent='📷 重新扫码';toast('已连接 MacBook Pro');},2200);};
+/* ---- 发送 ---- */
+$('#btn-send').onclick=()=>{if(!linked){toast('请先扫码连接设备');return;}
+  if(!sel.size){toast('请先选择要发送的文件');return;}
+  const box=$('#send-prog');box.style.display='';let p=0;
+  const t=setInterval(()=>{p=Math.min(100,p+Math.random()*9+3);
+    $('#send-bar').style.width=p+'%';$('#send-pct').textContent=Math.floor(p)+'%';
+    if(p>=100){clearInterval(t);toast('发送完成，共 '+sel.size+' 个文件');}},220);};
+/* ---- 智能搜索 ---- */
+const LIB=[['📄','劳动合同-2026.pdf','doc','3.1MB'],['📄','项目计划书.docx','doc','2.4MB'],['📊','Q3销售数据.xlsx','doc','4.2MB'],
+  ['🖼️','产品渲染图.png','img','8.1MB'],['🖼️','团建合影.jpg','img','5.6MB'],['🎬','团队团建vlog.mp4','vid','328MB'],
+  ['🎬','发布会回放.mp4','vid','512MB'],['🎵','播客第12期.mp3','aud','46MB'],['🎵','会议录音.m4a','aud','22MB']];
+const BC={doc:'#E8F3FF',img:'#F0E8FF',vid:'#E8F3FF',aud:'#E8FFF0'};
+let curC='all';
+function renderSR(){const q=$('#q').value.trim();
+  const r=LIB.filter(f=>(curC==='all'||f[2]===curC)&&(!q||f[1].includes(q)));
+  $('#sr-list').innerHTML=r.length?r.map(f=>`<div class="file"><div class="fi" style="background:${BC[f[2]]}">${f[0]}</div><div class="tx"><b>${f[1]}</b><span>${f[3]}</span></div></div>`).join('')
+    :'<div class="empty">没有找到相关文件，换个关键词试试</div>';}
+$('#q').oninput=renderSR;
+$$('#chips button').forEach(b=>b.onclick=()=>{$$('#chips button').forEach(x=>x.classList.remove('on'));b.classList.add('on');curC=b.dataset.c;renderSR();});
+renderSR();
+/* ---- 工具箱 ---- */
+$$('.tool .go').forEach(b=>b.onclick=e=>{e.stopPropagation();b.closest('.tool').classList.toggle('open');});
+$('#clean-start').onclick=()=>{let p=0;$('#clean-do').style.display='none';
+  const t=setInterval(()=>{p=Math.min(100,p+7);$('#clean-arc').style.strokeDashoffset=289-289*p/100;
+    $('#clean-pct').textContent=p+'%';$('#clean-tip').textContent='正在扫描：'+['应用缓存','安装包','日志文件','临时文件'][Math.floor(p/26)]+'…';
+    if(p>=100){clearInterval(t);$('#clean-tip').innerHTML='发现 <b style="color:var(--org)">2.3GB</b> 可清理垃圾';$('#clean-do').style.display='';}},160);};
+$('#clean-do').onclick=function(){this.style.display='none';$('#clean-tip').textContent='✓ 清理完成，释放 2.3GB 空间';toast('清理完成');};
+$('#zip-start').onclick=function(){let p=0;this.disabled=true;
+  const t=setInterval(()=>{p=Math.min(100,p+6);$('#zip-bar').style.width=p+'%';$('#zip-tip').textContent='压缩中 '+p+'%…';
+    if(p>=100){clearInterval(t);$('#zip-tip').textContent='✓ 压缩完成：856MB → 342MB';toast('压缩完成');this.disabled=false;}},180);};
+$('#lock-start').onclick=()=>{if($('#lock-pw').value.length<4){toast('请设置至少 4 位密码');return;}
+  $('#lock-done').style.display='';toast('文件已加密');};
+$$('.mrow').forEach(r=>r.onclick=()=>toast(r.textContent.trim().replace('›','')+'（演示）'));
+const q=new URLSearchParams(location.search);if(q.get('tab'))show(q.get('tab'));
+</script>
+</body>
+</html>

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>年轮 · 进度指示</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    min-height:100vh; background:#0b1020; color:#e8ecf5;
+    display:flex; align-items:center; justify-content:center;
+    font-family:"PingFang SC","Microsoft YaHei",sans-serif; padding:16px;
+  }
+  .stage { width:360px; max-width:100%; }
+  .head { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:10px; }
+  .head h2 { font-size:16px; font-weight:600; letter-spacing:2px; }
+  .head .pct { font-size:26px; font-weight:700; color:#d9a066; font-variant-numeric:tabular-nums; }
+  .scene {
+    position:relative; width:100%; height:380px; border-radius:16px; overflow:hidden;
+    background:radial-gradient(circle at 50% 45%, #2a1f16 0%, #1a130c 55%, #100b07 100%);
+    border:1px solid #4a3524; display:flex; align-items:center; justify-content:center;
+  }
+  .done {
+    position:absolute; left:0; right:0; bottom:26px; text-align:center;
+    font-size:18px; font-weight:700; letter-spacing:4px; color:#ffd9a0;
+    text-shadow:0 0 16px #d9a066; display:none;
+  }
+  .caption {
+    position:absolute; left:0; right:0; top:14px; text-align:center;
+    font-size:12px; color:#a08a68; letter-spacing:1px;
+  }
+  .hint { margin-top:8px; font-size:11px; color:#5b6b8f; text-align:center; }
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="head"><h2>🪵 年轮</h2><div class="pct" id="pct">0%</div></div>
+  <div class="scene">
+    <div class="caption" id="caption">0 / 12 圈</div>
+    <svg id="svg" viewBox="0 0 320 320" width="320" height="320">
+      <g id="rings"></g>
+    </svg>
+    <div class="done" id="done">12 圈 · 百年</div>
+  </div>
+  <div class="hint">树木横截面 · 年轮逐圈向外生长</div>
+</div>
+<script>
+(function(){
+  var pct = document.getElementById('pct');
+  var caption = document.getElementById('caption');
+  var done = document.getElementById('done');
+  var g = document.getElementById('rings');
+  var NS = 'http://www.w3.org/2000/svg';
+  var N = 12, cx = 160, cy = 160;
+  var rings = [];
+  // 树皮（常显）
+  var bark = document.createElementNS(NS, 'circle');
+  bark.setAttribute('cx', cx); bark.setAttribute('cy', cy);
+  bark.setAttribute('r', 148); bark.setAttribute('fill', 'none');
+  bark.setAttribute('stroke', '#5a4028'); bark.setAttribute('stroke-width', '14');
+  g.appendChild(bark);
+  for (var i = 0; i < N; i++){
+    var c = document.createElementNS(NS, 'circle');
+    c.setAttribute('cx', cx); c.setAttribute('cy', cy);
+    c.setAttribute('fill', 'none');
+    c.setAttribute('stroke', i % 2 ? '#a0714a' : '#c08d5c');
+    c.setAttribute('stroke-width', i % 2 ? '3' : '5');
+    g.appendChild(c);
+    rings.push(c);
+  }
+  // 髓心（常显）
+  var pith = document.createElementNS(NS, 'circle');
+  pith.setAttribute('cx', cx); pith.setAttribute('cy', cy);
+  pith.setAttribute('r', '7'); pith.setAttribute('fill', '#c08d5c');
+  g.appendChild(pith);
+  var p = 0;
+  function render(){
+    pct.textContent = Math.round(p) + '%';
+    var count = Math.round(p / 100 * N);
+    caption.textContent = count + ' / 12 圈';
+    rings.forEach(function(c, i){
+      if (i < count) {
+        c.setAttribute('r', 16 + i * 11);
+        c.style.opacity = '1';
+      } else {
+        c.setAttribute('r', 16 + i * 11);
+        c.style.opacity = '0';
+      }
+    });
+    done.style.display = (p >= 100) ? 'block' : 'none';
+  }
+  if (location.hash === '#mid') { p = 55; render(); return; }
+  render();
+  var step = 100 / (7000 / 70), hold = false;
+  setInterval(function(){
+    if (hold) return;
+    p += step;
+    if (p >= 100) {
+      p = 100; render(); hold = true;
+      setTimeout(function(){ p = 0; hold = false; render(); }, 1000);
+      return;
+    }
+    render();
+  }, 70);
+})();
+</script>
+</body>
+</html>

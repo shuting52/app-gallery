@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>d03 · 墨水滴底栏</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{background:#10141c;display:flex;justify-content:center;align-items:center;min-height:100vh;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif}
+.phone{width:430px;height:900px;max-height:100vh;background:#f7f5f0;position:relative;overflow:hidden}
+.status{height:40px;display:flex;align-items:center;justify-content:space-between;padding:0 22px;font-size:12px;font-weight:600;color:#111}
+.nav{height:50px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:#111}
+.feed{position:absolute;top:90px;bottom:110px;left:0;right:0;overflow:hidden}
+.card{margin:10px 12px;border-radius:4px;padding:14px;background:#fff;border-left:5px solid #222;display:flex;gap:12px;align-items:center;box-shadow:2px 2px 0 #e5e0d5}
+.tt{font-size:14px;font-weight:600;color:#222}
+.dd{font-size:12px;color:#999;margin-top:4px}
+/* ---- 墨水底栏 ---- */
+.tabbar{position:absolute;left:0;right:0;bottom:0;height:96px;background:#fffdf8;border-top:1px solid #e8e2d4;display:flex;z-index:5}
+.tab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;color:#a89f8c;font-size:11px;cursor:pointer;position:relative;z-index:2}
+.tab .ic{font-size:24px}
+.tab.on{color:#1a1a1a;font-weight:700}
+/* 墨滴指示器 */
+.drop{position:absolute;bottom:8px;width:34px;height:34px;z-index:1;left:0;transform:translateX(-50%);
+transition:left .5s cubic-bezier(.6,-0.28,.3,1.4)}
+.drop .d{position:absolute;inset:6px;background:#1a1a1a;border-radius:50% 50% 50% 4px;transform:rotate(45deg)}
+.drop .t{position:absolute;left:50%;top:-2px;width:6px;height:10px;background:#1a1a1a;border-radius:3px;transform:translateX(-50%)}
+/* 飞溅粒子 */
+.sp{position:absolute;width:7px;height:7px;border-radius:50%;background:#1a1a1a;z-index:1;pointer-events:none;animation:splash .5s ease-out forwards}
+@keyframes splash{to{transform:translate(var(--dx),var(--dy)) scale(.2);opacity:0}}
+</style>
+</head>
+<body>
+<div class="phone">
+<div class="status"><span>21:56</span><span>5G 🔋</span></div>
+<div class="nav">墨水滴 · 底栏演示</div>
+<div class="feed" id="feed"></div>
+<div class="tabbar" id="bar">
+<div class="drop" id="drop"><div class="t"></div><div class="d"></div></div>
+<div class="tab on"><span class="ic">🏠</span>首页</div>
+<div class="tab"><span class="ic">🧭</span>发现</div>
+<div class="tab"><span class="ic">✉️</span>消息</div>
+<div class="tab"><span class="ic">👤</span>我</div>
+</div>
+</div>
+<script>
+var rows=[["钢笔","百乐78G开箱","#333","笔"],["墨水","月夜蓝试色","#2a4a7a","墨"],["纸张","巴川纸书写感","#8a7a5a","纸"],["字帖","行楷练习周记","#555","帖"],["印章","手工篆刻入门","#a33","印"],["笔洗","陶瓷笔洗推荐","#4a7a8a","洗"],["镇纸","黄铜镇纸","#7a6a4a","镇"]];
+var h="";
+for(var i=0;i<rows.length;i++){h+='<div class="card" style="border-color:'+rows[i][2]+'"><div><div class="tt">'+rows[i][0]+'</div><div class="dd">'+rows[i][1]+'</div></div></div>';}
+document.getElementById('feed').innerHTML=h;
+var bar=document.getElementById('bar'),drop=document.getElementById('drop');
+var tabs=bar.querySelectorAll('.tab');
+function center(n){return tabs[n].offsetLeft+tabs[n].offsetWidth/2;}
+function splash(x){for(var i=0;i<6;i++){var s=document.createElement('span');s.className='sp';var a=Math.random()*Math.PI*2,d=24+Math.random()*30;s.style.setProperty('--dx',Math.cos(a)*d+'px');s.style.setProperty('--dy',(-Math.abs(Math.sin(a))*d-10)+'px');s.style.left=(x-3)+'px';s.style.bottom='20px';bar.appendChild(s);(function(el){setTimeout(function(){el.remove();},550);})(s);}}
+function go(n,silent){for(var i=0;i<tabs.length;i++){tabs[i].classList.toggle('on',i===n);}drop.style.left=center(n)+'px';if(!silent){splash(center(n));}}
+for(var i=0;i<tabs.length;i++){(function(k){tabs[k].addEventListener('click',function(){go(k);});})(i);}
+var init=0;
+try{var q=new URLSearchParams(location.search).get('tab');if(q!==null&&+q>=0&&+q<4){init=+q;}}catch(e){}
+requestAnimationFrame(function(){go(init,true);});
+</script>
+</body>
+</html>

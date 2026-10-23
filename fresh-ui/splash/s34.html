@@ -1,0 +1,37 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>信号之塔</title><style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{background:#02060f;display:flex;justify-content:center;font-family:-apple-system,"PingFang SC","Microsoft YaHei","Noto Sans CJK SC",sans-serif;overflow:hidden}
+.stage{width:430px;height:900px;max-height:100vh;position:relative;overflow:hidden;background:radial-gradient(90% 65% at 50% 45%,#0a1830 0%,#02060f 70%)}
+.gridbg{position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(56,189,248,.05) 0 1px,transparent 1px 46px),repeating-linear-gradient(90deg,rgba(56,189,248,.05) 0 1px,transparent 1px 46px)}
+.tower{position:absolute;left:50%;bottom:330px;width:0;height:0;margin-left:-70px;border-left:70px solid transparent;border-right:70px solid transparent;border-bottom:230px solid #16294a}
+.tower::after{content:"";position:absolute;left:-8px;top:40px;width:16px;height:190px;background:repeating-linear-gradient(180deg,#38bdf8 0 14px,transparent 14px 30px);clip-path:polygon(0 100%,50% 0,100% 100%)}
+.tip{position:absolute;left:50%;bottom:552px;width:18px;height:18px;margin-left:-9px;border-radius:50%;background:#ff5d5d;box-shadow:0 0 22px 8px rgba(255,93,93,.8);animation:blink 1.4s ease-in-out -0.5s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+.ring{position:absolute;left:50%;bottom:544px;width:60px;height:60px;margin:-30px;border:2px solid rgba(56,189,248,.9);border-radius:50%;animation:wave 2.6s ease-out -0.8s infinite}
+.ring.r2{animation-delay:-1.7s}.ring.r3{animation-delay:-2.6s}
+@keyframes wave{from{transform:scale(.4);opacity:1}to{transform:scale(4.4);opacity:0}}
+.dish{position:absolute;left:50%;bottom:470px;width:84px;height:44px;margin-left:-42px;background:linear-gradient(180deg,#38bdf8,#0e6ea8);border-radius:60px 60px 6px 6px;transform:rotate(-8deg);animation:dish 4s ease-in-out -2s infinite;transform-origin:bottom center}
+@keyframes dish{0%,100%{transform:rotate(-14deg)}50%{transform:rotate(14deg)}}
+.typewrap{position:absolute;left:0;right:0;bottom:220px;text-align:center}
+.type{display:inline-block;overflow:hidden;white-space:nowrap;width:0;font-size:64px;font-weight:800;letter-spacing:16px;color:#eaf7ff;text-shadow:0 0 24px rgba(56,189,248,.8);animation:type 1.6s steps(8) .8s both}
+@keyframes type{to{width:5.2em}}
+.bars{display:inline-block;margin-left:14px;vertical-align:8px}
+.bars i{display:inline-block;width:7px;margin-right:5px;background:#38bdf8;border-radius:3px;box-shadow:0 0 10px rgba(56,189,248,.9);animation:bar 1s ease-in-out infinite}
+.bars i:nth-child(1){height:12px}.bars i:nth-child(2){height:20px;animation-delay:-.2s}.bars i:nth-child(3){height:28px;animation-delay:-.4s}.bars i:nth-child(4){height:36px;animation-delay:-.6s}
+@keyframes bar{0%,100%{opacity:.4}50%{opacity:1}}
+.tag{position:absolute;left:0;right:0;bottom:170px;text-align:center;color:#7fb8d8;font-size:13px;letter-spacing:7px;text-indent:7px;animation:up 1.2s ease 1.8s both}
+@keyframes up{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+.replay{position:absolute;bottom:34px;left:50%;transform:translateX(-50%);z-index:50;padding:10px 26px;border-radius:999px;border:1px solid rgba(56,189,248,.6);background:rgba(56,189,248,.1);color:#d8f1ff;font-size:13px;letter-spacing:4px;text-indent:4px;cursor:pointer}
+.replay:active{transform:translateX(-50%) scale(.94)}
+</style></head><body><div class="stage">
+<div class="gridbg"></div>
+<div class="tower"></div><div class="dish"></div>
+<div class="ring"></div><div class="ring r2"></div><div class="ring r3"></div>
+<div class="tip"></div>
+<div class="typewrap"><span class="type">信号</span><span class="bars"><i></i><i></i><i></i><i></i></span></div>
+<div class="tag">满格 连接世界</div>
+<button class="replay" onclick="location.reload()">重新播放</button>
+</div></body></html>

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>快门按钮</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{min-height:100vh;background:radial-gradient(120% 90% at 50% 0%,#14161d 0%,#0a0b10 60%,#05060a 100%);display:flex;flex-direction:column;align-items:center;color:#e8eaf2;font-family:"PingFang SC","Microsoft YaHei",sans-serif;overflow:hidden}
+h2{margin:34px 0 6px;font-size:15px;font-weight:600;letter-spacing:4px;color:#9fb4ff}
+p{font-size:12px;color:#6b7a99;margin-bottom:26px}
+.stage{position:relative;width:360px;height:420px;display:flex;align-items:center;justify-content:center}
+.btn{position:relative;width:190px;height:190px;border-radius:50%;border:none;cursor:pointer;background:#0c0d12;color:#cfd8ff;font-size:17px;font-weight:700;letter-spacing:3px;overflow:hidden;
+box-shadow:0 0 0 8px #171a22,0 0 0 9px #2c3242,0 14px 40px rgba(0,0,0,.7)}
+.lens{position:absolute;inset:0;background:radial-gradient(circle at 30% 25%,#3a4a7a 0%,#141a30 45%,#070a14 100%);display:flex;align-items:center;justify-content:center;z-index:1}
+.lens .txt{position:relative;z-index:3;pointer-events:none}
+.iris{position:absolute;inset:6px;z-index:2}
+.iris polygon{fill:#05070d;stroke:#46536f;stroke-width:2;transform-origin:95px 95px}
+.flash{position:absolute;inset:0;border-radius:50%;background:#fff;opacity:0;z-index:4;pointer-events:none}
+.btn.shoot .iris polygon{animation:close .55s ease-in-out 1}
+.btn.shoot .flash{animation:flash .55s ease-out 1}
+@keyframes close{
+ 0%{transform:rotate(0deg) translate(0,0)}
+ 45%{transform:rotate(62deg) translate(0,0) scale(1)}
+ 100%{transform:rotate(0deg) translate(0,0)}
+}
+.btn.shoot .iris{animation:irisPulse .55s ease-in-out 1}
+@keyframes irisPulse{
+ 0%{transform:scale(1)}
+ 45%{transform:scale(.14)}
+ 100%{transform:scale(1)}
+}
+@keyframes flash{0%{opacity:0}42%{opacity:0}50%{opacity:.95}100%{opacity:0}}
+.hint{position:absolute;bottom:8px;font-size:12px;color:#5a6580}
+</style>
+</head>
+<body>
+<h2>快 门</h2>
+<p>光圈叶片收拢 · 闪光 · 再打开</p>
+<div class="stage">
+  <button class="btn" id="b">
+    <div class="lens"><span class="txt">咔 嚓</span></div>
+    <svg class="iris" viewBox="0 0 190 190">
+      <g id="blades"></g>
+    </svg>
+    <div class="flash"></div>
+  </button>
+  <div class="hint">像相机快门一样闭合</div>
+</div>
+<script>
+// 6 片快门叶片：绕圆心分布的多边形，通过 iris 整体缩放实现"闭合"错觉，叶片各自轻微旋转增强机械感
+const g=document.getElementById('blades'),C=95,R=82;
+for(let i=0;i<6;i++){
+  const a=i/6*Math.PI*2, a2=(i+1)/6*Math.PI*2;
+  const p=document.createElementNS('http://www.w3.org/2000/svg','polygon');
+  const x1=C+R*Math.cos(a),y1=C+R*Math.sin(a);
+  const x2=C+R*Math.cos(a2),y2=C+R*Math.sin(a2);
+  const mx=C+18*Math.cos(a+.55),my=C+18*Math.sin(a+.55);
+  p.setAttribute('points',`${x1},${y1} ${x2},${y2} ${mx},${my}`);
+  g.appendChild(p);
+}
+const b=document.getElementById('b');
+b.addEventListener('click',()=>{
+  b.classList.remove('shoot');
+  void b.offsetWidth; // 强制重排以可重复触发
+  b.classList.add('shoot');
+});
+</script>
+</body>
+</html>

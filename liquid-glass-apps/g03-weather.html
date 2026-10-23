@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>天气预报</title>
+<style>
+/* ============ tokens（照抄脚手架） ============ */
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --glass-radius:34px; --glass-blur:24px;
+  --glass-tint-top:rgba(255,255,255,.17); --glass-tint-mid:rgba(255,255,255,.05); --glass-tint-bot:rgba(255,255,255,.10);
+  --glass-edge-width:1.2px;
+  --glass-edge-strong:rgba(255,255,255,.95); --glass-edge-mid:rgba(255,255,255,.22);
+  --glass-edge-weak:rgba(255,255,255,.05); --glass-edge-mid2:rgba(255,255,255,.12); --glass-edge-soft:rgba(255,255,255,.78);
+  --glass-shadow-far:0 26px 60px -26px rgba(0,0,0,.85); --glass-shadow-near:0 10px 26px -14px rgba(0,0,0,.55);
+  --text-1:#fff; --text-2:rgba(255,255,255,.62); --text-3:rgba(255,255,255,.60);
+  --ease-liquid:cubic-bezier(.22,.9,.28,1.2);
+}
+html,body{height:100%}
+body{font:400 15px/1.45 -apple-system,"SF Pro Text","PingFang SC","Helvetica Neue",system-ui,sans-serif;
+  color:var(--text-1);background:#07060b;overflow-x:hidden;-webkit-font-smoothing:antialiased;
+  display:flex;justify-content:center}
+/* ============ 壁纸（照抄 LiquidWallpaper.vue） ============ */
+.wallpaper{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none}
+.wallpaper i{position:absolute;inset:-30%;display:block;
+  background:radial-gradient(42% 32% at 20% 22%,#ff3b5c 0%,transparent 62%),
+  radial-gradient(38% 30% at 84% 16%,#ff9f1c 0%,transparent 60%),
+  radial-gradient(52% 42% at 76% 74%,#ff2d55 0%,transparent 64%),
+  radial-gradient(42% 38% at 24% 82%,#6b5cff 0%,transparent 62%),
+  radial-gradient(30% 26% at 52% 48%,#ffd166 0%,transparent 68%),#140a20;
+  filter:blur(48px) saturate(150%);animation:drift 26s ease-in-out infinite alternate}
+.wallpaper i:nth-child(2){background:conic-gradient(from 200deg at 50% 55%,#ff2d55,#ff9f0a,#ffd60a,#34c759,#0a84ff,#bf5af2,#ff2d55);
+  filter:blur(110px);opacity:.5;mix-blend-mode:screen;animation-duration:34s;animation-direction:alternate-reverse}
+@keyframes drift{from{transform:translate3d(-3%,-2%,0) scale(1.05) rotate(-3deg)}
+  to{transform:translate3d(4%,3%,0) scale(1.16) rotate(4deg)}}
+/* ============ 玻璃卡（照抄 LiquidGlass.vue） ============ */
+.lg{position:relative;isolation:isolate;border-radius:var(--lg-r,var(--glass-radius));
+  background:linear-gradient(155deg,var(--glass-tint-top) 0%,var(--glass-tint-mid) 42%,var(--glass-tint-bot) 100%);
+  -webkit-backdrop-filter:blur(var(--lg-blur,var(--glass-blur))) saturate(180%) brightness(1.06);
+  backdrop-filter:blur(var(--lg-blur,var(--glass-blur))) saturate(180%) brightness(1.06);
+  box-shadow:inset 0 1px 1px -.5px rgba(255,255,255,.70),inset 0 -1px 1px -.5px rgba(255,255,255,.18),
+  inset 0 14px 22px -14px rgba(255,255,255,.45),var(--glass-shadow-far),var(--glass-shadow-near);
+  transition:transform .38s var(--ease-liquid)}
+.lg:active{transform:scale(.982)}
+.lg::before{content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;pointer-events:none;
+  mix-blend-mode:screen;opacity:.85;
+  background:radial-gradient(120% 62% at 18% -26%,rgba(255,255,255,.78),transparent 58%),
+  radial-gradient(70% 46% at 92% -12%,rgba(255,255,255,.34),transparent 60%),
+  repeating-linear-gradient(102deg,rgba(255,255,255,.055) 0 2px,transparent 2px 26px)}
+.lg::after{content:"";position:absolute;inset:0;z-index:1;border-radius:inherit;padding:var(--glass-edge-width);
+  pointer-events:none;
+  background:linear-gradient(150deg,var(--glass-edge-strong) 0%,var(--glass-edge-mid) 22%,var(--glass-edge-weak) 48%,var(--glass-edge-mid2) 72%,var(--glass-edge-soft) 100%);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;mask-composite:exclude}
+/* ============ 屏幕骨架 ============ */
+.screen{position:relative;z-index:1;width:430px;max-width:100%;min-height:900px;height:900px;overflow:hidden;
+  display:flex;flex-direction:column;padding:18px 14px 12px}
+.statusbar{display:flex;justify-content:space-between;align-items:center;font-size:13px;font-weight:600;
+  padding:2px 8px 10px;color:var(--text-1)}
+.statusbar .sic{display:flex;gap:6px;align-items:center;font-size:12px}
+.apptitle{font-size:30px;font-weight:700;letter-spacing:1px;padding:6px 4px 14px}
+.apptitle small{display:block;font-size:12px;font-weight:400;color:var(--text-2);letter-spacing:2px;margin-top:4px}
+.content{flex:1;overflow:hidden;display:flex;flex-direction:column;gap:14px}
+.homebar{width:134px;height:5px;border-radius:3px;background:rgba(255,255,255,.85);margin:10px auto 4px}
+/* ============ 天气预报 ============ */
+.wx-main{padding:18px 22px 16px}
+.wx-city{display:flex;align-items:center;justify-content:space-between}
+.wx-city .c{font-size:17px;font-weight:600;letter-spacing:1px}
+.wx-city .aqi{font-size:11px;padding:4px 10px;border-radius:999px;color:#06281c;font-weight:700;
+  background:linear-gradient(135deg,#5ef0a8,#2fd48a);box-shadow:0 0 12px rgba(94,240,168,.5)}
+.wx-temp{font-size:76px;font-weight:200;letter-spacing:-2px;line-height:1;margin:4px 0 2px}
+.wx-temp sup{font-size:30px;font-weight:300;vertical-align:top}
+.wx-cond{display:flex;align-items:center;gap:10px;font-size:15px;color:var(--text-2)}
+.wx-cond .hi-lo{margin-left:auto;font-size:13px}
+.wx-div{height:1px;background:rgba(255,255,255,.14);margin:14px 0 12px}
+.wx-meta{display:flex}
+.wx-meta div{flex:1;text-align:center}
+.wx-meta b{display:block;font-size:15px;font-weight:600}
+.wx-meta span{font-size:11px;color:var(--text-3)}
+.wx-sec{padding:14px 16px}
+.wx-sec h3{font-size:14px;font-weight:700;letter-spacing:1px;margin-bottom:10px}
+.hstrip{display:flex;gap:6px;overflow-x:auto;padding:2px;scrollbar-width:none}
+.hstrip::-webkit-scrollbar{display:none}
+.hitem{flex:0 0 auto;width:56px;text-align:center;padding:8px 0;border-radius:16px;
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12)}
+.hitem.now{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.3)}
+.hitem .t{font-size:11px;color:var(--text-2)}
+.hitem.now .t{color:#fff;font-weight:600}
+.hitem .ic{font-size:22px;margin:6px 0;display:block}
+.hitem .d{font-size:13px;font-weight:600}
+.wrow{display:flex;align-items:center;gap:10px;padding:6px 2px;font-size:13.5px}
+.wrow .day{width:44px;flex:none;font-weight:600}
+.wrow .ic{width:28px;flex:none;text-align:center;font-size:18px}
+.wrow .lo{width:34px;flex:none;text-align:right;color:var(--text-2)}
+.wrow .bar{flex:1;height:5px;border-radius:3px;background:rgba(255,255,255,.12);position:relative}
+.wrow .bar i{position:absolute;top:0;bottom:0;border-radius:3px;
+  background:linear-gradient(90deg,#4dc8e8,#ffd166,#ff9f1c)}
+.wrow .hi{width:34px;flex:none;color:var(--text-1);font-weight:600}
+</style>
+</head>
+<body>
+<div class="wallpaper" aria-hidden="true"><i></i><i></i></div>
+<div class="screen">
+  <div class="statusbar"><span>9:41</span><span class="sic">📶 📡 🔋</span></div>
+  <div class="apptitle">天气预报<small>10月23日 · 星期五</small></div>
+  <div class="content">
+    <section class="lg wx-main">
+      <div class="wx-city"><span class="c">📍 杭州市</span><span class="aqi">空气优</span></div>
+      <div class="wx-temp">26<sup>°</sup></div>
+      <div class="wx-cond"><span>⛅ 多云</span><span class="hi-lo">最高 28° · 最低 19°</span></div>
+      <div class="wx-div"></div>
+      <div class="wx-meta">
+        <div><b>62%</b><span>湿度</span></div>
+        <div><b>东南风 3级</b><span>风向风力</span></div>
+        <div><b>优</b><span>空气质量</span></div>
+      </div>
+    </section>
+    <section class="lg wx-sec">
+      <h3>逐小时预报</h3>
+      <div class="hstrip">
+        <div class="hitem now"><div class="t">现在</div><span class="ic">⛅</span><div class="d">26°</div></div>
+        <div class="hitem"><div class="t">14时</div><span class="ic">⛅</span><div class="d">27°</div></div>
+        <div class="hitem"><div class="t">15时</div><span class="ic">🌤️</span><div class="d">27°</div></div>
+        <div class="hitem"><div class="t">16时</div><span class="ic">🌤️</span><div class="d">26°</div></div>
+        <div class="hitem"><div class="t">17时</div><span class="ic">🌤️</span><div class="d">25°</div></div>
+        <div class="hitem"><div class="t">18时</div><span class="ic">🌇</span><div class="d">23°</div></div>
+        <div class="hitem"><div class="t">19时</div><span class="ic">🌃</span><div class="d">21°</div></div>
+        <div class="hitem"><div class="t">20时</div><span class="ic">🌃</span><div class="d">20°</div></div>
+      </div>
+    </section>
+    <section class="lg wx-sec">
+      <h3>7 日预报</h3>
+      <div class="wrow"><span class="day">今天</span><span class="ic">⛅</span><span class="lo">19°</span><span class="bar"><i style="left:16.7%;width:75%"></i></span><span class="hi">28°</span></div>
+      <div class="wrow"><span class="day">周六</span><span class="ic">🌧️</span><span class="lo">18°</span><span class="bar"><i style="left:8.3%;width:50%"></i></span><span class="hi">24°</span></div>
+      <div class="wrow"><span class="day">周日</span><span class="ic">🌧️</span><span class="lo">17°</span><span class="bar"><i style="left:0%;width:41.7%"></i></span><span class="hi">22°</span></div>
+      <div class="wrow"><span class="day">周一</span><span class="ic">⛅</span><span class="lo">18°</span><span class="bar"><i style="left:8.3%;width:58.3%"></i></span><span class="hi">25°</span></div>
+      <div class="wrow"><span class="day">周二</span><span class="ic">☀️</span><span class="lo">20°</span><span class="bar"><i style="left:25%;width:66.7%"></i></span><span class="hi">28°</span></div>
+      <div class="wrow"><span class="day">周三</span><span class="ic">☀️</span><span class="lo">21°</span><span class="bar"><i style="left:33.3%;width:66.7%"></i></span><span class="hi">29°</span></div>
+      <div class="wrow"><span class="day">周四</span><span class="ic">🌤️</span><span class="lo">20°</span><span class="bar"><i style="left:25%;width:58.3%"></i></span><span class="hi">27°</span></div>
+    </section>
+  </div>
+  <div class="homebar"></div>
+</div>
+</body>
+</html>

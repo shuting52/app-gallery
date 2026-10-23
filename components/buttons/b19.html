@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>冰霜按钮</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{min-height:100vh;background:radial-gradient(120% 90% at 50% 0%,#0b1c2b 0%,#071019 60%,#04080d 100%);display:flex;flex-direction:column;align-items:center;color:#d5ecff;font-family:"PingFang SC","Microsoft YaHei",sans-serif;overflow:hidden}
+h2{margin:34px 0 6px;font-size:15px;font-weight:600;letter-spacing:4px;color:#9fd8ff}
+p{font-size:12px;color:#5e7f9c;margin-bottom:26px}
+.stage{position:relative;width:360px;height:420px;display:flex;align-items:center;justify-content:center}
+.btn{position:relative;width:180px;height:180px;border-radius:50%;border:none;cursor:pointer;overflow:hidden;
+background:radial-gradient(circle at 35% 30%,#4a6b8c 0%,#2b4258 60%,#1a2836 100%);
+color:#e8f4ff;font-size:17px;font-weight:700;letter-spacing:3px;
+box-shadow:0 10px 30px rgba(0,0,0,.6);transition:box-shadow .6s}
+#ice{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.btn.frozen{background:radial-gradient(circle at 35% 30%,#bfe6ff 0%,#7fc2ee 55%,#3f8fc4 100%);color:#0b2c44;
+box-shadow:0 0 34px rgba(140,210,255,.55),0 0 90px rgba(80,170,255,.22),0 10px 30px rgba(0,0,0,.6)}
+.txt{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:3;pointer-events:none;text-shadow:0 1px 6px rgba(255,255,255,.4)}
+.hint{position:absolute;bottom:8px;font-size:12px;color:#4f6a85}
+</style>
+</head>
+<body>
+<h2>冰 霜</h2>
+<p>冰晶从落点蔓延 · 冻住按钮 · 再融化</p>
+<div class="stage">
+  <button class="btn" id="b">
+    <canvas id="ice" width="360" height="360"></canvas>
+    <span class="txt">冰 封</span>
+  </button>
+  <div class="hint">在按钮任意位置点击</div>
+</div>
+<script>
+const cv=document.getElementById('ice'),ctx=cv.getContext('2d');
+const W=cv.width,H=cv.height,cx=W/2,cy=H/2,R=88;
+const b=document.getElementById('b');
+let segs=[],raf=null,startT=0,ox=0,oy=0;
+function rnd(a,c){return a+Math.random()*(c-a)}
+// 分形冰晶：主枝 + 递归小分叉
+function grow(x,y,ang,len,depth,birth){
+  if(depth<0||len<4)return;
+  const x2=x+Math.cos(ang)*len,y2=y+Math.sin(ang)*len;
+  segs.push({x1:x,y1:y,x2:x2,y2:y2,birth:birth,w:depth});
+  const n=2+(Math.random()*2|0);
+  for(let i=0;i<n;i++){
+    grow(x2,y2,ang+rnd(-1,1),len*rnd(.5,.68),depth-1,birth+len*.02);
+  }
+}
+function build(px,py){
+  segs=[];ox=px;oy=py;
+  const branches=8;
+  for(let i=0;i<branches;i++){
+    const a=i/branches*Math.PI*2+rnd(-.2,.2);
+    grow(px,py,a,rnd(30,55),3,0);
+  }
+}
+function draw(ts){
+  if(!startT)startT=ts;
+  const t=(ts-startT)/1000;
+  const growT=1.6,holdT=1.2,meltT=1.4;
+  const total=growT+holdT+meltT;
+  ctx.clearRect(0,0,W,H);
+  let alpha=1,prog=Math.min(t/growT,1);
+  if(t>growT+holdT){alpha=Math.max(0,1-(t-growT-holdT)/meltT);}
+  ctx.lineCap='round';
+  const vis=segs.filter(s=>prog*10>=s.birth);
+  vis.forEach(s=>{
+    ctx.strokeStyle=`rgba(200,235,255,${(.85)*alpha})`;
+    ctx.lineWidth=1.5+s.w*.8;
+    ctx.shadowColor='rgba(140,210,255,.8)';ctx.shadowBlur=6*alpha;
+    ctx.beginPath();ctx.moveTo(s.x1,s.y1);ctx.lineTo(s.x2,s.y2);ctx.stroke();
+  });
+  ctx.shadowBlur=0;
+  // 冰面薄雾
+  if(alpha>0){
+    const g=ctx.createRadialGradient(ox,oy,5,ox,oy,R*1.15*Math.min(prog*1.6,1));
+    g.addColorStop(0,`rgba(190,225,255,${.28*alpha*Math.min(prog*2,1)})`);
+    g.addColorStop(1,'rgba(190,225,255,0)');
+    ctx.fillStyle=g;ctx.beginPath();ctx.arc(ox,oy,R*1.2,0,7);ctx.fill();
+  }
+  if(t<total){raf=requestAnimationFrame(draw);}
+  else{ctx.clearRect(0,0,W,H);raf=null;b.classList.remove('frozen');}
+}
+b.addEventListener('click',e=>{
+  if(raf)cancelAnimationFrame(raf);
+  const r=cv.getBoundingClientRect();
+  build((e.clientX-r.left)*(W/r.width),(e.clientY-r.top)*(H/r.height));
+  b.classList.add('frozen');startT=0;raf=requestAnimationFrame(draw);
+});
+</script>
+</body>
+</html>

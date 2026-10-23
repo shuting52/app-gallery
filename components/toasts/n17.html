@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>n17 · 涟漪 Toast</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;background:#141824;display:flex;flex-direction:column;align-items:center;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;color:#fff}
+.head{text-align:center;padding:20px 16px 12px}
+.head h1{font-size:17px;color:#7fd8ff;letter-spacing:1px}
+.head p{font-size:12px;color:#8b93a7;margin-top:6px}
+.stage{width:360px;max-width:94vw;height:480px;border-radius:18px;position:relative;overflow:hidden;background:linear-gradient(180deg,#0d2036 0%,#0a1626 55%,#060d18 100%);border:1px solid #1e3a55;box-shadow:0 12px 40px rgba(0,0,0,.4)}
+.stage::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(180deg,transparent 0 34px,rgba(120,180,230,.05) 34px 35px)}
+.ring{position:absolute;left:50%;top:210px;width:120px;height:120px;margin:-60px 0 0 -60px;border:2px solid rgba(140,200,255,.7);border-radius:50%;opacity:0;pointer-events:none}
+.ring.r1{animation:ripple 2.6s ease-out infinite}
+.ring.r2{animation:ripple 2.6s ease-out .85s infinite}
+.ring.r3{animation:ripple 2.6s ease-out 1.7s infinite}
+@keyframes ripple{0%{transform:scale(.25);opacity:.9}100%{transform:scale(2.6);opacity:0}}
+.drop{position:absolute;left:50%;top:180px;transform:translateX(-50%) scale(.4);background:rgba(18,38,66,.88);border:1px solid rgba(150,210,255,.45);color:#dff0ff;padding:18px 26px;border-radius:14px;font-size:15px;font-weight:600;white-space:nowrap;opacity:0;box-shadow:0 8px 26px rgba(0,0,0,.45),0 0 24px rgba(120,190,255,.15)}
+.drop.in{animation:emerge .6s ease-out forwards}
+.drop.sink{animation:sink .7s ease-in forwards}
+@keyframes emerge{from{transform:translateX(-50%) scale(.4);opacity:0}to{transform:translateX(-50%) scale(1);opacity:1}}
+@keyframes sink{from{transform:translateX(-50%) scale(1);opacity:1}to{transform:translateX(-50%) translateY(70px) scale(.6);opacity:0}}
+.hint{position:absolute;bottom:14px;width:100%;text-align:center;font-size:11px;color:#4e6a86}
+</style>
+</head>
+<body>
+<div class="head"><h1>n17 · 涟漪</h1><p>水面涟漪从中心扩散 → 通知在涟漪中浮现 → 沉入水下</p></div>
+<div class="stage">
+  <div class="ring r1"></div><div class="ring r2"></div><div class="ring r3"></div>
+  <div class="drop" id="drop">新关注</div>
+  <div class="hint">自动循环播放中 · 3 条通知轮播</div>
+</div>
+<script>
+const msgs=["新关注：@小甜 来了","直播间人数破万 🎉","收到打赏 ×10"];
+const drop=document.getElementById('drop');
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+async function show(i){
+  drop.textContent=msgs[i];
+  drop.classList.remove('sink');void drop.offsetWidth;drop.classList.add('in');
+  await sleep(650);
+  await sleep(2500);
+  drop.classList.remove('in');drop.classList.add('sink');
+  await sleep(750);
+  drop.classList.remove('sink');
+  await sleep(350);
+}
+(async()=>{let i=0;while(true){await show(i%msgs.length);i++;}})();
+</script>
+</body>
+</html>

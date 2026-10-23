@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>版本更新 · 手绘涂鸦</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    min-height: 100vh;
+    background: #f7f3ea;
+    background-image: radial-gradient(#e2d9c6 1px, transparent 1px);
+    background-size: 22px 22px;
+    font-family: "Comic Sans MS", "Chalkboard SE", "Kaiti SC", "STKaiti", cursive;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 24px 16px;
+  }
+  .modal {
+    width: 330px;
+    background: #fffdf8;
+    border: 3px solid #2b2b2b;
+    border-radius: 28px 36px 26px 38px / 36px 28px 38px 26px;
+    box-shadow: 5px 6px 0 rgba(43,43,43,0.16);
+    padding: 26px 24px;
+    display: flex; flex-direction: column; align-items: center;
+    transform: rotate(-0.6deg);
+    position: relative;
+  }
+  .modal.hidden { display: none; }
+  .tape {
+    position: absolute; top: -13px; left: 50%; transform: translateX(-50%) rotate(2deg);
+    width: 92px; height: 26px; background: rgba(255, 217, 61, 0.75);
+    border-left: 2px dashed rgba(43,43,43,0.25); border-right: 2px dashed rgba(43,43,43,0.25);
+  }
+
+  .header { width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+  .title-area { display: flex; align-items: center; gap: 8px; font-size: 20px; font-weight: bold; color: #2b2b2b; }
+  .title-area svg { width: 26px; height: 26px; transform: rotate(-8deg); }
+  .close-btn {
+    width: 30px; height: 30px;
+    border: 2.5px solid #2b2b2b; background: #fffdf8; color: #2b2b2b;
+    border-radius: 50% 46% 52% 48% / 48% 52% 46% 54%;
+    font-size: 16px; font-weight: bold; cursor: pointer; line-height: 1;
+  }
+  .close-btn:active { background: #ffd93d; }
+
+  .subtitle { width: 100%; font-size: 15px; color: #555; margin-bottom: 4px; text-align: left; }
+  .subtitle .hl { background: linear-gradient(transparent 55%, #ffd93d 55%); padding: 0 2px; }
+  .meta { width: 100%; font-size: 12.5px; color: #999; margin-bottom: 20px; text-align: left; font-variant-numeric: tabular-nums; }
+
+  /* --- 蜡笔涂抹进度条（SVG 粗糙边缘，滤镜作用在 SVG 图形上，各浏览器都可靠） --- */
+  .crayon-track {
+    width: 100%; height: 36px;
+    border: 2.5px dashed #8a8a8a;
+    border-radius: 18px 22px 16px 24px / 22px 16px 24px 18px;
+    background: #fff;
+    padding: 4px;
+    margin-bottom: 12px;
+    overflow: hidden;
+  }
+  .crayon-svg { display: block; width: 100%; height: 100%; }
+  .crayon-svg.busy { animation: pulse 0.9s ease-in-out infinite; }
+  @keyframes pulse { 50% { opacity: 0.7; } }
+
+  .percent-row { display: flex; align-items: baseline; gap: 6px; margin-bottom: 20px; transform: rotate(-1.2deg); }
+  .percent-big { font-size: 36px; font-weight: bold; color: #2b2b2b; font-variant-numeric: tabular-nums; }
+  .percent-tip { font-size: 14px; color: #888; }
+
+  .doodle-check { display: none; margin-bottom: 16px; animation: wobbleIn 0.4s ease; }
+  .doodle-check.show { display: block; }
+  .doodle-check path {
+    stroke-dasharray: 70; stroke-dashoffset: 70;
+  }
+  .doodle-check.show path { animation: draw 0.6s ease forwards; }
+  @keyframes draw { to { stroke-dashoffset: 0; } }
+
+  .main-btn {
+    width: 100%; padding: 13px 0;
+    border-radius: 20px 24px 18px 26px / 24px 18px 26px 20px;
+    border: 3px solid #2b2b2b;
+    background: #ffd93d; color: #2b2b2b;
+    font-size: 17px; font-weight: bold; font-family: inherit; cursor: pointer;
+    box-shadow: 3px 4px 0 rgba(43,43,43,0.85);
+  }
+  .main-btn:active { transform: translate(2px, 3px); box-shadow: 1px 1px 0 rgba(43,43,43,0.85); }
+  .main-btn.ghost { background: #fffdf8; }
+  .main-btn.go { background: #6bcB77; }
+
+  .replay {
+    margin-top: 22px; background: none; border: none;
+    color: #888; font-size: 14px; font-family: inherit; cursor: pointer;
+    text-decoration: underline wavy #ff6b6b 1.5px; text-underline-offset: 4px;
+  }
+  .toast {
+    position: fixed; top: 24px; left: 50%;
+    transform: translateX(-50%) translateY(-12px) rotate(-1deg);
+    background: #2b2b2b; color: #fffdf8;
+    padding: 10px 22px; font-size: 14px;
+    border-radius: 16px 20px 14px 22px / 20px 14px 22px 16px;
+    opacity: 0; pointer-events: none; transition: opacity 0.25s, transform 0.25s; z-index: 60;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0) rotate(-1deg); }
+</style>
+</head>
+<body>
+
+<div class="modal" id="modal">
+  <div class="tape"></div>
+  <div class="header">
+    <div class="title-area">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#ff6b6b" stroke-width="2.4" stroke-linecap="round">
+        <path d="M12 4v10m0 0l-4-4m4 4l4-4"/>
+        <path d="M5 17c1.5 2 4 3 7 3s5.5-1 7-3" stroke="#4d96ff"/>
+      </svg>
+      版本更新
+    </div>
+    <button class="close-btn" id="closeBtn">×</button>
+  </div>
+  <div class="subtitle" id="statusText">正在下载 <span class="hl">3.3.1</span> 手绘版</div>
+  <div class="meta" id="metaText">0.0MB / 156.8MB · -- MB/s</div>
+
+  <div class="doodle-check" id="doodleCheck">
+    <svg width="72" height="72" viewBox="0 0 72 72" fill="none" stroke="#6bcB77" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M14 38l14 14 30-34"/>
+    </svg>
+  </div>
+
+  <div class="crayon-track">
+    <svg class="crayon-svg" id="crayonSvg" viewBox="0 0 100 26" preserveAspectRatio="none">
+      <defs>
+        <filter id="crayonRough" x="-8%" y="-8%" width="116%" height="116%">
+          <feTurbulence type="fractalNoise" baseFrequency="0.12 0.5" numOctaves="2" seed="7" result="n"/>
+          <feDisplacementMap in="SourceGraphic" in2="n" scale="2.4"/>
+        </filter>
+        <pattern id="pRed" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+          <rect width="8" height="8" fill="#ff6b6b"/>
+          <rect width="3.2" height="8" fill="rgba(255,255,255,0.3)"/>
+        </pattern>
+        <pattern id="pBlue" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+          <rect width="8" height="8" fill="#4d96ff"/>
+          <rect width="3.2" height="8" fill="rgba(255,255,255,0.3)"/>
+        </pattern>
+        <pattern id="pGreen" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+          <rect width="8" height="8" fill="#6bcB77"/>
+          <rect width="3.2" height="8" fill="rgba(255,255,255,0.3)"/>
+        </pattern>
+      </defs>
+      <rect id="crayonRect" x="1" y="2" width="0" height="22" rx="9" fill="url(#pRed)" filter="url(#crayonRough)"/>
+    </svg>
+  </div>
+
+  <div class="percent-row">
+    <div class="percent-big" id="percentText">0%</div>
+    <div class="percent-tip" id="percentTip">蜡笔涂抹中…</div>
+  </div>
+
+  <button class="main-btn" id="mainBtn">不更了</button>
+</div>
+
+<button class="replay" id="replayBtn">↺ 再来一遍</button>
+<div class="toast" id="toast"></div>
+
+<script>
+  const $ = id => document.getElementById(id);
+  const modal = $('modal'), rect = $('crayonRect'), crayonSvg = $('crayonSvg'), percentText = $('percentText'),
+        percentTip = $('percentTip'), statusText = $('statusText'), metaText = $('metaText'),
+        mainBtn = $('mainBtn'), doodleCheck = $('doodleCheck'), toast = $('toast');
+
+  const TOTAL_MB = 156.8, VERSION = '3.3.1';
+  let progress = 0, state = 'downloading', timer = null, showSpeed = 0;
+
+  function showToast(msg) {
+    toast.textContent = msg;
+    toast.classList.add('show');
+    clearTimeout(showToast._t);
+    showToast._t = setTimeout(() => toast.classList.remove('show'), 1800);
+  }
+  function render() {
+    percentText.textContent = Math.floor(progress) + '%';
+    rect.setAttribute('width', Math.max(0, Math.min(98, progress)).toFixed(1));
+    metaText.textContent = `${(progress/100*TOTAL_MB).toFixed(1)}MB / ${TOTAL_MB}MB · ${showSpeed.toFixed(1)} MB/s`;
+  }
+  function tick() {
+    if (state !== 'downloading') return;
+    const sp = 8 * (0.6 + Math.random() * 0.8);
+    showSpeed = showSpeed * 0.7 + sp * 0.3;
+    progress += sp * 0.1 / TOTAL_MB * 100;
+    if (progress >= 100) { progress = 100; render(); enterInstalling(); return; }
+    render();
+  }
+  function startTimer() { clearInterval(timer); timer = setInterval(tick, 100); }
+  function stopTimer() { clearInterval(timer); timer = null; }
+
+  function enterDownloading(fresh) {
+    state = 'downloading';
+    if (fresh) {
+      progress = 0; showSpeed = 0;
+      doodleCheck.classList.remove('show');
+      rect.setAttribute('fill', 'url(#pRed)');
+      crayonSvg.classList.remove('busy');
+      mainBtn.classList.remove('go', 'ghost');
+      percentTip.textContent = '蜡笔涂抹中…';
+    }
+    statusText.innerHTML = `正在下载 <span class="hl">${VERSION}</span> 手绘版`;
+    mainBtn.textContent = '不更了';
+    startTimer(); render();
+  }
+  function enterInstalling() {
+    state = 'installing'; stopTimer();
+    statusText.textContent = '正在安装… 别乱动！';
+    percentTip.textContent = '正在粘贴…';
+    metaText.textContent = `${TOTAL_MB}MB / ${TOTAL_MB}MB · 校验完成`;
+    rect.setAttribute('fill', 'url(#pBlue)');
+    rect.setAttribute('width', '98');
+    crayonSvg.classList.add('busy');
+    mainBtn.textContent = '安装中…';
+    mainBtn.disabled = true;
+    mainBtn.classList.add('ghost');
+    setTimeout(() => { if (state === 'installing') enterDone(); }, 2400);
+  }
+  function enterDone() {
+    state = 'done';
+    mainBtn.disabled = false;
+    doodleCheck.classList.add('show');
+    rect.setAttribute('fill', 'url(#pGreen)');
+    rect.setAttribute('width', '98');
+    crayonSvg.classList.remove('busy');
+    statusText.innerHTML = '画好啦！<span class="hl">更新完成</span>';
+    percentTip.textContent = '大功告成！';
+    metaText.textContent = `${VERSION} 已安装 · 去看看新涂鸦吧`;
+    mainBtn.textContent = '好耶，去看看';
+    mainBtn.classList.remove('ghost');
+    mainBtn.classList.add('go');
+    showToast('已更新到最新版本');
+  }
+  function enterCancelled() {
+    state = 'cancelled'; stopTimer();
+    statusText.textContent = '画了一半不画了';
+    percentTip.textContent = '纸还留着…';
+    metaText.textContent = `${(progress/100*TOTAL_MB).toFixed(1)}MB / ${TOTAL_MB}MB · 已停止`;
+    mainBtn.textContent = '继续画完';
+    showToast('已取消下载');
+  }
+
+  mainBtn.addEventListener('click', () => {
+    if (state === 'downloading') enterCancelled();
+    else if (state === 'cancelled') enterDownloading(true);
+    else if (state === 'done') { modal.classList.add('hidden'); showToast(`已更新到 ${VERSION}`); }
+  });
+  $('closeBtn').addEventListener('click', () => {
+    if (state === 'downloading') enterCancelled();
+    else modal.classList.add('hidden');
+  });
+  $('replayBtn').addEventListener('click', () => {
+    modal.classList.remove('hidden');
+    enterDownloading(true);
+    showToast('重新开始演示');
+  });
+
+  window.addEventListener('load', () => {
+    if (location.hash === '#done') {
+      enterDownloading(true);
+      progress = 100; render(); enterInstalling();
+      setTimeout(() => enterDone(), 400);
+    } else {
+      enterDownloading(true);
+    }
+  });
+</script>
+</body>
+</html>

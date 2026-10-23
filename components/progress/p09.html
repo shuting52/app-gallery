@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>p09 列车进站 · 进度指示</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0b0e14;color:#e8ecf4;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+.stage{width:360px;max-width:94vw;background:#141926;border:1px solid #232c3f;border-radius:18px;padding:18px 16px 20px;box-shadow:0 10px 40px rgba(0,0,0,.5)}
+.title{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:14px}
+.title h3{font-size:16px;font-weight:600;letter-spacing:2px}
+.title .pct{font-size:22px;font-weight:700;color:#ffd166;font-variant-numeric:tabular-nums}
+.scene{position:relative;height:392px;border-radius:12px;overflow:hidden;border:1px solid #1a2138;
+background:linear-gradient(to bottom,#070b18 0%,#0a1022 46%,#0d1326 47%,#11182c 100%)}
+#rails{position:absolute;inset:0;width:100%;height:100%}
+.sign{position:absolute;left:12px;top:10px;font-size:13px;letter-spacing:2px;color:#cfe0ff;background:rgba(20,32,60,.75);
+border:1px solid #2c3c63;border-radius:8px;padding:6px 10px}
+.platform{position:absolute;right:0;top:34%;bottom:0;width:64px;background:linear-gradient(to right,#1b2340,#141a30);border-left:2px solid #2c3c63}
+.pline{position:absolute;right:0;top:34%;bottom:0;width:64px;pointer-events:none;
+background:repeating-linear-gradient(to bottom,#ffd166 0 14px,transparent 14px 34px);opacity:.5;
+-webkit-mask:linear-gradient(to right,transparent 46px,#000 46px);mask:linear-gradient(to right,transparent 46px,#000 46px)}
+.lamp{position:absolute;width:10px}
+.lamp .pole{width:3px;height:44px;background:#3a4666;margin:0 auto}
+.lamp .bulb{width:12px;height:12px;border-radius:50%;margin:-2px auto 0;background:#3a4356}
+#train{position:absolute}
+.tbody{position:absolute;inset:0;background:linear-gradient(to bottom,#33507f 0%,#1c2c4e 62%,#121c36 100%);
+border-radius:16% 16% 7% 7%/22% 22% 8% 8%;box-shadow:0 8px 24px rgba(0,0,0,.6)}
+.twin{position:absolute;left:8%;right:8%;top:12%;height:22%;border-radius:8px;
+background:repeating-linear-gradient(to right,#ffe9a8 0 14%,#0a1226 14% 20%)}
+.tdoor{position:absolute;top:44%;width:16%;height:42%;background:#0d1526;border:1px solid #2c3c63;border-radius:4px}
+.tdoor.d1{left:20%}.tdoor.d2{right:20%}
+.headlight{position:absolute;left:50%;bottom:-4%;width:14%;aspect-ratio:1;border-radius:50%;background:#fff7d6;transform:translateX(-50%)}
+.tskirt{position:absolute;left:4%;right:4%;bottom:2%;height:6%;background:#0a1122;border-radius:4px}
+#badge{position:absolute;left:50%;top:38%;transform:translateX(-50%);font-size:14px;letter-spacing:3px;color:#0b0e14;
+background:#ffd166;border-radius:20px;padding:8px 18px;font-weight:700;white-space:nowrap;box-shadow:0 4px 18px rgba(255,209,102,.5)}
+.cap{position:absolute;left:0;right:0;bottom:0;height:40px;display:flex;align-items:center;justify-content:center;font-size:13px;color:#9aa7c2;letter-spacing:1px}
+.cap b{color:#ffd166;font-variant-numeric:tabular-nums}
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="title"><h3>列车进站</h3><span class="pct" id="pct">0%</span></div>
+  <div class="scene" id="scene">
+    <svg id="rails" viewBox="0 0 328 392" preserveAspectRatio="none"></svg>
+    <div class="platform"></div>
+    <div class="pline"></div>
+    <div id="lamps"></div>
+    <div class="sign" id="sign">幸福站 · 列车进站中</div>
+    <div id="train">
+      <div class="tbody"></div>
+      <div class="twin" id="twin"></div>
+      <div class="tdoor d1" id="door1"></div>
+      <div class="tdoor d2" id="door2"></div>
+      <div class="tskirt"></div>
+      <div class="headlight" id="hl"></div>
+    </div>
+    <div id="badge">已到站 · 请上车</div>
+    <div class="cap" id="cap"></div>
+  </div>
+</div>
+<script>
+var pctEl=document.getElementById('pct');
+var cap=document.getElementById('cap');
+var sign=document.getElementById('sign');
+var train=document.getElementById('train');
+var twin=document.getElementById('twin');
+var hl=document.getElementById('hl');
+var badge=document.getElementById('badge');
+var door1=document.getElementById('door1'),door2=document.getElementById('door2');
+var rails=document.getElementById('rails');
+var NS='http://www.w3.org/2000/svg';
+var VX=150,VY=66;
+function line(x1,y1,x2,y2,w,c,op){
+  var l=document.createElementNS(NS,'line');
+  l.setAttribute('x1',x1);l.setAttribute('y1',y1);
+  l.setAttribute('x2',x2);l.setAttribute('y2',y2);
+  l.setAttribute('stroke',c);l.setAttribute('stroke-width',w);
+  l.setAttribute('opacity',op);l.setAttribute('stroke-linecap','round');
+  rails.appendChild(l);
+}
+line(58,392,VX,VY,4,'#4a5878',.9);
+line(242,392,VX,VY,4,'#4a5878',.9);
+for(var j=0;j<=13;j++){
+  var t=j/13,y=392-(392-VY)*t,w=176-(176-10)*t,x=VX;
+  line(x-w/2,y,x+w/2,y,3,'#333f5e',.8);
+}
+var lampWrap=document.getElementById('lamps');
+var bulbs=[];
+for(var i=0;i<8;i++){
+  var lp=document.createElement('div');
+  lp.className='lamp';
+  lp.style.right='24px';
+  lp.style.top=(120+i*28)+'px';
+  lp.innerHTML='<div class="bulb"></div><div class="pole"></div>';
+  lampWrap.appendChild(lp);
+  bulbs.push(lp.querySelector('.bulb'));
+}
+var p=0;
+function lerp(a,b,t){return a+(b-a)*t;}
+function render(){
+  var t=p/100;
+  pctEl.textContent=Math.round(p)+'%';
+  train.style.left=lerp(150,14,t).toFixed(1)+'px';
+  train.style.top=lerp(58,168,t).toFixed(1)+'px';
+  train.style.width=lerp(34,224,t).toFixed(1)+'px';
+  train.style.height=lerp(26,152,t).toFixed(1)+'px';
+  twin.style.opacity=(0.25+0.75*t).toFixed(2);
+  var glow=Math.round(10+t*34),sp=Math.round(4+t*12);
+  hl.style.opacity=(0.35+0.65*t).toFixed(2);
+  hl.style.boxShadow='0 0 '+glow+'px '+sp+'px rgba(255,233,168,'+(0.35+0.65*t).toFixed(2)+')';
+  for(var i=0;i<8;i++){
+    var on=p>=(i+1)*12.5,b=bulbs[i];
+    b.style.background=on?'#ffe9a8':'#3a4356';
+    b.style.boxShadow=on?'0 0 12px 4px rgba(255,233,168,.8)':'none';
+  }
+  var done=p>=100;
+  sign.textContent=done?'幸福站 · 列车已到站':'幸福站 · 列车进站中';
+  badge.style.opacity=done?'1':'0';
+  badge.style.transform='translateX(-50%) scale('+(done?'1':'0.6')+')';
+  var dg=done?'0 0 14px 3px rgba(255,209,102,.9)':'none';
+  door1.style.boxShadow=dg;door2.style.boxShadow=dg;
+  door1.style.background=done?'rgba(255,209,102,.35)':'#0d1526';
+  door2.style.background=done?'rgba(255,209,102,.35)':'#0d1526';
+  cap.innerHTML=done?'<b>到站</b> · 车门已开启':('距站台 <b>'+Math.max(0,Math.round((100-p)*12))+'</b> 米');
+}
+var DUR=7000;
+function startLoop(){
+  var t0=performance.now();
+  function tick(now){
+    var el=now-t0;
+    if(el>=DUR){p=100;render();setTimeout(startLoop,1000);return;}
+    p=el/DUR*100;
+    render();
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+}
+if(location.hash==='#mid'){p=55;render();}
+else{startLoop();}
+</script>
+</body>
+</html>

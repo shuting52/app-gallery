@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>精选相册</title>
+<style>
+/* ============ tokens（照抄脚手架） ============ */
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --glass-radius:34px; --glass-blur:24px;
+  --glass-tint-top:rgba(255,255,255,.17); --glass-tint-mid:rgba(255,255,255,.05); --glass-tint-bot:rgba(255,255,255,.10);
+  --glass-edge-width:1.2px;
+  --glass-edge-strong:rgba(255,255,255,.95); --glass-edge-mid:rgba(255,255,255,.22);
+  --glass-edge-weak:rgba(255,255,255,.05); --glass-edge-mid2:rgba(255,255,255,.12); --glass-edge-soft:rgba(255,255,255,.78);
+  --glass-shadow-far:0 26px 60px -26px rgba(0,0,0,.85); --glass-shadow-near:0 10px 26px -14px rgba(0,0,0,.55);
+  --text-1:#fff; --text-2:rgba(255,255,255,.62); --text-3:rgba(255,255,255,.60);
+  --ease-liquid:cubic-bezier(.22,.9,.28,1.2);
+}
+html,body{height:100%}
+body{font:400 15px/1.45 -apple-system,"SF Pro Text","PingFang SC","Helvetica Neue",system-ui,sans-serif;
+  color:var(--text-1);background:#07060b;overflow-x:hidden;-webkit-font-smoothing:antialiased;
+  display:flex;justify-content:center}
+/* ============ 壁纸（照抄 LiquidWallpaper.vue） ============ */
+.wallpaper{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none}
+.wallpaper i{position:absolute;inset:-30%;display:block;
+  background:radial-gradient(42% 32% at 20% 22%,#ff3b5c 0%,transparent 62%),
+  radial-gradient(38% 30% at 84% 16%,#ff9f1c 0%,transparent 60%),
+  radial-gradient(52% 42% at 76% 74%,#ff2d55 0%,transparent 64%),
+  radial-gradient(42% 38% at 24% 82%,#6b5cff 0%,transparent 62%),
+  radial-gradient(30% 26% at 52% 48%,#ffd166 0%,transparent 68%),#140a20;
+  filter:blur(48px) saturate(150%);animation:drift 26s ease-in-out infinite alternate}
+.wallpaper i:nth-child(2){background:conic-gradient(from 200deg at 50% 55%,#ff2d55,#ff9f0a,#ffd60a,#34c759,#0a84ff,#bf5af2,#ff2d55);
+  filter:blur(110px);opacity:.5;mix-blend-mode:screen;animation-duration:34s;animation-direction:alternate-reverse}
+@keyframes drift{from{transform:translate3d(-3%,-2%,0) scale(1.05) rotate(-3deg)}
+  to{transform:translate3d(4%,3%,0) scale(1.16) rotate(4deg)}}
+/* ============ 玻璃卡（照抄 LiquidGlass.vue） ============ */
+.lg{position:relative;isolation:isolate;border-radius:var(--lg-r,var(--glass-radius));
+  background:linear-gradient(155deg,var(--glass-tint-top) 0%,var(--glass-tint-mid) 42%,var(--glass-tint-bot) 100%);
+  -webkit-backdrop-filter:blur(var(--lg-blur,var(--glass-blur))) saturate(180%) brightness(1.06);
+  backdrop-filter:blur(var(--lg-blur,var(--glass-blur))) saturate(180%) brightness(1.06);
+  box-shadow:inset 0 1px 1px -.5px rgba(255,255,255,.70),inset 0 -1px 1px -.5px rgba(255,255,255,.18),
+  inset 0 14px 22px -14px rgba(255,255,255,.45),var(--glass-shadow-far),var(--glass-shadow-near);
+  transition:transform .38s var(--ease-liquid)}
+.lg:active{transform:scale(.982)}
+.lg::before{content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;pointer-events:none;
+  mix-blend-mode:screen;opacity:.85;
+  background:radial-gradient(120% 62% at 18% -26%,rgba(255,255,255,.78),transparent 58%),
+  radial-gradient(70% 46% at 92% -12%,rgba(255,255,255,.34),transparent 60%),
+  repeating-linear-gradient(102deg,rgba(255,255,255,.055) 0 2px,transparent 2px 26px)}
+.lg::after{content:"";position:absolute;inset:0;z-index:1;border-radius:inherit;padding:var(--glass-edge-width);
+  pointer-events:none;
+  background:linear-gradient(150deg,var(--glass-edge-strong) 0%,var(--glass-edge-mid) 22%,var(--glass-edge-weak) 48%,var(--glass-edge-mid2) 72%,var(--glass-edge-soft) 100%);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;mask-composite:exclude}
+/* ============ 屏幕骨架 ============ */
+.screen{position:relative;z-index:1;width:430px;max-width:100%;min-height:900px;height:900px;overflow:hidden;
+  display:flex;flex-direction:column;padding:18px 14px 12px}
+.statusbar{display:flex;justify-content:space-between;align-items:center;font-size:13px;font-weight:600;
+  padding:2px 8px 10px;color:var(--text-1)}
+.statusbar .sic{display:flex;gap:6px;align-items:center;font-size:12px}
+.apptitle{font-size:30px;font-weight:700;letter-spacing:1px;padding:6px 4px 14px}
+.apptitle small{display:block;font-size:12px;font-weight:400;color:var(--text-2);letter-spacing:2px;margin-top:4px}
+.content{flex:1;overflow:hidden;display:flex;flex-direction:column;gap:14px}
+.homebar{width:134px;height:5px;border-radius:3px;background:rgba(255,255,255,.85);margin:10px auto 4px}
+/* ============ 精选相册 ============ */
+.albums{display:flex;gap:8px;overflow-x:auto;padding:2px;scrollbar-width:none}
+.albums::-webkit-scrollbar{display:none}
+.albums button{flex:0 0 auto;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);
+  color:var(--text-2);font-size:13px;font-family:inherit;padding:8px 18px;border-radius:999px;cursor:pointer}
+.albums button.on{background:rgba(255,255,255,.9);color:#101018;font-weight:700;border-color:transparent}
+.pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.ph{position:relative;aspect-ratio:1;border-radius:18px;overflow:hidden;
+  border:1px solid rgba(255,255,255,.22);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.25),0 8px 20px -8px rgba(0,0,0,.6)}
+.ph::after{content:"";position:absolute;inset:0;
+  background:radial-gradient(90% 60% at 30% 20%,rgba(255,255,255,.35),transparent 60%)}
+.ph span{position:absolute;left:8px;bottom:7px;z-index:1;font-size:10.5px;color:rgba(255,255,255,.92);
+  text-shadow:0 1px 4px rgba(0,0,0,.5);letter-spacing:.5px}
+.memory{position:relative;overflow:hidden;min-height:124px;display:flex;align-items:flex-end;
+  padding:14px 18px;--lg-r:26px}
+.memory .bg{position:absolute;inset:0;
+  background:radial-gradient(60% 90% at 80% 20%,#ffd166 0%,transparent 55%),
+  radial-gradient(70% 80% at 20% 90%,#ff3b5c 0%,transparent 60%),
+  linear-gradient(135deg,#2a1650,#0e2a5c)}
+.memory .bg::after{content:"";position:absolute;inset:0;
+  background:linear-gradient(180deg,transparent 30%,rgba(0,0,0,.55))}
+.memory .txt{position:relative;z-index:1}
+.memory .txt b{display:block;font-size:16px;letter-spacing:1px}
+.memory .txt small{font-size:12px;color:var(--text-2)}
+.memory .go{position:relative;z-index:1;margin-left:auto;flex:none;width:38px;height:38px;border-radius:50%;
+  display:grid;place-items:center;font-size:16px;color:#101018;
+  background:rgba(255,255,255,.92);box-shadow:0 4px 14px rgba(0,0,0,.4)}
+</style>
+</head>
+<body>
+<div class="wallpaper" aria-hidden="true"><i></i><i></i></div>
+<div class="screen">
+  <div class="statusbar"><span>9:41</span><span class="sic">📶 📡 🔋</span></div>
+  <div class="apptitle">精选相册<small>12 张 · 5 个相簿</small></div>
+  <div class="content">
+    <div class="albums">
+      <button class="on">精选</button>
+      <button>城市漫步</button>
+      <button>山野之间</button>
+      <button>海岛假日</button>
+      <button>人间烟火</button>
+    </div>
+    <div class="pgrid">
+      <div class="ph" style="background:linear-gradient(150deg,#0f5f5c,#123c46 60%,#0a2530)"><span>晨雾青山</span></div>
+      <div class="ph" style="background:linear-gradient(150deg,#ffb35e,#ff7a3c 55%,#a33c1a)"><span>落日熔金</span></div>
+      <div class="ph" style="background:linear-gradient(150deg,#3b2a7a,#7a2a8c 60%,#2a1650)"><span>午夜霓虹</span></div>
+      <div class="ph" style="background:linear-gradient(150deg,#ffd6e8,#ff9ec4 55%,#c45e8e)"><span>樱粉春日</span></div>
+      <div class="ph" style="background:linear-gradient(150deg,#7fe8ff,#2aa8d8 55%,#0e5f8c)"><span>碧海银沙</span></div>
+      <div class="ph" style="background:linear-gradient(150deg,#ffe08a,#e8a83c 55%,#8c5e14)"><span>秋日麦田</span></div>
+      <div class="ph" style="background:linear-gradient(150deg,#e8f4ff,#a8cfe8 55%,#5e8ea8)"><span>雪山冰川</span></div>
+      <div class="ph" style="background:linear-gradient(150deg,#1a2a6c,#4a2a8c 60%,#0c1230)"><span>沙漠星空</span></div>
+      <div class="ph" style="background:linear-gradient(150deg,#a8f0c8,#4ec88e 55%,#1e7a4e)"><span>雨后初晴</span></div>
+      <div class="ph" style="background:linear-gradient(150deg,#e89a5e,#b85e2e 55%,#5e2e14)"><span>古城黄昏</span></div>
+      <div class="ph" style="background:linear-gradient(150deg,#fff0f4,#ffc4d8 50%,#8ec4e8)"><span>花开半夏</span></div>
+      <div class="ph" style="background:linear-gradient(150deg,#0e4a3c,#2a8c5e 50%,#3c2a8c)"><span>极光之夜</span></div>
+    </div>
+    <section class="lg memory">
+      <div class="bg"></div>
+      <div class="txt"><b>去年今日 · 泸沽湖畔</b><small>128 张回忆，等你重温</small></div>
+      <div class="go">→</div>
+    </section>
+  </div>
+  <div class="homebar"></div>
+</div>
+</body>
+</html>

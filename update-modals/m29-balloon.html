@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>热气球更新 · v4.0.0</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    min-height: 100vh; color: #2b3a4a;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    display: flex; align-items: center; justify-content: center; padding: 24px 16px;
+    background: linear-gradient(180deg, #aee3f7 0%, #d8f0fc 60%, #fdf3e3 100%);
+  }
+  body.notrans * { transition: none !important; animation: none !important; }
+  .modal {
+    width: 340px; background: rgba(255,255,255,.82);
+    backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255,255,255,.7); border-radius: 26px;
+    padding: 24px 22px; display: flex; flex-direction: column; align-items: center;
+    box-shadow: 0 24px 60px rgba(90,140,180,.28);
+  }
+  .modal.hidden { display: none; }
+  .m-head { width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+  .m-title { font-size: 17px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+  .ver { font-size: 11px; color: #e07840; border: 1px solid rgba(224,120,64,.5); border-radius: 99px; padding: 3px 10px; background: rgba(224,120,64,.08); }
+  .x { background: none; border: none; color: #9db3c4; font-size: 24px; cursor: pointer; line-height: 1; }
+  .m-sub { width: 100%; font-size: 14px; color: #5a6b7d; margin-bottom: 4px; text-align: left; }
+  .m-meta { width: 100%; font-size: 12px; color: #93a5b5; margin-bottom: 6px; text-align: left; font-variant-numeric: tabular-nums; }
+  .stage { position: relative; width: 300px; height: 330px; }
+  .stage svg { width: 300px; height: 330px; display: block; }
+  .cloud { animation: drift 26s linear infinite; }
+  .clouds.fast .cloud { animation-duration: 7s; }
+  @keyframes drift { from { transform: translateX(-70px); } to { transform: translateX(370px); } }
+  #balloonAll { transition: transform 2.6s cubic-bezier(.45,.05,.6,1); }
+  #balloonAll.liftoff { transform: translateY(-165px); }
+  #bannerG { transform: scaleY(0); transform-origin: 150px 262px; transition: transform .7s cubic-bezier(.3,1.4,.5,1); }
+  #bannerG.show { transform: scaleY(1); }
+  .pct-tag {
+    position: absolute; left: 12px; top: 12px;
+    background: rgba(255,255,255,.85); border: 1px solid rgba(90,140,180,.25);
+    border-radius: 99px; padding: 5px 12px; font-size: 13px; font-weight: 700; color: #2b7bb9;
+    font-variant-numeric: tabular-nums;
+  }
+  .done-card {
+    position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%) scale(.8);
+    background: rgba(255,255,255,.94); border-radius: 20px; padding: 22px 30px;
+    text-align: center; box-shadow: 0 16px 44px rgba(90,140,180,.35);
+    opacity: 0; pointer-events: none; transition: all .5s cubic-bezier(.3,1.4,.5,1);
+  }
+  .done-card.show { opacity: 1; transform: translate(-50%,-50%) scale(1); }
+  .done-card .big { font-size: 40px; }
+  .done-card .t { font-size: 17px; font-weight: 800; margin-top: 6px; color: #2b3a4a; }
+  .done-card .s { font-size: 12px; color: #93a5b5; margin-top: 4px; }
+  .main-btn {
+    width: 100%; margin-top: 14px; padding: 14px 0; border-radius: 99px; border: none;
+    font-size: 16px; font-weight: 600; cursor: pointer;
+    background: rgba(43,123,185,.12); color: #2b7bb9; transition: all .25s;
+  }
+  .main-btn:hover { background: rgba(43,123,185,.2); }
+  .main-btn.gold { background: linear-gradient(135deg, #ffb35c, #f07840); color: #fff; box-shadow: 0 8px 26px rgba(240,120,64,.4); }
+  .main-btn:disabled { opacity: .45; cursor: default; }
+  .replay { margin-top: 12px; background: none; border: none; cursor: pointer; color: #9db3c4; font-size: 12.5px; }
+  .replay:hover { color: #e07840; }
+  .toast {
+    position: fixed; top: 26px; left: 50%; transform: translateX(-50%) translateY(-16px);
+    background: rgba(43,58,74,.94); color: #fff; padding: 10px 22px; border-radius: 99px;
+    font-size: 14px; opacity: 0; pointer-events: none; transition: opacity .25s, transform .25s; z-index: 60;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+
+<div class="modal" id="modal">
+  <div class="m-head">
+    <div class="m-title">🎈 热气球更新 <span class="ver">v4.0.0</span></div>
+    <button class="x" id="xBtn">×</button>
+  </div>
+  <div class="m-sub" id="statusText">正在为气球充气…</div>
+  <div class="m-meta" id="metaText">0.0MB / 156.8MB · -- MB/s</div>
+  <div class="stage">
+    <svg viewBox="0 0 300 330" id="sky">
+      <defs>
+        <linearGradient id="envGrad" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0" stop-color="#ff8a5c"/><stop offset=".18" stop-color="#ff8a5c"/>
+          <stop offset=".2" stop-color="#ffe3b3"/><stop offset=".38" stop-color="#ffe3b3"/>
+          <stop offset=".4" stop-color="#ff5c5c"/><stop offset=".58" stop-color="#ff5c5c"/>
+          <stop offset=".6" stop-color="#ffe3b3"/><stop offset=".78" stop-color="#ffe3b3"/>
+          <stop offset=".8" stop-color="#ff8a5c"/><stop offset="1" stop-color="#ff8a5c"/>
+        </linearGradient>
+        <linearGradient id="basketGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#a06a35"/><stop offset="1" stop-color="#7c4f24"/>
+        </linearGradient>
+      </defs>
+      <circle cx="252" cy="42" r="24" fill="#fff3c4" opacity=".9"/>
+      <g class="clouds" id="clouds">
+        <g class="cloud" opacity=".85"><ellipse cx="60" cy="70" rx="26" ry="12" fill="#fff"/><ellipse cx="84" cy="64" rx="20" ry="11" fill="#fff"/><ellipse cx="40" cy="64" rx="16" ry="9" fill="#fff"/></g>
+        <g class="cloud" opacity=".7" style="animation-delay:-9s"><ellipse cx="120" cy="150" rx="30" ry="13" fill="#fff"/><ellipse cx="148" cy="144" rx="22" ry="11" fill="#fff"/></g>
+        <g class="cloud" opacity=".6" style="animation-delay:-18s"><ellipse cx="80" cy="250" rx="24" ry="11" fill="#fff"/><ellipse cx="102" cy="245" rx="18" ry="9" fill="#fff"/></g>
+      </g>
+      <g id="balloonAll">
+        <path id="envPath" d="" fill="url(#envGrad)" stroke="#d86a3a" stroke-width="2"/>
+        <g id="wrinkles" stroke="rgba(120,50,20,.35)" stroke-width="2" fill="none"></g>
+        <g id="ropes" stroke="#6b4a26" stroke-width="2.5"></g>
+        <path id="basketPath" d="" fill="url(#basketGrad)" stroke="#5e3a18" stroke-width="2"/>
+        <g id="bannerG">
+          <line id="bRope1" x1="0" y1="0" x2="0" y2="0" stroke="#6b4a26" stroke-width="2"/>
+          <line id="bRope2" x1="0" y1="0" x2="0" y2="0" stroke="#6b4a26" stroke-width="2"/>
+          <rect id="bannerRect" x="0" y="0" width="170" height="36" rx="10" fill="#fff" stroke="#e07840" stroke-width="2"/>
+          <text id="bannerText" x="0" y="0" text-anchor="middle" font-size="15" font-weight="700" fill="#e07840">v4.0.0 全新起航</text>
+        </g>
+      </g>
+    </svg>
+    <div class="pct-tag" id="pctText">0%</div>
+    <div class="done-card" id="doneCard">
+      <div class="big">🎈</div>
+      <div class="t">起飞成功</div>
+      <div class="s">v4.0.0 已随气球升空</div>
+    </div>
+  </div>
+  <button class="main-btn" id="mainBtn">取消更新</button>
+  <button class="replay" id="replayBtn">↺ 重新演示</button>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+  const CX = 150, CY = 118, R = 74;
+  const envPath = document.getElementById('envPath'), wrinkles = document.getElementById('wrinkles');
+  const ropes = document.getElementById('ropes'), basketPath = document.getElementById('basketPath');
+  const balloonAll = document.getElementById('balloonAll'), bannerG = document.getElementById('bannerG');
+  const clouds = document.getElementById('clouds'), doneCard = document.getElementById('doneCard');
+  const pctText = document.getElementById('pctText'), statusText = document.getElementById('statusText');
+  const metaText = document.getElementById('metaText'), mainBtn = document.getElementById('mainBtn');
+  const modal = document.getElementById('modal'), toast = document.getElementById('toast');
+
+  const TOTAL = 156.8;
+  let progress = 0, inflF = 0, state = 'downloading', timer = null, showSpeed = 0;
+
+  // 气球包络点：a=0 顶部，a=π 底部；f=充气度 0..1
+  function envPoint(a, f) {
+    let x = Math.sin(a), y = -Math.cos(a);
+    const tb = Math.pow(Math.max(0, (y + 0.25) / 1.25), 1.7);
+    x *= (1 - 0.8 * tb);
+    const wob = (1 - f) * 0.16 * Math.sin(a * 7 + 1.2) * Math.sin(a * 3 + 0.5);
+    x += Math.cos(a) * wob * 0.5; y += Math.sin(a) * wob * 0.5;
+    const s = 0.55 + 0.45 * f;
+    return [CX + x * R * s, CY + y * R * 1.04 * s + (1 - f) * 26];
+  }
+  function drawBalloon(f, pulse) {
+    const n = 72; let d = '';
+    for (let i = 0; i <= n; i++) {
+      const p = envPoint(i / n * Math.PI * 2, f);
+      d += (i === 0 ? 'M' : 'L') + p[0].toFixed(1) + ' ' + p[1].toFixed(1);
+    }
+    envPath.setAttribute('d', d + 'Z');
+    // 皱纹（干瘪时明显）
+    let w = '';
+    const wop = ((1 - f) * 0.85).toFixed(2);
+    [-2.2, -1.1, 1.1, 2.2].forEach(a0 => {
+      const p1 = envPoint(a0 * 0.32, f), p2 = envPoint(a0 * 0.72, f);
+      w += '<path d="M' + p1[0].toFixed(1) + ' ' + p1[1].toFixed(1) + ' Q' +
+        ((p1[0] + p2[0]) / 2 + 6).toFixed(1) + ' ' + ((p1[1] + p2[1]) / 2).toFixed(1) + ' ' +
+        p2[0].toFixed(1) + ' ' + p2[1].toFixed(1) + '" opacity="' + wop + '"/>';
+    });
+    wrinkles.innerHTML = w;
+    // 篮子与绳索
+    const s = 0.55 + 0.45 * f, droop = (1 - f) * 26;
+    const neckY = CY + R * 1.04 * s * 0.92 + droop;
+    const basketY = neckY + 30 + (pulse || 0);
+    const bw = 23;
+    basketPath.setAttribute('d',
+      'M' + (CX - bw) + ' ' + basketY + ' L' + (CX + bw) + ' ' + basketY +
+      ' L' + (CX + bw - 6) + ' ' + (basketY + 30) + ' L' + (CX - bw + 6) + ' ' + (basketY + 30) + 'Z');
+    const rl = envPoint(Math.PI * 0.78, f), rr = envPoint(Math.PI * 1.22, f);
+    ropes.innerHTML =
+      '<line x1="' + rl[0].toFixed(1) + '" y1="' + rl[1].toFixed(1) + '" x2="' + (CX - bw + 4) + '" y2="' + basketY + '"/>' +
+      '<line x1="' + rr[0].toFixed(1) + '" y1="' + rr[1].toFixed(1) + '" x2="' + (CX + bw - 4) + '" y2="' + basketY + '"/>' +
+      '<line x1="' + CX + '" y1="' + (neckY - 4).toFixed(1) + '" x2="' + CX + '" y2="' + basketY + '"/>';
+    // 横幅（挂在篮下）
+    const by = basketY + 30, bh = 36, bx = CX - 85;
+    document.getElementById('bannerRect').setAttribute('x', bx);
+    document.getElementById('bannerRect').setAttribute('y', by + 14);
+    const bt = document.getElementById('bannerText');
+    bt.setAttribute('x', CX); bt.setAttribute('y', by + 14 + 24);
+    const r1 = document.getElementById('bRope1'), r2 = document.getElementById('bRope2');
+    r1.setAttribute('x1', CX - 60); r1.setAttribute('y1', by); r1.setAttribute('x2', bx + 14); r1.setAttribute('y2', by + 14);
+    r2.setAttribute('x1', CX + 60); r2.setAttribute('y1', by); r2.setAttribute('x2', bx + 156); r2.setAttribute('y2', by + 14);
+    return basketY;
+  }
+
+  function showToast(m) {
+    toast.textContent = m; toast.classList.add('show');
+    clearTimeout(showToast._t); showToast._t = setTimeout(() => toast.classList.remove('show'), 1800);
+  }
+  function render() {
+    pctText.textContent = Math.floor(progress) + '%';
+    const mb = (progress / 100 * TOTAL).toFixed(1);
+    metaText.textContent = mb + 'MB / ' + TOTAL + 'MB · ' + (state === 'downloading' ? showSpeed.toFixed(1) + ' MB/s' : '-- MB/s');
+  }
+  function setMain(t, gold, dis) {
+    mainBtn.textContent = t; mainBtn.classList.toggle('gold', !!gold); mainBtn.disabled = !!dis;
+  }
+
+  function tick() {
+    if (state !== 'downloading') return;
+    const sp = 8 * (0.6 + Math.random() * 0.8);
+    showSpeed = showSpeed * 0.7 + sp * 0.3;
+    progress += sp * 0.1 / TOTAL * 100;
+    inflF += (progress / 100 - inflF) * 0.2;
+    drawBalloon(inflF, 0);
+    if (progress >= 100) { progress = 100; inflF = 1; drawBalloon(1, 0); enterInstalling(); return; }
+    render();
+  }
+  function startTimer() { clearInterval(timer); timer = setInterval(tick, 100); }
+
+  function enterDownloading(reset) {
+    if (reset) {
+      progress = 0; inflF = 0; showSpeed = 0;
+      balloonAll.classList.remove('liftoff'); bannerG.classList.remove('show');
+      clouds.classList.remove('fast'); doneCard.classList.remove('show');
+      drawBalloon(0, 0);
+    }
+    state = 'downloading';
+    statusText.textContent = '正在为气球充气…';
+    setMain('取消更新', false, false); startTimer(); render();
+  }
+  function enterCancelled() {
+    state = 'cancelled'; clearInterval(timer);
+    // 放气动画
+    const def = setInterval(() => {
+      inflF *= 0.85; drawBalloon(inflF, 0);
+      if (inflF < 0.02) { inflF = 0; drawBalloon(0, 0); clearInterval(def); }
+    }, 60);
+    statusText.textContent = '气球已放气';
+    metaText.textContent = (progress / 100 * TOTAL).toFixed(1) + 'MB / ' + TOTAL + 'MB · 已停止';
+    setMain('重新下载', false, false); showToast('已取消更新');
+  }
+  function enterInstalling() {
+    state = 'installing'; clearInterval(timer);
+    statusText.textContent = '正在加压，准备升空…';
+    metaText.textContent = TOTAL + 'MB / ' + TOTAL + 'MB · 校验完成';
+    setMain('加压中…', false, true); render();
+    let pu = 0; const puT = setInterval(() => { pu += 1; drawBalloon(1, Math.sin(pu * 0.9) * 5); }, 90);
+    setTimeout(() => { clearInterval(puT); if (state === 'installing') enterDone(); }, 2000);
+  }
+  function enterDone() {
+    state = 'done';
+    statusText.textContent = '点火升空！';
+    bannerG.classList.add('show');
+    clouds.classList.add('fast');
+    setTimeout(() => { if (state !== 'done') return; balloonAll.classList.add('liftoff'); }, 500);
+    setTimeout(() => {
+      if (state !== 'done') return;
+      doneCard.classList.add('show');
+      statusText.textContent = '起飞成功'; stageLabel0();
+      metaText.textContent = 'v4.0.0 已升空 · 一路顺风';
+      setMain('立即体验', true, false); showToast('已更新到 v4.0.0'); render();
+    }, 2400);
+  }
+  function stageLabel0() { pctText.textContent = '100%'; }
+
+  mainBtn.addEventListener('click', () => {
+    if (state === 'downloading') enterCancelled();
+    else if (state === 'cancelled') enterDownloading(true);
+    else if (state === 'done') { modal.classList.add('hidden'); showToast('已进入 v4.0.0'); }
+  });
+  document.getElementById('xBtn').addEventListener('click', () => {
+    if (state === 'downloading') enterCancelled(); else modal.classList.add('hidden');
+  });
+  document.getElementById('replayBtn').addEventListener('click', () => {
+    modal.classList.remove('hidden'); enterDownloading(true);
+  });
+
+  window.addEventListener('load', () => {
+    drawBalloon(0, 0);
+    if (location.hash === '#done') {
+      document.body.classList.add('notrans');
+      progress = 100; inflF = 1; drawBalloon(1, 0);
+      state = 'installing'; enterDone();
+    } else if (location.hash === '#mid') {
+      progress = 55; inflF = 0.55; showSpeed = 8.2;
+      enterDownloading(false); progress = 55; inflF = 0.55; drawBalloon(0.55, 0); render();
+    } else { enterDownloading(false); }
+  });
+</script>
+</body>
+</html>

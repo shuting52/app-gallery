@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>波浪顶边 · 底部Tab</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#20242e;display:flex;justify-content:center;min-height:100vh;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif}
+.phone{width:430px;height:900px;background:#eef4fb;position:relative;overflow:hidden}
+.status{height:44px;display:flex;justify-content:space-between;align-items:center;padding:0 26px;font-size:14px;font-weight:700;color:#1c2a3a}
+.content{position:absolute;top:44px;left:0;right:0;bottom:0;overflow:hidden}
+.feed{padding:14px 16px 130px}
+.hero{border-radius:18px;padding:22px 18px;color:#fff;background:linear-gradient(120deg,#2b9df4,#1a6fd4);margin-bottom:14px}
+.hero h2{font-size:20px}
+.hero p{font-size:12px;opacity:.85;margin-top:6px}
+.card{background:#fff;border-radius:14px;padding:14px 16px;margin-bottom:12px;display:flex;align-items:center;gap:12px;box-shadow:0 2px 10px rgba(30,60,120,.07)}
+.sw{width:44px;height:44px;border-radius:50%;flex-shrink:0}
+.ct{font-size:14px;font-weight:600;color:#1c2a3a}
+.cs{font-size:12px;color:#8a9bb0;margin-top:4px}
+/* ---- 底栏 ---- */
+.dock{position:absolute;left:0;right:0;bottom:0;height:84px;background:#ffffff}
+.waves{position:absolute;top:-17px;left:0;width:430px;height:18px;overflow:hidden}
+.track{display:flex;width:860px;animation:wave 8s linear infinite}
+.track.slow{animation-duration:13s;opacity:.55}
+@keyframes wave{to{transform:translateX(-430px)}}
+.crest{position:absolute;top:-16px;left:12.5%;width:74px;height:32px;transform:translateX(-50%);transition:left .45s cubic-bezier(.5,0,.2,1.2);background:radial-gradient(ellipse at 50% 100%,#2b9df4 0%,rgba(43,157,244,.4) 55%,transparent 72%);pointer-events:none}
+.crest.pulse{animation:crestp .6s ease}
+@keyframes crestp{0%{transform:translateX(-50%) scaleY(.4)}55%{transform:translateX(-50%) scaleY(1.35)}100%{transform:translateX(-50%) scaleY(1)}}
+.tabs{position:absolute;inset:0;display:flex}
+.tab{flex:1;background:none;border:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;cursor:pointer}
+.glyph{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:#8a9bb0;background:#f0f5fb;transition:all .35s}
+.tab.on .glyph{background:#2b9df4;color:#fff;box-shadow:0 6px 16px rgba(43,157,244,.45)}
+.tlabel{font-size:11px;color:#8a9bb0;transition:color .3s}
+.tab.on .tlabel{color:#2b9df4;font-weight:700}
+.safe{position:absolute;bottom:0;left:0;right:0;height:12px;background:#fff}
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="status"><span>9:41</span><span>5G ▮▮▮</span></div>
+  <div class="content"><div class="feed">
+    <div class="hero"><h2>蔚蓝海岸</h2><p>冲浪 · 潜水 · 海岛游</p></div>
+    <div class="card"><div class="sw" style="background:linear-gradient(135deg,#2b9df4,#74c9ff)"></div><div><div class="ct">初级冲浪课</div><div class="cs">周六开班 · 含装备</div></div></div>
+    <div class="card"><div class="sw" style="background:linear-gradient(135deg,#00b8a9,#5fe3d0)"></div><div><div class="ct">浮潜一日游</div><div class="cs">珊瑚礁 · 海龟湾</div></div></div>
+    <div class="card"><div class="sw" style="background:linear-gradient(135deg,#1a6fd4,#2b9df4)"></div><div><div class="ct">深海潜水考证</div><div class="cs">PADI OW 课程</div></div></div>
+    <div class="card"><div class="sw" style="background:linear-gradient(135deg,#f5a623,#ffd57e)"></div><div><div class="ct">日落帆船</div><div class="cs">17:30 出发 · 2小时</div></div></div>
+    <div class="card"><div class="sw" style="background:linear-gradient(135deg,#7c6cf5,#b39dff)"></div><div><div class="ct">海岛露营</div><div class="cs">星空 · 篝火晚会</div></div></div>
+    <div class="card"><div class="sw" style="background:linear-gradient(135deg,#ff6b81,#ffa4b3)"></div><div><div class="ct">海鲜市场</div><div class="cs">本地人带逛</div></div></div>
+  </div></div>
+  <div class="dock">
+    <div class="waves">
+      <div class="track slow"><svg width="860" height="18" viewBox="0 0 860 18"><path fill="#cfe6fb" d="M0 12 Q21.5 2 43 12 T86 12 T129 12 T172 12 T215 12 T258 12 T301 12 T344 12 T387 12 T430 12 T473 12 T516 12 T559 12 T602 12 T645 12 T688 12 T731 12 T774 12 T817 12 T860 12 V18 H0 Z"/></svg></div>
+    </div>
+    <div class="waves">
+      <div class="track"><svg width="860" height="18" viewBox="0 0 860 18"><path fill="#ffffff" d="M0 12 Q21.5 2 43 12 T86 12 T129 12 T172 12 T215 12 T258 12 T301 12 T344 12 T387 12 T430 12 T473 12 T516 12 T559 12 T602 12 T645 12 T688 12 T731 12 T774 12 T817 12 T860 12 V18 H0 Z"/></svg></div>
+    </div>
+    <div class="crest" id="crest"></div>
+    <div class="tabs">
+      <button class="tab on"><span class="glyph">首</span><span class="tlabel">首页</span></button>
+      <button class="tab"><span class="glyph">发</span><span class="tlabel">发现</span></button>
+      <button class="tab"><span class="glyph">消</span><span class="tlabel">消息</span></button>
+      <button class="tab"><span class="glyph">我</span><span class="tlabel">我</span></button>
+    </div>
+    <div class="safe"></div>
+  </div>
+</div>
+<script>
+var tabs=Array.prototype.slice.call(document.querySelectorAll('.tab'));
+var crest=document.getElementById('crest');
+function go(i,inst){
+  tabs.forEach(function(t,k){t.classList.toggle('on',k===i);});
+  crest.style.left=(12.5+25*i)+'%';
+  if(!inst){crest.classList.remove('pulse');void crest.offsetWidth;crest.classList.add('pulse');}
+}
+tabs.forEach(function(t,i){t.addEventListener('click',function(){go(i);});});
+var n=parseInt(new URLSearchParams(location.search).get('tab'),10);
+go((n>=0&&n<4)?n:0,true);
+</script>
+</body>
+</html>

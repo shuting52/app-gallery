@@ -1,0 +1,83 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>w31 · 主题换装</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC",sans-serif;background:#05070c;display:flex;justify-content:center;color:#fff;overflow:hidden}
+.stage{width:430px;height:900px;position:relative;overflow:hidden;flex-shrink:0;background:radial-gradient(120% 90% at 50% 0%,#232838 0%,#141824 55%,#0b0e16 100%)}
+.mock{position:absolute;inset:0;filter:blur(6px) brightness(.55)}
+.sb{height:46px;display:flex;justify-content:space-between;align-items:center;padding:0 26px;font-size:13px;font-weight:600}
+.sic{width:70px;height:12px;border-radius:6px;background:#2a3040}
+.mh{display:flex;align-items:center;gap:10px;padding:14px 20px}
+.mh i{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,#3a4152,#262b38);display:block}
+.mh em{width:110px;height:14px;border-radius:7px;background:#2c3242;display:block}
+.banner{height:150px;margin:6px 20px 14px;border-radius:18px;background:linear-gradient(135deg,#2c3242,#1d212c)}
+.row{display:flex;gap:12px;align-items:center;margin:0 20px 12px}
+.row i{width:52px;height:52px;border-radius:14px;background:#2c3242;display:block;flex-shrink:0}
+.row b{display:block;width:150px;height:13px;border-radius:6px;background:#383f54;margin-bottom:8px}
+.row s{display:block;width:100px;height:10px;border-radius:5px;background:#262b3a;text-decoration:none}
+.tabbar{position:absolute;bottom:0;left:0;right:0;height:84px;background:rgba(20,24,36,.9);display:flex;justify-content:space-around;align-items:center;border-top:1px solid #2c3242}
+.tabbar i{width:26px;height:26px;border-radius:8px;background:#383f54;display:block}
+.ov{position:absolute;inset:0;z-index:10;display:flex;align-items:center;justify-content:center;background:rgba(8,10,18,.55);animation:fadeIn .4s both}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.modal{--bg1:#2b3350;--bg2:#161b30;--bd:rgba(150,170,220,.3);--acc1:#9db4ff;--acc2:#5a76f0;--tx:#dfe6ff;--sub:#a9b4d8;
+width:330px;border-radius:26px;padding:30px 26px 28px;text-align:center;position:relative;
+background:linear-gradient(165deg,var(--bg1),var(--bg2));border:1px solid var(--bd);
+box-shadow:0 30px 80px rgba(0,0,0,.55);animation:pop .55s cubic-bezier(.2,1.4,.4,1) both;animation-delay:.12s;transition:background .4s}
+@keyframes pop{from{opacity:0;transform:scale(.7) translateY(30px)}to{opacity:1;transform:none}}
+.x{position:absolute;top:14px;right:14px;width:30px;height:30px;border-radius:50%;border:0;background:rgba(255,255,255,.12);color:#fff;font-size:15px;cursor:pointer;z-index:3}
+h2{font-size:21px;margin:4px 0 6px;color:var(--tx)}
+p.sub{font-size:13px;color:var(--sub);line-height:1.7}
+.themes{display:flex;gap:12px;margin-top:18px}
+.theme{flex:1;cursor:pointer;border-radius:16px;padding:12px 6px 10px;background:rgba(255,255,255,.05);border:2px solid transparent;transition:all .25s}
+.theme.sel{border-color:var(--acc1);box-shadow:0 0 16px rgba(150,170,255,.3)}
+.theme .sw{height:56px;border-radius:10px;margin-bottom:8px;display:block}
+.theme span{font-size:12px;color:var(--tx)}
+.theme.t1 .sw{background:linear-gradient(135deg,#2b3350,#161b30)}
+.theme.t2 .sw{background:linear-gradient(135deg,#ffe9c9,#ff9a6a)}
+.theme.t3 .sw{background:linear-gradient(135deg,#ffd3e0,#f06a9a)}
+.preview{margin-top:16px;border-radius:14px;padding:14px;background:rgba(0,0,0,.18);font-size:12px;color:var(--sub);line-height:1.8}
+.preview b{color:var(--tx)}
+.btn{display:block;width:100%;border:0;border-radius:16px;padding:14px;font-size:16px;font-weight:700;cursor:pointer;margin-top:18px;background:linear-gradient(180deg,var(--acc1),var(--acc2));color:#fff;box-shadow:0 8px 22px rgba(90,110,240,.4)}
+.btn:active{transform:scale(.97)}
+.replay{position:absolute;bottom:24px;left:50%;transform:translateX(-50%);z-index:20;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.1);color:#fff;border-radius:999px;padding:10px 22px;font-size:13px;cursor:pointer;backdrop-filter:blur(8px)}
+</style></head>
+<body><div class="stage">
+<div class="mock"><div class="sb"><span>9:41</span><span class="sic"></span></div>
+<div class="mh"><i></i><em></em></div><div class="banner"></div>
+<div class="row"><i></i><div><b></b><s></s></div></div>
+<div class="row"><i></i><div><b></b><s></s></div></div>
+<div class="tabbar"><i></i><i></i><i></i><i></i></div></div>
+<div class="ov" id="ov"><div class="modal" id="modal">
+<button class="x" id="x">✕</button>
+<h2>挑选你的主题</h2>
+<p class="sub">换个皮肤，换种心情<br>点击实时预览效果</p>
+<div class="themes">
+<div class="theme t1 sel" data-t="1"><span class="sw"></span><span>暗夜蓝</span></div>
+<div class="theme t2" data-t="2"><span class="sw"></span><span>晨曦橙</span></div>
+<div class="theme t3" data-t="3"><span class="sw"></span><span>樱粉</span></div>
+</div>
+<div class="preview" id="preview"><b>实时预览</b><br>这就是 <span id="tname">暗夜蓝</span> 主题下的弹窗样子</div>
+<button class="btn" id="go">就用这个</button>
+</div></div>
+<button class="replay" id="replay">重新弹出</button>
+</div>
+<script>
+const modal=document.getElementById('modal'),tname=document.getElementById('tname'),ov=document.getElementById('ov');
+const T={
+1:{bg1:'#2b3350',bg2:'#161b30',bd:'rgba(150,170,220,.3)',acc1:'#9db4ff',acc2:'#5a76f0',tx:'#dfe6ff',sub:'#a9b4d8',name:'暗夜蓝'},
+2:{bg1:'#7a4a2e',bg2:'#3a2114',bd:'rgba(255,190,140,.35)',acc1:'#ffc98a',acc2:'#f07f3f',tx:'#ffedd8',sub:'#d8b494',name:'晨曦橙'},
+3:{bg1:'#6e2c4c',bg2:'#381424',bd:'rgba(255,160,190,.35)',acc1:'#ff9ec4',acc2:'#e65096',tx:'#ffe3ee',sub:'#d8a9c2',name:'樱粉'}};
+document.querySelectorAll('.theme').forEach(t=>t.onclick=()=>{
+document.querySelectorAll('.theme').forEach(x=>x.classList.remove('sel'));t.classList.add('sel');
+const v=T[t.dataset.t];
+modal.style.setProperty('--bg1',v.bg1);modal.style.setProperty('--bg2',v.bg2);
+modal.style.setProperty('--bd',v.bd);modal.style.setProperty('--acc1',v.acc1);
+modal.style.setProperty('--acc2',v.acc2);modal.style.setProperty('--tx',v.tx);
+modal.style.setProperty('--sub',v.sub);tname.textContent=v.name;});
+document.getElementById('go').onclick=()=>ov.style.display='none';
+document.getElementById('x').onclick=()=>ov.style.display='none';
+document.getElementById('replay').onclick=()=>{ov.style.display='flex';
+const m=ov.querySelector('.modal');m.style.animation='none';void m.offsetWidth;m.style.animation='';};
+</script></body></html>

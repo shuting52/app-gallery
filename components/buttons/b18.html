@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>熔岩按钮</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{min-height:100vh;background:radial-gradient(120% 90% at 50% 100%,#1d0a06 0%,#0d0605 60%,#060304 100%);display:flex;flex-direction:column;align-items:center;color:#ffd9c4;font-family:"PingFang SC","Microsoft YaHei",sans-serif;overflow:hidden}
+h2{margin:34px 0 6px;font-size:15px;font-weight:600;letter-spacing:4px;color:#ff9a5c}
+p{font-size:12px;color:#8a5b46;margin-bottom:26px}
+.stage{position:relative;width:360px;height:420px;display:flex;align-items:center;justify-content:center}
+.btn{position:relative;width:180px;height:180px;border-radius:50%;border:none;cursor:pointer;overflow:hidden;
+background:radial-gradient(circle at 35% 30%,#3d4a5c 0%,#232b38 60%,#151a24 100%);
+color:#cfd8e8;font-size:17px;font-weight:700;letter-spacing:3px;
+box-shadow:0 10px 30px rgba(0,0,0,.6);transition:box-shadow .4s}
+#lava{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.btn.hot{box-shadow:0 0 34px rgba(255,110,20,.55),0 0 90px rgba(255,60,0,.25),0 10px 30px rgba(0,0,0,.6)}
+.txt{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:3;pointer-events:none;text-shadow:0 2px 8px rgba(0,0,0,.8)}
+.hint{position:absolute;bottom:8px;font-size:12px;color:#7a5544}
+</style>
+</head>
+<body>
+<h2>熔 岩</h2>
+<p>点击引爆岩浆 · 气泡翻滚 · 冷却复原</p>
+<div class="stage">
+  <button class="btn" id="b">
+    <canvas id="lava" width="360" height="360"></canvas>
+    <span class="txt">岩 浆</span>
+  </button>
+  <div class="hint">热量会随时间冷却</div>
+</div>
+<script>
+const cv=document.getElementById('lava'),ctx=cv.getContext('2d');
+const W=cv.width,H=cv.height,cx=W/2,cy=H/2,R=88;
+const b=document.getElementById('b');
+let heat=0,bubbles=[],cracks=[],raf=null,last=0;
+function rnd(a,c){return a+Math.random()*(c-a)}
+function spawnCracks(){
+  cracks=[];
+  for(let i=0;i<7;i++){
+    const a=rnd(0,Math.PI*2),pts=[];let x=cx+rnd(-30,30),y=cy+rnd(-30,30);
+    pts.push([x,y]);
+    for(let s=0;s<5;s++){a2=a+rnd(-.7,.7);x+=Math.cos(a2)*rnd(14,30);y+=Math.sin(a2)*rnd(14,30);pts.push([x,y]);}
+    cracks.push(pts);
+  }
+}
+function draw(t){
+  const dt=Math.min((t-last)/1000,.05);last=t;
+  heat=Math.max(0,heat-dt*.22); // 冷却
+  ctx.clearRect(0,0,W,H);
+  // 基底熔岩渐变
+  const g=ctx.createRadialGradient(cx-25,cy-30,10,cx,cy,R);
+  g.addColorStop(0,`rgba(255,${200+heat*55|0},${60+heat*80|0},${heat})`);
+  g.addColorStop(.55,`rgba(255,${90+heat*80|0},10,${heat*.9})`);
+  g.addColorStop(1,`rgba(120,10,0,${heat*.75})`);
+  ctx.fillStyle=g;ctx.beginPath();ctx.arc(cx,cy,R,0,7);ctx.fill();
+  if(heat>0.02){
+    // 裂纹透橙光
+    ctx.save();ctx.lineCap='round';
+    cracks.forEach(pts=>{
+      ctx.beginPath();pts.forEach((p,i)=>i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]));
+      ctx.strokeStyle=`rgba(255,230,120,${.75*heat})`;ctx.lineWidth=5;ctx.shadowColor='#ff7a00';ctx.shadowBlur=18*heat;ctx.stroke();
+      ctx.shadowBlur=0;ctx.strokeStyle=`rgba(120,20,0,${.8*heat})`;ctx.lineWidth=9;ctx.stroke();
+    });
+    ctx.restore();
+    // 翻滚气泡
+    if(Math.random()<heat*.6)bubbles.push({x:cx+rnd(-55,55),y:cy+rnd(20,70),r:rnd(3,9),v:rnd(30,80),wob:rnd(0,7)});
+    bubbles=bubbles.filter(bb=>bb.y>cy-95);
+    bubbles.forEach(bb=>{
+      bb.y-=bb.v*dt;bb.x+=Math.sin(t/300+bb.wob)*.6;
+      const gg=ctx.createRadialGradient(bb.x-bb.r*.3,bb.y-bb.r*.3,1,bb.x,bb.y,bb.r);
+      gg.addColorStop(0,`rgba(255,235,150,${.95*heat})`);
+      gg.addColorStop(.6,`rgba(255,140,20,${.7*heat})`);
+      gg.addColorStop(1,`rgba(120,15,0,${.4*heat})`);
+      ctx.fillStyle=gg;ctx.beginPath();ctx.arc(bb.x,bb.y,bb.r,0,7);ctx.fill();
+    });
+    // 热浪边缘扭曲感：外圈抖动亮环
+    ctx.strokeStyle=`rgba(255,120,30,${.5*heat})`;ctx.lineWidth=3;
+    ctx.beginPath();
+    for(let i=0;i<=40;i++){const a=i/40*Math.PI*2,rr=R-2+Math.sin(t/180+i*.8)*3*heat;
+      const x=cx+rr*Math.cos(a),y=cy+rr*Math.sin(a);i?ctx.lineTo(x,y):ctx.moveTo(x,y);}
+    ctx.closePath();ctx.stroke();
+  }
+  if(heat>0||bubbles.length)raf=requestAnimationFrame(draw);
+  else{ctx.clearRect(0,0,W,H);raf=null;b.classList.remove('hot');}
+}
+b.addEventListener('click',()=>{
+  if(raf)cancelAnimationFrame(raf);
+  heat=1;bubbles=[];spawnCracks();last=performance.now();
+  b.classList.add('hot');
+  raf=requestAnimationFrame(draw);
+});
+</script>
+</body>
+</html>

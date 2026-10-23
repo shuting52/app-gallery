@@ -1,0 +1,22 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>赛博扫描线 · 加载动画</title><style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;background:radial-gradient(600px 400px at 50% 40%,#062a33,#04090d 70%);display:flex;flex-direction:column;align-items:center;justify-content:center;
+font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;color:#e8eaf0;padding:24px 12px}
+h1{font-size:15px;font-weight:600;letter-spacing:4px;color:#22d3ee;margin-bottom:6px}
+.sub{font-size:11px;color:#8a90a6;margin-bottom:30px;letter-spacing:3px}
+.stage{width:360px;max-width:94vw;height:300px;position:relative;display:flex;align-items:center;justify-content:center}
+.panel{width:290px;height:190px;position:relative;overflow:hidden;border:1px solid rgba(34,211,238,.5);
+background:repeating-linear-gradient(0deg,transparent 0 17px,rgba(34,211,238,.09) 17px 18px),
+repeating-linear-gradient(90deg,transparent 0 17px,rgba(34,211,238,.09) 17px 18px),rgba(8,20,28,.6)}
+.scan{position:absolute;left:0;right:0;height:4px;top:-8px;
+background:linear-gradient(90deg,transparent,#22d3ee 30%,#bff6ff 50%,#22d3ee 70%,transparent);
+box-shadow:0 0 22px 4px rgba(34,211,238,.8);animation:sc 2.4s linear infinite}
+@keyframes sc{to{transform:translateY(210px)}}
+.cn{position:absolute;width:22px;height:22px;border:2px solid #22d3ee}
+.cn.tl{top:8px;left:8px;border-right:0;border-bottom:0}.cn.tr{top:8px;right:8px;border-left:0;border-bottom:0}
+.cn.bl{bottom:8px;left:8px;border-right:0;border-top:0}.cn.br{bottom:8px;right:8px;border-left:0;border-top:0}
+.stx{position:absolute;bottom:12px;width:100%;text-align:center;font-size:11px;letter-spacing:4px;color:#7ee7f7;animation:blk 1.2s steps(2) infinite}
+@keyframes blk{50%{opacity:.35}}
+</style></head><body><h1>赛博扫描线</h1><div class="sub">LOADING · 加载中</div><div class="stage"><div class="panel"><div class="scan"></div><div class="cn tl"></div><div class="cn tr"></div><div class="cn bl"></div><div class="cn br"></div><div class="stx">SCANNING · 扫描中</div></div></div></body></html>

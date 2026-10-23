@@ -1,0 +1,1013 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>HONEY UI · 蜂蜜流体</title>
+<style>
+/* ============ HONEY UI · 蜂蜜流体 ============ */
+:root{
+  --honey:#ffb300;        /* 蜂蜜金 */
+  --honey2:#ffcf5c;       /* 浅蜜 */
+  --deep:#e07b00;         /* 深蜜 */
+  --dark:#7a3c00;         /* 焦糖 */
+  --ink:#2a1503;          /* 可可墨 */
+  --cream:#fff4dc;        /* 奶油 */
+  --bg:#160b03;           /* 蜂巢底 */
+  --surface:#241305;
+  --surface2:#31200b;
+  --muted:#d3a86f;
+  --danger:#ff5a4e;
+  --r:1.1rem;
+  --hex:polygon(25% 0%,75% 0%,100% 50%,75% 100%,25% 100%,0% 50%);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{
+  margin:0;color:var(--cream);
+  background:#0d0703;
+  font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sans-serif;
+  display:flex;align-items:center;justify-content:center;
+}
+/* App 外壳 */
+.phone{
+  position:relative;width:100%;max-width:430px;height:100dvh;
+  background:
+    radial-gradient(120% 60% at 50% -10%,rgba(255,179,0,.14),transparent 60%),
+    var(--bg);
+  overflow:hidden;display:flex;flex-direction:column;
+}
+@media(min-width:520px){
+  body{padding:24px}
+  .phone{height:min(880px,94dvh);border:2px solid #000;border-radius:2.2rem;
+    box-shadow:0 0 0 4px #3a2408,0 30px 80px rgba(0,0,0,.7)}
+}
+/* 蜂巢纹理 */
+.honeycomb{position:relative}
+.honeycomb::before{
+  content:"";position:absolute;inset:0;pointer-events:none;opacity:.5;border-radius:inherit;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='52' height='90' viewBox='0 0 52 90'%3E%3Cpath d='M26 4l20 12v24L26 52 6 40V16z' fill='none' stroke='%23ffb300' stroke-opacity='0.07' stroke-width='1.4'/%3E%3Cpath d='M26 52l20 12v24L26 100 6 88V64z' fill='none' stroke='%23ffb300' stroke-opacity='0.07' stroke-width='1.4'/%3E%3C/svg%3E");
+  background-size:52px 90px;
+}
+/* 顶部栏 */
+.appbar{
+  flex:0 0 auto;display:flex;align-items:center;gap:.7rem;
+  padding:calc(.9rem + env(safe-area-inset-top)) 1.1rem .9rem;
+  background:rgba(36,19,5,.82);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  border-bottom:1px solid rgba(255,179,0,.25);z-index:5;
+}
+.appbar .logo{position:relative;width:36px;height:36px;flex:0 0 auto;background:linear-gradient(160deg,var(--honey2),var(--deep));clip-path:var(--hex);display:flex;align-items:center;justify-content:center}
+.appbar .logo b{font-size:1.05rem;color:var(--ink);animation:bob 3s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+.appbar h1{margin:0;font-size:1.05rem;letter-spacing:.02em}
+.appbar h1 small{display:block;font-size:.68rem;font-weight:400;color:var(--muted);letter-spacing:.1em}
+.appbar .sp{flex:1}
+/* 页面滚动区 */
+.screens{flex:1;position:relative;overflow:hidden}
+.screen{position:absolute;inset:0;overflow-y:auto;padding:1.1rem 1.1rem 1.4rem;display:none;scrollbar-width:none}
+.screen::-webkit-scrollbar{display:none}
+.screen.active{display:block;animation:screen-in .25s ease}
+@keyframes screen-in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.sec{margin:0 0 1.6rem}
+.sec-t{display:flex;align-items:center;gap:.5rem;margin:0 0 .8rem;font-size:.8rem;letter-spacing:.14em;color:var(--muted);font-weight:700}
+.sec-t::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,rgba(255,179,0,.5),transparent);border-radius:2px}
+.sec-t .n{background:linear-gradient(180deg,var(--honey2),var(--deep));color:var(--ink);font-size:.68rem;min-width:1.35rem;height:1.35rem;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;padding:0 .3rem;box-shadow:0 2px 6px rgba(255,179,0,.4)}
+/* 底部 Tab 栏 · 悬浮胶囊 + 滑动指示 */
+.tabbar{
+  position:relative;flex:0 0 auto;display:flex;
+  background:rgba(36,19,5,.85);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  border:1px solid rgba(255,179,0,.35);border-radius:2rem;
+  margin:.55rem .9rem calc(.75rem + env(safe-area-inset-bottom));
+  padding:.35rem;box-shadow:0 8px 24px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.08);z-index:5;
+}
+.tab-pill{
+  position:absolute;top:.35rem;bottom:.35rem;left:.35rem;width:60px;border-radius:1.4rem;
+  background:linear-gradient(180deg,var(--honey2),var(--honey) 55%,var(--deep));
+  box-shadow:0 3px 10px rgba(255,179,0,.5),inset 0 2px 0 rgba(255,255,255,.5);
+  transition:left .32s cubic-bezier(.55,1.45,.45,1),width .32s ease;z-index:0;
+}
+.tab{flex:1;border:0;background:none;color:var(--muted);font-family:inherit;cursor:pointer;
+  display:flex;flex-direction:column;align-items:center;gap:.15rem;
+  font-size:.62rem;font-weight:500;padding:.45rem 0 .3rem;border-radius:1.2rem;position:relative;z-index:1}
+.tab svg{width:22px;height:22px}
+.tab.on{color:var(--ink);font-weight:700}
+.tab:not(.on):active{transform:translateY(2px)}
+/* ============ 蜂蜜按钮 ============ */
+.btn-honey{
+  --pad:.8rem 1.4rem; --fs:1rem;
+  font-family:inherit;cursor:pointer;position:relative;overflow:hidden;
+  display:inline-flex;align-items:center;justify-content:center;gap:.45rem;
+  font-weight:700;line-height:1;font-size:var(--fs);white-space:nowrap;
+  color:var(--ink);border:2px solid #5e2f00;border-radius:1.2rem;padding:var(--pad);
+  background:linear-gradient(180deg,var(--honey2) 0%,var(--honey) 45%,var(--deep) 100%);
+  box-shadow:0 4px 0 #5e2f00,0 10px 22px rgba(255,179,0,.35),
+    inset 0 2px 0 rgba(255,255,255,.55),inset 0 -4px 8px rgba(122,60,0,.4);
+  transition:transform .12s ease,box-shadow .12s ease,filter .15s;
+}
+.btn-honey::after{ /* 折射高光 */
+  content:"";position:absolute;left:8%;right:8%;top:4%;height:42%;border-radius:1rem;
+  background:linear-gradient(180deg,rgba(255,255,255,.5),transparent);pointer-events:none;
+}
+.btn-honey:active{transform:translateY(3px);box-shadow:0 1px 0 #5e2f00,0 4px 10px rgba(255,179,0,.3),inset 0 2px 0 rgba(255,255,255,.4)}
+.btn-honey.sec{background:linear-gradient(180deg,#4a2c0d,#31200b);color:var(--honey2);
+  border-color:var(--dark);box-shadow:0 4px 0 #1c0e02,0 8px 18px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,207,92,.35)}
+.btn-honey.sec:active{transform:translateY(3px);box-shadow:0 1px 0 #1c0e02}
+.btn-honey.ghost{background:rgba(255,179,0,.06);color:var(--honey2);border:2px dashed rgba(255,179,0,.55);box-shadow:none}
+.btn-honey.ghost:active{transform:translateY(2px);background:rgba(255,179,0,.14)}
+.btn-honey.danger{background:linear-gradient(180deg,#ff8a7a,#ff5a4e 50%,#c22e22);color:#fff;border-color:#5e0f08;
+  box-shadow:0 4px 0 #5e0f08,0 10px 22px rgba(255,90,78,.35),inset 0 2px 0 rgba(255,255,255,.45)}
+.btn-honey.danger:active{transform:translateY(3px);box-shadow:0 1px 0 #5e0f08}
+.btn-honey.sm{--pad:.55rem 1rem;--fs:.84rem;border-radius:1rem}
+.btn-honey.lg{--pad:1rem 1.8rem;--fs:1.12rem}
+.btn-honey.block{width:100%}
+.btn-honey[disabled]{cursor:not-allowed;filter:grayscale(.85) brightness(.65);box-shadow:0 4px 0 #2a2a2a}
+/* 波浪填充按钮 */
+.btn-wave{position:relative;overflow:hidden;color:var(--honey2);border:2px solid var(--dark);
+  background:#241305;border-radius:1.2rem;padding:.8rem 1.4rem;font-family:inherit;font-weight:700;font-size:1rem;
+  cursor:pointer;display:inline-flex;align-items:center;justify-content:center;box-shadow:0 4px 0 #120a02}
+.btn-wave .fill{position:absolute;left:0;right:0;bottom:-8%;height:64%;
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='24' viewBox='0 0 120 24'%3E%3Cpath d='M0 12 Q15 2 30 12 T60 12 T90 12 T120 12 V24 H0 Z' fill='%23ffb300'/%3E%3C/svg%3E") repeat-x left bottom/120px 24px,
+  linear-gradient(180deg,var(--honey),var(--deep));
+  animation:wavebob 2.6s ease-in-out -1.3s infinite alternate;transition:height .3s}
+.btn-wave .fill::before{content:"";position:absolute;inset:0;
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='24' viewBox='0 0 120 24'%3E%3Cpath d='M0 12 Q15 2 30 12 T60 12 T90 12 T120 12 V24 H0 Z' fill='%23ffcf5c' fill-opacity='.55'/%3E%3C/svg%3E") repeat-x left bottom/120px 24px;
+  animation:waveslide 3.2s linear infinite}
+.btn-wave span{position:relative;z-index:1}
+.btn-wave:hover .fill,.btn-wave:active .fill{height:112%}
+@keyframes wavebob{from{transform:translateY(6px)}to{transform:translateY(-6px)}}
+@keyframes waveslide{to{background-position:120px bottom,0 0}}
+/* 蜂巢六边形按钮 */
+.btn-hex{width:64px;height:70px;border:0;cursor:pointer;clip-path:var(--hex);
+  background:linear-gradient(160deg,var(--honey2),var(--deep));color:var(--ink);
+  display:inline-flex;align-items:center;justify-content:center;transition:transform .15s,filter .15s}
+.btn-hex svg{width:26px;height:26px}
+.btn-hex:active{transform:scale(.9);filter:brightness(1.15)}
+.btn-hex.ghost{background:rgba(255,179,0,.1);color:var(--honey2);border:0}
+/* 加载中按钮（蜜滴拉伸） */
+.btn-honey.loading{pointer-events:none}
+.btn-honey.loading .dots{display:inline-flex;gap:5px;align-items:flex-end}
+.btn-honey.loading .dots i{display:block;width:8px;height:8px;border-radius:50%;background:var(--ink);animation:dstretch 1s ease-in-out infinite}
+.btn-honey.loading .dots i:nth-child(2){animation-delay:-.33s}
+.btn-honey.loading .dots i:nth-child(3){animation-delay:-.66s}
+@keyframes dstretch{0%,100%{transform:scaleY(1)}50%{transform:scaleY(2.1)}}
+/* 图标按钮 */
+.icobtn{
+  width:46px;height:46px;border-radius:1rem;border:2px solid #5e2f00;cursor:pointer;
+  background:linear-gradient(180deg,#3a2408,#241305);color:var(--honey2);
+  display:inline-flex;align-items:center;justify-content:center;
+  box-shadow:0 3px 0 #120a02,inset 0 1px 0 rgba(255,207,92,.3);font-family:inherit;transition:transform .12s,box-shadow .12s}
+.icobtn svg{width:20px;height:20px}
+.icobtn:active{transform:translateY(2px);box-shadow:0 1px 0 #120a02}
+.icobtn.hot{background:linear-gradient(180deg,var(--honey2),var(--deep));color:var(--ink)}
+.icobtn.round{border-radius:50%}
+</style>
+<style>
+/* ============ 卡片 ============ */
+.card{
+  background:rgba(46,26,8,.72);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  border:1px solid rgba(255,179,0,.35);border-radius:var(--r);
+  padding:1rem;box-shadow:0 10px 26px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.07);
+  position:relative;overflow:hidden;
+}
+.card::before{content:"";position:absolute;left:0;right:0;top:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(255,207,92,.7),transparent)}
+.card h3{margin:.2rem 0 .4rem;font-size:1rem;color:var(--cream)}
+.card p{margin:0;color:var(--muted);font-size:.85rem;line-height:1.55}
+.card .media{height:110px;border-radius:.8rem;margin:-.2rem -.2rem .8rem;position:relative;overflow:hidden;
+  background:linear-gradient(135deg,#ffcf5c,#ff8f00 55%,#7a3c00)}
+.card .media .bub{position:absolute;bottom:-10px;border-radius:50%;background:rgba(255,255,255,.4);animation:rise 4s linear infinite}
+.card .media .bub:nth-child(1){left:18%;width:10px;height:10px;animation-delay:0s}
+.card .media .bub:nth-child(2){left:46%;width:16px;height:16px;animation-delay:-1.6s}
+.card .media .bub:nth-child(3){left:72%;width:8px;height:8px;animation-delay:-2.8s}
+@keyframes rise{from{transform:translateY(0);opacity:0}15%{opacity:.8}to{transform:translateY(-130px);opacity:0}}
+.card .media .dropbig{position:absolute;right:18px;top:14px;width:44px;height:44px;
+  background:linear-gradient(160deg,rgba(255,255,255,.75),rgba(255,255,255,.05));
+  border-radius:50% 50% 50% 50%/62% 62% 38% 38%;animation:bob 3s ease-in-out -1s infinite}
+.card .badge-h{position:absolute;left:.7rem;top:.7rem;background:linear-gradient(180deg,var(--honey2),var(--deep));
+  color:var(--ink);font-size:.68rem;font-weight:700;padding:.28rem .65rem;border-radius:2rem}
+/* 芯片 / 徽标 */
+.chip{
+  border:1px solid rgba(255,179,0,.4);background:rgba(255,179,0,.07);color:var(--cream);font-family:inherit;font-weight:500;
+  font-size:.78rem;padding:.45rem .9rem;border-radius:2rem;cursor:pointer;transition:all .15s}
+.chip.on{background:linear-gradient(180deg,var(--honey2),var(--deep));color:var(--ink);font-weight:700;border-color:transparent;
+  box-shadow:0 3px 10px rgba(255,179,0,.45)}
+.chip:active{transform:scale(.94)}
+.tag{display:inline-flex;align-items:center;gap:.35rem;font-size:.7rem;font-weight:700;
+  padding:.3rem .68rem;border-radius:2rem;border:1px solid rgba(255,179,0,.4)}
+.tag.honey{background:linear-gradient(180deg,var(--honey2),var(--deep));color:var(--ink);border-color:transparent}
+.tag.glass{background:rgba(255,179,0,.1);color:var(--honey2)}
+.tag.ghost{background:transparent;color:var(--muted);border-style:dashed}
+.tag .dot{width:.5rem;height:.5rem;border-radius:50%;background:currentColor}
+/* 头像（六边形蜂巢） */
+.avatar{width:54px;height:58px;flex:0 0 auto;clip-path:var(--hex);
+  display:inline-flex;align-items:center;justify-content:center;font-weight:700;color:var(--ink);font-size:1.05rem}
+.avatar.stack{margin-left:-12px;filter:drop-shadow(0 0 0 rgba(0,0,0,0))}
+/* ============ 表单 ============ */
+.field{margin-bottom:1rem}
+.field label{display:block;font-size:.78rem;font-weight:700;margin-bottom:.45rem;letter-spacing:.04em;color:var(--cream)}
+.field label small{color:var(--muted);font-weight:400}
+.inp,textarea.inp{
+  width:100%;background:rgba(20,10,2,.6);border:1px solid rgba(255,179,0,.3);border-radius:.9rem;
+  color:var(--cream);font-family:inherit;font-size:.92rem;padding:.78rem .95rem;outline:none;
+  box-shadow:inset 0 2px 6px rgba(0,0,0,.5);transition:border-color .15s,box-shadow .15s;
+}
+.inp::placeholder{color:#8a6a45}
+.inp:focus{border-color:var(--honey);box-shadow:inset 0 2px 6px rgba(0,0,0,.5),0 0 0 3px rgba(255,179,0,.22)}
+textarea.inp{min-height:84px;resize:vertical}
+.searchbar{display:flex;align-items:center;gap:.6rem;background:rgba(20,10,2,.6);
+  border:1px solid rgba(255,179,0,.3);border-radius:2rem;padding:.72rem 1rem;
+  box-shadow:inset 0 2px 6px rgba(0,0,0,.5);transition:border-color .15s,box-shadow .15s}
+.searchbar:focus-within{border-color:var(--honey);box-shadow:inset 0 2px 6px rgba(0,0,0,.5),0 0 0 3px rgba(255,179,0,.22)}
+.searchbar svg{width:18px;height:18px;color:var(--muted);flex:0 0 auto}
+.searchbar input{flex:1;background:none;border:0;outline:none;color:var(--cream);font-family:inherit;font-size:.9rem}
+/* 自定义下拉 */
+.select{position:relative}
+.select>button{width:100%;display:flex;align-items:center;justify-content:space-between;gap:.6rem;
+  background:rgba(20,10,2,.6);border:1px solid rgba(255,179,0,.3);border-radius:.9rem;color:var(--cream);
+  font-family:inherit;font-size:.9rem;padding:.78rem .95rem;cursor:pointer;box-shadow:inset 0 2px 6px rgba(0,0,0,.5)}
+.select>button svg{width:16px;height:16px;color:var(--honey2);transition:transform .2s}
+.select.open>button svg{transform:rotate(180deg)}
+.select .opts{position:absolute;left:0;right:0;top:calc(100% + 6px);z-index:10;
+  background:rgba(36,19,5,.96);backdrop-filter:blur(12px);border:1px solid rgba(255,179,0,.4);border-radius:.9rem;
+  overflow:hidden;opacity:0;transform:translateY(-6px);pointer-events:none;transition:all .18s}
+.select.open .opts{opacity:1;transform:none;pointer-events:auto}
+.select .opts button{display:block;width:100%;text-align:left;background:none;border:0;color:var(--cream);
+  font-family:inherit;font-size:.88rem;padding:.75rem .95rem;cursor:pointer}
+.select .opts button:active{background:rgba(255,179,0,.15)}
+.select .opts button.sel{color:var(--honey2);font-weight:700}
+/* 开关 */
+.switch{position:relative;display:inline-flex;align-items:center;cursor:pointer}
+.switch input{position:absolute;opacity:0;inset:0;cursor:pointer;margin:0}
+.switch .tr{width:60px;height:34px;border-radius:2rem;border:1px solid rgba(255,179,0,.4);
+  background:rgba(20,10,2,.7);box-shadow:inset 0 2px 6px rgba(0,0,0,.55);position:relative;transition:all .2s;flex:0 0 auto}
+.switch .tr::after{content:"";position:absolute;top:3px;left:4px;width:26px;height:26px;border-radius:50%;
+  background:radial-gradient(circle at 35% 30%,#fff8e6,#d3a86f);transition:all .22s cubic-bezier(.6,1.5,.4,1);
+  box-shadow:0 2px 5px rgba(0,0,0,.5)}
+.switch input:checked+.tr{background:linear-gradient(180deg,var(--honey2),var(--deep));border-color:transparent;
+  box-shadow:inset 0 2px 4px rgba(122,60,0,.5),0 0 12px rgba(255,179,0,.5)}
+.switch input:checked+.tr::after{left:28px;background:radial-gradient(circle at 35% 30%,#fff,#ffd35c)}
+.switch input:focus-visible+.tr{outline:2px dashed var(--honey);outline-offset:3px}
+.switch.lb{gap:.7rem;font-size:.9rem;font-weight:500;color:var(--cream)}
+/* 复选 / 单选 */
+.check{display:flex;align-items:center;gap:.7rem;padding:.6rem .2rem;cursor:pointer;font-size:.9rem;color:var(--cream);position:relative}
+.check input{position:absolute;opacity:0}
+.check .box{width:26px;height:26px;border-radius:.6rem;border:1px solid rgba(255,179,0,.5);background:rgba(20,10,2,.6);
+  box-shadow:inset 0 2px 4px rgba(0,0,0,.5);display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;transition:all .15s}
+.check .box svg{width:15px;height:15px;color:var(--ink);opacity:0;transform:scale(.4);transition:all .15s}
+.check input:checked+.box{background:linear-gradient(180deg,var(--honey2),var(--deep));border-color:transparent;box-shadow:0 2px 8px rgba(255,179,0,.5)}
+.check input:checked+.box svg{opacity:1;transform:scale(1)}
+.check input:focus-visible+.box{outline:2px dashed var(--honey);outline-offset:3px}
+.check .box.radio{border-radius:50%}
+.check .box.radio::before{content:"";width:11px;height:11px;border-radius:50%;background:var(--ink);opacity:0;transform:scale(.4);transition:all .15s}
+.check input:checked+.box.radio::before{opacity:1;transform:scale(1)}
+/* 滑杆 */
+.slider-row{display:flex;align-items:center;gap:.8rem}
+input[type=range].slider{flex:1;-webkit-appearance:none;appearance:none;height:16px;border-radius:1rem;
+  border:1px solid rgba(255,179,0,.35);
+  background:linear-gradient(to right,var(--honey) var(--v,50%),rgba(20,10,2,.7) var(--v,50%));
+  box-shadow:inset 0 2px 5px rgba(0,0,0,.5);outline-offset:4px}
+input[type=range].slider::-webkit-slider-thumb{-webkit-appearance:none;width:28px;height:28px;cursor:pointer;
+  background:linear-gradient(160deg,var(--honey2),var(--deep));
+  border-radius:50% 50% 50% 6px;transform:rotate(45deg);border:2px solid #5e2f00;
+  box-shadow:0 3px 8px rgba(255,179,0,.5)}
+input[type=range].slider::-moz-range-thumb{width:24px;height:24px;background:linear-gradient(160deg,var(--honey2),var(--deep));
+  border-radius:50% 50% 50% 6px;border:2px solid #5e2f00;cursor:pointer}
+.slider-val{min-width:3.2rem;text-align:center;font-weight:700;background:linear-gradient(180deg,var(--honey2),var(--deep));color:var(--ink);
+  border-radius:.7rem;padding:.32rem .4rem;font-size:.82rem;box-shadow:0 3px 8px rgba(255,179,0,.4)}
+/* 步进器 */
+.stepper{display:inline-flex;align-items:center;gap:.15rem;background:rgba(20,10,2,.6);
+  border:1px solid rgba(255,179,0,.35);border-radius:1.1rem;padding:.25rem}
+.stepper button{width:38px;height:38px;border-radius:.8rem;border:0;cursor:pointer;
+  background:linear-gradient(180deg,var(--honey2),var(--deep));color:var(--ink);font-size:1.15rem;font-weight:700;font-family:inherit;line-height:1}
+.stepper button:active{transform:translateY(2px)}
+.stepper b{min-width:2.6rem;text-align:center;font-size:1rem;color:var(--cream)}
+/* 分段选择 */
+.segmented{display:flex;background:rgba(20,10,2,.6);border:1px solid rgba(255,179,0,.35);border-radius:1.1rem;
+  padding:.25rem;gap:.25rem}
+.segmented button{flex:1;border:0;background:none;color:var(--muted);font-family:inherit;font-weight:500;
+  font-size:.85rem;padding:.62rem 0;border-radius:.85rem;cursor:pointer;transition:all .18s}
+.segmented button.on{background:linear-gradient(180deg,var(--honey2),var(--deep));color:var(--ink);font-weight:700;
+  box-shadow:0 3px 10px rgba(255,179,0,.45)}
+/* 蜜滴评分 */
+.rating{display:flex;gap:.5rem}
+.rating button{border:0;background:none;cursor:pointer;padding:0;width:40px;height:46px;position:relative;transition:transform .12s}
+.rating button i{position:absolute;left:6px;top:4px;width:28px;height:32px;display:block;
+  background:rgba(255,179,0,.12);border:1px solid rgba(255,179,0,.35);
+  border-radius:50% 50% 50% 8px;transform:rotate(45deg);transition:all .18s}
+.rating button.lit i{background:linear-gradient(160deg,var(--honey2),var(--deep));border-color:transparent;
+  box-shadow:0 0 12px rgba(255,179,0,.65);animation:dropglow 1.6s ease-in-out -0.8s infinite alternate}
+@keyframes dropglow{from{filter:brightness(1)}to{filter:brightness(1.18)}}
+.rating button:active{transform:scale(1.2)}
+/* 上传 */
+.upload{border:1.5px dashed rgba(255,179,0,.5);border-radius:var(--r);padding:1.3rem;text-align:center;
+  color:var(--muted);font-size:.85rem;cursor:pointer;background:rgba(255,179,0,.04);transition:all .15s;display:block}
+.upload:active{background:rgba(255,179,0,.12)}
+.upload b{display:block;color:var(--honey2);font-size:.95rem;margin-bottom:.3rem}
+.upload input{display:none}
+</style>
+<style>
+/* ============ 波浪进度条 ============ */
+.progress{height:24px;border:1px solid rgba(255,179,0,.35);border-radius:2rem;background:rgba(20,10,2,.65);
+  box-shadow:inset 0 2px 6px rgba(0,0,0,.55);overflow:hidden;position:relative}
+.progress .fill{position:absolute;inset:0;width:var(--p,60%);transition:width .5s ease;
+  background:linear-gradient(180deg,var(--honey2),var(--deep))}
+.progress .fill::before{content:"";position:absolute;right:-10px;top:0;bottom:0;width:24px;
+  background:radial-gradient(circle at 50% 50%,var(--honey) 55%,transparent 56%);
+  background-size:14px 14px;background-repeat:repeat-y;opacity:.55;animation:bob 1.4s ease-in-out infinite alternate}
+.progress .wavebar{position:absolute;left:0;right:0;top:0;height:10px;
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='10' viewBox='0 0 80 10'%3E%3Cpath d='M0 5 Q10 0 20 5 T40 5 T60 5 T80 5 V0 H0 Z' fill='%23fff4dc' fill-opacity='.35'/%3E%3C/svg%3E") repeat-x left top/80px 10px;
+  animation:waveslide2 1.6s linear infinite}
+@keyframes waveslide2{to{background-position:80px 0}}
+.progress.red .fill{background:linear-gradient(180deg,#ff8a7a,#c22e22)}
+/* 流淌进度（不确定） */
+.flowbar{height:16px;border-radius:2rem;border:1px solid rgba(255,179,0,.35);background:rgba(20,10,2,.65);
+  overflow:hidden;position:relative}
+.flowbar i{position:absolute;top:0;bottom:0;left:-30%;width:34%;border-radius:2rem;display:block;
+  background:linear-gradient(90deg,transparent,var(--honey) 25%,var(--honey2) 50%,var(--honey) 75%,transparent);
+  animation:flowmove 1.5s ease-in-out infinite}
+@keyframes flowmove{to{left:100%}}
+/* ============ 列表行 ============ */
+.rows{background:rgba(46,26,8,.72);border:1px solid rgba(255,179,0,.3);border-radius:var(--r);overflow:hidden;
+  box-shadow:0 10px 26px rgba(0,0,0,.4)}
+.row-it{display:flex;align-items:center;gap:.85rem;padding:.85rem 1rem;border:0;width:100%;
+  background:none;color:var(--cream);font-family:inherit;text-align:left;cursor:pointer;font-size:.92rem}
+.row-it+.row-it{border-top:1px solid rgba(255,179,0,.14)}
+.row-it .ri{width:42px;height:46px;clip-path:var(--hex);flex:0 0 auto;
+  display:flex;align-items:center;justify-content:center;color:var(--ink)}
+.row-it .ri svg{width:19px;height:19px}
+.row-it .tx{flex:1;min-width:0}
+.row-it .tx b{display:block;font-size:.9rem}
+.row-it .tx small{color:var(--muted);font-size:.74rem}
+.row-it>svg{width:18px;height:18px;color:var(--muted);flex:0 0 auto}
+.row-it:active{background:rgba(255,179,0,.08)}
+/* 手风琴 */
+.acc{background:rgba(46,26,8,.72);border:1px solid rgba(255,179,0,.3);border-radius:var(--r);overflow:hidden;margin-bottom:.7rem}
+.acc>button{width:100%;display:flex;align-items:center;gap:.6rem;padding:.9rem 1rem;background:none;border:0;
+  color:var(--cream);font-family:inherit;font-size:.92rem;font-weight:700;cursor:pointer;text-align:left}
+.acc>button svg{margin-left:auto;width:18px;height:18px;transition:transform .2s;color:var(--honey2)}
+.acc.open>button svg{transform:rotate(180deg)}
+.acc .body{max-height:0;overflow:hidden;transition:max-height .25s ease}
+.acc .body p{margin:0;padding:0 1rem 1rem;color:var(--muted);font-size:.85rem;line-height:1.6}
+/* 顶部页签 */
+.ttabs{display:flex;gap:.5rem;margin-bottom:.9rem}
+.ttabs button{flex:1;border:1px solid rgba(255,179,0,.35);background:rgba(20,10,2,.55);color:var(--muted);font-family:inherit;
+  font-weight:700;font-size:.82rem;padding:.6rem 0;border-radius:.9rem;cursor:pointer}
+.ttabs button.on{background:linear-gradient(180deg,var(--honey2),var(--deep));color:var(--ink);border-color:transparent}
+/* 轮播 */
+.carousel{position:relative;border-radius:var(--r);overflow:hidden;border:1px solid rgba(255,179,0,.3)}
+.carousel .track{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none}
+.carousel .track::-webkit-scrollbar{display:none}
+.carousel .slide{flex:0 0 100%;scroll-snap-align:start;height:150px;padding:1rem;display:flex;flex-direction:column;justify-content:flex-end}
+.carousel .slide h3{margin:0 0 .25rem;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,.4)}
+.carousel .slide p{margin:0;color:rgba(255,244,220,.9);font-size:.8rem}
+.carousel .dots{position:absolute;left:0;right:0;bottom:.55rem;display:flex;justify-content:center;gap:.4rem}
+.carousel .dots i{display:block;width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.45);transition:all .2s}
+.carousel .dots i.on{width:18px;border-radius:4px;background:#fff}
+/* 表格 */
+table.tbl{width:100%;border-collapse:collapse;font-size:.82rem;color:var(--cream)}
+.tbl th,.tbl td{padding:.6rem .5rem;text-align:left;border-bottom:1px solid rgba(255,179,0,.14)}
+.tbl th{color:var(--honey2);font-size:.74rem;letter-spacing:.06em}
+.tbl tr:last-child td{border-bottom:0}
+.tbl .num{text-align:right;font-variant-numeric:tabular-nums}
+/* 骨架屏 */
+.skel{border-radius:.6rem;background:linear-gradient(90deg,rgba(255,179,0,.07) 25%,rgba(255,179,0,.18) 50%,rgba(255,179,0,.07) 75%);
+  background-size:200% 100%;animation:sk 1.2s infinite}
+@keyframes sk{to{background-position:-200% 0}}
+/* 空状态 */
+.empty{text-align:center;padding:2rem 1rem}
+.empty .hcomb{position:relative;width:110px;height:118px;margin:0 auto .9rem;
+  background:linear-gradient(160deg,rgba(255,207,92,.35),rgba(224,123,0,.15));clip-path:var(--hex);
+  display:flex;align-items:center;justify-content:center}
+.empty .hcomb .dr{width:34px;height:38px;background:linear-gradient(160deg,var(--honey2),var(--deep));
+  border-radius:50% 50% 50% 8px;transform:rotate(45deg);animation:dropglow 1.8s ease-in-out -0.9s infinite alternate}
+.empty p{color:var(--muted);font-size:.85rem;margin:.3rem 0 1.1rem}
+/* 蜜滴加载 */
+.drop-loader{display:flex;flex-direction:column;align-items:center;gap:.4rem;padding:.6rem 0}
+.drop-loader .d{width:20px;height:24px;background:linear-gradient(160deg,var(--honey2),var(--deep));
+  border-radius:50% 50% 50% 8px;transform:rotate(45deg);transform-origin:center;
+  animation:dropfall 1.3s ease-in infinite}
+.drop-loader .pool{width:64px;height:12px;border-radius:50%;background:rgba(255,179,0,.3);animation:poolpulse 1.3s ease-in infinite}
+@keyframes dropfall{0%{transform:rotate(45deg) translate(0,0) scale(.7);opacity:0}25%{opacity:1}70%{transform:rotate(45deg) translate(24px,24px) scale(1)}100%{transform:rotate(45deg) translate(30px,30px) scale(.9);opacity:0}}
+@keyframes poolpulse{0%,55%{transform:scale(.85)}80%{transform:scale(1.15)}100%{transform:scale(.85)}}
+/* ============ 反馈层 ============ */
+.scrim{position:absolute;inset:0;background:rgba(10,5,1,.62);backdrop-filter:blur(3px);opacity:0;pointer-events:none;transition:opacity .22s;z-index:20}
+.scrim.show{opacity:1;pointer-events:auto}
+.modal{position:absolute;left:1.1rem;right:1.1rem;top:50%;z-index:21;
+  background:rgba(42,23,7,.92);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  border:1px solid rgba(255,179,0,.45);border-radius:1.3rem;padding:1.3rem;
+  box-shadow:0 24px 60px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.1);
+  transform:translateY(-50%) scale(.92);opacity:0;pointer-events:none;transition:all .22s cubic-bezier(.5,1.5,.5,1)}
+.modal.show{transform:translateY(-50%) scale(1);opacity:1;pointer-events:auto}
+.modal .mdrip{position:absolute;top:-1px;left:50%;transform:translateX(-50%);display:flex;gap:6px}
+.modal .mdrip i{display:block;width:10px;background:linear-gradient(180deg,var(--honey2),var(--deep));border-radius:0 0 6px 6px}
+.modal .mdrip i:nth-child(1){height:14px}
+.modal .mdrip i:nth-child(2){height:22px}
+.modal .mdrip i:nth-child(3){height:12px}
+.modal .mhex{width:64px;height:70px;margin:.4rem auto .6rem;clip-path:var(--hex);
+  background:linear-gradient(160deg,var(--honey2),var(--deep));display:flex;align-items:center;justify-content:center;
+  color:var(--ink);font-size:1.5rem}
+.modal h3{margin:.2rem 0 .5rem;text-align:center}
+.modal p{text-align:center;color:var(--muted);font-size:.85rem;line-height:1.6;margin:0 0 1.1rem}
+.modal .mrow{display:flex;gap:.7rem}
+.modal .mrow .btn-honey{flex:1}
+.sheet{position:absolute;left:0;right:0;bottom:0;z-index:21;
+  background:rgba(42,23,7,.95);backdrop-filter:blur(16px);
+  border-top:1px solid rgba(255,179,0,.45);border-radius:1.5rem 1.5rem 0 0;
+  padding:.7rem 1.1rem calc(1.2rem + env(safe-area-inset-bottom));
+  transform:translateY(105%);transition:transform .28s cubic-bezier(.5,1.2,.4,1)}
+.sheet.show{transform:none}
+.sheet .grab{width:44px;height:5px;border-radius:3px;background:rgba(255,179,0,.45);margin:0 auto .8rem}
+.sheet .opt{display:flex;align-items:center;gap:.8rem;width:100%;padding:.85rem .4rem;background:none;border:0;
+  color:var(--cream);font-family:inherit;font-size:.92rem;cursor:pointer;border-radius:.7rem;text-align:left}
+.sheet .opt:active{background:rgba(255,179,0,.1)}
+.sheet .opt svg{width:20px;height:20px;color:var(--honey2)}
+.toast{position:absolute;left:50%;bottom:6.2rem;transform:translate(-50%,20px);z-index:22;
+  background:rgba(30,16,4,.92);backdrop-filter:blur(12px);color:var(--cream);
+  border:1px solid rgba(255,179,0,.55);border-radius:2rem;
+  padding:.65rem 1.2rem;font-size:.85rem;font-weight:500;display:flex;align-items:center;gap:.55rem;
+  box-shadow:0 10px 30px rgba(0,0,0,.5);opacity:0;pointer-events:none;transition:all .25s;white-space:nowrap;max-width:92%}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.toast .tbub{display:flex;align-items:flex-end;gap:2px}
+.toast .tbub i{display:block;border-radius:50%;background:var(--honey2);animation:rise2 1.1s ease-in infinite}
+.toast .tbub i:nth-child(1){width:5px;height:5px}
+.toast .tbub i:nth-child(2){width:7px;height:7px;animation-delay:-.4s}
+.toast .tbub i:nth-child(3){width:4px;height:4px;animation-delay:-.8s}
+@keyframes rise2{0%{transform:translateY(2px);opacity:.3}50%{opacity:1}100%{transform:translateY(-3px);opacity:.3}}
+.banner{display:flex;gap:.7rem;align-items:flex-start;border:1px solid;border-radius:.9rem;
+  padding:.8rem .9rem;font-size:.83rem;line-height:1.5;margin-bottom:.7rem}
+.banner svg{width:18px;height:18px;flex:0 0 auto;margin-top:.1rem}
+.banner.ok{background:rgba(255,179,0,.09);border-color:rgba(255,179,0,.5)}
+.banner.ok svg{color:var(--honey2)}
+.banner.warn{background:rgba(255,90,78,.08);border-color:rgba(255,90,78,.5)}
+.banner.warn svg{color:var(--danger)}
+.banner b{display:block;margin-bottom:.15rem;color:var(--cream)}
+.banner p{margin:0;color:var(--muted)}
+/* 气泡提示 */
+.tip-wrap{position:relative;display:inline-block}
+.tooltip{position:absolute;left:50%;bottom:calc(100% + 12px);transform:translateX(-50%) translateY(6px);
+  background:rgba(20,10,2,.95);border:1px solid rgba(255,179,0,.55);color:var(--cream);
+  font-size:.78rem;padding:.55rem .85rem;border-radius:.8rem;white-space:nowrap;
+  opacity:0;pointer-events:none;transition:all .2s;z-index:15;
+  box-shadow:0 10px 24px rgba(0,0,0,.5)}
+.tooltip::after{content:"";position:absolute;left:50%;top:100%;transform:translateX(-50%);
+  border:6px solid transparent;border-top-color:rgba(20,10,2,.95)}
+.tooltip.show{opacity:1;transform:translateX(-50%) translateY(0)}
+/* 结果页 */
+.result{text-align:center;padding:1.4rem 1rem}
+.result .rhex{width:96px;height:104px;margin:0 auto 1rem;clip-path:var(--hex);
+  background:linear-gradient(160deg,var(--honey2),var(--deep));display:flex;align-items:center;justify-content:center;
+  box-shadow:0 12px 30px rgba(255,179,0,.4)}
+.result .rhex svg{width:44px;height:44px;color:var(--ink)}
+.result h3{margin:.2rem 0 .4rem}
+.result p{color:var(--muted);font-size:.85rem;margin:0 0 1.2rem;line-height:1.6}
+/* ============ 总览页 ============ */
+.hero{position:relative;overflow:hidden;text-align:center;padding:2.6rem 1.2rem 1.8rem;
+  background:linear-gradient(180deg,rgba(255,179,0,.14),rgba(46,26,8,.6));
+  border:1px solid rgba(255,179,0,.4);border-radius:1.3rem;
+  box-shadow:0 18px 44px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.1);margin-bottom:1.4rem}
+.hero .drips{position:absolute;top:0;left:0;right:0;display:flex;justify-content:space-around;padding:0 8%}
+.hero .drips i{display:block;width:12px;border-radius:0 0 8px 8px;
+  background:linear-gradient(180deg,var(--honey2),var(--deep));animation:dripdown 5s ease-in infinite}
+.hero .drips i:nth-child(1){height:26px;animation-delay:0s}
+.hero .drips i:nth-child(2){height:40px;animation-delay:-1.7s}
+.hero .drips i:nth-child(3){height:20px;animation-delay:-3.2s}
+.hero .drips i:nth-child(4){height:32px;animation-delay:-2.4s}
+.hero .drips i:nth-child(5){height:24px;animation-delay:-4.1s}
+@keyframes dripdown{0%{transform:scaleY(.55);transform-origin:top}55%{transform:scaleY(1.25);transform-origin:top}100%{transform:scaleY(.55);transform-origin:top}}
+.hero h2{position:relative;margin:.2rem 0 .3rem;font-size:1.85rem;letter-spacing:.03em;font-weight:800;
+  background:linear-gradient(180deg,#fff3cf,#ffb300 55%,#c25e00);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  filter:drop-shadow(0 3px 10px rgba(255,179,0,.35))}
+.hero p{position:relative;color:var(--muted);font-size:.85rem;margin:0 0 1.3rem;line-height:1.6}
+.hero .pool{position:absolute;left:12%;right:12%;bottom:-14px;height:28px;border-radius:50%;
+  background:radial-gradient(ellipse at center,rgba(255,207,92,.5),transparent 70%)}
+.swatches{display:grid;grid-template-columns:repeat(3,1fr);gap:.7rem}
+.sw{border:1px solid rgba(255,179,0,.3);border-radius:.8rem;overflow:hidden;cursor:pointer;background:var(--surface)}
+.sw i{display:block;height:52px}
+.sw span{display:block;font-size:.66rem;padding:.4rem .5rem;color:var(--muted);font-weight:500}
+.sw b{display:block;font-size:.72rem;color:var(--cream);padding:0 .5rem .45rem;font-weight:700}
+.type-row{padding:.55rem 0;border-bottom:1px dashed rgba(255,179,0,.2)}
+.type-row:last-child{border:0}
+.type-row small{display:block;color:var(--muted);font-size:.68rem;margin-bottom:.15rem;letter-spacing:.06em}
+.idx{display:flex;align-items:center;gap:.85rem;width:100%;padding:.85rem .4rem;background:none;border:0;
+  color:var(--cream);font-family:inherit;cursor:pointer;text-align:left;border-bottom:1px solid rgba(255,179,0,.14);font-size:.9rem}
+.idx:last-child{border-bottom:0}
+.idx .n{width:36px;height:40px;clip-path:var(--hex);flex:0 0 auto;
+  display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.85rem;color:var(--ink)}
+.idx small{display:block;color:var(--muted);font-size:.72rem;font-weight:400}
+.idx>svg{margin-left:auto;width:18px;height:18px;color:var(--muted)}
+.demo-row{display:flex;flex-wrap:wrap;gap:.8rem;align-items:center;margin-bottom:1rem}
+.demo-row.center{justify-content:center;padding:1.2rem .5rem;background:rgba(46,26,8,.5);
+  border:1px dashed rgba(255,179,0,.3);border-radius:var(--r)}
+.note{font-size:.75rem;color:var(--muted);line-height:1.6}
+code.k{font-family:ui-monospace,monospace;font-size:.72rem;background:rgba(0,0,0,.5);color:var(--honey2);
+  padding:.15rem .45rem;border-radius:.4rem}
+</style>
+</head>
+<body>
+<div class="phone">
+  <header class="appbar">
+    <span class="logo"><b>蜜</b></span>
+    <h1>HONEY UI<small>蜂蜜流体 · LIQUID HONEY</small></h1>
+    <span class="sp"></span>
+    <button class="icobtn round" style="width:38px;height:38px" onclick="toast('HONEY UI v1.0 · 纯手写 CSS')" aria-label="关于">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M12 11v5"/></svg>
+    </button>
+  </header>
+
+  <main class="screens">
+    <!-- ============ 总览 ============ -->
+    <section class="screen active" data-screen="home">
+      <div class="hero honeycomb">
+        <div class="drips"><i></i><i></i><i></i><i></i><i></i></div>
+        <h2>HONEY UI</h2>
+        <p>一套会流淌的组件库<br>琥珀金 · 粘稠蜜滴 · 蜂巢六边形 · 温暖质感</p>
+        <button class="btn-honey" data-goto="buttons">开始品尝组件</button>
+        <div class="pool"></div>
+      </div>
+
+      <div class="sec">
+        <h4 class="sec-t">设计 TOKENS</h4>
+        <div class="swatches">
+          <div class="sw" data-hex="#FFB300"><i style="background:#ffb300"></i><span>蜂蜜金</span><b>#FFB300</b></div>
+          <div class="sw" data-hex="#FFCF5C"><i style="background:#ffcf5c"></i><span>浅蜜</span><b>#FFCF5C</b></div>
+          <div class="sw" data-hex="#E07B00"><i style="background:#e07b00"></i><span>深蜜</span><b>#E07B00</b></div>
+          <div class="sw" data-hex="#7A3C00"><i style="background:#7a3c00"></i><span>焦糖</span><b>#7A3C00</b></div>
+          <div class="sw" data-hex="#FFF4DC"><i style="background:#fff4dc"></i><span>奶油</span><b>#FFF4DC</b></div>
+          <div class="sw" data-hex="#160B03"><i style="background:#160b03"></i><span>蜂巢底</span><b>#160B03</b></div>
+        </div>
+        <p class="note" style="margin-top:.6rem">点色卡可复制色值 · 圆角 1.1rem / 蜂巢六边形 clip-path / 高光折射 + 深色沉底</p>
+      </div>
+
+      <div class="sec">
+        <h4 class="sec-t">字阶</h4>
+        <div class="card">
+          <div class="type-row"><small>DISPLAY / 800</small><span style="font-size:1.7rem;font-weight:800">甜蜜正在流淌</span></div>
+          <div class="type-row"><small>TITLE / 700</small><span style="font-size:1.15rem;font-weight:700">组件全览 Demo</span></div>
+          <div class="type-row"><small>BODY / 400</small><span style="font-size:.9rem">所有按钮都有蜜一样的高光，开关像一滴蜜在滚动。</span></div>
+          <div class="type-row"><small>CAPTION / 500</small><span style="font-size:.72rem;color:var(--muted)">琥珀渐变 · 蜂巢纹理 · 粘稠动效</span></div>
+        </div>
+      </div>
+
+      <div class="sec">
+        <h4 class="sec-t">组件索引</h4>
+        <div class="rows">
+          <button class="idx" data-goto="buttons"><span class="n" style="background:linear-gradient(160deg,#ffcf5c,#e07b00)">按</span><span>按钮 Buttons<small>蜜金主按钮 · 波浪填充 · 蜂巢按钮 · 加载态</small></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></button>
+          <button class="idx" data-goto="forms"><span class="n" style="background:linear-gradient(160deg,#ffcf5c,#e07b00)">表</span><span>表单 Forms<small>输入框 · 下拉 · 开关 · 蜜滴评分 · 上传</small></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></button>
+          <button class="idx" data-goto="showcase"><span class="n" style="background:linear-gradient(160deg,#ffcf5c,#e07b00)">展</span><span>展示 Display<small>卡片 · 波浪进度 · 轮播 · 表格 · 空状态</small></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></button>
+          <button class="idx" data-goto="feedback"><span class="n" style="background:linear-gradient(160deg,#ffcf5c,#e07b00)">馈</span><span>反馈 Feedback<small>弹窗 · 抽屉 · 气泡提示 · 蜜滴加载 · 结果页</small></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 按钮 ============ -->
+    <section class="screen" data-screen="buttons">
+      <div class="sec">
+        <h4 class="sec-t"><span class="n">蜜</span>主按钮 · 蜂蜜金</h4>
+        <div class="demo-row center">
+          <button class="btn-honey lg">品尝一口甜蜜</button>
+        </div>
+        <p class="note">顶部折射高光 + 底部深色沉底，按下时整颗按钮下沉 3px，就像按进一勺蜜里。</p>
+      </div>
+      <div class="sec">
+        <h4 class="sec-t">变体</h4>
+        <div class="demo-row">
+          <button class="btn-honey sec">次按钮 · 可可底</button>
+          <button class="btn-honey ghost">幽灵 · 虚线蜜边</button>
+        </div>
+        <div class="demo-row">
+          <button class="btn-honey danger">危险 · 辣椒蜜</button>
+          <button class="btn-honey" disabled>禁用态</button>
+        </div>
+        <div class="demo-row">
+          <button class="btn-honey loading">酿造中 <span class="dots"><i></i><i></i><i></i></span></button>
+        </div>
+      </div>
+      <div class="sec">
+        <h4 class="sec-t">招牌 · 波浪填充</h4>
+        <div class="demo-row center">
+          <button class="btn-wave"><span class="fill"></span><span>悬停灌满蜂蜜</span></button>
+        </div>
+        <p class="note">双层波浪在底部缓缓起伏，悬停 / 按住时蜜面升起灌满整颗按钮。</p>
+      </div>
+      <div class="sec">
+        <h4 class="sec-t">蜂巢六边形</h4>
+        <div class="demo-row">
+          <button class="btn-hex" aria-label="收藏" onclick="toast('已加入蜂巢收藏')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-4.5-9.5-9C.8 8.6 2.6 5 6 5c2 0 3.4 1.1 4 2.2C10.6 6.1 12 5 14 5c3.4 0 5.2 3.6 3.5 7-2.5 4.5-9.5 9-9.5 9z"/></svg></button>
+          <button class="btn-hex" aria-label="分享" onclick="toast('分享一罐蜂蜜')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 10.5l6.8-4M8.6 13.5l6.8 4"/></svg></button>
+          <button class="btn-hex ghost" aria-label="设置" onclick="toast('打开蜂巢设置')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9L17 7M7 17l-2.1 2.1"/></svg></button>
+        </div>
+      </div>
+      <div class="sec">
+        <h4 class="sec-t">尺寸 · 图标按钮</h4>
+        <div class="demo-row">
+          <button class="btn-honey sm">小号</button>
+          <button class="btn-honey">中号</button>
+          <button class="btn-honey lg">大号</button>
+        </div>
+        <button class="btn-honey block" style="margin-bottom:1rem">通栏按钮 Block</button>
+        <div class="demo-row">
+          <button class="icobtn" aria-label="搜索"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></button>
+          <button class="icobtn hot" aria-label="喜爱"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-4.5-9.5-9C.8 8.6 2.6 5 6 5c2 0 3.4 1.1 4 2.2C10.6 6.1 12 5 14 5c3.4 0 5.2 3.6 3.5 7-2.5 4.5-9.5 9-9.5 9z"/></svg></button>
+          <button class="icobtn round" aria-label="播放"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></button>
+          <button class="icobtn round hot" aria-label="加号"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg></button>
+        </div>
+        <p class="note">用法：<code class="k">.btn-honey</code> 主按钮；<code class="k">.sec</code> <code class="k">.ghost</code> <code class="k">.danger</code> 变体；<code class="k">.btn-wave</code> 波浪填充；<code class="k">.btn-hex</code> 蜂巢六边形。</p>
+      </div>
+    </section>
+    <!-- ============ 表单 ============ -->
+    <section class="screen" data-screen="forms">
+      <div class="sec">
+        <h4 class="sec-t">输入</h4>
+        <div class="field">
+          <label>蜂场名称 <small>· 聚焦试试金色光圈</small></label>
+          <input class="inp" placeholder="给你的小蜂场起个名字">
+        </div>
+        <div class="field">
+          <label>搜索</label>
+          <div class="searchbar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+            <input placeholder="搜索蜜种、产地、甜度…">
+          </div>
+        </div>
+        <div class="field">
+          <label>品鉴笔记</label>
+          <textarea class="inp" placeholder="写下这罐蜜的香气与回甘…"></textarea>
+        </div>
+        <div class="field">
+          <label>蜜种选择 <small>· 自定义下拉</small></label>
+          <div class="select" id="honeySelect">
+            <button type="button"><span class="sel-txt">洋槐蜜 · 清甜</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></button>
+            <div class="opts">
+              <button type="button" class="sel">洋槐蜜 · 清甜</button>
+              <button type="button">枣花蜜 · 浓郁</button>
+              <button type="button">椴树蜜 · 绵密</button>
+              <button type="button">荔枝蜜 · 果香</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="sec">
+        <h4 class="sec-t">开关 · 复选 · 单选</h4>
+        <div class="demo-row">
+          <label class="switch lb"><input type="checkbox" checked><span class="tr"></span>蜜罐保温</label>
+        </div>
+        <div class="demo-row">
+          <label class="switch lb"><input type="checkbox"><span class="tr"></span>夜间蜂场灯</label>
+        </div>
+        <div class="card" style="margin-top:.4rem">
+          <label class="check"><input type="checkbox" checked><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span>记住我的口味</label>
+          <label class="check"><input type="checkbox"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span>新蜜到货提醒我</label>
+          <label class="check"><input type="radio" name="jar" checked><span class="box radio"></span>小罐装 250g</label>
+          <label class="check"><input type="radio" name="jar"><span class="box radio"></span>大罐装 500g</label>
+        </div>
+      </div>
+      <div class="sec">
+        <h4 class="sec-t">滑杆 · 步进器 · 分段</h4>
+        <div class="field">
+          <label>甜度 <small id="sweetLabel">· 60%</small></label>
+          <div class="slider-row">
+            <input type="range" class="slider" min="0" max="100" value="60" id="sweet">
+            <span class="slider-val" id="sweetVal">60%</span>
+          </div>
+        </div>
+        <div class="field">
+          <label>订购罐数</label>
+          <div class="stepper">
+            <button id="stepMinus" aria-label="减少">−</button><b id="stepNum">2</b><button id="stepPlus" aria-label="增加">＋</button>
+          </div>
+        </div>
+        <div class="segmented" id="segDemo">
+          <button class="on">按甜度</button><button>按产地</button><button>按价格</button>
+        </div>
+      </div>
+      <div class="sec">
+        <h4 class="sec-t">蜜滴评分</h4>
+        <div class="demo-row center">
+          <div class="rating" id="ratingDemo" role="radiogroup" aria-label="评分">
+            <button aria-label="1滴"><i></i></button><button aria-label="2滴"><i></i></button><button aria-label="3滴"><i></i></button><button aria-label="4滴"><i></i></button><button aria-label="5滴"><i></i></button>
+          </div>
+        </div>
+        <p class="note" style="text-align:center" id="ratingTip">点一点蜜滴，给这罐蜜打个分</p>
+      </div>
+      <div class="sec">
+        <h4 class="sec-t">上传</h4>
+        <label class="upload">
+          <input type="file" id="upFile">
+          <b>上传蜜罐照片</b>
+          <span id="upTip">点这里选择图片 · 支持 JPG / PNG</span>
+        </label>
+      </div>
+    </section>
+
+    <!-- ============ 展示 ============ -->
+    <section class="screen" data-screen="showcase">
+      <div class="sec">
+        <h4 class="sec-t">卡片</h4>
+        <div class="card" style="margin-bottom:.9rem">
+          <span class="tag honey" style="margin-bottom:.5rem"><span class="dot"></span>新酿</span>
+          <h3>基础卡片</h3>
+          <p>毛玻璃暖棕底 + 琥珀描边 + 顶部折射光线，像隔着蜜罐看里面的光。</p>
+        </div>
+        <div class="card" style="margin-bottom:.9rem" onclick="toast('你按了一张蜜卡')">
+          <div class="media"><span class="badge-h">热销</span><i class="bub"></i><i class="bub"></i><i class="bub"></i><span class="dropbig"></span></div>
+          <h3>多媒体卡片 · 气泡上浮</h3>
+          <p>封面里的小气泡一直在往上冒，右上角悬着一滴透亮的蜜。</p>
+        </div>
+      </div>
+      <div class="sec">
+        <h4 class="sec-t">轮播</h4>
+        <div class="carousel" id="carDemo">
+          <div class="track">
+            <div class="slide" style="background:linear-gradient(135deg,#ffcf5c,#e07b00)"><h3>春蜜上市</h3><p>洋槐花开，第一罐已经装罐</p></div>
+            <div class="slide" style="background:linear-gradient(135deg,#c98a2e,#7a3c00)"><h3>蜂场开放日</h3><p>周六来摇蜜，亲手装一罐带走</p></div>
+            <div class="slide" style="background:linear-gradient(135deg,#8a5a12,#3a2408)"><h3>深夜蜜茶</h3><p>温水冲开，配一本慢慢读的书</p></div>
+          </div>
+          <div class="dots"><i class="on"></i><i></i><i></i></div>
+        </div>
+      </div>
+      <div class="sec">
+        <h4 class="sec-t">芯片 · 徽标 · 蜂巢头像</h4>
+        <div class="demo-row" id="chipRow">
+          <button class="chip on">全部蜜种</button><button class="chip">花蜜</button><button class="chip">树蜜</button><button class="chip">野蜜</button>
+        </div>
+        <div class="demo-row">
+          <span class="tag honey"><span class="dot"></span>酿造中</span>
+          <span class="tag glass">v1.0</span>
+          <span class="tag ghost">待封盖</span>
+        </div>
+        <div class="demo-row">
+          <span class="avatar" style="background:linear-gradient(160deg,#ffcf5c,#e07b00)">蜂</span>
+          <span class="avatar stack" style="background:linear-gradient(160deg,#ffb300,#c25e00)">农</span>
+          <span class="avatar stack" style="background:linear-gradient(160deg,#ffe9b0,#ffcf5c)">客</span>
+          <span class="avatar stack" style="background:#31200b;color:var(--honey2)">+9</span>
+        </div>
+      </div>
+      <div class="sec">
+        <h4 class="sec-t">波浪进度条</h4>
+        <div class="field"><label>酿蜜进度 · 72%</label><div class="progress"><div class="fill" style="--p:72%"><span class="wavebar"></span></div></div></div>
+        <div class="field"><label>装罐进度 · 45%</label><div class="progress"><div class="fill" style="--p:45%"><span class="wavebar"></span></div></div></div>
+        <div class="field"><label>库存告急 · 18%</label><div class="progress red"><div class="fill" style="--p:18%"></div></div></div>
+      </div>
+      <div class="sec">
+        <h4 class="sec-t">列表行</h4>
+        <div class="rows">
+          <button class="row-it" onclick="toast('打开：我的蜜罐')"><span class="ri" style="background:linear-gradient(160deg,#ffcf5c,#e07b00)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3h8M9 3v3l-2 3v10a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9l-2-3V3"/></svg></span><span class="tx"><b>我的蜜罐</b><small>已封存 12 罐 · 今年新酿</small></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></button>
+          <button class="row-it" onclick="toast('打开：蜂场日记')"><span class="ri" style="background:linear-gradient(160deg,#ffb300,#c25e00)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v5l3 2"/><circle cx="12" cy="12" r="9"/></svg></span><span class="tx"><b>蜂场日记</b><small>今日晴 · 蜂群活跃</small></span><span class="tag honey">NEW</span></button>
+          <button class="row-it" onclick="toast('打开：设置')"><span class="ri" style="background:linear-gradient(160deg,#ffe9b0,#ffcf5c)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9L17 7M7 17l-2.1 2.1"/></svg></span><span class="tx"><b>设置</b><small>提醒 · 口味偏好 · 关于</small></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></button>
+        </div>
+      </div>
+      <div class="sec">
+        <h4 class="sec-t">手风琴 · 顶部页签 · 表格</h4>
+        <div class="acc open">
+          <button>蜂蜜为什么会结晶？<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></button>
+          <div class="body"><p>葡萄糖含量高的蜜在低温下会析出结晶，这是天然现象，隔温水慢慢化开即可，风味不受影响。</p></div>
+        </div>
+        <div class="acc">
+          <button>这套 UI 的招牌动效是什么？<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></button>
+          <div class="body"><p>波浪填充按钮：双层波浪在按钮底部起伏，悬停时蜜面升起灌满；还有总览页顶部缓缓拉长的蜜滴，和进度条表面的流动波纹。</p></div>
+        </div>
+        <div class="ttabs" id="ttabsDemo" style="margin-top:1rem">
+          <button class="on">说明</button><button>参数</button><button>库存</button>
+        </div>
+        <div class="card" id="ttabPanel"><p>页签内容面板：点上面切换。这里是「说明」。</p></div>
+      </div>
+      <div class="sec">
+        <h4 class="sec-t">骨架屏 · 空状态</h4>
+        <div class="card" style="margin-bottom:.9rem">
+          <div class="skel" style="height:18px;width:55%;margin-bottom:.7rem"></div>
+          <div class="skel" style="height:14px;width:90%;margin-bottom:.5rem"></div>
+          <div class="skel" style="height:14px;width:75%"></div>
+        </div>
+        <div class="card">
+          <div class="empty">
+            <div class="hcomb"><span class="dr"></span></div>
+            <h3 style="margin:.2rem 0;color:var(--cream)">蜂巢还是空的</h3>
+            <p>去按钮页舀一勺蜜，把甜蜜装进来吧</p>
+            <button class="btn-honey sm" data-goto="buttons">去逛逛</button>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- ============ 反馈 ============ -->
+    <section class="screen" data-screen="feedback">
+      <div class="sec">
+        <h4 class="sec-t">内联横幅</h4>
+        <div class="banner ok">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5L16 9.5"/></svg>
+          <div><b>酿造完成</b><p>34 个组件全部渲染通过，甜度刚刚好。</p></div>
+        </div>
+        <div class="banner warn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l10 17H2z"/><path d="M12 10v4M12 17.5h.01"/></svg>
+          <div><b>注意</b><p>蜂蜜太稠时流动会变慢，温暖它一下就好。</p></div>
+        </div>
+      </div>
+      <div class="sec">
+        <h4 class="sec-t">弹层演示</h4>
+        <div class="demo-row">
+          <button class="btn-honey sm" id="openModal">打开弹窗</button>
+          <button class="btn-honey sm sec" id="openConfirm">确认对话框</button>
+        </div>
+        <div class="demo-row">
+          <button class="btn-honey sm ghost" id="openSheet">底部抽屉</button>
+          <button class="btn-honey sm" id="showToast">显示 Toast</button>
+        </div>
+        <p class="note">弹窗顶部垂着三滴蜜，抽屉从底部滑入，Toast 带着小气泡 2 秒后消失。</p>
+      </div>
+      <div class="sec">
+        <h4 class="sec-t">气泡提示 · 流淌进度 · 蜜滴加载</h4>
+        <div class="demo-row">
+          <span class="tip-wrap">
+            <button class="btn-honey sm sec" id="tipBtn">气泡提示</button>
+            <span class="tooltip" id="tooltip">这罐蜜来自海拔 900 米的槐花林</span>
+          </span>
+        </div>
+        <div class="field"><label>正在灌装（不确定进度）</label><div class="flowbar"><i></i></div></div>
+        <div class="drop-loader"><span class="d"></span><span class="pool"></span><span class="note">蜜滴落下中…</span></div>
+      </div>
+      <div class="sec">
+        <h4 class="sec-t">结果页</h4>
+        <div class="card">
+          <div class="result">
+            <div class="rhex"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M4.5 12.5l5 5L19.5 7"/></svg></div>
+            <h3>封罐成功！</h3>
+            <p>这罐洋槐蜜已经封好盖，<br>放在阴凉处可以慢慢享用一整年。</p>
+            <button class="btn-honey" onclick="toast('回到蜂场')">完成</button>
+          </div>
+        </div>
+      </div>
+      <div class="sec">
+        <h4 class="sec-t">设计语言小结</h4>
+        <div class="card">
+          <p>整套组件围绕「粘稠流淌」展开：</p>
+          <p style="margin-top:.6rem">① <code class="k">.btn-honey</code> 高光折射 + 沉底阴影 = 一勺立体蜜<br>② <code class="k">.btn-wave</code> 双层波浪 = 会灌满的按钮<br>③ <code class="k">clip-path: var(--hex)</code> = 蜂巢六边形头像 / 按钮 / 图标<br>④ 蜜滴造型 = 评分、加载、滑杆拇指的共同母题</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- 底部 Tab -->
+  <nav class="tabbar" id="tabbar">
+    <span class="tab-pill" id="tabPill"></span>
+    <button class="tab on" data-tab="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>总览</button>
+    <button class="tab" data-tab="buttons"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11.5V5.5a1.5 1.5 0 0 1 3 0v5m0-2a1.5 1.5 0 0 1 3 0v2m0-1a1.5 1.5 0 0 1 3 0v4c0 3-2 5.5-5.5 5.5S7 18 6 15.5l-1.2-3.2a1.5 1.5 0 0 1 2.6-1.4L9 13.5"/></svg>按钮</button>
+    <button class="tab" data-tab="forms"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 8h10M18 8h2M4 16h2M10 16h10"/><circle cx="16" cy="8" r="2.2"/><circle cx="8" cy="16" r="2.2"/></svg>表单</button>
+    <button class="tab" data-tab="showcase"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l7 4v10l-7 4-7-4V7z"/><path d="M12 3v10M5 7l7 6 7-6"/></svg>展示</button>
+    <button class="tab" data-tab="feedback"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 8-3 8h18s-3-1-3-8"/><path d="M10.3 21a2 2 0 0 0 3.4 0"/></svg>反馈</button>
+  </nav>
+
+  <!-- 弹层 -->
+  <div class="scrim" id="scrim"></div>
+  <div class="modal" id="modal" role="dialog" aria-modal="true">
+    <div class="mdrip"><i></i><i></i><i></i></div>
+    <div class="mhex">蜜</div>
+    <h3 id="modalTitle">蜂蜜弹窗</h3>
+    <p id="modalMsg">这是一个标准弹窗：顶部垂蜜、蜂巢徽记、标题、描述、双按钮。点遮罩或取消可关闭。</p>
+    <div class="mrow">
+      <button class="btn-honey ghost sm" data-close>取消</button>
+      <button class="btn-honey sm" data-close onclick="toast('已确认，甜蜜送达')">确认</button>
+    </div>
+  </div>
+  <div class="sheet" id="sheet">
+    <div class="grab"></div>
+    <button class="opt" data-close onclick="toast('已分享一罐蜜')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 10.5l6.8-4M8.6 13.5l6.8 4"/></svg>分享给朋友</button>
+    <button class="opt" data-close onclick="toast('已收进蜂巢')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l7 4v10l-7 4-7-4V7z"/></svg>收进蜂巢</button>
+    <button class="opt" data-close onclick="toast('已倒掉')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2m3 0l-.8 12.2a1 1 0 0 1-1 .8H7.8a1 1 0 0 1-1-.8L6 7"/></svg>倒掉这罐</button>
+  </div>
+  <div class="toast" id="toast"><span class="tbub"><i></i><i></i><i></i></span><span id="toastMsg"></span></div>
+</div>
+
+<script>
+/* Tab 切换 + ?tab= 深链 */
+const tabs=[...document.querySelectorAll('#tabbar .tab')];
+const screens=[...document.querySelectorAll('.screen')];
+const tabPill=document.getElementById('tabPill');
+function movePill(){
+  const t=document.querySelector('#tabbar .tab.on');if(!t||!tabPill)return;
+  tabPill.style.left=t.offsetLeft+'px';tabPill.style.width=t.offsetWidth+'px';
+}
+function goto(name){
+  tabs.forEach(t=>t.classList.toggle('on',t.dataset.tab===name));
+  screens.forEach(s=>s.classList.toggle('active',s.dataset.screen===name));
+  const sc=document.querySelector('.screen.active'); if(sc) sc.scrollTop=0;
+  movePill();
+}
+tabs.forEach(t=>t.addEventListener('click',()=>goto(t.dataset.tab)));
+document.querySelectorAll('[data-goto]').forEach(b=>b.addEventListener('click',()=>goto(b.dataset.goto)));
+const qtab=new URLSearchParams(location.search).get('tab');
+if(qtab&&document.querySelector(`[data-tab="${qtab}"]`)) goto(qtab);
+movePill();
+window.addEventListener('resize',movePill);
+window.addEventListener('load',movePill);
+
+/* Toast */
+let toastTimer;
+function toast(msg){
+  const el=document.getElementById('toast');
+  document.getElementById('toastMsg').textContent=msg;
+  el.classList.add('show');clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>el.classList.remove('show'),2000);
+}
+/* 弹层 */
+const scrim=document.getElementById('scrim'),
+      modal=document.getElementById('modal'),
+      sheet=document.getElementById('sheet');
+function openLayer(el){scrim.classList.add('show');el.classList.add('show')}
+function closeLayers(){scrim.classList.remove('show');modal.classList.remove('show');sheet.classList.remove('show')}
+document.getElementById('openModal').onclick=()=>{
+  document.getElementById('modalTitle').textContent='蜂蜜弹窗';
+  document.getElementById('modalMsg').textContent='这是一个标准弹窗：顶部垂蜜、蜂巢徽记、标题、描述、双按钮。点遮罩或取消可关闭。';
+  openLayer(modal)};
+document.getElementById('openConfirm').onclick=()=>{
+  document.getElementById('modalTitle').textContent='确定倒掉吗？';
+  document.getElementById('modalMsg').textContent='这罐蜜将全部倒掉，甜味不再，此操作不可撤销。';
+  openLayer(modal)};
+document.getElementById('openSheet').onclick=()=>openLayer(sheet);
+document.getElementById('showToast').onclick=()=>toast('这是一条 Toast，2 秒后消失');
+scrim.onclick=closeLayers;
+document.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click',closeLayers));
+
+/* 自定义下拉 */
+const hsel=document.getElementById('honeySelect');
+hsel.querySelector('button').addEventListener('click',e=>{e.stopPropagation();hsel.classList.toggle('open')});
+hsel.querySelectorAll('.opts button').forEach(o=>o.addEventListener('click',()=>{
+  hsel.querySelectorAll('.opts button').forEach(x=>x.classList.remove('sel'));
+  o.classList.add('sel');
+  hsel.querySelector('.sel-txt').textContent=o.textContent;
+  hsel.classList.remove('open');toast('已选择：'+o.textContent);
+}));
+document.addEventListener('click',e=>{if(!hsel.contains(e.target))hsel.classList.remove('open')});
+
+/* 芯片单选 */
+document.getElementById('chipRow').addEventListener('click',e=>{
+  const c=e.target.closest('.chip');if(!c)return;
+  document.querySelectorAll('#chipRow .chip').forEach(x=>x.classList.remove('on'));
+  c.classList.add('on');toast('筛选：'+c.textContent);
+});
+/* 分段 */
+document.getElementById('segDemo').addEventListener('click',e=>{
+  const b=e.target.closest('button');if(!b)return;
+  document.querySelectorAll('#segDemo button').forEach(x=>x.classList.remove('on'));
+  b.classList.add('on');
+});
+/* 顶部页签 */
+const tpanels={0:'页签内容面板：点上面切换。这里是「说明」。',
+  1:'参数：--honey #FFB300 · --deep #E07B00 · --dark #7A3C00 · 圆角 1.1rem · 六边形 clip-path。',
+  2:'<table class="tbl"><tr><th>蜜种</th><th>产地</th><th class="num">库存</th></tr><tr><td>洋槐蜜</td><td>秦岭</td><td class="num">128</td></tr><tr><td>枣花蜜</td><td>吕梁</td><td class="num">86</td></tr><tr><td>椴树蜜</td><td>长白山</td><td class="num">42</td></tr></table>'};
+document.getElementById('ttabsDemo').addEventListener('click',e=>{
+  const b=e.target.closest('button');if(!b)return;
+  const bs=[...document.querySelectorAll('#ttabsDemo button')];
+  bs.forEach(x=>x.classList.remove('on'));b.classList.add('on');
+  document.getElementById('ttabPanel').innerHTML=tpanels[bs.indexOf(b)].startsWith('<table')?tpanels[bs.indexOf(b)]:'<p>'+tpanels[bs.indexOf(b)]+'</p>';
+});
+/* 轮播圆点 */
+const carTrack=document.querySelector('#carDemo .track');
+carTrack.addEventListener('scroll',()=>{
+  const i=Math.round(carTrack.scrollLeft/carTrack.clientWidth);
+  document.querySelectorAll('#carDemo .dots i').forEach((d,j)=>d.classList.toggle('on',j===i));
+});
+/* 滑杆 */
+const sweet=document.getElementById('sweet');
+sweet.addEventListener('input',()=>{
+  sweet.style.setProperty('--v',sweet.value+'%');
+  document.getElementById('sweetVal').textContent=sweet.value+'%';
+  document.getElementById('sweetLabel').textContent='· '+sweet.value+'%';
+});
+sweet.style.setProperty('--v','60%');
+/* 步进器 */
+let stepN=2;const stepNum=document.getElementById('stepNum');
+document.getElementById('stepPlus').onclick=()=>{stepN=Math.min(99,stepN+1);stepNum.textContent=stepN};
+document.getElementById('stepMinus').onclick=()=>{stepN=Math.max(0,stepN-1);stepNum.textContent=stepN};
+/* 蜜滴评分 */
+const rbs=[...document.querySelectorAll('#ratingDemo button')];
+rbs.forEach((b,i)=>b.addEventListener('click',()=>{
+  rbs.forEach((x,j)=>x.classList.toggle('lit',j<=i));
+  document.getElementById('ratingTip').textContent='你给了 '+(i+1)+' 滴蜜 · '+(i>=4?'甜到心坎里':i>=2?'恰到好处':'清淡微甜');
+}));
+/* 上传 */
+document.getElementById('upFile').addEventListener('change',e=>{
+  const f=e.target.files[0];
+  if(f){document.getElementById('upTip').textContent='已选择：'+f.name;toast('照片已加入蜜罐')}
+});
+/* 气泡提示 */
+const tip=document.getElementById('tooltip');
+document.getElementById('tipBtn').addEventListener('click',e=>{
+  e.stopPropagation();tip.classList.toggle('show');
+});
+document.addEventListener('click',()=>tip.classList.remove('show'));
+/* 手风琴 */
+document.querySelectorAll('.acc>button').forEach(btn=>btn.addEventListener('click',()=>{
+  const acc=btn.parentElement,body=acc.querySelector('.body'),open=acc.classList.toggle('open');
+  body.style.maxHeight=open?body.scrollHeight+'px':'0';
+}));
+const firstAcc=document.querySelector('.acc.open .body');
+if(firstAcc) firstAcc.style.maxHeight=firstAcc.scrollHeight+'px';
+/* 色卡复制 */
+document.querySelectorAll('.sw').forEach(sw=>sw.addEventListener('click',()=>{
+  const hex=sw.dataset.hex;
+  (navigator.clipboard?navigator.clipboard.writeText(hex):Promise.reject()).then(
+    ()=>toast('已复制 '+hex),()=>toast(hex));
+}));
+</script>
+</body>
+</html>

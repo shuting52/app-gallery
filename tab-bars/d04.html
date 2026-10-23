@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>d04 · 霓虹灯管底栏</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{background:#050508;display:flex;justify-content:center;align-items:center;min-height:100vh;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif}
+.phone{width:430px;height:900px;max-height:100vh;background:#0b0b12;position:relative;overflow:hidden;border:1px solid #1c1c28}
+.status{height:40px;display:flex;align-items:center;justify-content:space-between;padding:0 22px;font-size:12px;font-weight:600;color:#8a8aa0}
+.nav{height:50px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:#e8e8f5;letter-spacing:2px}
+.feed{position:absolute;top:90px;bottom:110px;left:0;right:0;overflow:hidden}
+.card{margin:10px 12px;border-radius:12px;padding:14px;background:#14141d;border:1px solid #23232f;display:flex;gap:12px;align-items:center}
+.av{width:48px;height:48px;border-radius:10px;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px;font-weight:700}
+.tt{font-size:14px;font-weight:600;color:#d5d5e8}
+.dd{font-size:12px;color:#6a6a80;margin-top:4px}
+/* ---- 霓虹底栏 ---- */
+.tabbar{position:absolute;left:0;right:0;bottom:0;height:96px;background:#0d0d15;border-top:1px solid #1e1e2c;display:flex;z-index:5}
+.tab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;color:#4a4a60;font-size:11px;cursor:pointer;position:relative;transition:color .3s}
+.tab .ic{font-size:25px;transition:all .3s;filter:grayscale(1)}
+.tab.on{color:#0ff}
+.tab.on .ic{filter:none;animation:flick .4s;
+text-shadow:0 0 6px #0ff,0 0 14px #0ff,0 0 28px #0ff}
+@keyframes flick{0%,100%{opacity:1}30%{opacity:.4}55%{opacity:.9}75%{opacity:.55}}
+/* 顶部灯管 */
+.tube{position:absolute;top:-2px;height:3px;width:25%;left:0;border-radius:2px;background:linear-gradient(90deg,#0ff,#f0f,#0ff);box-shadow:0 0 10px #0ff,0 0 22px #f0f;transition:left .35s cubic-bezier(.5,0,.2,1)}
+</style>
+</head>
+<body>
+<div class="phone">
+<div class="status"><span>21:56</span><span>5G 🔋</span></div>
+<div class="nav">霓 虹 街 区</div>
+<div class="feed" id="feed"></div>
+<div class="tabbar" id="bar">
+<div class="tube" id="tube"></div>
+<div class="tab on"><span class="ic">🏠</span>首页</div>
+<div class="tab"><span class="ic">🧭</span>发现</div>
+<div class="tab"><span class="ic">✉️</span>消息</div>
+<div class="tab"><span class="ic">👤</span>我</div>
+</div>
+</div>
+<script>
+var rows=[["电音派对","周六 warehouse 夜场","#f0f","音"],["赛博展","霓虹艺术装置展","#0ff","展"],["深夜食堂","24h 拉面店","#ff9a3d","面"],["街机厅","复古街机新到","#7a5aff","机"],["屋顶酒吧","城市夜景露台","#ff4d6a","酒"],["午夜场","科幻电影马拉松","#3ddad7","影"],["黑胶店","二手黑胶挖掘","#ffd479","胶"]];
+var h="";
+for(var i=0;i<rows.length;i++){h+='<div class="card"><div class="av" style="background:'+rows[i][2]+'55;color:'+rows[i][2]+';border:1px solid '+rows[i][2]+'">'+rows[i][3]+'</div><div><div class="tt">'+rows[i][0]+'</div><div class="dd">'+rows[i][1]+'</div></div></div>';}
+document.getElementById('feed').innerHTML=h;
+var bar=document.getElementById('bar'),tube=document.getElementById('tube');
+var tabs=bar.querySelectorAll('.tab');
+function go(n){for(var i=0;i<tabs.length;i++){tabs[i].classList.toggle('on',i===n);}tube.style.left=(n*25)+'%';var ic=tabs[n].querySelector('.ic');ic.style.animation='none';void ic.offsetWidth;ic.style.animation='';}
+for(var i=0;i<tabs.length;i++){(function(k){tabs[k].addEventListener('click',function(){go(k);});})(i);}
+var init=0;
+try{var q=new URLSearchParams(location.search).get('tab');if(q!==null&&+q>=0&&+q<4){init=+q;}}catch(e){}
+requestAnimationFrame(function(){go(init);});
+</script>
+</body>
+</html>

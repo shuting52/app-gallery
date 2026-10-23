@@ -1,0 +1,17 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>涟漪扩散 · 加载动画</title><style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;background:radial-gradient(600px 400px at 50% 40%,#06222b,#03090c 70%);display:flex;flex-direction:column;align-items:center;justify-content:center;
+font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;color:#e8eaf0;padding:24px 12px}
+h1{font-size:15px;font-weight:600;letter-spacing:4px;color:#22d3ee;margin-bottom:6px}
+.sub{font-size:11px;color:#8a90a6;margin-bottom:30px;letter-spacing:3px}
+.stage{width:360px;max-width:94vw;height:300px;position:relative;display:flex;align-items:center;justify-content:center}
+.rpw{width:300px;height:300px;position:relative}
+.rpw i{position:absolute;display:block;top:50%;left:50%;width:26px;height:26px;margin:-13px 0 0 -13px;border-radius:50%;
+border:3px solid #22d3ee;animation:rip 2.6s ease-out infinite}
+@keyframes rip{0%{transform:scale(1);opacity:1}100%{transform:scale(9);opacity:0}}
+.dotc{position:absolute;top:50%;left:50%;width:22px;height:22px;margin:-11px 0 0 -11px;border-radius:50%;
+background:radial-gradient(circle at 35% 35%,#bff6ff,#22d3ee 70%);box-shadow:0 0 24px #22d3ee;animation:br2 2.6s ease-in-out infinite}
+@keyframes br2{50%{transform:scale(1.35)}}
+</style></head><body><h1>涟漪扩散</h1><div class="sub">LOADING · 加载中</div><div class="stage"><div class="rpw"><i style="animation-delay:-0.00s"></i><i style="animation-delay:-0.65s"></i><i style="animation-delay:-1.30s"></i><i style="animation-delay:-1.95s"></i><div class="dotc"></div></div></div></body></html>

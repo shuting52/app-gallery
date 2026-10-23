@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>竹简徐展 · 底部栏</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{background:#141416;display:flex;justify-content:center;align-items:flex-start;padding:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans CJK SC",sans-serif}
+.phone{width:430px;height:900px;border-radius:48px;overflow:hidden;position:relative;background:#f6f1e2;box-shadow:0 30px 80px rgba(0,0,0,.6),0 0 0 10px #0a0a0c,0 0 0 12px #3a3a3e;flex:none}
+.content{padding:64px 28px 0}
+.content h1{font-size:40px;letter-spacing:6px;color:#2e2113}
+.content .sub{margin-top:12px;font-size:15px;color:#9a8a68;line-height:1.8;min-height:54px}
+.card{margin-top:22px;height:148px;border-radius:20px;background:linear-gradient(135deg,#efe6cf,#e2d3ae);position:relative;overflow:hidden;box-shadow:0 8px 20px rgba(90,70,40,.12);border:1px solid rgba(120,95,55,.18)}
+.card::before{content:"";position:absolute;left:22px;top:26px;width:36%;height:14px;border-radius:7px;background:rgba(96,70,35,.25)}
+.card::after{content:"";position:absolute;left:22px;top:54px;width:62%;height:10px;border-radius:5px;background:rgba(96,70,35,.13);box-shadow:0 24px 0 rgba(96,70,35,.1)}
+.tabbar{position:absolute;left:0;right:0;bottom:0;height:208px;background:linear-gradient(180deg,#7d5c33,#5b3f21);display:flex;justify-content:center;gap:22px;align-items:flex-start;padding-top:22px;border-top:3px solid #3a2a13}
+.tab{background:none;border:0;cursor:pointer;display:flex;flex-direction:column;align-items:center;padding:0}
+.slip{width:68px;height:68px;border-radius:12px;background:linear-gradient(180deg,#e9c47f,#cfa14e);box-shadow:inset 0 0 0 2px rgba(96,64,24,.42),0 6px 14px rgba(0,0,0,.4);position:relative;overflow:hidden;transition:height .55s cubic-bezier(.65,0,.35,1);display:flex;flex-direction:column;align-items:center}
+.slip::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(90deg,rgba(120,80,30,.14) 0 3px,transparent 3px 9px);pointer-events:none}
+.ic{height:68px;min-height:68px;display:flex;align-items:center;justify-content:center;color:#4a3016;position:relative;z-index:1}
+.ic svg{width:28px;height:28px;display:block}
+.tag{writing-mode:vertical-rl;font-size:16px;letter-spacing:9px;color:#3a2410;opacity:0;transition:opacity .35s ease .2s;position:relative;z-index:1;display:block;padding-right:2px}
+.brush{width:48px;height:7px;margin-top:9px;background:linear-gradient(90deg,transparent,#2b1a0c 25%,#2b1a0c 75%,transparent);border-radius:50%;transform:scaleX(0);transition:transform .45s ease .32s;position:relative;z-index:1;display:block}
+.tab.on .slip{height:158px;box-shadow:inset 0 0 0 2px rgba(96,64,24,.42),0 0 20px rgba(255,220,150,.35),0 6px 14px rgba(0,0,0,.4)}
+.tab.on .tag{opacity:1}
+.tab.on .brush{transform:scaleX(1)}
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="content">
+    <h1 id="ctitle">首页</h1>
+    <p class="sub" id="csub">简册缓缓展开，字是竖着长的。</p>
+    <div class="card"></div>
+    <div class="card"></div>
+    <div class="card"></div>
+  </div>
+  <nav class="tabbar" id="bar"></nav>
+</div>
+<script>
+var ICONS=[
+'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.5 12 3l9 8.5"/><path d="M5.5 10.5V21h5v-6h3v6h5V10.5"/></svg>',
+'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M15.5 8.5 13 13l-4.5 2.5L11 11z"/></svg>',
+'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20l1-4L16.5 4.5a2.1 2.1 0 0 1 3 3L8 19z"/><path d="M14.5 6.5l3 3"/></svg>',
+'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 5-5.5 8-5.5s6.5 1.5 8 5.5"/></svg>'
+];
+var TABS=[
+ {t:'首页',s:'简册缓缓展开，字是竖着长的。'},
+ {t:'市集',s:'绳穿竹简，市集的喧闹收在两行字里。'},
+ {t:'雅集',s:'以文会友，落笔处自有回响。'},
+ {t:'我的',s:'卷起千山，藏的都是自己的故事。'}
+];
+var bar=document.getElementById('bar');
+TABS.forEach(function(tb,i){
+  var b=document.createElement('button');b.className='tab';b.setAttribute('aria-label',tb.t);
+  b.innerHTML='<span class="slip"><span class="ic">'+ICONS[i]+'</span><span class="tag">'+tb.t+'</span><span class="brush"></span></span>';
+  b.addEventListener('click',function(){select(i);});
+  bar.appendChild(b);
+});
+var tabs=Array.prototype.slice.call(bar.querySelectorAll('.tab'));
+var ctitle=document.getElementById('ctitle'),csub=document.getElementById('csub');
+function select(k){
+  k=Math.max(0,Math.min(k,TABS.length-1));
+  tabs.forEach(function(t,i){t.classList.toggle('on',i===k);});
+  ctitle.textContent=TABS[k].t;csub.textContent=TABS[k].s;
+  try{history.replaceState(null,'','?tab='+k);}catch(e){}
+}
+var start=parseInt(new URLSearchParams(location.search).get('tab'),10);
+if(isNaN(start)||start<0||start>=TABS.length)start=0;
+select(start);
+</script>
+</body>
+</html>

@@ -1,0 +1,36 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>碎片聚合</title><style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{background:#0c1220;display:flex;justify-content:center;font-family:-apple-system,"PingFang SC","Microsoft YaHei","Noto Sans CJK SC",sans-serif;overflow:hidden}
+.stage{width:430px;height:900px;max-height:100vh;position:relative;overflow:hidden;background:radial-gradient(90% 70% at 50% 38%,#16213a 0%,#0c1220 70%)}
+.board{position:absolute;left:50%;top:250px;width:260px;height:260px;margin-left:-130px}
+.tile{position:absolute;width:122px;height:122px;border-radius:22px;display:flex;align-items:center;justify-content:center;font-size:56px;font-weight:800;color:#fff;box-shadow:0 14px 34px rgba(0,0,0,.45);animation:flyin 1.5s cubic-bezier(.25,1,.35,1) both}
+.tile.t1{left:0;top:0;background:linear-gradient(135deg,#ff6b6b,#ee3a5b);--fx:-260px;--fy:-260px;animation-delay:.15s}
+.tile.t2{right:0;top:0;background:linear-gradient(135deg,#4ecdc4,#1a9e8f);--fx:260px;--fy:-260px;animation-delay:.35s}
+.tile.t3{left:0;bottom:0;background:linear-gradient(135deg,#ffd93d,#ff9d2e);--fx:-260px;--fy:260px;animation-delay:.55s}
+.tile.t4{right:0;bottom:0;background:linear-gradient(135deg,#6c8cff,#4a3ee8);--fx:260px;--fy:260px;animation-delay:.75s}
+@keyframes flyin{from{opacity:0;transform:translate(var(--fx),var(--fy)) rotate(100deg) scale(.5)}60%{opacity:1}to{opacity:1;transform:translate(0,0) rotate(0) scale(1)}}
+.board{animation:breathe 3.4s ease-in-out 2.2s infinite}
+@keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.03)}}
+.guide{position:absolute;border:2px dashed rgba(255,255,255,.18);border-radius:26px}
+.guide.g1{left:0;top:0;width:122px;height:122px}
+.guide.g2{right:0;top:0;width:122px;height:122px}
+.guide.g3{left:0;bottom:0;width:122px;height:122px}
+.guide.g4{right:0;bottom:0;width:122px;height:122px}
+.brand{position:absolute;left:0;right:0;bottom:180px;text-align:center;animation:up 1.2s ease 1.6s both}
+.brand h1{font-size:50px;letter-spacing:16px;text-indent:16px;color:#fff;font-weight:800}
+.brand h1 i{font-style:normal;background:linear-gradient(90deg,#ff6b6b,#ffd93d,#4ecdc4,#6c8cff);-webkit-background-clip:text;background-clip:text;color:transparent}
+.brand p{margin-top:12px;font-size:13px;letter-spacing:7px;color:#8fa0bf}
+@keyframes up{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:none}}
+.replay{position:absolute;bottom:34px;left:50%;transform:translateX(-50%);z-index:50;padding:10px 26px;border-radius:999px;border:1px solid rgba(255,255,255,.4);background:rgba(255,255,255,.08);color:#fff;font-size:13px;letter-spacing:4px;text-indent:4px;cursor:pointer}
+.replay:active{transform:translateX(-50%) scale(.94)}
+</style></head><body><div class="stage">
+<div class="board">
+<div class="guide g1"></div><div class="guide g2"></div><div class="guide g3"></div><div class="guide g4"></div>
+<div class="tile t1">拼</div><div class="tile t2">图</div><div class="tile t3">归</div><div class="tile t4">位</div>
+</div>
+<div class="brand"><h1><i>碎片聚合</i></h1><p>每一块 都有位置</p></div>
+<button class="replay" onclick="location.reload()">重新播放</button>
+</div></body></html>

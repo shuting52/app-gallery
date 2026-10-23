@@ -1,0 +1,104 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>w30 · 初见问卷</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC",sans-serif;background:#05070c;display:flex;justify-content:center;color:#fff;overflow:hidden}
+.stage{width:430px;height:900px;position:relative;overflow:hidden;flex-shrink:0;background:radial-gradient(120% 90% at 50% 0%,#1c1440 0%,#120e2c 55%,#0b0e16 100%)}
+.stars{position:absolute;inset:0;z-index:4;pointer-events:none}
+.stars i{position:absolute;width:3px;height:3px;border-radius:50%;background:#fff;display:block;animation:tw 3s ease-in-out infinite}
+@keyframes tw{50%{opacity:.2;transform:scale(.7)}}
+.mock{position:absolute;inset:0;filter:blur(6px) brightness(.55)}
+.sb{height:46px;display:flex;justify-content:space-between;align-items:center;padding:0 26px;font-size:13px;font-weight:600}
+.sic{width:70px;height:12px;border-radius:6px;background:#2a3040}
+.mh{display:flex;align-items:center;gap:10px;padding:14px 20px}
+.mh i{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,#3a2c68,#261e48);display:block}
+.mh em{width:110px;height:14px;border-radius:7px;background:#2e2652;display:block}
+.banner{height:150px;margin:6px 20px 14px;border-radius:18px;background:linear-gradient(135deg,#2c2060,#1d1544)}
+.row{display:flex;gap:12px;align-items:center;margin:0 20px 12px}
+.row i{width:52px;height:52px;border-radius:14px;background:#2e2652;display:block;flex-shrink:0}
+.row b{display:block;width:150px;height:13px;border-radius:6px;background:#3a3068;margin-bottom:8px}
+.row s{display:block;width:100px;height:10px;border-radius:5px;background:#251e48;text-decoration:none}
+.tabbar{position:absolute;bottom:0;left:0;right:0;height:84px;background:rgba(18,14,44,.9);display:flex;justify-content:space-around;align-items:center;border-top:1px solid #2e2652}
+.tabbar i{width:26px;height:26px;border-radius:8px;background:#3a3068;display:block}
+.ov{position:absolute;inset:0;z-index:10;display:flex;align-items:center;justify-content:center;background:rgba(10,8,26,.55);animation:fadeIn .4s both}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.modal{width:340px;border-radius:26px;padding:30px 24px 26px;position:relative;background:linear-gradient(165deg,#2a2060,#181240);border:1px solid rgba(170,140,255,.3);box-shadow:0 30px 80px rgba(0,0,0,.55);animation:pop .55s cubic-bezier(.2,1.4,.4,1) both;animation-delay:.12s}
+@keyframes pop{from{opacity:0;transform:scale(.7) translateY(30px)}to{opacity:1;transform:none}}
+.x{position:absolute;top:14px;right:14px;width:30px;height:30px;border-radius:50%;border:0;background:rgba(255,255,255,.12);color:#fff;font-size:15px;cursor:pointer;z-index:2}
+.pbar{height:8px;border-radius:4px;background:rgba(255,255,255,.1);overflow:hidden;margin:14px 0 4px}
+.pbar i{display:block;height:100%;width:0;border-radius:4px;background:linear-gradient(90deg,#a78bfa,#7c5cf0);transition:width .4s}
+.pnum{font-size:11px;color:#9d8fd8;text-align:right}
+.q{margin-top:12px}
+.q h3{font-size:16px;margin-bottom:12px}
+.opt{display:block;width:100%;text-align:left;border:1px solid rgba(170,140,255,.25);background:rgba(255,255,255,.05);color:#d9d2f5;border-radius:14px;padding:12px 14px;font-size:14px;margin-bottom:8px;cursor:pointer;transition:all .2s}
+.opt.sel{border-color:#a78bfa;background:rgba(167,139,250,.18);box-shadow:0 0 14px rgba(167,139,250,.3)}
+.opt:active{transform:scale(.98)}
+h2{font-size:20px}
+p.sub{font-size:13px;color:#b3a6e2;line-height:1.7;margin-top:4px}
+.btn{display:block;width:100%;border:0;border-radius:16px;padding:14px;font-size:16px;font-weight:700;cursor:pointer;margin-top:18px;background:linear-gradient(180deg,#b39dff,#7c5cf0);color:#fff;box-shadow:0 8px 22px rgba(140,110,250,.45)}
+.btn:active{transform:scale(.97)}
+.btn:disabled{background:#3a3268;color:#8b80b8;box-shadow:none;cursor:default}
+.donebox{text-align:center;padding:10px 0 4px;display:none}
+.donebox .big{font-size:56px;display:block;animation:pop2 .5s cubic-bezier(.2,1.6,.4,1) both}
+@keyframes pop2{from{transform:scale(.4);opacity:0}to{transform:scale(1);opacity:1}}
+.replay{position:absolute;bottom:24px;left:50%;transform:translateX(-50%);z-index:20;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.1);color:#fff;border-radius:999px;padding:10px 22px;font-size:13px;cursor:pointer;backdrop-filter:blur(8px)}
+</style></head>
+<body><div class="stage">
+<div class="stars" id="stars"></div>
+<div class="mock"><div class="sb"><span>9:41</span><span class="sic"></span></div>
+<div class="mh"><i></i><em></em></div><div class="banner"></div>
+<div class="row"><i></i><div><b></b><s></s></div></div>
+<div class="row"><i></i><div><b></b><s></s></div></div>
+<div class="tabbar"><i></i><i></i><i></i><i></i></div></div>
+<div class="ov" id="ov"><div class="modal">
+<button class="x" id="x">✕</button>
+<div id="quiz">
+<h2>初见问卷 🪐</h2>
+<p class="sub">2 个小问题，帮我们为你定制首页</p>
+<div class="pbar"><i id="fill"></i></div><div class="pnum" id="pnum">0 / 2</div>
+<div class="q" id="q1"><h3>1 · 你平时更关注？</h3>
+<button class="opt" data-q="1">效率工具</button>
+<button class="opt" data-q="1">生活灵感</button>
+<button class="opt" data-q="1">学习成长</button></div>
+<div class="q" id="q2" style="display:none"><h3>2 · 希望多久收到精选推送？</h3>
+<button class="opt" data-q="2">每天</button>
+<button class="opt" data-q="2">每周</button>
+<button class="opt" data-q="2">不打扰我</button></div>
+<button class="btn" id="next" disabled>下一步</button>
+</div>
+<div class="donebox" id="donebox"><span class="big">🎉</span>
+<h2 style="margin-top:10px">定制完成！</h2>
+<p class="sub">首页已按你的偏好重新编排<br>开始探索吧</p>
+<button class="btn" id="start">开始探索</button></div>
+</div></div>
+<button class="replay" id="replay">重新弹出</button>
+</div>
+<script>
+const st=document.getElementById('stars');
+for(let i=0;i<26;i++){const s=document.createElement('i');
+s.style.left=(Math.random()*430)+'px';s.style.top=(Math.random()*900)+'px';
+s.style.animationDelay=(-Math.random()*3)+'s';st.appendChild(s);}
+const ov=document.getElementById('ov'),fill=document.getElementById('fill'),pnum=document.getElementById('pnum'),
+next=document.getElementById('next'),q1=document.getElementById('q1'),q2=document.getElementById('q2');
+let step=1,sel1=false,sel2=false;
+document.querySelectorAll('.opt').forEach(o=>o.onclick=()=>{
+document.querySelectorAll('.opt[data-q="'+o.dataset.q+'"]').forEach(x=>x.classList.remove('sel'));
+o.classList.add('sel');
+if(o.dataset.q==='1'){sel1=true;}else{sel2=true;}
+next.disabled=!(step===1?sel1:sel2);});
+next.onclick=()=>{if(step===1&&sel1){step=2;q1.style.display='none';q2.style.display='block';
+fill.style.width='50%';pnum.textContent='1 / 2';next.disabled=!sel2;next.textContent='完成定制';}
+else if(step===2&&sel2){fill.style.width='100%';pnum.textContent='2 / 2';
+document.getElementById('quiz').style.display='none';
+document.getElementById('donebox').style.display='block';}};
+document.getElementById('start').onclick=()=>ov.style.display='none';
+document.getElementById('x').onclick=()=>ov.style.display='none';
+document.getElementById('replay').onclick=()=>{ov.style.display='flex';step=1;sel1=sel2=false;
+document.getElementById('quiz').style.display='block';document.getElementById('donebox').style.display='none';
+q1.style.display='block';q2.style.display='none';fill.style.width='0';pnum.textContent='0 / 2';
+next.disabled=true;next.textContent='下一步';
+document.querySelectorAll('.opt').forEach(x=>x.classList.remove('sel'));
+const m=ov.querySelector('.modal');m.style.animation='none';void m.offsetWidth;m.style.animation='';};
+</script></body></html>

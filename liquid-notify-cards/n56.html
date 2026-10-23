@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>景点推荐</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      min-height: 100vh; margin: 0; padding: 48px 18px; color: #fff;
+      font: 15px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(ellipse at 15% 15%, rgba(70,180,140,.7), transparent 36%),
+        radial-gradient(ellipse at 85% 35%, rgba(60,140,200,.65), transparent 38%),
+        radial-gradient(ellipse at 55% 90%, rgba(40,120,110,.6), transparent 40%),
+        linear-gradient(150deg, #0a1a16, #123028 55%, #081310);
+      background-attachment: fixed;
+    }
+    main { width: min(440px, 100%); margin: 0 auto; display: grid; gap: 18px; }
+    .heading { padding: 4px 6px 8px; }
+    .eyebrow { margin: 0 0 8px; color: rgba(255,255,255,.68); font-size: 11px; letter-spacing: .18em; }
+    h1 { margin: 0; font-size: 30px; letter-spacing: -.04em; }
+    .hint { margin: 7px 0 0; color: rgba(255,255,255,.68); }
+    .card {
+      position: relative; isolation: isolate; overflow: hidden; padding: 18px;
+      border: 1px solid rgba(255,255,255,.28); border-radius: 28px;
+      background: linear-gradient(135deg, rgba(150,255,210,.18), rgba(150,255,210,.06) 48%, rgba(90,220,170,.12));
+      -webkit-backdrop-filter: blur(24px) saturate(175%);
+      backdrop-filter: blur(24px) saturate(175%);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.42), inset 0 -1px 0 rgba(255,255,255,.08), 0 20px 48px rgba(8,8,24,.28);
+      transition: transform .25s ease, border-color .25s ease;
+    }
+    .card::before {
+      content: ""; position: absolute; z-index: 0; inset: 0; border-radius: inherit; pointer-events: none;
+      background: linear-gradient(62deg, rgba(200,255,230,.32) 0%, rgba(200,255,230,.08) 20%, transparent 45%, transparent 70%, rgba(150,255,205,.15) 100%);
+      opacity: .8;
+    }
+    .card::after {
+      content: ""; position: absolute; z-index: 0; bottom:-58px;left:-42px;;
+      width: 190px; height: 130px; border: 1px solid rgba(255,255,255,.22); border-radius: 50%;
+      background: radial-gradient(ellipse, rgba(255,255,255,.22), transparent 68%);
+      filter: blur(2px); transform: rotate(160deg); pointer-events: none;
+    }
+    .card > * { position: relative; z-index: 1; }
+    .card:hover { transform: translateY(-3px); border-color: rgba(255,255,255,.46); }
+    .top, .title-line { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .top { margin-bottom: 15px; }
+    .pill { padding: 6px 12px; border: 1px solid rgba(255,255,255,.30); border-radius: 999px;
+      background: rgba(255,255,255,.10); color: rgba(255,255,255,.94); font-size: 12px;
+      box-shadow: inset 0 1px rgba(255,255,255,.18); white-space: nowrap; }
+    .pill.hot { background: linear-gradient(135deg,#4ade9e,#16a37a); border-color: transparent; font-weight: 700; }
+    .row { display: flex; align-items: center; gap: 12px; min-width: 0; }
+    .face { display: grid; flex: 0 0 52px; width: 52px; height: 52px; place-items: center;
+      border: 1px solid rgba(255,255,255,.45); border-radius: 18px;
+      background: linear-gradient(145deg, #3fae86, #26755a 60%, #174a39); color: #fff;
+      box-shadow: inset 0 1px 5px rgba(255,255,255,.5), 0 5px 15px rgba(15,12,35,.2); }
+    .face svg { width: 30px; height: 30px; display: block; }
+    .copy { flex: 1; min-width: 0; }
+    .title-line { margin-bottom: 5px; }
+    .title-line strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 16px; }
+    time, .preview { color: rgba(255,255,255,.72); font-size: 12px; }
+    .preview { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .unread { flex: 0 0 auto; color: #ffd9a8; font-size: 12px; font-weight: 700; }
+    .big { font-size: 34px; font-weight: 800; letter-spacing: -.02em; line-height: 1.1; }
+    .big small { font-size: 14px; font-weight: 400; opacity: .7; }
+    .sub { color: rgba(255,255,255,.72); font-size: 12px; margin-top: 4px; }
+    .bar { height: 8px; border-radius: 4px; background: rgba(255,255,255,.14); margin-top: 12px; overflow: hidden; }
+    .bar i { display: block; height: 100%; border-radius: 4px; background: linear-gradient(135deg,#4ade9e,#16a37a); width: 72%; }
+    .tl { display: flex; align-items: center; gap: 0; margin-top: 14px; }
+    .tl .st { text-align: center; flex: 0 0 auto; }
+    .tl .st b { display: block; font-size: 17px; }
+    .tl .st span { font-size: 11px; color: rgba(255,255,255,.65); }
+    .tl .ln { flex: 1; height: 2px; background: rgba(255,255,255,.2); margin: 0 10px; position: relative; border-radius: 2px; }
+    .tl .ln i { position: absolute; left: 0; top: 0; bottom: 0; width: 55%; border-radius: 2px; background: linear-gradient(135deg,#4ade9e,#16a37a); }
+    .btns { display: flex; gap: 10px; margin-top: 14px; }
+    .btn { flex: 1; text-align: center; padding: 10px 0; border-radius: 14px; font-size: 13px; font-weight: 700;
+      border: 1px solid rgba(255,255,255,.3); background: rgba(255,255,255,.10); color: #fff; }
+    .btn.pri { background: linear-gradient(135deg,#4ade9e,#16a37a); border-color: transparent; }
+    .chips { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+    .chip { font-size: 11px; padding: 5px 10px; border-radius: 999px; background: rgba(255,255,255,.12);
+      border: 1px solid rgba(255,255,255,.2); color: rgba(255,255,255,.85); }
+    .dot { width: 8px; height: 8px; border-radius: 50%; background: #ff5f56; box-shadow: 0 0 8px #ff5f56; display: inline-block; margin-right: 6px; }
+    @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+      .card { background: rgba(43,35,68,.88); }
+    }
+    
+
+  </style>
+</head>
+<body>
+  <main>
+    <header class="heading">
+      <p class="eyebrow">LIQUID GLASS · 出行</p>
+      <h1>景点推荐</h1>
+      <p class="hint">附近有值得一去的好地方。</p>
+    </header>
+
+    <section class="card">
+      <div class="top">
+        <span class="pill hot">附近好去处</span>
+        <time>距您 1.2 km</time>
+      </div>
+      <div class="row">
+        <div class="face"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 19 9 7l4 7 2.5-4L21 19z"/><circle cx="17" cy="6" r="2"/></svg></div>
+        <div class="copy">
+          <div class="title-line"><strong>雾岭国家森林公园</strong><time>4.8 分 · 2.3 万条评价</time></div>
+          <div class="preview">云海日出观景点本周开放夜爬预约</div>
+        </div>
+        <span class="unread">热门</span>
+      </div>
+      <div class="btns"><span class="btn pri">导航前往</span><span class="btn">收藏</span></div>
+    </section>
+
+    <section class="card">
+      <div class="top">
+        <span class="pill">本地人推荐</span>
+        <time>09:40</time>
+      </div>
+      <div class="row">
+        <div class="face"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M19.1 4.9l-1.8 1.8M6.7 17.3l-1.8 1.8"/></svg></div>
+        <div class="copy">
+          <div class="title-line"><strong>湖畔咖啡市集</strong><time>09:40</time></div>
+          <div class="preview">每周六湖边有 40 家手作摊位，适合遛弯</div>
+        </div>
+      </div>
+      <div class="chips"><span class="chip">免费入场</span><span class="chip">宠物友好</span></div>
+    </section>
+  </main>
+</body>
+</html>

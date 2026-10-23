@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>钱包支付 · 液态App套装</title>
+<style>
+/* ============ tokens（照抄脚手架） ============ */
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --glass-radius:34px; --glass-blur:24px;
+  --glass-tint-top:rgba(255,255,255,.17); --glass-tint-mid:rgba(255,255,255,.05); --glass-tint-bot:rgba(255,255,255,.10);
+  --glass-edge-width:1.2px;
+  --glass-edge-strong:rgba(255,255,255,.95); --glass-edge-mid:rgba(255,255,255,.22);
+  --glass-edge-weak:rgba(255,255,255,.05); --glass-edge-mid2:rgba(255,255,255,.12); --glass-edge-soft:rgba(255,255,255,.78);
+  --glass-shadow-far:0 26px 60px -26px rgba(0,0,0,.85); --glass-shadow-near:0 10px 26px -14px rgba(0,0,0,.55);
+  --text-1:#fff; --text-2:rgba(255,255,255,.62); --text-3:rgba(255,255,255,.60);
+  --ease-liquid:cubic-bezier(.22,.9,.28,1.2);
+}
+html,body{height:100%}
+body{font:400 15px/1.45 -apple-system,"SF Pro Text","PingFang SC","Helvetica Neue",system-ui,sans-serif;
+  color:var(--text-1);background:#07060b;overflow-x:hidden;-webkit-font-smoothing:antialiased;
+  display:flex;justify-content:center}
+/* ============ 壁纸（照抄 LiquidWallpaper.vue） ============ */
+.wallpaper{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none}
+.wallpaper i{position:absolute;inset:-30%;display:block;
+  background:radial-gradient(42% 32% at 20% 22%,#ff3b5c 0%,transparent 62%),
+  radial-gradient(38% 30% at 84% 16%,#ff9f1c 0%,transparent 60%),
+  radial-gradient(52% 42% at 76% 74%,#ff2d55 0%,transparent 64%),
+  radial-gradient(42% 38% at 24% 82%,#6b5cff 0%,transparent 62%),
+  radial-gradient(30% 26% at 52% 48%,#ffd166 0%,transparent 68%),#140a20;
+  filter:blur(48px) saturate(150%);animation:drift 26s ease-in-out infinite alternate}
+.wallpaper i:nth-child(2){background:conic-gradient(from 200deg at 50% 55%,#ff2d55,#ff9f0a,#ffd60a,#34c759,#0a84ff,#bf5af2,#ff2d55);
+  filter:blur(110px);opacity:.5;mix-blend-mode:screen;animation-duration:34s;animation-direction:alternate-reverse}
+@keyframes drift{from{transform:translate3d(-3%,-2%,0) scale(1.05) rotate(-3deg)}
+  to{transform:translate3d(4%,3%,0) scale(1.16) rotate(4deg)}}
+/* ============ 玻璃卡（照抄 LiquidGlass.vue） ============ */
+.lg{position:relative;isolation:isolate;border-radius:var(--lg-r,var(--glass-radius));
+  background:linear-gradient(155deg,var(--glass-tint-top) 0%,var(--glass-tint-mid) 42%,var(--glass-tint-bot) 100%);
+  -webkit-backdrop-filter:blur(var(--lg-blur,var(--glass-blur))) saturate(180%) brightness(1.06);
+  backdrop-filter:blur(var(--lg-blur,var(--glass-blur))) saturate(180%) brightness(1.06);
+  box-shadow:inset 0 1px 1px -.5px rgba(255,255,255,.70),inset 0 -1px 1px -.5px rgba(255,255,255,.18),
+  inset 0 14px 22px -14px rgba(255,255,255,.45),var(--glass-shadow-far),var(--glass-shadow-near);
+  transition:transform .38s var(--ease-liquid)}
+.lg:active{transform:scale(.982)}
+.lg::before{content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;pointer-events:none;
+  mix-blend-mode:screen;opacity:.85;
+  background:radial-gradient(120% 62% at 18% -26%,rgba(255,255,255,.78),transparent 58%),
+  radial-gradient(70% 46% at 92% -12%,rgba(255,255,255,.34),transparent 60%),
+  repeating-linear-gradient(102deg,rgba(255,255,255,.055) 0 2px,transparent 2px 26px)}
+.lg::after{content:"";position:absolute;inset:0;z-index:1;border-radius:inherit;padding:var(--glass-edge-width);
+  pointer-events:none;
+  background:linear-gradient(150deg,var(--glass-edge-strong) 0%,var(--glass-edge-mid) 22%,var(--glass-edge-weak) 48%,var(--glass-edge-mid2) 72%,var(--glass-edge-soft) 100%);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;mask-composite:exclude}
+/* ============ 屏幕骨架 ============ */
+.screen{position:relative;z-index:1;width:430px;max-width:100%;min-height:900px;height:900px;overflow:hidden;
+  display:flex;flex-direction:column;padding:18px 14px 12px}
+.statusbar{display:flex;justify-content:space-between;align-items:center;font-size:13px;font-weight:600;
+  padding:2px 8px 10px;color:var(--text-1)}
+.statusbar .sic{display:flex;gap:6px;align-items:center;font-size:12px}
+.apptitle{font-size:30px;font-weight:700;letter-spacing:1px;padding:6px 4px 14px}
+.apptitle small{display:block;font-size:12px;font-weight:400;color:var(--text-2);letter-spacing:2px;margin-top:4px}
+.content{flex:1;overflow:hidden;display:flex;flex-direction:column;gap:14px}
+.homebar{width:134px;height:5px;border-radius:3px;background:rgba(255,255,255,.85);margin:10px auto 4px}
+/* ============ 通用小件 ============ */
+.av{display:block;flex:none;border-radius:50%;
+  background:conic-gradient(from calc(var(--hue,0)*1deg),#ff9f0a,#ff2d55,#bf5af2,#0a84ff,#ff9f0a);
+  box-shadow:0 0 0 1px rgba(255,255,255,.4),0 6px 16px rgba(0,0,0,.4)}
+/* ============ 本页 ============ */
+.balance{padding:26px 24px 22px;overflow:hidden}
+.balance .blabel{font-size:13px;color:var(--text-2);letter-spacing:3px}
+.balance .bamt{font-size:44px;font-weight:800;letter-spacing:1px;margin:8px 0 4px;font-variant-numeric:tabular-nums}
+.balance .bamt small{font-size:24px;font-weight:700}
+.balance .beye{font-size:12px;color:var(--text-3)}
+.paybtns{display:flex;gap:12px;margin-top:18px}
+.paybtns button{flex:1;padding:13px 0;border:0;border-radius:999px;font-size:15px;font-weight:700;letter-spacing:6px;
+  font-family:inherit;cursor:pointer;color:#101018;
+  background:linear-gradient(135deg,#ffd166,#ff9f1c);box-shadow:0 8px 22px rgba(255,159,28,.35)}
+.paybtns button.ghost{color:var(--text-1);background:rgba(255,255,255,.12);
+  border:1px solid rgba(255,255,255,.35);box-shadow:inset 0 1px 0 rgba(255,255,255,.35)}
+.quick{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.qitem{display:flex;flex-direction:column;align-items:center;gap:8px;padding:16px 0 14px;font-size:12.5px;
+  color:var(--text-1);--lg-r:22px;--lg-blur:18px;cursor:pointer}
+.qitem .qic{font-size:24px}
+.grouplabel{font-size:13px;color:var(--text-2);letter-spacing:2px;padding:2px 6px 0}
+.billcard{padding:8px 20px}
+.bill{display:flex;align-items:center;gap:13px;padding:13px 0;min-width:0}
+.bill + .bill{border-top:1px solid rgba(255,255,255,.12)}
+.bill .bic{flex:none;width:42px;height:42px;border-radius:14px;display:grid;place-items:center;font-size:21px;
+  background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.20)}
+.bill .main{flex:1;min-width:0}
+.bill .bname{font-size:15px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bill .btime{font-size:12px;color:var(--text-3);margin-top:3px}
+.bill .bamt{flex:none;font-size:16px;font-weight:700;font-variant-numeric:tabular-nums}
+.bill .bamt.in{color:#4de8a0}
+.bill .bamt.out{color:var(--text-1)}
+</style>
+</head>
+<body>
+<div class="wallpaper" aria-hidden="true"><i></i><i></i></div>
+<div class="screen">
+  <div class="statusbar"><span>9:41</span><span class="sic">📶 📡 🔋</span></div>
+  <div class="apptitle">钱包支付<small>WALLET</small></div>
+  <div class="content">
+    <div class="lg balance">
+      <div class="blabel">总资产 · 余额</div>
+      <div class="bamt"><small>¥</small> 12,880.50</div>
+      <div class="beye">本月支出 ¥3,214.00 · 较上月 −8%</div>
+      <div class="paybtns">
+        <button type="button">收款</button>
+        <button type="button" class="ghost">付款</button>
+      </div>
+    </div>
+
+    <div class="quick">
+      <div class="lg qitem"><span class="qic">◧</span>扫一扫</div>
+      <div class="lg qitem"><span class="qic">⇄</span>转账</div>
+      <div class="lg qitem"><span class="qic">▭</span>信用卡</div>
+      <div class="lg qitem"><span class="qic">🧾</span>账单</div>
+    </div>
+
+    <div class="grouplabel">最近账单</div>
+    <div class="lg billcard">
+      <div class="bill">
+        <span class="bic">☕</span>
+        <div class="main"><div class="bname">街角咖啡馆</div><div class="btime">今天 09:12 · 餐饮</div></div>
+        <span class="bamt out">−¥38.00</span>
+      </div>
+      <div class="bill">
+        <span class="bic">🚇</span>
+        <div class="main"><div class="bname">城市轨道交通</div><div class="btime">今天 08:05 · 出行</div></div>
+        <span class="bamt out">−¥6.00</span>
+      </div>
+      <div class="bill">
+        <span class="bic">💼</span>
+        <div class="main"><div class="bname">十月稿费入账</div><div class="btime">昨天 18:30 · 收入</div></div>
+        <span class="bamt in">+¥4,500.00</span>
+      </div>
+      <div class="bill">
+        <span class="bic">🛒</span>
+        <div class="main"><div class="bname">云端超市</div><div class="btime">10月21日 · 日用</div></div>
+        <span class="bamt out">−¥126.80</span>
+      </div>
+    </div>
+  </div>
+  <div class="homebar"></div>
+</div>
+</body>
+</html>

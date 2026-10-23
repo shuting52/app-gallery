@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>弹簧凸起 · 底部Tab</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#20242e;display:flex;justify-content:center;min-height:100vh;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif}
+.phone{width:430px;height:900px;background:#fff7f2;position:relative;overflow:hidden}
+.status{height:44px;display:flex;justify-content:space-between;align-items:center;padding:0 26px;font-size:14px;font-weight:700;color:#3a2a20}
+.content{position:absolute;top:44px;left:0;right:0;bottom:0;overflow:hidden}
+.feed{padding:14px 16px 150px}
+.hero{border-radius:18px;padding:22px 18px;color:#fff;background:linear-gradient(120deg,#ff9a5a,#ff5a7a);margin-bottom:14px}
+.hero h2{font-size:20px}
+.hero p{font-size:12px;opacity:.85;margin-top:6px}
+.card{background:#fff;border-radius:14px;padding:14px 16px;margin-bottom:12px;display:flex;align-items:center;gap:12px;box-shadow:0 2px 10px rgba(120,60,20,.07)}
+.sw{width:44px;height:44px;border-radius:12px;flex-shrink:0}
+.ct{font-size:14px;font-weight:600;color:#3a2a20}
+.cs{font-size:12px;color:#a08a76;margin-top:4px}
+/* ---- 底栏 ---- */
+.dock{position:absolute;left:0;right:0;bottom:0;height:92px;background:#fff;box-shadow:0 -6px 24px rgba(120,60,20,.10)}
+.tabs{position:absolute;inset:0;display:flex}
+.tab{flex:1;background:none;border:0;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;cursor:pointer}
+.glyph{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:#b09a86;background:#f7efe8;transition:opacity .25s}
+.tlabel{font-size:11px;color:#b09a86;transition:color .3s}
+.tab.on .tlabel{color:#ff5a7a;font-weight:700}
+.pop{position:absolute;left:50%;bottom:16px;width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,#ff9a5a,#ff5a7a);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;box-shadow:0 12px 24px rgba(255,90,122,.45);opacity:0;transform:translateX(-50%) translateY(26px) scale(.5);transition:transform .55s cubic-bezier(.3,1.9,.45,1),opacity .3s;pointer-events:none}
+.tab.on .pop{opacity:1;transform:translateX(-50%) translateY(-56px) scale(1)}
+.pop .pi{font-size:20px;font-weight:700;line-height:1}
+.pop .pl{font-size:10px;opacity:.92}
+.safe{position:absolute;bottom:0;left:0;right:0;height:12px;background:#fff}
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="status"><span>9:41</span><span>5G ▮▮▮</span></div>
+  <div class="content"><div class="feed">
+    <div class="hero"><h2>甜品研究所</h2><p>今日上新 6 款 · 限量供应</p></div>
+    <div class="card"><div class="sw" style="background:linear-gradient(135deg,#ffb37a,#ff7a5a)"></div><div><div class="ct">焦糖布丁</div><div class="cs">微苦焦糖 · 丝滑</div></div></div>
+    <div class="card"><div class="sw" style="background:linear-gradient(135deg,#f5a8c0,#e06a8f)"></div><div><div class="ct">草莓大福</div><div class="cs">当季草莓 · 限量</div></div></div>
+    <div class="card"><div class="sw" style="background:linear-gradient(135deg,#8a5a3c,#5a3a24)"></div><div><div class="ct">生巧蛋糕</div><div class="cs">70% 黑巧克力</div></div></div>
+    <div class="card"><div class="sw" style="background:linear-gradient(135deg,#a8d8a8,#5aa85a)"></div><div><div class="ct">抹茶千层</div><div class="cs">宇治抹茶粉</div></div></div>
+    <div class="card"><div class="sw" style="background:linear-gradient(135deg,#ffd57e,#f5a623)"></div><div><div class="ct">蛋挞拼盘</div><div class="cs">葡式 · 现烤</div></div></div>
+    <div class="card"><div class="sw" style="background:linear-gradient(135deg,#b39dff,#7c6cf5)"></div><div><div class="ct">芋泥麻薯</div><div class="cs">香芋 · 拉丝</div></div></div>
+  </div></div>
+  <div class="dock">
+    <div class="tabs">
+      <button class="tab on"><span class="glyph">首</span><span class="tlabel">首页</span><span class="pop"><span class="pi">首</span><span class="pl">首页</span></span></button>
+      <button class="tab"><span class="glyph">发</span><span class="tlabel">发现</span><span class="pop"><span class="pi">发</span><span class="pl">发现</span></span></button>
+      <button class="tab"><span class="glyph">消</span><span class="tlabel">消息</span><span class="pop"><span class="pi">消</span><span class="pl">消息</span></span></button>
+      <button class="tab"><span class="glyph">我</span><span class="tlabel">我</span><span class="pop"><span class="pi">我</span><span class="pl">我</span></span></button>
+    </div>
+    <div class="safe"></div>
+  </div>
+</div>
+<script>
+var tabs=Array.prototype.slice.call(document.querySelectorAll('.tab'));
+function go(i){
+  tabs.forEach(function(t,k){t.classList.toggle('on',k===i);});
+}
+tabs.forEach(function(t,i){t.addEventListener('click',function(){go(i);});});
+var n=parseInt(new URLSearchParams(location.search).get('tab'),10);
+go((n>=0&&n<4)?n:0);
+</script>
+</body>
+</html>

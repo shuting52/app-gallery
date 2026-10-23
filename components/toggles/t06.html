@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>火箭发射</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;display:flex;align-items:center;justify-content:center;background:#0e0f13;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;color:#e8eaf0;padding:20px}
+body.freeze *{transition:none!important;animation:none!important}
+.stage{width:360px;max-width:100%;text-align:center}
+h2{font-size:17px;letter-spacing:3px;margin-bottom:4px}
+.sub{font-size:12px;color:#8a8fa3;margin-bottom:20px}
+.device{cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent}
+.skybox{width:320px;height:360px;margin:0 auto;border-radius:20px;position:relative;overflow:hidden;background:linear-gradient(180deg,#070b22 0%,#16224f 55%,#2c2350 100%);box-shadow:0 12px 32px rgba(0,0,0,.5)}
+.star{position:absolute;width:3px;height:3px;border-radius:50%;background:#fff;opacity:.8}
+.pad{position:absolute;bottom:0;left:50%;width:190px;height:24px;margin-left:-95px;background:linear-gradient(180deg,#6e7688,#3a4152);border-radius:6px 6px 0 0}
+.tower{position:absolute;bottom:24px;left:50%;width:10px;height:150px;margin-left:66px;background:repeating-linear-gradient(180deg,#4a5162 0 8px,#333949 8px 16px)}
+.rocket{position:absolute;bottom:24px;left:50%;width:54px;height:150px;margin-left:-27px;transition:transform 1.8s cubic-bezier(.45,0,.6,.4)}
+.device.on .rocket{transform:translateY(-215px)}
+.body{position:absolute;top:34px;left:9px;width:36px;height:96px;border-radius:18px;background:linear-gradient(90deg,#c9cfdb,#f4f6fa 45%,#c9cfdb)}
+.nose{position:absolute;top:0;left:9px;width:36px;height:36px;background:linear-gradient(180deg,#ff6b6b,#c62f2f);clip-path:polygon(50% 0,100% 100%,0 100%)}
+.win{position:absolute;top:58px;left:50%;width:20px;height:20px;margin-left:-10px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#bfe6fd,#2e86c1);border:3px solid #8f97a9}
+.fin{position:absolute;bottom:6px;width:0;height:0;border-left:13px solid transparent;border-right:13px solid transparent;border-bottom:26px solid #c62f2f}
+.fin.l{left:-8px;transform:rotate(18deg)}.fin.r{right:-8px;transform:rotate(-18deg)}
+.flame{position:absolute;bottom:-42px;left:50%;width:30px;height:44px;margin-left:-15px;background:linear-gradient(180deg,#fff8d0,#ffb300 55%,#ff5a00);clip-path:polygon(50% 100%,4% 0,96% 0);transform-origin:50% 0;opacity:0;transition:opacity .3s}
+.device.on .flame{opacity:1;animation:flick .16s ease-in-out infinite alternate}
+@keyframes flick{from{transform:scaleY(1) scaleX(1)}to{transform:scaleY(1.4) scaleX(.9)}}
+.smoke{position:absolute;bottom:6px;width:26px;height:26px;border-radius:50%;background:rgba(200,205,220,.5);opacity:0}
+.device.on .smoke{animation:puff 1.6s ease-out infinite}
+.smoke.s1{left:32%}.smoke.s2{left:58%;animation-delay:.5s}.smoke.s3{left:44%;animation-delay:1s}
+@keyframes puff{0%{opacity:.7;transform:translateY(0) scale(.6)}100%{opacity:0;transform:translateY(-70px) scale(1.8)}}
+.glow{position:absolute;bottom:0;left:50%;width:200px;height:60px;margin-left:-100px;background:radial-gradient(ellipse,rgba(255,150,50,.5),transparent 70%);opacity:0;transition:opacity .8s}
+.device.on .glow{opacity:1}
+.tag{position:absolute;top:12px;left:12px;font-size:11px;letter-spacing:2px;color:#8a8fa3;background:rgba(0,0,0,.35);padding:5px 10px;border-radius:12px}
+.status{margin-top:18px;font-size:14px;color:#9aa0b4}
+.status b{color:#ffd479}
+.hint{font-size:11px;color:#5c6172;margin-top:6px}
+</style>
+</head>
+<body>
+<div class="stage">
+<h2>火箭发射</h2>
+<div class="sub">点击发射 / 回收火箭</div>
+<div class="device" id="dev">
+<div class="skybox">
+<span class="star" style="top:30px;left:40px"></span><span class="star" style="top:70px;left:120px"></span><span class="star" style="top:44px;left:230px"></span><span class="star" style="top:110px;left:280px"></span><span class="star" style="top:150px;left:70px"></span><span class="star" style="top:90px;left:180px"></span>
+<div class="tag">发射台 03</div>
+<div class="tower"></div><div class="pad"></div><div class="glow"></div>
+<div class="rocket"><div class="nose"></div><div class="body"></div><div class="win"></div><div class="fin l"></div><div class="fin r"></div><div class="flame"></div></div>
+<div class="smoke s1"></div><div class="smoke s2"></div><div class="smoke s3"></div>
+</div>
+</div>
+<div class="status">状态：<b id="st">关 · 待命</b></div>
+<div class="hint">点击发射场切换</div>
+</div>
+<script>
+var dev=document.getElementById('dev'),st=document.getElementById('st'),on=location.search.indexOf('s=1')>-1;
+function render(){dev.classList.toggle('on',on);st.textContent=on?'开 · 升空':'关 · 待命';}
+if(on)document.body.classList.add('freeze');
+dev.addEventListener('click',function(){on=!on;render();});
+render();
+</script>
+</body>
+</html>

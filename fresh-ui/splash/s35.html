@@ -1,0 +1,46 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>锦鲤跃浪</title><style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{background:#062b2b;display:flex;justify-content:center;font-family:-apple-system,"PingFang SC","Microsoft YaHei","Noto Sans CJK SC",sans-serif;overflow:hidden}
+.stage{width:430px;height:900px;max-height:100vh;position:relative;overflow:hidden;background:linear-gradient(180deg,#0d4a4a 0%,#083333 55%,#042222 100%)}
+.ripplebg{position:absolute;inset:0;background:repeating-radial-gradient(circle at 50% 62%,rgba(120,220,200,.06) 0 2px,transparent 2px 26px)}
+.leaf{position:absolute;border-radius:50%;background:radial-gradient(circle at 40% 35%,#3f9e63,#1e6b3f);box-shadow:0 6px 18px rgba(0,0,0,.35);animation:drift 6s ease-in-out -2s infinite}
+.leaf.l1{left:56px;top:560px;width:110px;height:44px}
+.leaf.l2{right:48px;top:640px;width:130px;height:52px;animation-delay:-4s}
+.leaf.l3{left:150px;top:700px;width:90px;height:36px;animation-delay:-1s}
+@keyframes drift{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-10px) rotate(2deg)}}
+.flower{position:absolute;left:50%;top:600px;width:70px;height:70px;margin-left:-35px;animation:pop 1.2s cubic-bezier(.2,1.4,.4,1) .8s both}
+@keyframes pop{from{opacity:0;transform:scale(.3)}to{opacity:1;transform:scale(1)}}
+.petal{position:absolute;left:50%;top:50%;width:26px;height:52px;margin:-26px 0 0 -13px;background:linear-gradient(180deg,#ffb3c8,#f2668a);border-radius:50% 50% 50% 50% / 60% 60% 40% 40%;transform-origin:50% 100%}
+.jump{position:absolute;left:0;top:430px;width:100%;animation:jx 4.6s cubic-bezier(.45,0,.55,1) -1.2s infinite}
+@keyframes jx{from{transform:translateX(-170px)}to{transform:translateX(600px)}}
+.koi{position:relative;width:120px;height:56px;margin:0 auto;animation:jy 4.6s cubic-bezier(.35,0,.65,1) -1.2s infinite}
+@keyframes jy{0%{transform:translateY(90px) rotate(38deg)}22%{transform:translateY(-110px) rotate(-8deg)}38%{transform:translateY(-140px) rotate(-14deg)}60%{transform:translateY(60px) rotate(24deg)}78%,100%{transform:translateY(90px) rotate(38deg)}}
+.kbody{position:absolute;left:18px;top:8px;width:76px;height:40px;border-radius:50%;background:linear-gradient(90deg,#fff 0 30%,#ff8a3d 30% 62%,#fff 62% 82%,#ff5a2e 82%);box-shadow:0 8px 20px rgba(0,0,0,.3)}
+.ktail{position:absolute;left:-2px;top:14px;border-top:15px solid transparent;border-bottom:15px solid transparent;border-right:30px solid #ff7a35;animation:swish .5s ease-in-out -0.2s infinite}
+@keyframes swish{0%,100%{transform:rotate(14deg)}50%{transform:rotate(-14deg)}}
+.kfin{position:absolute;left:52px;top:-4px;width:22px;height:14px;background:#ffb37a;border-radius:50%}
+.splash{position:absolute;left:50%;width:90px;height:26px;margin-left:-45px;border:2px solid rgba(180,240,225,.9);border-radius:50%;opacity:0}
+.splash.s1{top:520px;animation:spl 4.6s ease-out -1.2s infinite}
+.splash.s2{top:520px;animation:spl 4.6s ease-out 1.05s infinite}
+@keyframes spl{0%,16%{opacity:0;transform:scale(.3)}20%{opacity:.95}45%,100%{opacity:0;transform:scale(2.1)}}
+.brand{position:absolute;left:0;right:0;bottom:150px;text-align:center;animation:up 1.2s ease 1.3s both}
+.brand h1{font-size:58px;font-weight:800;letter-spacing:20px;text-indent:20px;color:#ffe9c9;text-shadow:0 3px 24px rgba(0,0,0,.5)}
+.brand h1 b{color:#ff9d4d}
+.brand p{margin-top:12px;font-size:13px;letter-spacing:7px;color:#9fd8c8}
+@keyframes up{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:none}}
+.replay{position:absolute;bottom:34px;left:50%;transform:translateX(-50%);z-index:50;padding:10px 26px;border-radius:999px;border:1px solid rgba(255,200,140,.55);background:rgba(255,150,70,.12);color:#ffe9c9;font-size:13px;letter-spacing:4px;text-indent:4px;cursor:pointer}
+.replay:active{transform:translateX(-50%) scale(.94)}
+</style></head><body><div class="stage">
+<div class="ripplebg"></div>
+<div class="leaf l1"></div><div class="leaf l2"></div><div class="leaf l3"></div>
+<div class="flower">
+<span class="petal" style="transform:rotate(0deg)"></span><span class="petal" style="transform:rotate(45deg)"></span><span class="petal" style="transform:rotate(90deg)"></span><span class="petal" style="transform:rotate(135deg)"></span><span class="petal" style="transform:rotate(180deg)"></span><span class="petal" style="transform:rotate(225deg)"></span><span class="petal" style="transform:rotate(270deg)"></span><span class="petal" style="transform:rotate(315deg)"></span>
+</div>
+<div class="jump"><div class="koi"><div class="ktail"></div><div class="kbody"></div><div class="kfin"></div></div></div>
+<div class="splash s1"></div><div class="splash s2"></div>
+<div class="brand"><h1>锦<b>鲤</b></h1><p>跃过龙门 好运自来</p></div>
+<button class="replay" onclick="location.reload()">重新播放</button>
+</div></body></html>

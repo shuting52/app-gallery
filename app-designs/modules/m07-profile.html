@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>个人中心 · 蜜桃派</title>
+<style>
+/* ===== 蜜桃派 · 暖黏土风个人中心 ===== */
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{margin:0;background:#F3EDE4;color:#3E2F23;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;display:flex;justify-content:center;font-size:15px}
+.phone{width:100%;max-width:430px;height:100dvh;background:#FBF7EF;position:relative;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 0 40px rgba(120,80,40,.15)}
+.topbar{padding:14px 18px 6px;display:flex;align-items:center;justify-content:space-between}
+.topbar h1{margin:0;font-size:20px;font-weight:800;letter-spacing:1px}
+.topbar .gear{width:36px;height:36px;border-radius:50%;background:#fff;border:1px solid #EADFCB;display:flex;align-items:center;justify-content:center;font-size:17px;cursor:pointer;box-shadow:0 2px 6px rgba(120,80,40,.12)}
+.main{flex:1;overflow-y:auto;padding:6px 16px 90px;scrollbar-width:none}
+.main::-webkit-scrollbar{display:none}
+.screen{display:none}
+.screen.active{display:block;animation:fadeUp .3s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}}
+/* 个人资料卡 */
+.profile{background:linear-gradient(135deg,#FF9A62,#FF7A45);border-radius:22px;padding:20px;color:#fff;position:relative;overflow:hidden;box-shadow:0 8px 20px rgba(255,122,69,.35)}
+.profile::after{content:"";position:absolute;right:-40px;top:-40px;width:150px;height:150px;border-radius:50%;background:rgba(255,255,255,.15)}
+.prow{display:flex;align-items:center;gap:14px;position:relative;z-index:1}
+.avatar{width:64px;height:64px;border-radius:50%;background:#fff;color:#FF7A45;font-size:24px;font-weight:800;display:flex;align-items:center;justify-content:center;border:3px solid rgba(255,255,255,.6)}
+.pinfo h2{margin:0;font-size:19px}
+.pinfo p{margin:4px 0 0;font-size:13px;opacity:.9}
+.vip{display:inline-block;margin-top:8px;background:rgba(0,0,0,.25);padding:4px 12px;border-radius:20px;font-size:12px}
+.stats{display:flex;background:#fff;border-radius:18px;margin:14px 0;padding:14px 0;box-shadow:0 4px 14px rgba(120,80,40,.08);border:1px solid #F0E6D4}
+.stat{flex:1;text-align:center;cursor:pointer}
+.stat+.stat{border-left:1px solid #F0E6D4}
+.stat b{display:block;font-size:20px;color:#E8632B}
+.stat span{font-size:12px;color:#9A7B5F}
+.menu{background:#fff;border-radius:18px;overflow:hidden;border:1px solid #F0E6D4;box-shadow:0 4px 14px rgba(120,80,40,.08)}
+.mi{display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer;border-bottom:1px solid #F7F1E6}
+.mi:last-child{border-bottom:0}
+.mi:active{background:#FDF8EF}
+.mico{width:36px;height:36px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:17px;color:#fff;flex-shrink:0}
+.mi span{flex:1;font-size:15px}
+.mi .arr{color:#C9B69A}
+.mi .tag{font-size:11px;background:#FFE9D6;color:#E8632B;padding:2px 8px;border-radius:10px}
+.sec-t{font-size:16px;font-weight:800;margin:20px 4px 10px}
+.guess{display:flex;gap:12px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
+.guess::-webkit-scrollbar{display:none}
+.gcard{min-width:130px;background:#fff;border-radius:16px;overflow:hidden;border:1px solid #F0E6D4}
+.gimg{height:90px;display:flex;align-items:center;justify-content:center;font-size:13px;color:#fff;font-weight:700}
+.gcard p{margin:0;padding:8px 10px;font-size:12px;line-height:1.4}
+.gcard b{display:block;padding:0 10px 10px;color:#E8632B;font-size:13px}
+/* 收藏 */
+.seg{display:flex;background:#F0E6D4;border-radius:14px;padding:4px;margin:4px 0 14px}
+.seg button{flex:1;border:0;background:none;padding:9px;border-radius:10px;font-size:14px;color:#9A7B5F;cursor:pointer}
+.seg button.on{background:#fff;color:#E8632B;font-weight:700;box-shadow:0 2px 6px rgba(120,80,40,.15)}
+.fav{background:#fff;border-radius:16px;border:1px solid #F0E6D4;margin-bottom:12px;overflow:hidden;display:flex}
+.fimg{width:104px;height:104px;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:13px}
+.fbody{flex:1;padding:12px;display:flex;flex-direction:column}
+.fbody h4{margin:0;font-size:14px;line-height:1.4}
+.fbody .price{color:#E8632B;font-weight:800;margin-top:6px}
+.fbody .row{display:flex;justify-content:space-between;align-items:center;margin-top:auto}
+.fbody .time{font-size:11px;color:#B89B78}
+.unfav{border:1px solid #EADFCB;background:#fff;border-radius:16px;font-size:12px;color:#9A7B5F;padding:5px 12px;cursor:pointer}
+.shop{background:#fff;border-radius:16px;border:1px solid #F0E6D4;margin-bottom:12px;padding:14px;display:flex;align-items:center;gap:12px}
+.slogo{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:18px;flex-shrink:0}
+.shop h4{margin:0;font-size:15px}
+.shop p{margin:4px 0 0;font-size:12px;color:#9A7B5F}
+.shop .go{margin-left:auto;color:#E8632B;font-size:13px;border:1px solid #FFD9BE;padding:6px 14px;border-radius:16px;cursor:pointer;background:#FFF6EE}
+.empty{text-align:center;color:#B89B78;padding:50px 0;font-size:14px}
+/* 历史 */
+.hgroup{font-size:13px;color:#9A7B5F;margin:14px 4px 8px;font-weight:700}
+.hitem{display:flex;gap:12px;background:#fff;border-radius:14px;border:1px solid #F0E6D4;padding:10px;margin-bottom:10px;align-items:center}
+.himg{width:56px;height:56px;border-radius:10px;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;font-weight:700}
+.hitem h4{margin:0;font-size:13.5px;line-height:1.4}
+.hitem p{margin:4px 0 0;font-size:11px;color:#B89B78}
+.clearbar{display:flex;justify-content:center;margin:18px 0}
+.clearbtn{border:1px solid #EADFCB;background:#fff;color:#9A7B5F;border-radius:20px;padding:9px 26px;font-size:13px;cursor:pointer}
+.confirm{background:#FFF3E4;border:1px solid #FFD9BE;border-radius:16px;padding:14px;text-align:center;margin:14px 0;display:none}
+.confirm p{margin:0 0 10px;font-size:14px}
+.confirm button{border:0;border-radius:12px;padding:8px 20px;margin:0 6px;font-size:13px;cursor:pointer}
+.confirm .yes{background:#E8632B;color:#fff}
+.confirm .no{background:#fff;border:1px solid #EADFCB}
+/* 设置 */
+.setcard{background:#fff;border-radius:18px;border:1px solid #F0E6D4;margin-bottom:14px;overflow:hidden}
+.setrow{display:flex;align-items:center;padding:14px 16px;border-bottom:1px solid #F7F1E6;gap:10px}
+.setrow:last-child{border-bottom:0}
+.setrow span.lbl{flex:1;font-size:15px}
+.setrow .val{font-size:13px;color:#B89B78}
+.switch{width:50px;height:30px;border-radius:15px;background:#E5D9C3;position:relative;cursor:pointer;transition:background .25s;flex-shrink:0}
+.switch::after{content:"";position:absolute;left:3px;top:3px;width:24px;height:24px;border-radius:50%;background:#fff;transition:left .25s;box-shadow:0 2px 5px rgba(0,0,0,.2)}
+.switch.tr{background:#4CAF6D}
+.switch.tr::after{left:23px}
+.fseg{display:flex;gap:8px}
+.fseg button{border:1px solid #EADFCB;background:#fff;border-radius:12px;padding:7px 16px;font-size:13px;cursor:pointer;color:#9A7B5F}
+.fseg button.on{background:#E8632B;color:#fff;border-color:#E8632B}
+.logout{width:100%;margin:6px 0 10px;border:0;background:#fff;color:#E8632B;border:1px solid #FFD9BE;border-radius:16px;padding:14px;font-size:15px;font-weight:700;cursor:pointer}
+/* 底部 Tab */
+.tabbar{position:absolute;left:0;right:0;bottom:0;background:rgba(255,255,255,.96);backdrop-filter:blur(10px);border-top:1px solid #F0E6D4;display:flex;padding:8px 0 calc(10px + env(safe-area-inset-bottom))}
+.tab{flex:1;text-align:center;font-size:11px;color:#B89B78;cursor:pointer;padding:2px 0}
+.tab .ti{font-size:21px;display:block;margin-bottom:2px}
+.tab.on{color:#E8632B;font-weight:700}
+/* toast */
+.toast{position:absolute;left:50%;bottom:110px;transform:translateX(-50%) translateY(20px);background:rgba(62,47,35,.92);color:#fff;padding:10px 22px;border-radius:24px;font-size:14px;opacity:0;transition:all .3s;pointer-events:none;z-index:99;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="topbar"><h1 id="pageTitle">个人中心</h1><div class="gear" data-goto="3">⚙</div></div>
+  <div class="main">
+    <!-- 我的 -->
+    <div class="screen active" id="s0">
+      <div class="profile">
+        <div class="prow">
+          <div class="avatar">淑</div>
+          <div class="pinfo"><h2>陈淑婷</h2><p>138****8888</p><span class="vip">◆ 黄金会员 · 有效期至 2027-10</span></div>
+        </div>
+      </div>
+      <div class="stats">
+        <div class="stat" data-goto="1"><b>128</b><span>我的收藏</span></div>
+        <div class="stat" data-goto="2"><b>342</b><span>浏览历史</span></div>
+        <div class="stat"><b>2560</b><span>会员积分</span></div>
+      </div>
+      <div class="menu">
+        <div class="mi"><div class="mico" style="background:#FF9A62">◈</div><span>我的钱包</span><span class="tag">¥86.50</span><span class="arr">›</span></div>
+        <div class="mi"><div class="mico" style="background:#6BB8FF">⌂</div><span>收货地址</span><span class="arr">›</span></div>
+        <div class="mi"><div class="mico" style="background:#B48CFF">♛</div><span>会员中心</span><span class="tag">待领3券</span><span class="arr">›</span></div>
+        <div class="mi"><div class="mico" style="background:#5BD6A2">✉</div><span>邀请好友</span><span class="tag">得20元</span><span class="arr">›</span></div>
+      </div>
+      <div class="sec-t">猜你喜欢</div>
+      <div class="guess">
+        <div class="gcard"><div class="gimg" style="background:linear-gradient(135deg,#FFB37A,#FF7A45)">陶土杯</div><p>手工陶土咖啡杯 350ml</p><b>¥68.00</b></div>
+        <div class="gcard"><div class="gimg" style="background:linear-gradient(135deg,#8FD0FF,#4A90E2)">帆布包</div><p>日式帆布托特包 米白</p><b>¥89.00</b></div>
+        <div class="gcard"><div class="gimg" style="background:linear-gradient(135deg,#C9A8FF,#8B5CF6)">香薰</div><p>雪松白茶藤条香薰</p><b>¥129.00</b></div>
+        <div class="gcard"><div class="gimg" style="background:linear-gradient(135deg,#7FD8B8,#2FA37C)">绿植</div><p>龟背竹盆栽 办公室款</p><b>¥45.00</b></div>
+      </div>
+    </div>
+    <!-- 收藏 -->
+    <div class="screen" id="s1">
+      <div class="seg" id="favSeg">
+        <button class="on" data-f="goods">商品</button><button data-f="article">文章</button><button data-f="shop">店铺</button>
+      </div>
+      <div id="fav-goods">
+        <div class="fav"><div class="fimg" style="background:linear-gradient(135deg,#FFB37A,#FF7A45)">陶土杯</div>
+          <div class="fbody"><h4>手工陶土咖啡杯 350ml 复古做旧</h4><div class="price">¥68.00</div>
+          <div class="row"><span class="time">3天前收藏</span><button class="unfav">取消收藏</button></div></div></div>
+        <div class="fav"><div class="fimg" style="background:linear-gradient(135deg,#8FD0FF,#4A90E2)">耳机</div>
+          <div class="fbody"><h4>降噪蓝牙耳机 白色 长续航40h</h4><div class="price">¥299.00</div>
+          <div class="row"><span class="time">1周前收藏</span><button class="unfav">取消收藏</button></div></div></div>
+        <div class="fav"><div class="fimg" style="background:linear-gradient(135deg,#C9A8FF,#8B5CF6)">台灯</div>
+          <div class="fbody"><h4>黏土风床头台灯 暖光可调</h4><div class="price">¥159.00</div>
+          <div class="row"><span class="time">2周前收藏</span><button class="unfav">取消收藏</button></div></div></div>
+      </div>
+      <div id="fav-article" style="display:none">
+        <div class="fav"><div class="fimg" style="background:linear-gradient(135deg,#7FD8B8,#2FA37C)">收纳</div>
+          <div class="fbody"><h4>小户型收纳的12个神仙技巧</h4>
+          <div class="row"><span class="time">家居志 · 5天前收藏</span><button class="unfav">取消收藏</button></div></div></div>
+        <div class="fav"><div class="fimg" style="background:linear-gradient(135deg,#FFD28F,#F5A623)">咖啡</div>
+          <div class="fbody"><h4>手冲咖啡入门：水温与研磨度</h4>
+          <div class="row"><span class="time">慢生活 · 2周前收藏</span><button class="unfav">取消收藏</button></div></div></div>
+      </div>
+      <div id="fav-shop" style="display:none">
+        <div class="shop"><div class="slogo" style="background:#FF7A45">陶</div>
+          <div><h4>陶之味家居馆</h4><p>128件商品 · 4.9分 · 2.3万人关注</p></div><span class="go">进店 ›</span></div>
+        <div class="shop"><div class="slogo" style="background:#4A90E2">屿</div>
+          <div><h4>屿生活杂货</h4><p>86件商品 · 4.8分 · 1.1万人关注</p></div><span class="go">进店 ›</span></div>
+      </div>
+    </div>
+    <!-- 历史 -->
+    <div class="screen" id="s2">
+      <div class="confirm" id="clearConfirm"><p>确定清空全部浏览历史吗？</p>
+        <button class="yes" id="clearYes">确定清空</button><button class="no" id="clearNo">再想想</button></div>
+      <div id="histList">
+        <div class="hgroup">今天</div>
+        <div class="hitem"><div class="himg" style="background:linear-gradient(135deg,#FFB37A,#FF7A45)">杯</div><div><h4>手工陶土咖啡杯 350ml 复古做旧</h4><p>浏览 3 次 · 14:22</p></div></div>
+        <div class="hitem"><div class="himg" style="background:linear-gradient(135deg,#8FD0FF,#4A90E2)">机</div><div><h4>降噪蓝牙耳机 白色 长续航40h</h4><p>浏览 1 次 · 11:05</p></div></div>
+        <div class="hgroup">昨天</div>
+        <div class="hitem"><div class="himg" style="background:linear-gradient(135deg,#7FD8B8,#2FA37C)">收纳</div><div><h4>小户型收纳的12个神仙技巧</h4><p>阅读 8 分钟 · 21:47</p></div></div>
+        <div class="hitem"><div class="himg" style="background:linear-gradient(135deg,#C9A8FF,#8B5CF6)">灯</div><div><h4>黏土风床头台灯 暖光可调</h4><p>浏览 2 次 · 20:13</p></div></div>
+        <div class="hgroup">更早</div>
+        <div class="hitem"><div class="himg" style="background:linear-gradient(135deg,#FFD28F,#F5A623)">咖啡</div><div><h4>手冲咖啡入门：水温与研磨度</h4><p>阅读 12 分钟 · 10-12</p></div></div>
+      </div>
+      <div class="clearbar"><button class="clearbtn" id="clearBtn">清空浏览历史</button></div>
+    </div>
+    <!-- 设置 -->
+    <div class="screen" id="s3">
+      <div class="setcard">
+        <div class="setrow"><span class="lbl">深色模式</span><div class="switch" data-k="dark"></div></div>
+        <div class="setrow"><span class="lbl">推送通知</span><div class="switch tr" data-k="push"></div></div>
+        <div class="setrow"><span class="lbl">新品上架提醒</span><div class="switch tr" data-k="new"></div></div>
+      </div>
+      <div class="setcard">
+        <div class="setrow"><span class="lbl">字体大小</span>
+          <div class="fseg" id="fontSeg"><button data-fz="14">小</button><button class="on" data-fz="15">中</button><button data-fz="17">大</button></div></div>
+        <div class="setrow"><span class="lbl">语言</span><span class="val">简体中文 ›</span></div>
+        <div class="setrow"><span class="lbl">清除缓存</span><span class="val" id="cacheVal">86.4 MB ›</span></div>
+      </div>
+      <div class="setcard">
+        <div class="setrow"><span class="lbl">关于蜜桃派</span><span class="val">v4.0.0 ›</span></div>
+        <div class="setrow"><span class="lbl">用户协议与隐私</span><span class="val">›</span></div>
+      </div>
+      <button class="logout" id="logoutBtn">退出登录</button>
+    </div>
+  </div>
+  <div class="tabbar">
+    <div class="tab on" data-t="0"><span class="ti">◉</span>我的</div>
+    <div class="tab" data-t="1"><span class="ti">★</span>收藏</div>
+    <div class="tab" data-t="2"><span class="ti">◷</span>历史</div>
+    <div class="tab" data-t="3"><span class="ti">⚙</span>设置</div>
+  </div>
+  <div class="toast" id="toast"></div>
+</div>
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const titles=['个人中心','我的收藏','浏览历史','偏好设置'];
+function goTab(i){$$('.tab').forEach(t=>t.classList.toggle('on',+t.dataset.t===i));
+$$('.screen').forEach(sc=>sc.classList.remove('active'));$('#s'+i).classList.add('active');
+$('#pageTitle').textContent=titles[i];$('.main').scrollTop=0;}
+$$('.tab').forEach(t=>t.onclick=()=>goTab(+t.dataset.t));
+$$('[data-goto]').forEach(el=>el.onclick=()=>goTab(+el.dataset.goto));
+let toastT;function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),1800);}
+// 收藏分类
+$('#favSeg').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
+$$('#favSeg button').forEach(x=>x.classList.remove('on'));b.classList.add('on');
+['goods','article','shop'].forEach(k=>$('#fav-'+k).style.display=k===b.dataset.f?'':'none');});
+// 取消收藏
+document.addEventListener('click',e=>{const b=e.target.closest('.unfav');if(!b)return;
+const card=b.closest('.fav')||b.closest('.shop');card.style.transition='all .3s';card.style.opacity='0';card.style.transform='translateX(40px)';
+setTimeout(()=>{card.remove();toast('已取消收藏');},300);});
+// 清空历史
+$('#clearBtn').onclick=()=>{$('#clearConfirm').style.display='block';};
+$('#clearNo').onclick=()=>{$('#clearConfirm').style.display='none';};
+$('#clearYes').onclick=()=>{$('#histList').innerHTML='<div class="empty">暂无浏览历史</div>';$('#clearConfirm').style.display='none';toast('浏览历史已清空');};
+// 开关
+$$('.switch').forEach(sw=>sw.onclick=()=>{sw.classList.toggle('tr');toast(sw.classList.contains('tr')?'已开启':'已关闭');});
+// 字体大小
+$('#fontSeg').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
+$$('#fontSeg button').forEach(x=>x.classList.remove('on'));b.classList.add('on');
+document.body.style.fontSize=b.dataset.fz+'px';toast('字体已设为'+b.textContent);});
+// 清缓存 / 退出
+$('#cacheVal').parentElement.onclick=()=>{$('#cacheVal').textContent='0 MB ›';toast('缓存已清除，释放 86.4MB');};
+$('#logoutBtn').onclick=()=>toast('已退出登录（演示）');
+// ?tab= 深链
+const q=new URLSearchParams(location.search).get('tab');
+if(q!==null&&!isNaN(+q)&&+q>=0&&+q<4)goTab(+q);
+</script>
+</body>
+</html>

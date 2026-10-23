@@ -1,0 +1,100 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>灯塔引航 · 更新弹窗</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#07090d;display:flex;justify-content:center;min-height:100vh;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;color:#fff}
+.phone{width:430px;height:900px;position:relative;overflow:hidden;background:#0d1117;flex-shrink:0}
+.app{position:absolute;inset:0;padding:14px;transition:filter .4s}
+.app.blur{filter:blur(8px) brightness(.55)}
+.status{display:flex;justify-content:space-between;font-size:12px;color:#8b93a5;padding:8px 4px 16px}
+.hello{font-size:22px;font-weight:700;margin:2px 0 2px}
+.sub{font-size:12px;color:#8b93a5;margin-bottom:14px}
+.acard{background:#161c26;border:1px solid #232c3d;border-radius:16px;padding:16px;margin-bottom:12px}
+.acard .t{font-size:14px;font-weight:600}
+.acard .d{font-size:12px;color:#8b93a5;margin-top:6px}
+.skel{height:10px;border-radius:5px;background:#232c3d;margin-top:10px}
+.tabbar{position:absolute;bottom:0;left:0;right:0;height:78px;background:#11161f;border-top:1px solid #232c3d;display:flex;justify-content:space-around;align-items:center}
+.tabbar i{width:44px;height:30px;border-radius:9px;background:#1c2330;display:block}
+.tabbar i.on{background:#31405c}
+.mask{position:absolute;inset:0;background:rgba(4,6,10,.55);opacity:0;pointer-events:none;transition:opacity .4s}
+.phone.show .mask{opacity:1}
+.modal{position:absolute;left:50%;top:50%;width:340px;border-radius:26px;overflow:hidden;background:#141a24;border:1px solid #262f42;box-shadow:0 30px 80px rgba(0,0,0,.6);opacity:0;transform:translate(-50%,-50%) scale(.82);pointer-events:none}
+.phone.show .modal{animation:pop .55s cubic-bezier(.2,.9,.3,1.25) forwards;pointer-events:auto}
+@keyframes pop{to{opacity:1;transform:translate(-50%,-50%) scale(1)}}
+.hero{position:relative;height:188px;overflow:hidden}
+.mbody{padding:18px 20px 20px}
+.ver{display:inline-block;font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;background:rgba(255,212,121,.14);color:#ffd479;margin-bottom:8px}
+.mbody h2{font-size:19px;margin-bottom:4px}
+.tag{font-size:12px;color:#8b93a5;margin-bottom:12px}
+.log{list-style:none;margin-bottom:14px}
+.log li{font-size:12.5px;color:#c3cad8;padding:7px 0 7px 22px;position:relative;border-bottom:1px dashed #232c3d}
+.log li:last-child{border:none}
+.log li::before{content:"";position:absolute;left:2px;top:11px;width:8px;height:8px;border-radius:50%;background:#ffd479;box-shadow:0 0 8px #ffd479}
+.prow{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.pbar{flex:1;height:10px;border-radius:6px;background:#232c3d;overflow:hidden}
+.fill{height:100%;width:0;border-radius:6px;background:linear-gradient(90deg,#c98f1b,#ffd479);animation:fillin 2.8s ease forwards}
+@keyframes fillin{to{width:55%}}
+.pct{font-size:13px;font-weight:700;color:#ffd479;min-width:44px;text-align:right}
+.go{width:100%;border:none;border-radius:14px;padding:13px;font-size:15px;font-weight:700;color:#fff;background:linear-gradient(135deg,#c98f1b,#e8b23a);cursor:pointer;transition:transform .12s,filter .2s}
+.go:active{transform:scale(.97)}
+.go.busy{filter:saturate(.6) brightness(.85);cursor:wait}
+.go.ok{background:linear-gradient(135deg,#22c07a,#0e9d5f)}
+.later{width:100%;background:none;border:none;color:#8b93a5;font-size:13px;margin-top:10px;cursor:pointer;padding:6px}
+.note{font-size:11px;color:#22c07a;text-align:center;min-height:16px;margin-top:8px}
+.rep{position:absolute;top:12px;right:12px;z-index:5;border:1px solid #2c3a52;background:rgba(20,26,36,.85);color:#aeb8cc;font-size:11px;border-radius:16px;padding:6px 12px;cursor:pointer}
+
+
+.hero{background:linear-gradient(180deg,#060a18 0%,#0a1230 62%,#0d1c44 100%)}
+.tower{position:absolute;bottom:44px;left:50%;transform:translateX(-50%);width:44px;height:110px;background:repeating-linear-gradient(180deg,#e8e2d4 0 14px,#c93b3b 14px 28px);clip-path:polygon(18% 0,82% 0,100% 100%,0 100%)}
+.lamp{position:absolute;bottom:148px;left:50%;transform:translateX(-50%);width:30px;height:22px;border-radius:6px;background:#fff6d8;box-shadow:0 0 26px 10px rgba(255,230,150,.7);animation:lamp 3s ease-in-out infinite alternate}
+@keyframes lamp{to{box-shadow:0 0 40px 16px rgba(255,230,150,.9)}}
+.beam{position:absolute;bottom:152px;left:50%;width:230px;height:56px;background:linear-gradient(90deg,rgba(255,236,170,.55),transparent);clip-path:polygon(0 42%,100% 0,100% 100%,0 58%);transform-origin:left center;animation:beamr 7s linear infinite}
+@keyframes beamr{to{transform:rotate(360deg)}}
+.sea{position:absolute;bottom:-30px;left:-20%;width:140%;height:70px;border-radius:44%;animation:sway 8s linear infinite}
+.s1{background:rgba(70,120,200,.3)}
+.s2{background:rgba(90,150,230,.35);animation-duration:6s;animation-delay:-2s}
+@keyframes sway{to{transform:rotate(360deg)}}
+</style></head>
+<body><div class="phone show" id="ph">
+<div class="app blur" id="app">
+<div class="status"><span>21:47</span><span>5G ▰▰▰ 82%</span></div>
+<div class="hello">晚上好，陈淑婷</div><div class="sub">今日有 3 个应用等待更新</div>
+<div class="acard"><div class="t">灵感笔记</div><div class="d">v2.1.0 → v2.2.0 · 可更新</div><div class="skel" style="width:70%"></div></div>
+<div class="acard"><div class="t">慢时光</div><div class="d">v4.5.3 → v4.6.0 · 可更新</div><div class="skel" style="width:52%"></div></div>
+<div class="acard"><div class="t">拾光相册</div><div class="d">v1.9.8 → v2.0.0 · 可更新</div><div class="skel" style="width:84%"></div></div>
+<div class="tabbar"><i class="on"></i><i></i><i></i><i></i></div>
+</div>
+<div class="mask"></div>
+<div class="modal">
+<div class="hero"><div class="tower"></div><div class="lamp"></div><div class="beam"></div><div class="sea s1"></div><div class="sea s2"></div></div>
+<div class="mbody">
+<span class="ver">v3.6.0</span>
+<h2>灯塔引航</h2>
+<div class="tag">雾再大，也照得见新版本</div>
+<ul class="log"><li>夜间导航指引全面改版</li><li>雾天模式自动增强对比</li><li>新增灯塔主题小组件</li></ul>
+<div class="prow"><div class="pbar"><div class="fill" id="fill"></div></div><div class="pct" id="pct">55%</div></div>
+<button class="go" id="go">立即更新</button>
+<button class="later" id="later">稍后再说</button>
+<div class="note" id="note"></div>
+</div></div>
+<button class="rep" id="rep">↻ 重新弹出</button>
+</div>
+<script>
+const ph=document.getElementById('ph'),go=document.getElementById('go'),later=document.getElementById('later'),
+rep=document.getElementById('rep'),fill=document.getElementById('fill'),pct=document.getElementById('pct'),
+note=document.getElementById('note'),app=document.getElementById('app');
+const INIT=55;let busy=false;
+go.onclick=()=>{if(busy)return;busy=true;go.textContent='更新中…';go.classList.add('busy');
+fill.style.animation='none';fill.style.transition='width 2.2s ease';fill.style.width='100%';
+let p=INIT;const t=setInterval(()=>{p+=Math.ceil((100-p)/7)+1;if(p>=100){p=100;clearInterval(t);done();}pct.textContent=p+'%';},130);};
+function done(){go.textContent='✓ 更新完成';go.classList.remove('busy');go.classList.add('ok');
+note.textContent='已是最新版本，重启 App 生效';setTimeout(closeM,1500);}
+function closeM(){ph.classList.remove('show');app.classList.remove('blur');}
+later.onclick=closeM;
+rep.onclick=()=>{busy=false;clearInterval(0);fill.style.transition='none';fill.style.animation='none';fill.style.width='0';
+void fill.offsetWidth;fill.style.animation='';pct.textContent=INIT+'%';go.textContent='立即更新';go.className='go';
+note.textContent='';app.classList.add('blur');ph.classList.remove('show');void ph.offsetWidth;ph.classList.add('show');};
+
+</script>
+</body></html>

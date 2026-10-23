@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>系统更新 · 像素版</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    min-height: 100vh;
+    background: #141422;
+    background-image:
+      linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px);
+    background-size: 24px 24px;
+    font-family: ui-monospace, "Courier New", monospace;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 24px 16px; color: #1a1a2e;
+  }
+  /* ===== 像素弹窗 ===== */
+  .px-modal {
+    width: 340px; max-width: 100%;
+    background: #f8f4e8;
+    border: 4px solid #1a1a2e;
+    box-shadow: 8px 8px 0 rgba(0,0,0,.5);
+  }
+  .px-modal.hidden { display: none; }
+  .px-titlebar {
+    background: #1a1a2e; color: #f8f4e8;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 12px; font-size: 14px; font-weight: 700;
+    letter-spacing: 1px;
+  }
+  .px-titlebar .dots { color: #3ddc84; }
+  .px-close {
+    background: #f8f4e8; color: #1a1a2e; border: none;
+    width: 24px; height: 24px; font-family: inherit;
+    font-size: 14px; font-weight: 700; cursor: pointer;
+    box-shadow: 3px 3px 0 rgba(0,0,0,.4);
+  }
+  .px-close:active { transform: translate(2px,2px); box-shadow: 1px 1px 0 rgba(0,0,0,.4); }
+  .px-body { padding: 20px 18px 22px; }
+  .px-sub { font-size: 13px; margin-bottom: 4px; }
+  .px-meta {
+    font-size: 12px; color: #6b6b80; margin-bottom: 18px;
+    font-variant-numeric: tabular-nums;
+  }
+  .px-meta .blink { animation: blink 1s steps(2) infinite; color: #3ddc84; }
+  @keyframes blink { 50% { opacity: 0; } }
+  /* ===== 像素进度格 ===== */
+  .px-track {
+    border: 4px solid #1a1a2e; background: #d8d2bd;
+    padding: 6px; display: flex; gap: 4px; margin-bottom: 14px;
+  }
+  .px-block { flex: 1; height: 26px; background: #b9b39a; }
+  .px-block.on {
+    background: #3ddc84;
+    box-shadow: inset -4px -4px 0 rgba(0,0,0,.18), inset 4px 4px 0 rgba(255,255,255,.35);
+  }
+  .px-track.installing .px-block.on { animation: pxwave 0.9s steps(2) infinite; animation-delay: calc(var(--i) * 45ms); }
+  @keyframes pxwave { 50% { opacity: .3; } }
+  .px-pct {
+    text-align: center; font-size: 30px; font-weight: 700;
+    margin-bottom: 16px; font-variant-numeric: tabular-nums;
+    text-shadow: 3px 3px 0 rgba(0,0,0,.12);
+  }
+  .px-pct.done { color: #1d9e57; }
+  /* ===== 像素按钮 ===== */
+  .px-btn {
+    width: 100%; padding: 13px 0;
+    font-family: inherit; font-size: 15px; font-weight: 700;
+    background: #3ddc84; color: #1a1a2e;
+    border: 4px solid #1a1a2e; cursor: pointer;
+    box-shadow: 5px 5px 0 rgba(0,0,0,.4);
+  }
+  .px-btn:active { transform: translate(3px,3px); box-shadow: 2px 2px 0 rgba(0,0,0,.4); }
+  .px-btn.gray { background: #b9b39a; }
+  .px-btn:disabled { opacity: .55; cursor: default; }
+  .px-check {
+    display: none; text-align: center;
+    font-size: 44px; color: #1d9e57; margin-bottom: 6px;
+    text-shadow: 4px 4px 0 rgba(0,0,0,.15);
+    animation: pop .35s steps(3);
+  }
+  .px-check.show { display: block; }
+  @keyframes pop { 0% { transform: scale(.4); } 100% { transform: scale(1); } }
+  .px-status { text-align: center; font-size: 13px; margin-bottom: 14px; min-height: 20px; }
+  /* ===== 重新演示 + toast ===== */
+  .replay {
+    margin-top: 16px; background: none; border: none; cursor: pointer;
+    color: #8f8fa8; font-family: inherit; font-size: 13px;
+  }
+  .replay:hover { color: #3ddc84; }
+  .toast {
+    position: fixed; top: 24px; left: 50%;
+    transform: translateX(-50%) translateY(-12px);
+    background: #1a1a2e; color: #3ddc84; border: 3px solid #3ddc84;
+    padding: 10px 18px; font-size: 13px; font-family: inherit;
+    opacity: 0; pointer-events: none; transition: opacity .2s, transform .2s;
+    z-index: 60;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+
+<div class="px-modal" id="modal">
+  <div class="px-titlebar">
+    <span><span class="dots">●●●</span>&nbsp; SYSTEM UPDATE</span>
+    <button class="px-close" id="closeBtn">×</button>
+  </div>
+  <div class="px-body">
+    <div class="px-sub" id="statusText">正在下载 v3.3.1<span class="blink">_</span></div>
+    <div class="px-meta" id="metaText">0.0MB / 156.8MB · -- MB/s</div>
+    <div class="px-check" id="checkMark">✓</div>
+    <div class="px-track" id="track"></div>
+    <div class="px-pct" id="pctText">0%</div>
+    <div class="px-status" id="hintText"></div>
+    <button class="px-btn" id="mainBtn">取消更新</button>
+  </div>
+</div>
+<button class="replay" id="replayBtn">↺ 重新演示</button>
+<div class="toast" id="toast"></div>
+
+<script>
+  const N = 20;
+  const track = document.getElementById('track');
+  const blocks = [];
+  for (let i = 0; i < N; i++) {
+    const b = document.createElement('div');
+    b.className = 'px-block';
+    b.style.setProperty('--i', i);
+    track.appendChild(b);
+    blocks.push(b);
+  }
+  const modal = document.getElementById('modal');
+  const pctText = document.getElementById('pctText');
+  const statusText = document.getElementById('statusText');
+  const metaText = document.getElementById('metaText');
+  const hintText = document.getElementById('hintText');
+  const mainBtn = document.getElementById('mainBtn');
+  const checkMark = document.getElementById('checkMark');
+  const toast = document.getElementById('toast');
+
+  const TOTAL_MB = 156.8, VERSION = 'v3.3.1';
+  let progress = 0, state = 'downloading', timer = null, showSpeed = 0;
+
+  function showToast(msg) {
+    toast.textContent = msg;
+    toast.classList.add('show');
+    clearTimeout(showToast._t);
+    showToast._t = setTimeout(() => toast.classList.remove('show'), 1800);
+  }
+  function render() {
+    const n = Math.round(progress / 100 * N);
+    blocks.forEach((b, i) => b.classList.toggle('on', i < n));
+    pctText.textContent = Math.floor(progress) + '%';
+    metaText.textContent = (progress/100*TOTAL_MB).toFixed(1) + 'MB / ' + TOTAL_MB + 'MB · ' + showSpeed.toFixed(1) + ' MB/s';
+  }
+  function setMain(label, cls, disabled) {
+    mainBtn.textContent = label;
+    mainBtn.className = 'px-btn' + (cls ? ' ' + cls : '');
+    mainBtn.disabled = !!disabled;
+  }
+  function tick() {
+    if (state !== 'downloading') return;
+    const sp = 8 * (0.6 + Math.random() * 0.8);
+    showSpeed = showSpeed * 0.7 + sp * 0.3;
+    progress += sp * 0.1 / TOTAL_MB * 100;
+    if (progress >= 100) { progress = 100; render(); enterInstalling(); return; }
+    render();
+  }
+  function startTimer() { clearInterval(timer); timer = setInterval(tick, 100); }
+  function stopTimer() { clearInterval(timer); timer = null; }
+
+  function enterDownloading(reset) {
+    if (reset) {
+      progress = 0; showSpeed = 0;
+      track.classList.remove('installing');
+      checkMark.classList.remove('show');
+      pctText.classList.remove('done');
+      modal.classList.remove('hidden');
+    }
+    state = 'downloading';
+    statusText.innerHTML = '正在下载 ' + VERSION + '<span class="blink">_</span>';
+    hintText.textContent = '';
+    setMain('取消更新', '', false);
+    startTimer(); render();
+  }
+  function enterCancelled() {
+    state = 'cancelled'; stopTimer();
+    statusText.textContent = '>> 下载已取消';
+    hintText.textContent = 'PRESS RETRY TO CONTINUE';
+    setMain('重新下载', 'gray', false);
+    showToast('下载已取消');
+  }
+  function enterInstalling() {
+    state = 'installing'; stopTimer();
+    statusText.innerHTML = '正在安装...<span class="blink">_</span>';
+    hintText.textContent = 'DO NOT POWER OFF';
+    setMain('安装中...', 'gray', true);
+    track.classList.add('installing');
+    setTimeout(() => { if (state === 'installing') enterDone(); }, 2600);
+  }
+  function enterDone() {
+    state = 'done';
+    track.classList.remove('installing');
+    checkMark.classList.add('show');
+    pctText.classList.add('done');
+    statusText.textContent = '>> 安装完成!';
+    hintText.textContent = 'READY TO PLAY';
+    setMain('立即体验', '', false);
+    showToast('已更新到最新版本');
+  }
+
+  mainBtn.addEventListener('click', () => {
+    if (state === 'downloading') enterCancelled();
+    else if (state === 'cancelled') enterDownloading(true);
+    else if (state === 'done') { modal.classList.add('hidden'); showToast('更新完成，欢迎回来'); }
+  });
+  document.getElementById('closeBtn').addEventListener('click', () => {
+    if (state === 'downloading') enterCancelled();
+    else modal.classList.add('hidden');
+  });
+  document.getElementById('replayBtn').addEventListener('click', () => {
+    enterDownloading(true); showToast('重新开始演示');
+  });
+
+  window.addEventListener('load', () => {
+    if (location.hash === '#done') {
+      enterDownloading(true); progress = 100; render(); enterInstalling();
+      setTimeout(enterDone, 400);
+    } else enterDownloading(true);
+  });
+</script>
+</body>
+</html>

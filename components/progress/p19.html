@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>气球升空 · 进度指示</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    min-height:100vh; background:#0b1020; color:#e8ecf5;
+    display:flex; align-items:center; justify-content:center;
+    font-family:"PingFang SC","Microsoft YaHei",sans-serif; padding:16px;
+  }
+  .stage { width:360px; max-width:100%; }
+  .head { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:10px; }
+  .head h2 { font-size:16px; font-weight:600; letter-spacing:2px; }
+  .head .pct { font-size:26px; font-weight:700; color:#ffb066; font-variant-numeric:tabular-nums; }
+  .scene {
+    position:relative; width:100%; height:460px; border-radius:16px; overflow:hidden;
+    background:linear-gradient(180deg,#2b1a4d 0%,#4a2a6e 45%,#b4567a 75%,#e88a6a 100%);
+    border:1px solid #5a3a7e;
+  }
+  .ground {
+    position:absolute; left:0; right:0; bottom:0; height:56px;
+    background:linear-gradient(180deg,#3d5a3a,#223a22);
+  }
+  .tree { position:absolute; bottom:56px; font-size:26px; }
+  .cloud {
+    position:absolute; width:90px; height:30px; background:rgba(255,255,255,.85);
+    border-radius:20px; filter:blur(1px);
+  }
+  .cloud::before, .cloud::after {
+    content:""; position:absolute; background:rgba(255,255,255,.85); border-radius:50%;
+  }
+  .cloud::before { width:44px; height:44px; top:-20px; left:14px; }
+  .cloud::after { width:32px; height:32px; top:-14px; left:52px; }
+  .balloon {
+    position:absolute; left:50%; bottom:60px; width:120px; height:180px;
+    margin-left:-60px;
+  }
+  .envelope {
+    width:120px; height:120px; border-radius:50%;
+    background:repeating-linear-gradient(90deg,#e23b5e 0 15px,#ffd94d 15px 30px,#e23b5e 30px 45px,#4d9de2 45px 60px);
+    box-shadow:inset -14px -10px 24px rgba(0,0,0,.25);
+    transform-origin:50% 60%;
+  }
+  .ropes { width:2px; height:26px; background:#d9c8a8; margin:0 auto; }
+  .basket {
+    width:44px; height:32px; margin:0 auto;
+    background:#8a5a2b; border-radius:6px 6px 10px 10px;
+    border:2px solid #5e3a18;
+  }
+  .done {
+    position:absolute; left:0; right:0; top:38%; text-align:center; z-index:6;
+    font-size:24px; font-weight:700; letter-spacing:6px; color:#fff;
+    text-shadow:0 0 18px #ffb066; display:none;
+  }
+  .confetti { position:absolute; width:8px; height:12px; z-index:5; border-radius:2px; }
+  .hint { margin-top:8px; font-size:11px; color:#5b6b8f; text-align:center; }
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="head"><h2>🎈 气球升空</h2><div class="pct" id="pct">0%</div></div>
+  <div class="scene" id="scene">
+    <div class="cloud" id="c1" style="top:80px;left:-100px"></div>
+    <div class="cloud" id="c2" style="top:180px;left:400px;transform:scale(.7)"></div>
+    <div class="cloud" id="c3" style="top:290px;left:120px;transform:scale(1.25)"></div>
+    <div class="tree" style="left:36px">🌲</div>
+    <div class="tree" style="left:300px">🌲</div>
+    <div class="ground"></div>
+    <div class="balloon" id="balloon">
+      <div class="envelope" id="envelope"></div>
+      <div class="ropes"></div>
+      <div class="basket"></div>
+    </div>
+    <div class="done" id="done">到达云端</div>
+  </div>
+  <div class="hint">气球充气变大 · 高度随进度上升 · 100% 撒花</div>
+</div>
+<script>
+(function(){
+  var pct = document.getElementById('pct');
+  var balloon = document.getElementById('balloon');
+  var envelope = document.getElementById('envelope');
+  var done = document.getElementById('done');
+  var scene = document.getElementById('scene');
+  var clouds = [document.getElementById('c1'), document.getElementById('c2'), document.getElementById('c3')];
+  var cloudX = [-100, 400, 120], cloudDir = [1, -1, 1];
+  var p = 0, cheered = false;
+  function render(){
+    pct.textContent = Math.round(p) + '%';
+    // 高度映射：底部 60px → 340px
+    balloon.style.bottom = (60 + p / 100 * 280) + 'px';
+    // 充气：scale 0.55 → 1
+    var s = 0.55 + 0.45 * p / 100;
+    envelope.style.transform = 'scale(' + s.toFixed(3) + ')';
+    if (p >= 100 && !cheered) { cheered = true; celebrate(); done.style.display = 'block'; }
+    if (p < 100) { done.style.display = 'none'; }
+  }
+  function celebrate(){
+    var colors = ['#ff5e7e','#ffd94d','#4d9de2','#7dff8a','#c77dff'];
+    var parts = [];
+    for (var i = 0; i < 44; i++){
+      var d = document.createElement('div');
+      d.className = 'confetti';
+      d.style.left = (80 + Math.random() * 200) + 'px';
+      d.style.top = '120px';
+      d.style.background = colors[i % colors.length];
+      scene.appendChild(d);
+      parts.push({el:d, x:parseFloat(d.style.left), y:120, vx:(Math.random()-.5)*3, vy:1+Math.random()*2, rot:Math.random()*360});
+    }
+    var frames = 0;
+    (function fall(){
+      frames++;
+      parts.forEach(function(pt){
+        pt.x += pt.vx; pt.y += pt.vy; pt.rot += 6;
+        pt.el.style.left = pt.x + 'px';
+        pt.el.style.top = pt.y + 'px';
+        pt.el.style.transform = 'rotate(' + pt.rot + 'deg)';
+      });
+      if (frames < 70) requestAnimationFrame(fall);
+      else parts.forEach(function(pt){ pt.el.remove(); });
+    })();
+  }
+  // 云朵掠过（装饰性，rAF 驱动）
+  var cx = cloudX.slice();
+  (function drift(){
+    clouds.forEach(function(c, i){
+      cx[i] += cloudDir[i] * 0.9;
+      if (cx[i] > 420) cx[i] = -110;
+      if (cx[i] < -120) cx[i] = 410;
+      c.style.left = cx[i] + 'px';
+    });
+    requestAnimationFrame(drift);
+  })();
+  if (location.hash === '#mid') { p = 55; render(); return; }
+  render();
+  var step = 100 / (7000 / 70), hold = false;
+  setInterval(function(){
+    if (hold) return;
+    p += step;
+    if (p >= 100) {
+      p = 100; render(); hold = true;
+      setTimeout(function(){ p = 0; cheered = false; hold = false; render(); }, 1000);
+      return;
+    }
+    render();
+  }, 70);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>宅控中心</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#05070d;display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sans-serif;color:#dfe8f5}
+.phone{width:430px;height:900px;border-radius:44px;overflow:hidden;position:relative;background:linear-gradient(180deg,#0a1020 0%,#0d1526 45%,#111c33 100%);box-shadow:0 30px 80px rgba(0,0,0,.7),0 0 0 1px rgba(120,170,255,.12);display:flex;flex-direction:column;transition:background 1s}
+.phone.cinema{background:linear-gradient(180deg,#05070f 0%,#0a0f1e 50%,#141022 100%)}
+@keyframes riseIn{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+@keyframes glowPulse{0%,100%{box-shadow:0 0 14px rgba(120,200,255,.45),0 8px 20px rgba(0,0,0,.4)}50%{box-shadow:0 0 26px rgba(120,200,255,.75),0 8px 20px rgba(0,0,0,.4)}}
+@keyframes scan{0%{transform:translateX(-120%)}100%{transform:translateX(340%)}}
+@keyframes amb{0%,100%{opacity:.5}50%{opacity:1}}
+.statusbar{display:flex;justify-content:space-between;align-items:center;padding:18px 28px 6px;font-size:14px;color:#7d8fb0;z-index:5}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:8px 24px 2px;z-index:5;animation:riseIn .8s -0.4s both}
+.topbar .t{font-size:23px;font-weight:800;color:#fff}
+.topbar .s{font-size:13px;color:#7d8fb0;margin-top:2px}
+.topbar .s b{color:#8fd0ff}
+.hub{display:block;width:46px;height:46px;border-radius:14px;background:linear-gradient(135deg,#2a3c5e,#16233c);position:relative;border:1px solid rgba(140,190,255,.3);overflow:hidden}
+.hub::after{content:"";position:absolute;top:0;bottom:0;width:40%;background:linear-gradient(90deg,transparent,rgba(160,210,255,.35),transparent);animation:scan 3.2s -1s linear infinite}
+.hub::before{content:"";position:absolute;left:17px;top:17px;width:12px;height:12px;border-radius:50%;background:#8fd0ff;box-shadow:0 0 10px #8fd0ff;animation:amb 2s -1s infinite}
+.rooms{display:flex;gap:10px;margin:14px 24px 0;z-index:5;animation:riseIn .8s -0.25s both}
+.room{flex:1;text-align:center;padding:11px 0;border-radius:14px;background:rgba(30,45,75,.55);border:1px solid rgba(130,170,230,.18);font-size:14px;color:#9db1d4;cursor:pointer;transition:all .25s}
+.room.on{background:linear-gradient(135deg,#3f7dd0,#2a5ba8);color:#fff;font-weight:700;border-color:#6ea8e8;box-shadow:0 8px 18px rgba(70,130,220,.35)}
+.env{margin:14px 24px 0;display:flex;gap:12px;z-index:5;animation:riseIn .8s -0.15s both}
+.envc{flex:1;background:rgba(25,38,64,.6);border:1px solid rgba(130,170,230,.16);border-radius:16px;padding:12px 14px;display:flex;align-items:center;gap:10px}
+.envc .ic{display:block;width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#3f6fbf,#274a80);position:relative;flex:none}
+.envc .ic.tp::after{content:"";position:absolute;left:14px;top:6px;width:6px;height:16px;border-radius:3px;background:#bfe0ff}
+.envc .ic.tp::before{content:"";position:absolute;left:12px;top:20px;width:10px;height:10px;border-radius:50%;background:#bfe0ff}
+.envc .ic.hm::after{content:"";position:absolute;left:12px;top:7px;width:10px;height:14px;background:#bfe0ff;border-radius:50% 50% 50% 50%/60% 60% 40% 40%}
+.envc b{font-size:16px;color:#fff;display:block}
+.envc span{font-size:11px;color:#7d8fb0}
+.devices{margin:16px 24px 0;display:grid;grid-template-columns:1fr 1fr;gap:14px;z-index:5}
+.dev{background:rgba(25,38,64,.6);border:1px solid rgba(130,170,230,.16);border-radius:20px;padding:16px 14px;position:relative;animation:riseIn .7s -0.3s both;transition:box-shadow .4s,border-color .4s,background .4s}
+.dev:nth-child(2){animation-delay:-0.18s}.dev:nth-child(3){animation-delay:-0.06s}.dev:nth-child(4){animation-delay:0s}.dev:nth-child(5){animation-delay:.05s}.dev:nth-child(6){animation-delay:.08s}
+.dev .ic{display:block;width:46px;height:46px;border-radius:14px;background:linear-gradient(135deg,#31486e,#1d2c48);position:relative;margin-bottom:12px;transition:background .3s}
+.dev .nm{font-size:14px;font-weight:600;color:#dfe8f5}
+.dev .st{font-size:11px;color:#7d8fb0;margin-top:2px}
+.dev .sw-row{display:flex;justify-content:flex-end;margin-top:10px}
+.switch{position:relative;width:52px;height:30px;border-radius:999px;background:#2a3a58;border:1px solid rgba(130,170,230,.25);cursor:pointer;transition:background .3s;flex:none;display:block}
+.switch .knob{position:absolute;left:3px;top:3px;width:22px;height:22px;border-radius:50%;background:#8fa3c4;transition:left .3s,background .3s;display:block}
+.switch.on{background:linear-gradient(120deg,#4fa8e8,#2f7cc8)}
+.switch.on .knob{left:25px;background:#fff;box-shadow:0 0 10px rgba(160,215,255,.9)}
+.dev.lit{border-color:rgba(140,205,255,.6);background:rgba(45,80,130,.55);animation:riseIn .7s -0.3s both,glowPulse 3s -1s infinite}
+.dev.lit .ic{background:linear-gradient(135deg,#ffe9a8,#f0b93e)}
+.dev.lit .ic::after{box-shadow:0 0 12px #ffe9a8}
+.dev .ic.lp::after{content:"";position:absolute;left:18px;top:8px;width:10px;height:18px;background:#bfe0ff;border-radius:6px 6px 2px 2px}
+.dev .ic.lp::before{content:"";position:absolute;left:14px;top:27px;width:18px;height:5px;background:#7d8fb0;border-radius:3px}
+.dev .ic.ac::after{content:"";position:absolute;left:8px;top:16px;width:30px;height:12px;border:2px solid #bfe0ff;border-radius:4px}
+.dev .ic.ac::before{content:"";position:absolute;left:14px;top:30px;width:18px;height:3px;background:#7d8fb0;border-radius:2px}
+.dev .ic.ct::after{content:"";position:absolute;left:10px;top:8px;width:26px;height:28px;background:repeating-linear-gradient(90deg,#5d7ba3 0 5px,#31486e 5px 10px);border-radius:3px}
+.dev .ic.tv::after{content:"";position:absolute;left:7px;top:11px;width:32px;height:20px;background:#0a1220;border:2px solid #bfe0ff;border-radius:4px}
+.dev .ic.sp::after{content:"";position:absolute;left:15px;top:8px;width:16px;height:22px;background:#bfe0ff;border-radius:8px 8px 4px 4px}
+.dev .ic.sp::before{content:"";position:absolute;left:12px;top:31px;width:22px;height:4px;background:#7d8fb0;border-radius:2px}
+.dev .ic.rbt::after{content:"";position:absolute;left:14px;top:10px;width:18px;height:18px;border:3px solid #bfe0ff;border-radius:50%}
+.dev .ic.rbt::before{content:"";position:absolute;left:20px;top:16px;width:6px;height:6px;background:#bfe0ff;border-radius:50%}
+.scenes{margin:16px 24px 0;z-index:5;animation:riseIn .9s .1s both}
+.scenes .t{font-size:15px;font-weight:700;color:#fff;margin-bottom:10px}
+.srow{display:flex;gap:10px}
+.scene{flex:1;border:none;border-radius:16px;padding:14px 6px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;transition:transform .2s,box-shadow .3s}
+.scene:active{transform:scale(.94)}
+.scene.cinema{background:linear-gradient(135deg,#5a3fa8,#2e1f66);color:#e8dcff}
+.scene.read{background:linear-gradient(135deg,#2f7cc8,#1d4a80);color:#dceeff}
+.scene.away{background:linear-gradient(135deg,#4a5a70,#2a3444);color:#cdd8e6}
+.scene.active{box-shadow:0 0 0 2.5px #8fd0ff,0 8px 20px rgba(120,180,255,.4)}
+.ambient{position:absolute;left:0;right:0;bottom:96px;height:90px;pointer-events:none;z-index:1;opacity:0;transition:opacity 1s;background:radial-gradient(ellipse 60% 100% at 50% 100%,rgba(150,90,220,.35),transparent 70%)}
+.phone.cinema .ambient{opacity:1}
+.tabbar{margin:auto 18px 22px;background:rgba(20,30,52,.9);border:1px solid rgba(130,170,230,.2);border-radius:26px;display:flex;justify-content:space-around;padding:12px 6px;z-index:5;animation:riseIn .9s .2s both}
+.tab{text-align:center;flex:1;cursor:pointer}
+.tab .d{display:block;width:26px;height:26px;margin:0 auto 4px;border-radius:8px;background:#31486e;position:relative;transition:background .25s}
+.tab.on .d{background:linear-gradient(135deg,#8fd0ff,#4fa8e8);box-shadow:0 0 12px rgba(140,205,255,.6)}
+.tab .l{font-size:11px;color:#7d8fb0}
+.tab.on .l{color:#fff;font-weight:600}
+.tab .d.hm::after{content:"";position:absolute;left:8px;top:7px;width:10px;height:9px;background:#0a1020;clip-path:polygon(50% 0,100% 100%,0 100%)}
+.tab .d.rm::after{content:"";position:absolute;left:6px;top:6px;width:14px;height:13px;border:2px solid #0a1020;border-radius:3px}
+.tab .d.me::after{content:"";position:absolute;left:9px;top:6px;width:8px;height:8px;border-radius:50%;background:#0a1020;box-shadow:0 9px 0 -1px #0a1020}
+</style>
+</head>
+<body>
+<div class="phone" id="phone">
+  <div class="statusbar"><span>21:15</span><span>全屋在线 · 6 台设备</span></div>
+  <div class="topbar">
+    <div><div class="t">宅控中心</div><div class="s">当前房间：<b id="roomName">客厅</b> · 设备运行正常</div></div>
+    <span class="hub"></span>
+  </div>
+  <div class="rooms">
+    <div class="room on" data-r="客厅">客厅</div>
+    <div class="room" data-r="卧室">卧室</div>
+    <div class="room" data-r="书房">书房</div>
+  </div>
+  <div class="env">
+    <div class="envc"><span class="ic tp"></span><div><b>24.5°</b><span>室内温度</span></div></div>
+    <div class="envc"><span class="ic hm"></span><div><b>52%</b><span>空气湿度</span></div></div>
+  </div>
+  <div class="devices" id="devices">
+    <div class="dev lit"><span class="ic lp"></span><div class="nm">客厅主灯</div><div class="st">已开启 · 80%</div><div class="sw-row"><span class="switch on"><span class="knob"></span></span></div></div>
+    <div class="dev"><span class="ic ac"></span><div class="nm">柜式空调</div><div class="st">已关闭</div><div class="sw-row"><span class="switch"><span class="knob"></span></span></div></div>
+    <div class="dev"><span class="ic ct"></span><div class="nm">电动窗帘</div><div class="st">已关闭</div><div class="sw-row"><span class="switch"><span class="knob"></span></span></div></div>
+    <div class="dev"><span class="ic tv"></span><div class="nm">智能电视</div><div class="st">已关闭</div><div class="sw-row"><span class="switch"><span class="knob"></span></span></div></div>
+    <div class="dev"><span class="ic sp"></span><div class="nm">蓝牙音箱</div><div class="st">已关闭</div><div class="sw-row"><span class="switch"><span class="knob"></span></span></div></div>
+    <div class="dev"><span class="ic rbt"></span><div class="nm">扫地机器人</div><div class="st">已关闭</div><div class="sw-row"><span class="switch"><span class="knob"></span></span></div></div>
+  </div>
+  <div class="scenes">
+    <div class="t">全屋场景</div>
+    <div class="srow">
+      <button class="scene cinema" id="cinemaBtn">一键观影</button>
+      <button class="scene read" id="readBtn">阅读模式</button>
+      <button class="scene away" id="awayBtn">离家模式</button>
+    </div>
+  </div>
+  <div class="ambient"></div>
+  <div class="tabbar">
+    <div class="tab on"><span class="d hm"></span><div class="l">首页</div></div>
+    <div class="tab"><span class="d rm"></span><div class="l">房间</div></div>
+    <div class="tab"><span class="d me"></span><div class="l">我的</div></div>
+  </div>
+</div>
+<script>
+var rooms={
+  '客厅':[['客厅主灯','lp',1,'已开启 · 80%'],['柜式空调','ac',0,'已关闭'],['电动窗帘','ct',0,'已关闭'],['智能电视','tv',0,'已关闭'],['蓝牙音箱','sp',0,'已关闭'],['扫地机器人','rbt',0,'已关闭']],
+  '卧室':[['床头灯','lp',0,'已关闭'],['壁挂空调','ac',1,'已开启 · 26°'],['遮光窗帘','ct',1,'已开启'],['香薰机','sp',0,'已关闭']],
+  '书房':[['护眼台灯','lp',1,'已开启 · 60%'],['桌面风扇','ac',0,'已关闭'],['纱帘','ct',0,'已关闭'],['桌面音箱','sp',1,'已开启']]
+};
+var devBox=document.getElementById('devices'),phone=document.getElementById('phone');
+function renderDevs(list){
+  devBox.innerHTML='';
+  list.forEach(function(d){
+    var el=document.createElement('div');
+    el.className='dev'+(d[2]?' lit':'');
+    el.innerHTML='<span class="ic '+d[1]+'"></span><div class="nm">'+d[0]+'</div><div class="st">'+d[3]+'</div><div class="sw-row"><span class="switch'+(d[2]?' on':'')+'"><span class="knob"></span></span></div>';
+    devBox.appendChild(el);
+    bindSwitch(el,d);
+  });
+}
+function bindSwitch(el,d){
+  var sw=el.querySelector('.switch');
+  sw.addEventListener('click',function(e){
+    e.stopPropagation();
+    var on=sw.classList.toggle('on');
+    el.classList.toggle('lit',on&&el.querySelector('.ic').classList.contains('lp'));
+    el.querySelector('.st').textContent=on?'已开启':'已关闭';
+  });
+}
+document.querySelectorAll('.room').forEach(function(el){
+  el.addEventListener('click',function(){
+    document.querySelectorAll('.room').forEach(function(x){x.classList.remove('on')});
+    el.classList.add('on');
+    var r=el.dataset.r;
+    document.getElementById('roomName').textContent=r;
+    renderDevs(rooms[r]);
+  });
+});
+renderDevs(rooms['客厅']);
+function clearScenes(){document.querySelectorAll('.scene').forEach(function(x){x.classList.remove('active')});phone.classList.remove('cinema')}
+document.getElementById('cinemaBtn').addEventListener('click',function(){
+  clearScenes();this.classList.add('active');phone.classList.add('cinema');
+  document.querySelectorAll('.dev').forEach(function(el){
+    el.classList.remove('lit');el.querySelector('.switch').classList.remove('on');
+    el.querySelector('.st').textContent='已关闭';
+  });
+});
+document.getElementById('readBtn').addEventListener('click',function(){
+  clearScenes();this.classList.add('active');
+});
+document.getElementById('awayBtn').addEventListener('click',function(){
+  clearScenes();this.classList.add('active');
+  document.querySelectorAll('.dev').forEach(function(el){
+    el.classList.remove('lit');el.querySelector('.switch').classList.remove('on');
+    el.querySelector('.st').textContent='已关闭';
+  });
+});
+document.querySelectorAll('.tab').forEach(function(el){
+  el.addEventListener('click',function(){
+    document.querySelectorAll('.tab').forEach(function(x){x.classList.remove('on')});
+    el.classList.add('on');
+  });
+});
+</script>
+</body>
+</html>

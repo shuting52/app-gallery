@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>聊天列表</title>
+<style>
+/* ============ tokens（照抄脚手架） ============ */
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --glass-radius:34px; --glass-blur:24px;
+  --glass-tint-top:rgba(255,255,255,.17); --glass-tint-mid:rgba(255,255,255,.05); --glass-tint-bot:rgba(255,255,255,.10);
+  --glass-edge-width:1.2px;
+  --glass-edge-strong:rgba(255,255,255,.95); --glass-edge-mid:rgba(255,255,255,.22);
+  --glass-edge-weak:rgba(255,255,255,.05); --glass-edge-mid2:rgba(255,255,255,.12); --glass-edge-soft:rgba(255,255,255,.78);
+  --glass-shadow-far:0 26px 60px -26px rgba(0,0,0,.85); --glass-shadow-near:0 10px 26px -14px rgba(0,0,0,.55);
+  --text-1:#fff; --text-2:rgba(255,255,255,.62); --text-3:rgba(255,255,255,.60);
+  --ease-liquid:cubic-bezier(.22,.9,.28,1.2);
+}
+html,body{height:100%}
+body{font:400 15px/1.45 -apple-system,"SF Pro Text","PingFang SC","Helvetica Neue",system-ui,sans-serif;
+  color:var(--text-1);background:#07060b;overflow-x:hidden;-webkit-font-smoothing:antialiased;
+  display:flex;justify-content:center}
+/* ============ 壁纸（照抄 LiquidWallpaper.vue） ============ */
+.wallpaper{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none}
+.wallpaper i{position:absolute;inset:-30%;display:block;
+  background:radial-gradient(42% 32% at 20% 22%,#ff3b5c 0%,transparent 62%),
+  radial-gradient(38% 30% at 84% 16%,#ff9f1c 0%,transparent 60%),
+  radial-gradient(52% 42% at 76% 74%,#ff2d55 0%,transparent 64%),
+  radial-gradient(42% 38% at 24% 82%,#6b5cff 0%,transparent 62%),
+  radial-gradient(30% 26% at 52% 48%,#ffd166 0%,transparent 68%),#140a20;
+  filter:blur(48px) saturate(150%);animation:drift 26s ease-in-out infinite alternate}
+.wallpaper i:nth-child(2){background:conic-gradient(from 200deg at 50% 55%,#ff2d55,#ff9f0a,#ffd60a,#34c759,#0a84ff,#bf5af2,#ff2d55);
+  filter:blur(110px);opacity:.5;mix-blend-mode:screen;animation-duration:34s;animation-direction:alternate-reverse}
+@keyframes drift{from{transform:translate3d(-3%,-2%,0) scale(1.05) rotate(-3deg)}
+  to{transform:translate3d(4%,3%,0) scale(1.16) rotate(4deg)}}
+/* ============ 玻璃卡（照抄 LiquidGlass.vue） ============ */
+.lg{position:relative;isolation:isolate;border-radius:var(--lg-r,var(--glass-radius));
+  background:linear-gradient(155deg,var(--glass-tint-top) 0%,var(--glass-tint-mid) 42%,var(--glass-tint-bot) 100%);
+  -webkit-backdrop-filter:blur(var(--lg-blur,var(--glass-blur))) saturate(180%) brightness(1.06);
+  backdrop-filter:blur(var(--lg-blur,var(--glass-blur))) saturate(180%) brightness(1.06);
+  box-shadow:inset 0 1px 1px -.5px rgba(255,255,255,.70),inset 0 -1px 1px -.5px rgba(255,255,255,.18),
+  inset 0 14px 22px -14px rgba(255,255,255,.45),var(--glass-shadow-far),var(--glass-shadow-near);
+  transition:transform .38s var(--ease-liquid)}
+.lg:active{transform:scale(.982)}
+.lg::before{content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;pointer-events:none;
+  mix-blend-mode:screen;opacity:.85;
+  background:radial-gradient(120% 62% at 18% -26%,rgba(255,255,255,.78),transparent 58%),
+  radial-gradient(70% 46% at 92% -12%,rgba(255,255,255,.34),transparent 60%),
+  repeating-linear-gradient(102deg,rgba(255,255,255,.055) 0 2px,transparent 2px 26px)}
+.lg::after{content:"";position:absolute;inset:0;z-index:1;border-radius:inherit;padding:var(--glass-edge-width);
+  pointer-events:none;
+  background:linear-gradient(150deg,var(--glass-edge-strong) 0%,var(--glass-edge-mid) 22%,var(--glass-edge-weak) 48%,var(--glass-edge-mid2) 72%,var(--glass-edge-soft) 100%);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;mask-composite:exclude}
+/* ============ 屏幕骨架 ============ */
+.screen{position:relative;z-index:1;width:430px;max-width:100%;min-height:900px;height:900px;overflow:hidden;
+  display:flex;flex-direction:column;padding:18px 14px 12px}
+.statusbar{display:flex;justify-content:space-between;align-items:center;font-size:13px;font-weight:600;
+  padding:2px 8px 10px;color:var(--text-1)}
+.statusbar .sic{display:flex;gap:6px;align-items:center;font-size:12px}
+.apptitle{font-size:30px;font-weight:700;letter-spacing:1px;padding:6px 4px 14px}
+.apptitle small{display:block;font-size:12px;font-weight:400;color:var(--text-2);letter-spacing:2px;margin-top:4px}
+.content{flex:1;overflow:hidden;display:flex;flex-direction:column;gap:12px}
+.homebar{width:134px;height:5px;border-radius:3px;background:rgba(255,255,255,.85);margin:10px auto 4px}
+/* ============ 通用小件 ============ */
+.av{display:block;flex:none;border-radius:50%;
+  background:conic-gradient(from calc(var(--hue,0)*1deg),#ff9f0a,#ff2d55,#bf5af2,#0a84ff,#ff9f0a);
+  box-shadow:0 0 0 1px rgba(255,255,255,.4),0 6px 16px rgba(0,0,0,.4)}
+.row{display:flex;align-items:center;gap:12px;min-width:0}
+.row .main{flex:1;min-width:0}
+.row .rowtop{display:flex;align-items:baseline;gap:8px}
+.row .name{font-size:16px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row .sub{font-size:13px;color:var(--text-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:3px}
+.row .time{margin-left:auto;flex:none;font-size:12px;color:var(--text-2)}
+.badge{flex:none;padding:3px 9px;border-radius:999px;font-size:11.5px;font-weight:600;color:#fff;
+  background:linear-gradient(135deg,#3b6bff,#8a3bff);
+  box-shadow:0 0 12px rgba(92,92,255,.75),inset 0 1px 0 rgba(255,255,255,.5)}
+/* ============ 本页：FolderCard（照抄脚手架 FolderCard.vue） ============ */
+.msg-card{padding:15px 18px}
+.folder{padding:10px 16px 15px}
+.folder__head{display:flex;align-items:flex-end;margin:0 -16px 8px;padding:0 16px}
+.folder__title{flex:none;padding:7px 24px;border-radius:999px;font-size:14.5px;font-weight:500;letter-spacing:.5px;
+  background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.30);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.55)}
+.folder__tail{flex:1;height:26px;min-width:20px}
+.folder__stack{flex:none;display:flex;align-items:center;padding-bottom:2px}
+.folder__stack>*{margin-left:-9px;box-shadow:0 0 0 2px rgba(255,255,255,.25)}
+.folder__more{display:grid;place-items:center;width:28px;height:28px;border-radius:50%;font-size:11px;font-weight:600;
+  background:rgba(255,255,255,.14);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);color:#fff}
+.folder__body{padding-top:4px;display:flex;flex-direction:column;gap:13px}
+</style>
+</head>
+<body>
+<div class="wallpaper" aria-hidden="true"><i></i><i></i></div>
+<div class="screen">
+  <div class="statusbar"><span>9:41</span><span class="sic">📶 📡 🔋</span></div>
+  <div class="apptitle">聊天列表<small>LIQUID GLASS · MESSAGES</small></div>
+  <div class="content">
+    <section class="lg msg-card">
+      <div class="row">
+        <span class="av" style="width:46px;height:46px;--hue:20"></span>
+        <div class="main">
+          <div class="rowtop"><span class="name">林晚晴</span><span class="time">昨天 21:14</span></div>
+          <p class="sub">[图片] 刚拍的晚霞，发你看看</p>
+        </div>
+        <span class="badge">3 条未读</span>
+      </div>
+    </section>
+    <section class="lg folder">
+      <header class="folder__head">
+        <span class="folder__title">群聊</span>
+        <svg class="folder__tail" viewBox="0 0 100 22" preserveAspectRatio="none" aria-hidden="true">
+          <path d="M0 1C18 1 26 21 100 21" fill="none" stroke="rgba(255,255,255,.32)"
+                stroke-width="1.2" vector-effect="non-scaling-stroke"/>
+        </svg>
+        <div class="folder__stack">
+          <span class="av" style="width:28px;height:28px;--hue:0"></span>
+          <span class="av" style="width:28px;height:28px;--hue:90"></span>
+          <span class="av" style="width:28px;height:28px;--hue:180"></span>
+          <i class="folder__more">+8</i>
+        </div>
+      </header>
+      <div class="folder__body">
+        <div class="row">
+          <span class="av" style="width:46px;height:46px;--hue:140"></span>
+          <div class="main">
+            <div class="rowtop"><span class="name">周末爬山小分队</span><span class="time">08:32</span></div>
+            <p class="sub">[12条] 陈默：周六早上七点，山脚集合</p>
+          </div>
+          <span class="badge">5</span>
+        </div>
+        <div class="row">
+          <span class="av" style="width:46px;height:46px;--hue:220"></span>
+          <div class="main">
+            <div class="rowtop"><span class="name">小区 3 栋邻里群</span><span class="time">昨天 20:05</span></div>
+            <p class="sub">物业：今晚八点停水检修，请提前储水</p>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="lg folder">
+      <header class="folder__head">
+        <span class="folder__title">企业好友</span>
+        <svg class="folder__tail" viewBox="0 0 100 22" preserveAspectRatio="none" aria-hidden="true">
+          <path d="M0 1C18 1 26 21 100 21" fill="none" stroke="rgba(255,255,255,.32)"
+                stroke-width="1.2" vector-effect="non-scaling-stroke"/>
+        </svg>
+        <div class="folder__stack">
+          <span class="av" style="width:28px;height:28px;--hue:45"></span>
+          <span class="av" style="width:28px;height:28px;--hue:160"></span>
+          <span class="av" style="width:28px;height:28px;--hue:280"></span>
+          <i class="folder__more">+2</i>
+        </div>
+      </header>
+      <div class="folder__body">
+        <div class="row">
+          <span class="av" style="width:46px;height:46px;--hue:300"></span>
+          <div class="main">
+            <div class="rowtop"><span class="name">顺风快递小哥</span><span class="time">10:15</span></div>
+            <p class="sub">[包裹] 您的快件已到楼下驿站</p>
+          </div>
+        </div>
+        <div class="row">
+          <span class="av" style="width:46px;height:46px;--hue:60"></span>
+          <div class="main">
+            <div class="rowtop"><span class="name">花开富贵 · 鲜花店</span><span class="time">昨天 09:40</span></div>
+            <p class="sub">亲，节日花束预订通道开启啦</p>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="lg folder">
+      <header class="folder__head">
+        <span class="folder__title">未读</span>
+        <svg class="folder__tail" viewBox="0 0 100 22" preserveAspectRatio="none" aria-hidden="true">
+          <path d="M0 1C18 1 26 21 100 21" fill="none" stroke="rgba(255,255,255,.32)"
+                stroke-width="1.2" vector-effect="non-scaling-stroke"/>
+        </svg>
+        <div class="folder__stack">
+          <span class="av" style="width:28px;height:28px;--hue:110"></span>
+          <span class="av" style="width:28px;height:28px;--hue:240"></span>
+          <i class="folder__more">+1</i>
+        </div>
+      </header>
+      <div class="folder__body">
+        <div class="row">
+          <span class="av" style="width:46px;height:46px;--hue:190"></span>
+          <div class="main">
+            <div class="rowtop"><span class="name">大学室友 402</span><span class="time">07:58</span></div>
+            <p class="sub">[9条] 阿哲：假期聚餐地点定下来了</p>
+          </div>
+          <span class="badge">9</span>
+        </div>
+      </div>
+    </section>
+    <section class="lg folder">
+      <header class="folder__head">
+        <span class="folder__title">分组</span>
+        <svg class="folder__tail" viewBox="0 0 100 22" preserveAspectRatio="none" aria-hidden="true">
+          <path d="M0 1C18 1 26 21 100 21" fill="none" stroke="rgba(255,255,255,.32)"
+                stroke-width="1.2" vector-effect="non-scaling-stroke"/>
+        </svg>
+        <div class="folder__stack">
+          <span class="av" style="width:28px;height:28px;--hue:330"></span>
+          <span class="av" style="width:28px;height:28px;--hue:75"></span>
+        </div>
+      </header>
+      <div class="folder__body">
+        <div class="row">
+          <span class="av" style="width:46px;height:46px;--hue:15"></span>
+          <div class="main">
+            <div class="rowtop"><span class="name">老同学</span><span class="time">昨天 18:22</span></div>
+            <p class="sub">[3条] 班长：下月同学聚会开始报名</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+  <div class="homebar"></div>
+</div>
+</body>
+</html>

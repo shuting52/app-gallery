@@ -1,0 +1,36 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>极光之幕</title><style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{background:#01040a;display:flex;justify-content:center;font-family:-apple-system,"PingFang SC","Microsoft YaHei","Noto Sans CJK SC",sans-serif;overflow:hidden}
+.stage{width:430px;height:900px;max-height:100vh;position:relative;overflow:hidden;background:linear-gradient(180deg,#020610 0%,#061224 60%,#0a1a30 100%)}
+.star{position:absolute;width:3px;height:3px;border-radius:50%;background:#fff;animation:tw 2.6s ease-in-out infinite}
+@keyframes tw{0%,100%{opacity:.25}50%{opacity:1}}
+.aurora{position:absolute;left:-120px;width:670px;height:300px;filter:blur(46px);opacity:.85;transform:skewX(-18deg)}
+.aurora.a1{top:90px;background:linear-gradient(90deg,transparent,#22e6a2 30%,#4dd2ff 60%,transparent);animation:flow1 7s ease-in-out -2s infinite}
+.aurora.a2{top:210px;background:linear-gradient(90deg,transparent,#b14dff 30%,#ff4dd2 60%,transparent);animation:flow2 9s ease-in-out -5s infinite;opacity:.7}
+.aurora.a3{top:330px;background:linear-gradient(90deg,transparent,#4dff88 35%,#4dd2ff 65%,transparent);animation:flow1 11s ease-in-out -7s infinite;opacity:.5}
+@keyframes flow1{0%,100%{transform:skewX(-18deg) translateX(-40px)}50%{transform:skewX(-8deg) translateX(50px)}}
+@keyframes flow2{0%,100%{transform:skewX(-14deg) translateX(40px)}50%{transform:skewX(-24deg) translateX(-50px)}}
+.mtn{position:absolute;left:0;right:0;bottom:0;height:300px}
+.brand{position:absolute;left:0;right:0;bottom:340px;text-align:center;animation:up 1.4s ease 1s both}
+.brand h1{font-size:80px;font-weight:800;letter-spacing:24px;text-indent:24px;color:#eafcff;text-shadow:0 0 18px rgba(77,210,255,.9),0 0 70px rgba(34,230,162,.6)}
+.brand p{margin-top:14px;font-size:14px;letter-spacing:8px;color:#9fd8e8}
+@keyframes up{from{opacity:0;transform:translateY(34px);filter:blur(8px)}to{opacity:1;transform:none;filter:blur(0)}}
+.replay{position:absolute;bottom:34px;left:50%;transform:translateX(-50%);z-index:50;padding:10px 26px;border-radius:999px;border:1px solid rgba(77,210,255,.55);background:rgba(77,210,255,.1);color:#d8f4ff;font-size:13px;letter-spacing:4px;text-indent:4px;cursor:pointer}
+.replay:active{transform:translateX(-50%) scale(.94)}
+</style></head><body><div class="stage">
+<div class="aurora a1"></div><div class="aurora a2"></div><div class="aurora a3"></div>
+<svg class="mtn" viewBox="0 0 430 300" preserveAspectRatio="none"><path d="M0,300 L0,220 L90,120 L170,210 L250,90 L340,200 L430,140 L430,300 Z" fill="#030a16"/><path d="M0,300 L0,250 L120,180 L230,250 L330,190 L430,240 L430,300 Z" fill="#06121f"/></svg>
+<div class="brand"><h1>极光</h1><p>天幕流光 一期一会</p></div>
+<button class="replay" onclick="location.reload()">重新播放</button>
+</div>
+<script>
+(function(){var st=document.querySelector('.stage');
+for(var i=0;i<46;i++){var s=document.createElement('div');s.className='star';
+s.style.left=(3+Math.random()*424)+'px';s.style.top=(8+Math.random()*560)+'px';
+var z=(1.5+Math.random()*2.4).toFixed(2);s.style.width=s.style.height=z+'px';
+s.style.animationDelay=(-Math.random()*2.6).toFixed(2)+'s';st.appendChild(s);}})();
+</script>
+</div></body></html>

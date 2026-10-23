@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>声波电台</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{background:#0d0a07;display:flex;align-items:center;justify-content:center;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sans-serif;color:#f3e7d3;min-height:100vh}
+.phone{width:430px;height:900px;border-radius:44px;overflow:hidden;position:relative;background:linear-gradient(170deg,#2a2018 0%,#1c150e 55%,#120d08 100%);box-shadow:0 30px 80px rgba(0,0,0,.7),0 0 0 10px #0c0a07,0 0 0 12px #4a3a28}
+.phone::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent 0 3px,rgba(0,0,0,.12) 3px 4px);pointer-events:none;z-index:5}
+.screen{position:absolute;inset:0;display:flex;flex-direction:column;padding:24px 20px 0;z-index:2}
+@keyframes rise{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+.rise{animation:rise .8s cubic-bezier(.2,.8,.25,1) both}
+.topbar{display:flex;align-items:center;justify-content:space-between}
+.topbar .t{font-size:17px;font-weight:800;letter-spacing:3px;color:#f0c987}
+.topbar .t small{display:block;font-size:10px;letter-spacing:4px;color:#8a7358;font-weight:400;margin-top:2px}
+.bell{width:40px;height:40px;border-radius:50%;border:1px solid #4a3a28;background:rgba(240,201,135,.08);color:#f0c987;font-size:18px;cursor:pointer;font-family:inherit}
+.cassette{margin-top:18px;background:linear-gradient(160deg,#3a2c1e,#241a10);border:1px solid #55402a;border-radius:20px;padding:20px 18px;box-shadow:0 14px 30px rgba(0,0,0,.5),inset 0 2px 0 rgba(240,201,135,.18);position:relative}
+.cassette .label{position:absolute;top:12px;left:50%;transform:translateX(-50%);font-size:10px;letter-spacing:6px;color:#8a7358}
+.window{background:#0d0906;border-radius:12px;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;border:1px solid #3a2c1e}
+.reel{width:64px;height:64px;border-radius:50%;background:radial-gradient(circle,#e8d9b8 18%,#8a7358 19%,#5a4a34 46%,#e8d9b8 47%,#c9b48a 100%);position:relative;animation:spin 3.2s linear -2s infinite;box-shadow:0 0 0 3px #14100a}
+.reel::before,.reel::after{content:"";position:absolute;background:#14100a;border-radius:4px}
+.reel::before{left:8px;right:8px;top:50%;height:10px;transform:translateY(-50%)}
+.reel::after{top:8px;bottom:8px;left:50%;width:10px;transform:translateX(-50%)}
+@keyframes spin{to{transform:rotate(360deg)}}
+.paused .reel{animation-play-state:paused}
+.tape{height:6px;flex:1;margin:0 8px;background:linear-gradient(90deg,#5a4a34,#8a7358,#5a4a34);border-radius:3px}
+.cassette .song{margin-top:14px;text-align:center}
+.cassette .song b{display:block;font-size:16px;color:#f5e3c2}
+.cassette .song span{font-size:12px;color:#8a7358}
+.waves{margin-top:16px;height:64px;display:flex;align-items:center;justify-content:center;gap:5px;background:rgba(0,0,0,.3);border-radius:14px;border:1px solid #3a2c1e;padding:0 14px}
+.bar{display:inline-block;width:6px;border-radius:3px;background:linear-gradient(180deg,#f0c987,#c96f3a);animation:jump 1s ease-in-out infinite;transform-origin:center}
+@keyframes jump{0%,100%{transform:scaleY(.25)}50%{transform:scaleY(1)}}
+.paused .bar{animation-play-state:paused;transform:scaleY(.25)}
+.controls{margin-top:18px;display:flex;align-items:center;justify-content:center;gap:26px}
+.cbtn{width:52px;height:52px;border-radius:50%;border:1px solid #55402a;background:rgba(240,201,135,.07);color:#f0c987;font-size:20px;cursor:pointer;font-family:inherit}
+.play{width:78px;height:78px;border-radius:50%;border:none;cursor:pointer;font-family:inherit;font-size:28px;color:#241a10;background:radial-gradient(circle at 34% 30%,#ffe9bd,#f0c987 60%,#c9965a);box-shadow:0 0 30px rgba(240,201,135,.45),inset 0 2px 6px rgba(255,255,255,.6);transition:transform .15s}
+.play:active{transform:scale(.93)}
+.progress{margin:16px 4px 0;display:flex;align-items:center;gap:10px;font-size:11px;color:#8a7358;font-variant-numeric:tabular-nums}
+.ptrack{flex:1;height:5px;border-radius:3px;background:#3a2c1e;overflow:hidden}
+.pfill{height:100%;width:36%;background:linear-gradient(90deg,#f0c987,#e08a4a);border-radius:3px;transition:width .5s}
+.sec{margin:20px 2px 10px;font-size:14px;font-weight:700;letter-spacing:2px;color:#f0c987}
+.eps{display:flex;flex-direction:column;gap:10px;overflow:hidden}
+.ep{display:flex;align-items:center;gap:12px;background:rgba(240,201,135,.05);border:1px solid #3a2c1e;border-radius:14px;padding:10px 12px;cursor:pointer;transition:border-color .2s,background .2s}
+.ep.on{border-color:#f0c987;background:rgba(240,201,135,.12)}
+.ep .n{width:38px;height:38px;border-radius:10px;background:linear-gradient(140deg,#6a5236,#3a2c1e);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.ep .info{flex:1}
+.ep .info b{display:block;font-size:13px;color:#f5e3c2;font-weight:600}
+.ep .info span{font-size:11px;color:#8a7358}
+.ep .d{font-size:11px;color:#8a7358;font-variant-numeric:tabular-nums}
+.tabbar{margin-top:auto;height:86px;background:rgba(18,13,8,.92);backdrop-filter:blur(12px);border-top:1px solid #3a2c1e;display:flex;margin-left:-20px;margin-right:-20px;padding:0 10px}
+.tab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:11px;color:#6a5844;cursor:pointer;border:none;background:none;font-family:inherit}
+.tab .ic{display:block;width:26px;height:26px;font-size:21px;line-height:26px;text-align:center;transition:transform .2s}
+.tab.on{color:#f0c987;font-weight:700}
+.tab.on .ic{transform:translateY(-2px) scale(1.1)}
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="screen">
+    <div class="topbar rise" style="animation-delay:-.7s">
+      <div class="t">声波电台<small>深夜频率 87.6</small></div>
+      <button class="bell" onclick="this.style.transform='scale(.88)';setTimeout(()=>this.style.transform='',160)">🔔</button>
+    </div>
+    <div class="cassette rise" style="animation-delay:-.55s" id="cassette">
+      <div class="label">立体声磁带</div>
+      <div class="window">
+        <div class="reel"></div><div class="tape"></div><div class="reel" style="animation-duration:2.3s"></div>
+      </div>
+      <div class="song"><b id="songT">第 42 期 · 城市夜行者的独白</b><span id="songA">主播 老陈 · 48 分钟</span></div>
+    </div>
+    <div class="waves rise" style="animation-delay:-.45s" id="waves"></div>
+    <div class="controls rise" style="animation-delay:-.35s">
+      <button class="cbtn" onclick="skip(-1)">⏮</button>
+      <button class="play" id="playBtn" onclick="togglePlay()">⏸</button>
+      <button class="cbtn" onclick="skip(1)">⏭</button>
+    </div>
+    <div class="progress rise" style="animation-delay:-.28s"><span>17:24</span><div class="ptrack"><div class="pfill" id="pfill"></div></div><span>48:00</span></div>
+    <div class="sec rise" style="animation-delay:-.22s">单集列表</div>
+    <div class="eps">
+      <div class="ep on rise" style="animation-delay:-.18s" onclick="pickEp(this,0)"><div class="n">🎙️</div><div class="info"><b>第 42 期 · 城市夜行者的独白</b><span>老陈 · 播放中</span></div><div class="d">48:00</div></div>
+      <div class="ep rise" style="animation-delay:-.14s" onclick="pickEp(this,1)"><div class="n">🌧️</div><div class="info"><b>第 41 期 · 雨天电台与旧书店</b><span>老陈 · 已播完</span></div><div class="d">52:13</div></div>
+      <div class="ep rise" style="animation-delay:-.1s" onclick="pickEp(this,2)"><div class="n">🚂</div><div class="info"><b>第 40 期 · 绿皮火车慢游记</b><span>老陈 · 已播完</span></div><div class="d">45:47</div></div>
+    </div>
+    <div class="tabbar">
+      <button class="tab" onclick="setTab(this)"><span class="ic">🧭</span>发现</button>
+      <button class="tab on" onclick="setTab(this)"><span class="ic">📻</span>在听</button>
+      <button class="tab" onclick="setTab(this)"><span class="ic">📚</span>订阅</button>
+      <button class="tab" onclick="setTab(this)"><span class="ic">👤</span>我的</button>
+    </div>
+  </div>
+</div>
+<script>
+var waves=document.getElementById('waves');
+var heights=[46,70,34,88,58,96,40,76,52,90,30,66,84,44,72,56,92,38,64,80,48,58,74,36];
+for(var i=0;i<heights.length;i++){
+  var b=document.createElement('span');b.className='bar';
+  b.style.height=heights[i]+'px';
+  b.style.animationDelay=(-(i*0.37%1)).toFixed(2)+'s';
+  b.style.animationDuration=(0.7+((i*53)%40)/100).toFixed(2)+'s';
+  waves.appendChild(b);
+}
+var playing=true;
+function togglePlay(){
+  playing=!playing;
+  document.getElementById('playBtn').textContent=playing?'⏸':'▶';
+  document.getElementById('cassette').classList.toggle('paused',!playing);
+  document.getElementById('waves').classList.toggle('paused',!playing);
+}
+var eps=[
+ ['第 42 期 · 城市夜行者的独白','主播 老陈 · 48 分钟','36%'],
+ ['第 41 期 · 雨天电台与旧书店','主播 老陈 · 52 分钟','0%'],
+ ['第 40 期 · 绿皮火车慢游记','主播 老陈 · 46 分钟','0%']];
+function pickEp(el,i){
+  document.querySelectorAll('.ep').forEach(function(e){e.classList.remove('on')});
+  el.classList.add('on');
+  document.getElementById('songT').textContent=eps[i][0];
+  document.getElementById('songA').textContent=eps[i][1];
+  document.getElementById('pfill').style.width=eps[i][2];
+  if(!playing)togglePlay();
+}
+function skip(d){var f=document.getElementById('pfill');var w=parseFloat(f.style.width)||36;
+  w=Math.min(100,Math.max(0,w+d*5));f.style.width=w+'%';}
+function setTab(el){document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('on')});el.classList.add('on');}
+</script>
+</body>
+</html>

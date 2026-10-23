@@ -1,0 +1,17 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>泡泡上升 · 加载动画</title><style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;background:radial-gradient(600px 400px at 50% 40%,#0a1c30,#04080e 70%);display:flex;flex-direction:column;align-items:center;justify-content:center;
+font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;color:#e8eaf0;padding:24px 12px}
+h1{font-size:15px;font-weight:600;letter-spacing:4px;color:#7dd3fc;margin-bottom:6px}
+.sub{font-size:11px;color:#8a90a6;margin-bottom:30px;letter-spacing:3px}
+.stage{width:360px;max-width:94vw;height:300px;position:relative;display:flex;align-items:center;justify-content:center}
+.bubs{width:340px;height:290px;position:relative;overflow:hidden;
+background:linear-gradient(180deg,#0a2740 0%,#06121f 70%);border-radius:18px;border:1px solid rgba(125,211,252,.2)}
+.bubs i{position:absolute;display:block;bottom:-50px;border-radius:50%;
+background:radial-gradient(circle at 32% 30%,rgba(255,255,255,.85) 0 12%,rgba(125,211,252,.28) 45%,rgba(125,211,252,.06) 75%);
+border:1px solid rgba(186,230,253,.35);animation:rise linear infinite}
+@keyframes rise{0%{transform:translate(0,0) scale(.7);opacity:0}12%{opacity:.95}
+88%{opacity:.9}100%{transform:translate(var(--dx),-360px) scale(1.05);opacity:0}}
+</style></head><body><h1>泡泡上升</h1><div class="sub">LOADING · 加载中</div><div class="stage"><div class="bubs"><i style="left:45%;width:20px;height:20px;animation-duration:4.15s;animation-delay:-0.19s;--dx:34px"></i><i style="left:16%;width:27px;height:27px;animation-duration:4.6s;animation-delay:-3.64s;--dx:-7px"></i><i style="left:8%;width:18px;height:18px;animation-duration:4.24s;animation-delay:-0.28s;--dx:-23px"></i><i style="left:74%;width:29px;height:29px;animation-duration:3.34s;animation-delay:-2.26s;--dx:-6px"></i><i style="left:84%;width:36px;height:36px;animation-duration:4.6s;animation-delay:-0.25s;--dx:16px"></i><i style="left:10%;width:23px;height:23px;animation-duration:3.31s;animation-delay:-3.43s;--dx:3px"></i><i style="left:57%;width:20px;height:20px;animation-duration:4.5s;animation-delay:-2.28s;--dx:-11px"></i><i style="left:17%;width:34px;height:34px;animation-duration:4.57s;animation-delay:-0.75s;--dx:-22px"></i><i style="left:74%;width:38px;height:38px;animation-duration:3.35s;animation-delay:-0.24s;--dx:-8px"></i></div></div></body></html>

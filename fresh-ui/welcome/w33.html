@@ -1,0 +1,72 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>w33 · 隐私守护</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC",sans-serif;background:#05070c;display:flex;justify-content:center;color:#fff;overflow:hidden}
+.stage{width:430px;height:900px;position:relative;overflow:hidden;flex-shrink:0;background:radial-gradient(120% 90% at 50% 0%,#20303a 0%,#141e26 55%,#0b0e16 100%)}
+.mock{position:absolute;inset:0;filter:blur(6px) brightness(.55)}
+.sb{height:46px;display:flex;justify-content:space-between;align-items:center;padding:0 26px;font-size:13px;font-weight:600}
+.sic{width:70px;height:12px;border-radius:6px;background:#2a3040}
+.mh{display:flex;align-items:center;gap:10px;padding:14px 20px}
+.mh i{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,#33424e,#222c36);display:block}
+.mh em{width:110px;height:14px;border-radius:7px;background:#2b3642;display:block}
+.banner{height:150px;margin:6px 20px 14px;border-radius:18px;background:linear-gradient(135deg,#28333e,#1a222b)}
+.row{display:flex;gap:12px;align-items:center;margin:0 20px 12px}
+.row i{width:52px;height:52px;border-radius:14px;background:#2b3642;display:block;flex-shrink:0}
+.row b{display:block;width:150px;height:13px;border-radius:6px;background:#36424e;margin-bottom:8px}
+.row s{display:block;width:100px;height:10px;border-radius:5px;background:#242d38;text-decoration:none}
+.tabbar{position:absolute;bottom:0;left:0;right:0;height:84px;background:rgba(20,30,38,.9);display:flex;justify-content:space-around;align-items:center;border-top:1px solid #2b3642}
+.tabbar i{width:26px;height:26px;border-radius:8px;background:#36424e;display:block}
+.ov{position:absolute;inset:0;z-index:10;display:flex;align-items:center;justify-content:center;background:rgba(8,12,18,.6);animation:fadeIn .4s both}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.modal{width:340px;border-radius:26px;padding:30px 24px 26px;position:relative;background:linear-gradient(165deg,#f5f2ea,#e8e2d2);color:#2c2a24;box-shadow:0 30px 80px rgba(0,0,0,.6);animation:pop .55s cubic-bezier(.2,1.4,.4,1) both;animation-delay:.12s}
+@keyframes pop{from{opacity:0;transform:scale(.7) translateY(30px)}to{opacity:1;transform:none}}
+.x{position:absolute;top:14px;right:14px;width:30px;height:30px;border-radius:50%;border:0;background:rgba(0,0,0,.08);color:#2c2a24;font-size:15px;cursor:pointer}
+.shield{width:64px;height:64px;margin:0 auto 10px;border-radius:20px;background:linear-gradient(135deg,#3f6fe0,#27489e);display:flex;align-items:center;justify-content:center;font-size:32px;box-shadow:0 10px 24px rgba(63,111,224,.4);animation:pop2 .5s cubic-bezier(.2,1.6,.4,1) both;animation-delay:.35s}
+@keyframes pop2{from{transform:scale(.4);opacity:0}to{transform:scale(1);opacity:1}}
+h2{font-size:20px;text-align:center}
+p.sub{font-size:12.5px;color:#6b6455;line-height:1.7;text-align:center;margin-top:4px}
+.paper{margin-top:14px;height:150px;overflow-y:auto;background:#fffdf6;border:1px solid #ddd5bd;border-radius:14px;padding:14px;font-size:12px;color:#5a5344;line-height:1.9;box-shadow:inset 0 2px 8px rgba(0,0,0,.05)}
+.paper b{color:#2c2a24}
+.agree{display:flex;align-items:flex-start;gap:10px;margin-top:14px;font-size:12.5px;color:#5a5344;line-height:1.6;cursor:pointer}
+.cbx{position:relative;width:22px;height:22px;border-radius:7px;border:2px solid #b8ad8f;background:#fff;flex-shrink:0;transition:all .2s;display:inline-block}
+.cbx.on{background:#3f6fe0;border-color:#3f6fe0}
+.cbx.on::after{content:"✓";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;font-weight:700}
+.btn{display:block;width:100%;border:0;border-radius:16px;padding:14px;font-size:16px;font-weight:700;cursor:pointer;margin-top:16px;background:linear-gradient(180deg,#5a8cf0,#3f6fe0);color:#fff;box-shadow:0 8px 22px rgba(63,111,224,.4)}
+.btn:active{transform:scale(.97)}
+.btn:disabled{background:#c9c2ae;color:#8a8270;box-shadow:none;cursor:default}
+.replay{position:absolute;bottom:24px;left:50%;transform:translateX(-50%);z-index:20;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.1);color:#fff;border-radius:999px;padding:10px 22px;font-size:13px;cursor:pointer;backdrop-filter:blur(8px)}
+</style></head>
+<body><div class="stage">
+<div class="mock"><div class="sb"><span>9:41</span><span class="sic"></span></div>
+<div class="mh"><i></i><em></em></div><div class="banner"></div>
+<div class="row"><i></i><div><b></b><s></s></div></div>
+<div class="row"><i></i><div><b></b><s></s></div></div>
+<div class="tabbar"><i></i><i></i><i></i><i></i></div></div>
+<div class="ov" id="ov"><div class="modal">
+<button class="x" id="x">✕</button>
+<div class="shield">🛡️</div>
+<h2>隐私守护承诺</h2>
+<p class="sub">你的数据，你做主<br>请阅读并确认以下说明</p>
+<div class="paper">
+<b>一、我们收集什么</b><br>仅为实现核心功能，收集必要的设备信息与使用记录，用于优化体验与安全防护。<br><br>
+<b>二、数据存在哪</b><br>敏感信息经加密后存储于本地，云端数据同样采用加密传输，你可随时导出或删除。<br><br>
+<b>三、绝不做的事情</b><br>不出售你的个人信息，不与第三方共享可识别身份的数据，广告（如有）均基于匿名画像。<br><br>
+<b>四、你的权利</b><br>随时查看、更正、删除你的数据，注销账号后所有云端数据将在 15 天内彻底清除。
+</div>
+<div class="agree" id="agree"><span class="cbx" id="cbx"></span><span>我已阅读并同意《用户协议》与《隐私政策》，知晓我的数据权利</span></div>
+<button class="btn" id="go" disabled>同意并继续</button>
+</div></div>
+<button class="replay" id="replay">重新弹出</button>
+</div>
+<script>
+const cbx=document.getElementById('cbx'),go=document.getElementById('go'),ov=document.getElementById('ov');
+let ok=false;
+document.getElementById('agree').onclick=()=>{ok=!ok;cbx.classList.toggle('on',ok);go.disabled=!ok;};
+go.onclick=()=>{if(ok)ov.style.display='none';};
+document.getElementById('x').onclick=()=>ov.style.display='none';
+document.getElementById('replay').onclick=()=>{ov.style.display='flex';ok=false;cbx.classList.remove('on');go.disabled=true;
+const m=ov.querySelector('.modal');m.style.animation='none';void m.offsetWidth;m.style.animation='';};
+</script></body></html>

@@ -1,0 +1,21 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>纸飞机环绕 · 加载动画</title><style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;background:radial-gradient(600px 400px at 50% 40%,#101b3a,#070a16 70%);display:flex;flex-direction:column;align-items:center;justify-content:center;
+font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;color:#e8eaf0;padding:24px 12px}
+h1{font-size:15px;font-weight:600;letter-spacing:4px;color:#8fb4ff;margin-bottom:6px}
+.sub{font-size:11px;color:#8a90a6;margin-bottom:30px;letter-spacing:3px}
+.stage{width:360px;max-width:94vw;height:300px;position:relative;display:flex;align-items:center;justify-content:center}
+.orb{width:230px;height:230px;position:relative;animation:spn 7s linear infinite}
+.orb .ring{position:absolute;inset:0;border:1.5px dashed rgba(255,255,255,.28);border-radius:50%}
+.plane{position:absolute;top:-16px;left:50%;margin-left:-17px;width:34px;height:30px;
+background:linear-gradient(135deg,#fff,#bcd7ff);clip-path:polygon(0 100%,50% 0,100% 100%,50% 76%);
+filter:drop-shadow(0 4px 8px rgba(150,190,255,.5));animation:bob 1.4s ease-in-out infinite}
+@keyframes bob{50%{margin-top:-9px}}
+@keyframes spn{to{transform:rotate(360deg)}}
+.hub{position:absolute;top:50%;left:50%;width:56px;height:56px;margin:-28px 0 0 -28px;border-radius:50%;
+background:radial-gradient(circle at 35% 35%,#cfe6ff,#5b8def 75%);box-shadow:0 0 30px rgba(91,141,239,.8);
+display:flex;align-items:center;justify-content:center;font-size:11px;color:#0b1c3f;font-weight:700}
+.orbfix{position:relative;width:230px;height:230px}
+</style></head><body><h1>纸飞机环绕</h1><div class="sub">LOADING · 加载中</div><div class="stage"><div class="orbfix"><div class="orb"><div class="ring"></div><div class="plane"></div></div><div class="hub">LOAD</div></div></div></body></html>

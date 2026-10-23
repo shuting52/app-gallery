@@ -1,0 +1,87 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>w19 · 红包雨</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC",sans-serif;background:#05070c;display:flex;justify-content:center;color:#fff;overflow:hidden}
+.stage{width:430px;height:900px;position:relative;overflow:hidden;flex-shrink:0;background:radial-gradient(120% 90% at 50% 0%,#3d0f16 0%,#1c0b10 55%,#0b0e16 100%)}
+.mock{position:absolute;inset:0;filter:blur(6px) brightness(.55)}
+.sb{height:46px;display:flex;justify-content:space-between;align-items:center;padding:0 26px;font-size:13px;font-weight:600}
+.sic{width:70px;height:12px;border-radius:6px;background:#2a3040}
+.mh{display:flex;align-items:center;gap:10px;padding:14px 20px}
+.mh i{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,#5a232c,#33141a);display:block}
+.mh em{width:110px;height:14px;border-radius:7px;background:#33222a;display:block}
+.banner{height:150px;margin:6px 20px 14px;border-radius:18px;background:linear-gradient(135deg,#4a1a20,#2a1218)}
+.row{display:flex;gap:12px;align-items:center;margin:0 20px 12px}
+.row i{width:52px;height:52px;border-radius:14px;background:#33222a;display:block;flex-shrink:0}
+.row b{display:block;width:150px;height:13px;border-radius:6px;background:#3d2a32;margin-bottom:8px}
+.row s{display:block;width:100px;height:10px;border-radius:5px;background:#2c2028;text-decoration:none}
+.tabbar{position:absolute;bottom:0;left:0;right:0;height:84px;background:rgba(24,12,16,.9);display:flex;justify-content:space-around;align-items:center;border-top:1px solid #3d2028}
+.tabbar i{width:26px;height:26px;border-radius:8px;background:#3d2a32;display:block}
+.rain{position:absolute;inset:0;z-index:5;pointer-events:none;overflow:hidden}
+.rain i{position:absolute;top:-50px;width:24px;height:32px;border-radius:6px;background:linear-gradient(180deg,#e8404f,#a81c2a);display:block;animation:fall linear infinite;box-shadow:0 4px 10px rgba(232,64,79,.35)}
+.rain i::after{content:"福";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:13px;color:#ffd98a}
+@keyframes fall{to{transform:translateY(1020px) rotate(340deg)}}
+.ov{position:absolute;inset:0;z-index:10;display:flex;align-items:center;justify-content:center;background:rgba(8,4,6,.5);animation:fadeIn .4s both}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.modal{width:330px;border-radius:26px;padding:34px 26px 28px;text-align:center;position:relative;background:linear-gradient(165deg,#7a1f2b,#3d0f16);border:1px solid rgba(255,217,138,.4);box-shadow:0 30px 80px rgba(0,0,0,.55),0 0 60px rgba(232,64,79,.25);animation:pop .55s cubic-bezier(.2,1.4,.4,1) both;animation-delay:.12s}
+@keyframes pop{from{opacity:0;transform:scale(.7) translateY(30px)}to{opacity:1;transform:none}}
+.x{position:absolute;top:14px;right:14px;width:30px;height:30px;border-radius:50%;border:0;background:rgba(255,255,255,.14);color:#fff;font-size:15px;cursor:pointer;z-index:3}
+.packet{width:150px;height:188px;margin:6px auto 4px;border-radius:14px;background:linear-gradient(180deg,#d63243,#9c1a28);position:relative;box-shadow:0 14px 30px rgba(0,0,0,.4);transition:transform .3s}
+.packet::before{content:"";position:absolute;top:0;left:0;right:0;height:64px;background:linear-gradient(180deg,#b32333,#8f1624);border-radius:14px 14px 0 0;clip-path:polygon(0 0,100% 0,50% 100%);transition:transform .5s;transform-origin:top}
+.packet.open::before{transform:rotateX(165deg)}
+.seal{position:absolute;top:44px;left:50%;transform:translateX(-50%);width:64px;height:64px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#ffe9b0,#e8a93d);display:flex;align-items:center;justify-content:center;font-size:30px;color:#8f1624;font-weight:700;box-shadow:0 6px 16px rgba(0,0,0,.35);transition:opacity .3s,transform .3s}
+.packet.open .seal{opacity:0;transform:translateX(-50%) scale(.4)}
+.amt{position:absolute;top:56px;left:0;right:0;opacity:0;transform:scale(.4);transition:all .45s cubic-bezier(.2,1.6,.4,1)}
+.packet.open .amt{opacity:1;transform:scale(1)}
+.amt b{font-size:44px;color:#ffe9b0;display:block}
+.amt span{font-size:13px;color:#f3b7bd}
+h2{font-size:22px;margin:14px 0 8px;letter-spacing:1px}
+p.sub{font-size:13px;color:#e8b7bc;line-height:1.7}
+.btn{display:block;width:100%;border:0;border-radius:16px;padding:14px;font-size:16px;font-weight:700;cursor:pointer;margin-top:20px;background:linear-gradient(180deg,#ffe9b0,#e8a93d);color:#7a1a24;box-shadow:0 8px 22px rgba(232,169,61,.35)}
+.btn:active{transform:scale(.97)}
+.gold{position:absolute;width:8px;height:8px;border-radius:50%;background:#ffd98a;opacity:0;pointer-events:none}
+.packet.open~.gold{animation:burst 1s ease-out both}
+@keyframes burst{0%{opacity:1;transform:translate(0,0) scale(1)}100%{opacity:0;transform:translate(var(--dx),var(--dy)) scale(.3)}}
+.replay{position:absolute;bottom:24px;left:50%;transform:translateX(-50%);z-index:20;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.1);color:#fff;border-radius:999px;padding:10px 22px;font-size:13px;cursor:pointer;backdrop-filter:blur(8px)}
+</style></head>
+<body><div class="stage">
+<div class="mock"><div class="sb"><span>9:41</span><span class="sic"></span></div>
+<div class="mh"><i></i><em></em></div><div class="banner"></div>
+<div class="row"><i></i><div><b></b><s></s></div></div>
+<div class="row"><i></i><div><b></b><s></s></div></div>
+<div class="row"><i></i><div><b></b><s></s></div></div>
+<div class="tabbar"><i></i><i></i><i></i><i></i></div></div>
+<div class="rain" id="rain"></div>
+<div class="ov" id="ov"><div class="modal">
+<button class="x" id="x">✕</button>
+<div class="packet" id="packet"><div class="seal">福</div>
+<div class="amt"><b>¥88</b><span>新人专享红包</span></div></div>
+<span class="gold" style="left:20%;top:40%;--dx:-70px;--dy:-90px"></span>
+<span class="gold" style="left:80%;top:40%;--dx:70px;--dy:-90px"></span>
+<span class="gold" style="left:50%;top:30%;--dx:0;--dy:-120px"></span>
+<span class="gold" style="left:30%;top:55%;--dx:-90px;--dy:40px"></span>
+<span class="gold" style="left:70%;top:55%;--dx:90px;--dy:40px"></span>
+<h2>红包雨来袭</h2>
+<p class="sub">欢迎加入！戳开红包，88 元新人礼<br>直接到账，可立即使用</p>
+<button class="btn" id="open">开红包</button>
+</div></div>
+<button class="replay" id="replay">重新弹出</button>
+</div>
+<script>
+const drops=document.getElementById('rain');
+for(let i=0;i<12;i++){const s=document.createElement('i');
+s.style.left=(Math.random()*400)+'px';
+s.style.animationDuration=(3+Math.random()*3)+'s';
+s.style.animationDelay=(-Math.random()*6)+'s';
+s.style.transform='scale('+(0.6+Math.random()*0.7)+')';
+drops.appendChild(s);}
+const ov=document.getElementById('ov'),packet=document.getElementById('packet'),open=document.getElementById('open');
+let opened=false;
+open.onclick=()=>{if(!opened){opened=true;packet.classList.add('open');open.textContent='收下红包';}
+else{ov.style.display='none';}};
+document.getElementById('x').onclick=()=>ov.style.display='none';
+document.getElementById('replay').onclick=()=>{ov.style.display='flex';opened=false;packet.classList.remove('open');open.textContent='开红包';
+const m=ov.querySelector('.modal');m.style.animation='none';void m.offsetWidth;m.style.animation='';};
+</script></body></html>

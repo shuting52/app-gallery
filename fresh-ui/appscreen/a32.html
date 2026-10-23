@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>专注果园</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0b0e0a;display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sans-serif;color:#2c3a28}
+.phone{width:430px;height:900px;border-radius:44px;overflow:hidden;position:relative;background:linear-gradient(180deg,#cfe8b8 0%,#e8f3d4 30%,#fdf6e3 62%,#f4e7c8 100%);box-shadow:0 30px 80px rgba(0,0,0,.6),0 0 0 1px rgba(255,255,255,.15);display:flex;flex-direction:column}
+@keyframes riseIn{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+@keyframes sway{0%,100%{transform:rotate(-4deg)}50%{transform:rotate(4deg)}}
+@keyframes growPop{0%{opacity:0;transform:scale(.3)}60%{opacity:1;transform:scale(1.12)}100%{opacity:1;transform:scale(1)}}
+@keyframes floatCloud{from{transform:translateX(-70px)}to{transform:translateX(470px)}}
+@keyframes pulseRing{0%{transform:scale(1);opacity:.5}100%{transform:scale(1.35);opacity:0}}
+@keyframes shine{0%,100%{opacity:.55}50%{opacity:1}}
+.statusbar{display:flex;justify-content:space-between;align-items:center;padding:18px 28px 6px;font-size:14px;color:#7a8a6a;z-index:5}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:8px 24px 2px;z-index:5;animation:riseIn .8s -0.4s both}
+.topbar .g{font-size:14px;color:#8a9a76}
+.topbar .t{font-size:22px;font-weight:800;color:#3a5233;margin-top:2px}
+.coin{display:inline-block;background:#fff;border:1px solid #e2d3a8;border-radius:999px;padding:8px 14px;font-size:13px;color:#a0803c;font-weight:600;box-shadow:0 4px 10px rgba(160,130,60,.12)}
+.sun{position:absolute;right:30px;top:96px;width:74px;height:74px;border-radius:50%;background:radial-gradient(circle at 40% 35%,#fff6c9,#ffd86e 65%,#f5b942);box-shadow:0 0 40px rgba(255,210,100,.7);animation:shine 5s -2s infinite;z-index:1}
+.cloud{position:absolute;top:130px;left:0;width:90px;height:30px;background:#fff;border-radius:30px;opacity:.85;z-index:1;animation:floatCloud 26s -8s linear infinite}
+.cloud::after{content:"";position:absolute;left:18px;top:-14px;width:44px;height:28px;background:#fff;border-radius:50%}
+.cloud.c2{top:70px;animation-duration:34s;animation-delay:-20s;transform:scale(.7)}
+.timer-wrap{position:relative;width:250px;height:250px;margin:26px auto 0;z-index:5;animation:riseIn .9s -0.2s both}
+.pulse{position:absolute;inset:0;border-radius:50%;border:3px solid #9ccb7a;animation:pulseRing 2.4s -1s ease-out infinite}
+.ring{width:250px;height:250px;display:block;transform:rotate(-90deg)}
+.center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.center .time{font-size:52px;font-weight:800;color:#33482d;letter-spacing:2px;font-variant-numeric:tabular-nums}
+.center .label{font-size:14px;color:#8a9a76;margin-top:4px}
+.tree-big{position:absolute;left:50%;bottom:34px;width:64px;height:84px;transform:translateX(-50%);transform-origin:bottom center;animation:sway 5s -2s ease-in-out infinite}
+.tree-big .trunk{position:absolute;left:29px;bottom:0;width:7px;height:40px;background:#8a6238;border-radius:4px;display:block}
+.tree-big .leaf{position:absolute;left:8px;bottom:30px;width:48px;height:44px;background:radial-gradient(circle at 40% 30%,#8fd07a,#4e9c46 70%);border-radius:50% 50% 46% 46%;display:block}
+.tree-big .fruit{position:absolute;display:block;width:9px;height:9px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#ff9a8a,#e0543e)}
+.nursery{margin:26px 24px 0;z-index:5;animation:riseIn .9s 0s both}
+.nursery .t{font-size:16px;font-weight:700;color:#3a5233;display:flex;justify-content:space-between;align-items:center}
+.nursery .t span{font-size:12px;color:#8a9a76;font-weight:400}
+.sprouts{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:12px}
+.sprout{background:rgba(255,255,255,.7);border:1.5px solid #dfe8c8;border-radius:18px;padding:12px 4px 10px;text-align:center}
+.sprout .pot{width:44px;height:52px;margin:0 auto 6px;position:relative;display:block}
+.sprout .pot .cup{position:absolute;left:6px;bottom:0;width:32px;height:22px;background:linear-gradient(180deg,#d98d5f,#b5663a);clip-path:polygon(0 0,100% 0,84% 100%,16% 100%);display:block}
+.sprout .pot .stem{position:absolute;left:21px;bottom:18px;width:3px;height:20px;background:#5d9c4c;display:block;border-radius:2px}
+.sprout .pot .lv{position:absolute;display:block;width:12px;height:9px;background:#6fb35c;border-radius:50% 0 50% 0}
+.sprout.done .pot .lv{animation:sway 3s -1s ease-in-out infinite}
+.sprout .d{font-size:11px;color:#8a9a76}
+.sprout.done{border-color:#9ccb7a;background:#f4fbe8}
+.sprout.done .d{color:#5d8a48;font-weight:600}
+.sprout.empty .pot .cup{background:linear-gradient(180deg,#e5dcc4,#cfc2a0)}
+.sprout.empty .d{color:#b3bda0}
+.action{margin:auto 24px 16px;z-index:5;animation:riseIn .9s .2s both}
+.btn{width:100%;border:none;border-radius:999px;padding:17px;font-size:17px;font-weight:700;letter-spacing:6px;color:#fff;background:linear-gradient(120deg,#7cc46a,#4e9c46);cursor:pointer;box-shadow:0 12px 26px rgba(90,160,80,.4);transition:transform .2s,background .3s}
+.btn:active{transform:scale(.96)}
+.btn.working{background:linear-gradient(120deg,#f0a24a,#d97f2e);letter-spacing:2px;box-shadow:0 12px 26px rgba(220,140,60,.4)}
+.stats{display:flex;gap:10px;margin:14px 24px 0;z-index:5;animation:riseIn .9s .1s both}
+.stat{flex:1;background:rgba(255,255,255,.65);border-radius:14px;padding:10px;text-align:center;border:1px solid #e6ddc0}
+.stat b{font-size:18px;color:#3a5233;display:block}
+.stat span{font-size:11px;color:#8a9a76}
+.tabbar{margin:0 18px 22px;background:rgba(255,255,255,.9);border:1px solid #e2dcc2;border-radius:26px;display:flex;justify-content:space-around;padding:12px 6px;z-index:5;animation:riseIn .9s .3s both;box-shadow:0 8px 20px rgba(120,140,90,.12)}
+.tab{text-align:center;flex:1;cursor:pointer}
+.tab .d{display:block;width:26px;height:26px;margin:0 auto 4px;border-radius:50%;background:#d9e4c2;position:relative;transition:background .25s,transform .25s}
+.tab.on .d{background:linear-gradient(135deg,#8fd07a,#4e9c46);transform:scale(1.12)}
+.tab .l{font-size:11px;color:#9aa583}
+.tab.on .l{color:#3a5233;font-weight:600}
+.tab .d.tm::after{content:"";position:absolute;left:7px;top:7px;width:12px;height:12px;border:3px solid #5c7048;border-top-color:transparent;border-radius:50%}
+.tab .d.gr::after{content:"";position:absolute;left:12px;top:5px;width:3px;height:12px;background:#5c7048}
+.tab .d.gr::before{content:"";position:absolute;left:8px;top:12px;width:11px;height:3px;background:#5c7048}
+.tab .d.me::after{content:"";position:absolute;left:9px;top:6px;width:8px;height:8px;border-radius:50%;background:#5c7048;box-shadow:0 9px 0 -1px #5c7048}
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="sun"></div>
+  <div class="cloud"></div><div class="cloud c2"></div>
+  <div class="statusbar"><span>09:30</span><span>果园清晨 · 晴</span></div>
+  <div class="topbar">
+    <div><div class="g">新的一天</div><div class="t">种下专注，收获成长</div></div>
+    <span class="coin">果实 128</span>
+  </div>
+  <div class="timer-wrap">
+    <span class="pulse"></span>
+    <svg class="ring" viewBox="0 0 250 250">
+      <circle cx="125" cy="125" r="112" fill="none" stroke="#e3e9cf" stroke-width="16"/>
+      <circle cx="125" cy="125" r="112" fill="none" stroke="#7cc46a" stroke-width="16" stroke-linecap="round" stroke-dasharray="703" stroke-dashoffset="120"/>
+    </svg>
+    <div class="center">
+      <div class="time">25:00</div>
+      <div class="label">一颗番茄 · 保持专注</div>
+    </div>
+    <div class="tree-big" style="animation:growPop .8s -0.1s both, sway 5s -2s ease-in-out infinite">
+      <span class="leaf"></span>
+      <span class="fruit" style="left:16px;bottom:56px"></span>
+      <span class="fruit" style="left:38px;bottom:50px"></span>
+      <span class="trunk"></span>
+    </div>
+  </div>
+  <div class="stats">
+    <div class="stat"><b>6</b><span>今日番茄</span></div>
+    <div class="stat"><b>2.5h</b><span>专注时长</span></div>
+    <div class="stat"><b>12</b><span>连续天数</span></div>
+  </div>
+  <div class="nursery">
+    <div class="t">我的苗圃 <span>4 棵小树 · 2 棵已种活</span></div>
+    <div class="sprouts">
+      <div class="sprout done"><span class="pot"><span class="stem"></span><span class="lv" style="left:10px;bottom:34px"></span><span class="lv" style="left:24px;bottom:40px;transform:scaleX(-1)"></span><span class="cup"></span></span><div class="d">苹果树</div></div>
+      <div class="sprout done"><span class="pot"><span class="stem"></span><span class="lv" style="left:10px;bottom:32px"></span><span class="lv" style="left:24px;bottom:38px;transform:scaleX(-1)"></span><span class="cup"></span></span><div class="d">柠檬树</div></div>
+      <div class="sprout empty"><span class="pot"><span class="cup"></span></span><div class="d">待种植</div></div>
+      <div class="sprout empty"><span class="pot"><span class="cup"></span></span><div class="d">待种植</div></div>
+    </div>
+  </div>
+  <div class="action"><button class="btn" id="focusBtn">开始专注</button></div>
+  <div class="tabbar">
+    <div class="tab on"><span class="d tm"></span><div class="l">番茄钟</div></div>
+    <div class="tab"><span class="d gr"></span><div class="l">苗圃</div></div>
+    <div class="tab"><span class="d me"></span><div class="l">我的</div></div>
+  </div>
+</div>
+<script>
+var b=document.getElementById('focusBtn'),w=false;
+b.addEventListener('click',function(){
+  w=!w;
+  b.classList.toggle('working',w);
+  b.textContent=w?'专注中 · 点击结束':'开始专注';
+  document.querySelector('.center .label').textContent=w?'专注进行中，加油':'一颗番茄 · 保持专注';
+});
+document.querySelectorAll('.tab').forEach(function(el){
+  el.addEventListener('click',function(){
+    document.querySelectorAll('.tab').forEach(function(x){x.classList.remove('on')});
+    el.classList.add('on');
+  });
+});
+document.querySelectorAll('.sprout.empty').forEach(function(el){
+  el.addEventListener('click',function(){
+    el.classList.remove('empty');el.classList.add('done');
+    el.querySelector('.d').textContent='新树苗';
+    var pot=el.querySelector('.pot');
+    pot.insertAdjacentHTML('afterbegin','<span class="stem"></span><span class="lv" style="left:10px;bottom:32px"></span><span class="lv" style="left:24px;bottom:38px;transform:scaleX(-1)"></span>');
+  });
+});
+</script>
+</body>
+</html>

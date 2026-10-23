@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>液态玻璃通知卡片 · 骑行轨迹</title>
+<style>
+
+*{box-sizing:border-box}
+body{min-height:100vh;margin:0;padding:48px 18px;color:#fff;
+font:15px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+background:radial-gradient(ellipse at 18% 16%, rgba(110,200,255,.85), transparent 36%),
+ radial-gradient(ellipse at 85% 42%, rgba(80,140,230,.7), transparent 38%),
+ radial-gradient(ellipse at 55% 92%, rgba(30,60,120,.85), transparent 40%),
+ linear-gradient(150deg,#0e1c30,#18345c 55%,#0b1424);background-attachment:fixed}
+main{width:min(440px,100%);margin:0 auto;display:grid;gap:18px}
+.heading{padding:4px 6px 8px}
+.eyebrow{margin:0 0 8px;color:rgba(255,255,255,.66);font-size:11px;letter-spacing:.18em}
+h1{margin:0;font-size:30px;letter-spacing:-.04em}
+.hint{margin:7px 0 0;color:rgba(255,255,255,.66)}
+.card{position:relative;isolation:isolate;overflow:hidden;padding:18px;
+border:1px solid rgba(255,255,255,.26);border-radius:26px;
+background:linear-gradient(135deg,rgba(255,255,255,.18),rgba(255,255,255,.06) 50%,rgba(140,200,255,.11));
+-webkit-backdrop-filter:blur(24px) saturate(170%);
+backdrop-filter:blur(24px) saturate(170%);
+box-shadow:inset 0 1px 0 rgba(255,255,255,.4),inset 0 -1px 0 rgba(255,255,255,.08),0 20px 48px rgba(6,12,28,.32);
+transition:transform .25s ease,border-color .25s ease}
+.card::before{content:"";position:absolute;z-index:0;inset:0;border-radius:inherit;pointer-events:none;
+background:linear-gradient(124deg,rgba(255,255,255,.34) 0%,rgba(255,255,255,.08) 18%,
+transparent 42%,transparent 72%,rgba(180,215,255,.15) 100%);opacity:.8}
+.card::after{content:"";position:absolute;z-index:0;top:-46px;right:-52px;
+width:178px;height:138px;border:1px solid rgba(255,255,255,.22);border-radius:50%;
+background:radial-gradient(ellipse,rgba(255,255,255,.22),transparent 68%);
+filter:blur(2px);transform:rotate(8deg);pointer-events:none}
+.card>*{position:relative;z-index:1}
+.card:hover{transform:translateY(-3px);border-color:rgba(255,255,255,.46)}
+.top,.title-line{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.top{margin-bottom:17px}
+.pill{padding:6px 12px;border:1px solid rgba(255,255,255,.26);border-radius:999px;background:rgba(255,255,255,.10);
+color:#fff;font-size:12px;box-shadow:inset 0 1px rgba(255,255,255,.18);white-space:nowrap}
+.avatars{display:flex;align-items:center;padding-left:8px}
+.avatar{display:grid;width:29px;height:29px;margin-left:-8px;place-items:center;
+border:1px solid rgba(255,255,255,.55);border-radius:50%;background:linear-gradient(135deg,#6ec8ff, #508ce6 70%, #1e3c78);
+color:#fff;font-size:11px;box-shadow:0 3px 10px rgba(18,12,36,.2)}
+.more{margin-left:7px;color:rgba(255,255,255,.66);font-size:12px}
+.row{display:flex;align-items:center;gap:12px;min-width:0}
+.face{display:grid;flex:0 0 48px;height:48px;place-items:center;border:1px solid rgba(255,255,255,.45);
+border-radius:50%;background:linear-gradient(145deg,#6ec8ff, #508ce6 70%, #1e3c78);color:#fff;font-size:19px;font-weight:650;
+box-shadow:inset 0 1px 5px rgba(255,255,255,.5),0 5px 15px rgba(15,12,35,.2)}
+.copy{flex:1;min-width:0}
+.title-line{margin-bottom:5px}
+.title-line strong{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+time,.preview{color:rgba(255,255,255,.66);font-size:12px}
+.preview{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.unread{flex:0 0 auto;color:#bfe3ff;font-size:12px;font-weight:600}
+
+
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.stat{border-radius:14px;padding:12px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.13)}
+.stat b{font-size:18px}.stat span{display:block;font-size:11px;color:rgba(255,255,255,.62);margin-top:2px}
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .card { background: rgba(43,35,68,.88); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .card { transition: none; }
+  .breath,.ecg path { animation: none; }
+}
+</style>
+</head>
+<body>
+<main>
+<header class="heading">
+<p class="eyebrow">CYCLING</p>
+<h1>骑行轨迹</h1>
+<p class="hint">轮子转过的地方都算数。</p>
+</header>
+
+<section class="card">
+  <div class="top"><span class="pill">骑行完成</span><span class="more">滨江绿道</span></div>
+  <div class="row">
+    <div class="face">骑</div>
+    <div class="copy">
+      <div class="title-line"><strong>18.6 公里，骑得漂亮</strong><time>16:48</time></div>
+      <div class="preview">用时 58 分 24 秒 · 平均时速 19.1 km/h</div>
+    </div>
+  </div>
+  <div class="stats">
+    <div class="stat"><b>412</b><span>消耗千卡</span></div>
+    <div class="stat"><b>132</b><span>平均心率 bpm</span></div>
+    <div class="stat"><b>86 m</b><span>累计爬升</span></div>
+    <div class="stat"><b>78 rpm</b><span>平均踏频</span></div>
+  </div>
+</section>
+<section class="card">
+  <div class="top"><span class="pill">路线推荐</span></div>
+  <div class="row">
+    <div class="copy">
+      <div class="title-line"><strong>周末试试「湖畔环线」</strong></div>
+      <div class="preview">22 公里 · 风景好 · 难度适中</div>
+    </div>
+    <span class="unread">查看路线</span>
+  </div>
+</section>
+</main>
+</body>
+</html>

@@ -1,0 +1,39 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>荷塘月色</title><style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{width:430px;height:900px;margin:0 auto;position:relative;overflow:hidden;
+font-family:-apple-system,"PingFang SC","Microsoft YaHei","Noto Sans CJK SC",sans-serif;
+background:linear-gradient(180deg,#0a1030 0%,#16245c 55%,#1e3a7d 100%);color:#fff}
+.scene{position:absolute;inset:0}
+
+.moon2{position:absolute;top:70px;left:50%;transform:translateX(-50%);width:96px;height:96px;border-radius:50%;background:radial-gradient(circle at 38% 34%,#fffbe8,#e6ecf8 70%,#c3cde8);box-shadow:0 0 60px 20px rgba(230,236,250,.22)}
+.mref{position:absolute;top:420px;left:50%;transform:translateX(-50%);width:120px;height:200px;background:linear-gradient(rgba(240,244,252,.28),transparent);filter:blur(8px);border-radius:50%}
+.water{position:absolute;bottom:0;left:0;right:0;height:330px;background:linear-gradient(180deg,#14265e,#0a1740)}
+.leaf{position:absolute;border-radius:50%;background:radial-gradient(circle at 35% 30%,#63c47e,#2c7a4c);box-shadow:inset -6px -6px 0 rgba(0,0,0,.12)}
+.fl{position:absolute;left:50%;top:470px;width:120px;height:90px;margin-left:-60px}
+.pet{position:absolute;left:50%;bottom:0;width:34px;height:58px;margin-left:-17px;background:linear-gradient(#ffd9e8,#f78fb8);border-radius:50% 50% 50% 50%/72% 72% 28% 28%;transform-origin:50% 100%}
+.pod{position:absolute;left:50%;bottom:6px;width:26px;height:26px;margin-left:-13px;border-radius:50%;background:radial-gradient(circle at 40% 35%,#ffe98a,#d9a83c)}
+.rp{position:absolute;border:2px solid rgba(165,205,255,.55);border-radius:50%;animation:rp 3.6s ease-out infinite}
+@keyframes rp{from{width:24px;height:12px;opacity:.85}to{width:170px;height:48px;opacity:0}}
+
+.brand{position:absolute;left:0;right:0;bottom:118px;text-align:center;z-index:5;
+color:#eaf2ff;opacity:0;animation:brandIn 1s ease 2.2s both}
+.brand h1{font-size:34px;letter-spacing:8px;font-weight:800;text-shadow:0 2px 14px rgba(0,0,0,.35)}
+.brand p{font-size:13px;letter-spacing:3px;margin-top:10px;opacity:.85;text-shadow:0 1px 10px rgba(0,0,0,.35)}
+@keyframes brandIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.replay{position:absolute;left:50%;bottom:44px;transform:translateX(-50%);z-index:6;
+padding:10px 28px;border-radius:24px;border:1px solid rgba(255,255,255,.45);
+background:rgba(255,255,255,.14);color:#eaf2ff;font-size:14px;letter-spacing:2px;cursor:pointer}
+</style></head><body>
+<div class="scene"><div class="moon2"></div><div class="water"></div><div class="mref"></div>
+<div class="leaf" style="left:50px;top:520px;width:110px;height:44px"></div>
+<div class="leaf" style="right:60px;top:600px;width:130px;height:52px"></div>
+<div class="leaf" style="left:120px;top:660px;width:90px;height:36px"></div>
+<div class="fl"><i class="pet" style="transform:rotate(-54deg)"></i><i class="pet" style="transform:rotate(-36deg)"></i><i class="pet" style="transform:rotate(-18deg)"></i><i class="pet" style="transform:rotate(0deg)"></i><i class="pet" style="transform:rotate(18deg)"></i><i class="pet" style="transform:rotate(36deg)"></i><i class="pet" style="transform:rotate(54deg)"></i><div class="pod"></div></div>
+<div class="rp" style="left:50%;top:560px;margin-left:-12px;animation-delay:0s"></div>
+<div class="rp" style="left:50%;top:560px;margin-left:-12px;animation-delay:-1.8s"></div></div>
+<div class="brand"><h1>荷塘月色</h1><p>月下荷香 梦入江南</p></div>
+<button class="replay" onclick="location.reload()">重新播放</button>
+</body></html>

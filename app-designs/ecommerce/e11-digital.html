@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>数字商城 · 数集市</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#0D1117; --panel:#161B22; --line:#232A36;
+  --neon-p:#B537F2; --neon-c:#22D3EE; --neon-b:#3B82F6;
+  --txt:#E6EDF3; --dim:#8B949E;
+}
+html,body{height:100%}
+body{background:#05070B;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;color:var(--txt)}
+.phone{max-width:430px;margin:0 auto;min-height:100%;background:var(--bg);position:relative;padding-bottom:86px;
+  background-image:
+    radial-gradient(420px 220px at 15% 0%, rgba(181,55,242,.12), transparent 60%),
+    radial-gradient(380px 240px at 90% 8%, rgba(34,211,238,.10), transparent 60%);
+}
+/* status bar */
+.sbar{position:sticky;top:0;z-index:50;background:rgba(13,17,23,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.sbar-in{padding:10px 16px;display:flex;align-items:center;justify-content:space-between}
+.logo{font-weight:800;font-size:18px;letter-spacing:2px;
+  background:linear-gradient(90deg,var(--neon-p),var(--neon-c));-webkit-background-clip:text;background-clip:text;color:transparent}
+.logo small{font-size:10px;letter-spacing:4px;color:var(--dim);display:block;font-weight:400}
+.userdot{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--neon-p),var(--neon-b));
+  display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;color:#fff}
+/* pages */
+.page{display:none;animation:fade .22s ease}
+.page.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.pad{padding:14px 16px}
+.hd{display:flex;align-items:center;justify-content:space-between;margin:6px 0 12px}
+.hd h2{font-size:17px;font-weight:700}
+.hd .more{font-size:12px;color:var(--neon-c)}
+/* search */
+.search{display:flex;align-items:center;gap:8px;background:var(--panel);border:1px solid var(--line);
+  border-radius:12px;padding:10px 12px;margin:2px 0 14px}
+.search input{flex:1;background:none;border:none;outline:none;color:var(--txt);font-size:14px}
+.search input::placeholder{color:var(--dim)}
+.search .go{font-size:12px;color:var(--neon-c);white-space:nowrap}
+/* category grid */
+.cats{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:16px}
+.cat{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px 4px;text-align:center;font-size:11px;color:var(--dim)}
+.cat i{font-style:normal;font-size:22px;display:block;margin-bottom:6px;filter:drop-shadow(0 0 6px rgba(34,211,238,.5))}
+.cat.on{border-color:var(--neon-p);color:var(--txt);box-shadow:0 0 12px rgba(181,55,242,.25)}
+/* cards */
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px;margin-bottom:12px}
+.card .tagrow{display:flex;gap:6px;margin-bottom:8px}
+.tag{font-size:10px;padding:3px 8px;border-radius:20px;border:1px solid var(--neon-p);color:var(--neon-p)}
+.tag.cy{border-color:var(--neon-c);color:var(--neon-c)}
+.ti{font-size:15px;font-weight:700;margin-bottom:4px}
+.sub{font-size:12px;color:var(--dim);line-height:1.6}
+.meta{display:flex;align-items:center;justify-content:space-between;margin-top:10px}
+.price{font-size:18px;font-weight:800;color:var(--neon-c)}
+.price s{font-size:12px;color:var(--dim);font-weight:400;margin-left:6px}
+.btn{border:none;border-radius:10px;padding:9px 18px;font-size:13px;font-weight:700;color:#fff;cursor:pointer;
+  background:linear-gradient(90deg,var(--neon-p),var(--neon-b));box-shadow:0 0 14px rgba(181,55,242,.4)}
+.btn.ghost{background:none;border:1px solid var(--neon-c);color:var(--neon-c);box-shadow:none}
+.btn:active{transform:scale(.96)}
+/* flash */
+.flash{display:flex;gap:10px;overflow-x:auto;padding-bottom:4px;margin-bottom:14px}
+.flash .card{min-width:190px;margin-bottom:0}
+.timer{display:flex;gap:6px;align-items:center;font-size:12px;color:#ff6b6b;margin:0 0 10px}
+.timer b{background:#2a1218;border:1px solid #ff6b6b;border-radius:6px;padding:2px 7px;font-variant-numeric:tabular-nums}
+/* pixel deco */
+.pix{font-size:10px;letter-spacing:3px;color:var(--neon-p);opacity:.6;user-select:none}
+/* detail */
+.hero{height:170px;border-radius:14px;margin-bottom:12px;position:relative;overflow:hidden;
+  background:linear-gradient(135deg,#2b1150,#0e4b5c 70%);
+  display:flex;align-items:center;justify-content:center;flex-direction:column;gap:6px}
+.hero .big{font-size:44px}
+.hero::after{content:"";position:absolute;inset:0;
+  background-image:radial-gradient(rgba(34,211,238,.25) 1px,transparent 1px);background-size:14px 14px;pointer-events:none}
+.chapter{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px dashed var(--line);font-size:13px}
+.chapter .n{width:24px;height:24px;border-radius:8px;background:#21283a;color:var(--neon-c);font-size:12px;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.chapter .t{flex:1}
+.chapter .len{font-size:11px;color:var(--dim)}
+.notice{background:rgba(34,211,238,.08);border:1px solid rgba(34,211,238,.35);border-radius:12px;
+  padding:10px 12px;font-size:12px;color:var(--neon-c);margin:12px 0;line-height:1.7}
+/* progress */
+.prog{height:8px;background:#21283a;border-radius:6px;overflow:hidden;margin-top:8px}
+.prog i{display:block;height:100%;border-radius:6px;background:linear-gradient(90deg,var(--neon-p),var(--neon-c))}
+/* key code */
+.kcode{display:flex;align-items:center;justify-content:space-between;background:#0A0D13;border:1px dashed var(--neon-p);
+  border-radius:10px;padding:10px 12px;margin-top:10px;font-family:ui-monospace,Menlo,Consolas,monospace}
+.kcode .v{color:var(--neon-c);font-size:14px;letter-spacing:1px}
+.kcode .c{font-size:12px;color:var(--neon-p)}
+/* form rows */
+.row{display:flex;align-items:center;justify-content:space-between;padding:13px 2px;border-bottom:1px solid var(--line);font-size:14px}
+.row .r{color:var(--dim);font-size:12px}
+.row .arr{color:var(--dim)}
+/* tab bar */
+.tabbar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;z-index:60;
+  background:rgba(13,17,23,.96);backdrop-filter:blur(10px);border-top:1px solid var(--line);
+  display:flex;padding:8px 0 calc(8px + env(safe-area-inset-bottom))}
+.tab{flex:1;text-align:center;font-size:10px;color:var(--dim);border:none;background:none;cursor:pointer}
+.tab i{font-style:normal;font-size:21px;display:block;margin-bottom:3px}
+.tab.on{color:var(--neon-c);text-shadow:0 0 8px rgba(34,211,238,.6)}
+/* toast */
+.toast{position:fixed;left:50%;bottom:110px;transform:translateX(-50%) translateY(20px);z-index:99;
+  background:#1c2430;border:1px solid var(--neon-c);color:var(--txt);font-size:13px;
+  padding:10px 18px;border-radius:24px;opacity:0;pointer-events:none;transition:all .25s;max-width:86%;text-align:center}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+/* redeem */
+.redeem{display:flex;gap:8px;margin:12px 0}
+.redeem input{flex:1;background:var(--panel);border:1px solid var(--line);border-radius:10px;color:var(--txt);
+  padding:10px 12px;font-size:13px;outline:none;letter-spacing:1px}
+.redeem input::placeholder{color:var(--dim)}
+.listitem{display:flex;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
+.listitem:last-child{border:none}
+.thumb{width:52px;height:52px;border-radius:10px;flex-shrink:0;display:flex;align-items:center;justify-content:center;
+  font-size:24px;background:linear-gradient(135deg,#231a38,#123)}
+.stars{color:#FFC53D;font-size:11px;letter-spacing:2px}
+</style>
+</head>
+<body>
+<div class="phone">
+  <!-- 顶部栏 -->
+  <div class="sbar"><div class="sbar-in">
+    <div class="logo">数集市<small>DIGI·MART</small></div>
+    <div class="userdot">陈</div>
+  </div></div>
+
+  <!-- 首页 -->
+  <section class="page on" id="pg-home">
+    <div class="pad">
+      <div class="search"><span>🔍</span><input id="kw" placeholder="搜索课程 / 软件 / 素材 / 电子书"><span class="go" onclick="doSearch()">搜索</span></div>
+      <div class="hd"><h2>类目入口</h2><span class="pix">0101</span></div>
+      <div class="cats">
+        <div class="cat on" onclick="goCat('course',this)"><i>🎓</i>在线课程</div>
+        <div class="cat" onclick="goCat('soft',this)"><i>💾</i>软件工具</div>
+        <div class="cat" onclick="goCat('asset',this)"><i>🎨</i>设计素材</div>
+        <div class="cat" onclick="goCat('book',this)"><i>📖</i>电子书</div>
+        <div class="cat" onclick="goCat('vip',this)"><i>👑</i>会员</div>
+      </div>
+      <div class="hd"><h2>今日推荐</h2><span class="more">换一换 ›</span></div>
+      <div class="card">
+        <div class="tagrow"><span class="tag">🔥 热销第一</span><span class="tag cy">Python</span></div>
+        <div class="ti">Python 全栈实战课：从爬虫到部署</div>
+        <div class="sub">86 节视频 · 12 个实战项目 · 终身回看 · 微信群答疑</div>
+        <div class="stars">★★★★★</div>
+        <div class="meta"><div class="price">¥199<s>¥499</s></div><button class="btn" onclick="openDetail()">查看详情</button></div>
+      </div>
+      <div class="card">
+        <div class="tagrow"><span class="tag cy">新品</span></div>
+        <div class="ti">UI 设计素材大礼包 v4.0</div>
+        <div class="sub">2,400+ 图标 · 68 套落地页模板 · Figma 源文件</div>
+        <div class="meta"><div class="price">¥59<s>¥129</s></div><button class="btn ghost" onclick="toast('已加入已购清单')">立即购买</button></div>
+      </div>
+      <div class="hd" style="margin-top:16px"><h2>限时折扣</h2>
+        <div class="timer">⏳ <b id="th">07</b>:<b id="tm">42</b>:<b id="ts">18</b></div>
+      </div>
+      <div class="flash">
+        <div class="card"><div class="ti">Notion 高效手册</div><div class="sub">PDF · 186 页</div>
+          <div class="meta"><div class="price">¥19<s>¥49</s></div><button class="btn ghost" onclick="toast('已加入已购清单')">抢购</button></div></div>
+        <div class="card"><div class="ti">剪映调色预设包</div><div class="sub">120 款 LUT</div>
+          <div class="meta"><div class="price">¥29<s>¥79</s></div><button class="btn ghost" onclick="toast('已加入已购清单')">抢购</button></div></div>
+        <div class="card"><div class="ti">年度会员 Pro</div><div class="sub">全站 8 折</div>
+          <div class="meta"><div class="price">¥99<s>¥199</s></div><button class="btn ghost" onclick="toast('已加入已购清单')">抢购</button></div></div>
+      </div>
+      <div class="pix" style="text-align:center;margin-top:10px">// 买断制 · 无订阅 · 永久可下载 //</div>
+    </div>
+  </section>
+
+  <!-- 分类 -->
+  <section class="page" id="pg-cat">
+    <div class="pad">
+      <div class="hd"><h2>全部分类</h2></div>
+      <div class="card">
+        <div class="tagrow"><span class="tag">🎓 课程</span></div>
+        <div class="listitem">
+          <div class="thumb">🐍</div>
+          <div style="flex:1"><div class="ti">Python 全栈实战课</div><div class="sub">86 节 · 9.8 万人已购</div></div>
+          <button class="btn" style="padding:7px 14px" onclick="openDetail()">¥199 购买</button>
+        </div>
+        <div class="listitem">
+          <div class="thumb">🎬</div>
+          <div style="flex:1"><div class="ti">短视频剪辑进阶课</div><div class="sub">42 节 · 3.2 万人已购</div></div>
+          <button class="btn ghost" style="padding:7px 14px" onclick="openDetail()">¥149</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="tagrow"><span class="tag cy">💾 软件</span></div>
+        <div class="listitem">
+          <div class="thumb">⚡</div>
+          <div style="flex:1"><div class="ti">极速下载器 Pro 授权</div><div class="sub">1 年授权 · 3 台设备</div></div>
+          <button class="btn ghost" style="padding:7px 14px" onclick="toast('已加入已购清单')">¥89</button>
+        </div>
+        <div class="listitem">
+          <div class="thumb">🧹</div>
+          <div style="flex:1"><div class="ti">系统清理大师 终身版</div><div class="sub">永久授权 · 免费升级</div></div>
+          <button class="btn ghost" style="padding:7px 14px" onclick="toast('已加入已购清单')">¥39</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="tagrow"><span class="tag">🎨 素材包</span></div>
+        <div class="listitem">
+          <div class="thumb">🖼️</div>
+          <div style="flex:1"><div class="ti">国潮插画素材库</div><div class="sub">800+ PNG 免抠图</div></div>
+          <button class="btn ghost" style="padding:7px 14px" onclick="toast('已加入已购清单')">¥69</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="tagrow"><span class="tag cy">📖 电子书</span></div>
+        <div class="listitem">
+          <div class="thumb">📕</div>
+          <div style="flex:1"><div class="ti">《一人公司》精读版</div><div class="sub">EPUB + PDF + 有声</div></div>
+          <button class="btn ghost" style="padding:7px 14px" onclick="toast('已加入已购清单')">¥25</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 商品详情 -->
+  <section class="page" id="pg-detail">
+    <div class="pad">
+      <div class="hero"><div class="big">🐍</div><div class="pix">PYTHON·FULLSTACK</div></div>
+      <div class="tagrow" style="display:flex;gap:6px;margin-bottom:8px"><span class="tag">🔥 热销第一</span><span class="tag cy">支持分期</span></div>
+      <div class="ti" style="font-size:19px">Python 全栈实战课：从爬虫到部署</div>
+      <div class="stars">★★★★★ <span style="color:var(--dim)">4.9 · 9.8 万人已购</span></div>
+      <div class="meta"><div class="price" style="font-size:24px">¥199<s>¥499</s></div><span class="sub">已售 9.8 万</span></div>
+      <div class="notice">⚡ 购买后即时到账 · 无需等待发货<br>🔁 支持 7 天无理由退款 · 终身免费回看</div>
+      <div class="hd" style="margin-top:14px"><h2>课程目录（86 节）</h2></div>
+      <div class="card" style="padding:4px 12px">
+        <div class="chapter"><span class="n">1</span><span class="t">Python 基础语法速通</span><span class="len">12 节</span></div>
+        <div class="chapter"><span class="n">2</span><span class="t">爬虫实战：反爬与代理池</span><span class="len">18 节</span></div>
+        <div class="chapter"><span class="n">3</span><span class="t">Django / FastAPI 接口开发</span><span class="len">24 节</span></div>
+        <div class="chapter"><span class="n">4</span><span class="t">Docker + 服务器部署上线</span><span class="len">20 节</span></div>
+        <div class="chapter"><span class="n">5</span><span class="t">毕业项目：独立站全栈实战</span><span class="len">12 节</span></div>
+      </div>
+      <div class="card">
+        <div class="ti" style="font-size:14px">授权说明</div>
+        <div class="sub">· 一人一号，支持手机 / 平板 / 电脑三端同步<br>· 课程视频可缓存离线观看<br>· 配套源码与课件永久下载<br>· 赠送学员专属微信群答疑</div>
+      </div>
+      <div style="display:flex;gap:10px;margin-top:6px">
+        <button class="btn ghost" style="flex:1;padding:13px" onclick="toast('已加入购物车（数字商品无需物流）')">加入清单</button>
+        <button class="btn" style="flex:2;padding:13px" onclick="toast('已加入已购清单')">立即购买 ¥199</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 已购 -->
+  <section class="page" id="pg-owned">
+    <div class="pad">
+      <div class="hd"><h2>我的课程</h2><span class="more">全部 ›</span></div>
+      <div class="card">
+        <div style="display:flex;gap:12px;align-items:center">
+          <div class="thumb">🐍</div>
+          <div style="flex:1"><div class="ti">Python 全栈实战课</div><div class="sub">已学 53 / 86 节 · 上次看到第 3 章</div>
+            <div class="prog"><i style="width:62%"></i></div></div>
+        </div>
+        <div class="meta"><span class="sub">学习进度 62%</span><button class="btn" style="padding:8px 20px" onclick="toast('继续播放：第 54 节 Docker 基础')">继续学习</button></div>
+      </div>
+      <div class="card">
+        <div style="display:flex;gap:12px;align-items:center">
+          <div class="thumb">🎬</div>
+          <div style="flex:1"><div class="ti">短视频剪辑进阶课</div><div class="sub">已学 8 / 42 节</div>
+            <div class="prog"><i style="width:19%"></i></div></div>
+        </div>
+        <div class="meta"><span class="sub">学习进度 19%</span><button class="btn ghost" style="padding:8px 20px" onclick="toast('继续播放：第 9 节 转场技巧')">继续学习</button></div>
+      </div>
+      <div class="hd" style="margin-top:14px"><h2>我的授权码</h2><span class="sub">点击复制</span></div>
+      <div class="card">
+        <div class="kcode" onclick="copyKey('SPD-8X2Q-77LM-2026')"><span class="v">SPD-8X2Q-77LM-2026</span><span class="c">📋 复制</span></div>
+        <div class="sub" style="margin-top:6px">极速下载器 Pro · 剩余 214 天 · 3 台设备</div>
+        <div class="kcode" onclick="copyKey('CLN-LIFE-9D4K-8841')"><span class="v">CLN-LIFE-9D4K-8841</span><span class="c">📋 复制</span></div>
+        <div class="sub" style="margin-top:6px">系统清理大师 · 终身授权 · 1 台设备</div>
+      </div>
+      <div class="hd" style="margin-top:14px"><h2>下载记录</h2></div>
+      <div class="card" style="padding:4px 12px">
+        <div class="listitem"><div class="thumb" style="font-size:20px">📦</div><div style="flex:1"><div class="ti" style="font-size:13px">UI 设计素材大礼包 v4.0.zip</div><div class="sub">2.1 GB · 10-18 下载完成</div></div><span class="tag cy">已完成</span></div>
+        <div class="listitem"><div class="thumb" style="font-size:20px">📄</div><div style="flex:1"><div class="ti" style="font-size:13px">Notion 高效手册.pdf</div><div class="sub">48 MB · 10-12 下载完成</div></div><span class="tag cy">已完成</span></div>
+        <div class="listitem"><div class="thumb" style="font-size:20px">📦</div><div style="flex:1"><div class="ti" style="font-size:13px">剪映调色预设包.zip</div><div class="sub">860 MB · 下载中 72%</div></div><span class="tag">下载中</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 我的 -->
+  <section class="page" id="pg-mine">
+    <div class="pad">
+      <div class="card" style="display:flex;gap:12px;align-items:center">
+        <div class="userdot" style="width:52px;height:52px;font-size:20px">陈</div>
+        <div style="flex:1"><div class="ti">陈淑婷</div><div class="sub">Pro 会员 · 至 2027-10-19</div></div>
+        <span class="tag cy">Lv.6</span>
+      </div>
+      <div class="redeem"><input id="redeem" placeholder="输入兑换码，如 DIGI-2026"><button class="btn" onclick="doRedeem()">兑换</button></div>
+      <div class="card" style="padding:4px 14px">
+        <div class="row" onclick="toast('订单：共 12 笔，累计 ¥1,286')"><span>🧾 我的订单</span><span class="arr">›</span></div>
+        <div class="row" onclick="toast('已开具电子发票 8 张，发送至邮箱')"><span>🧾 发票管理</span><span class="r">8 张已开</span><span class="arr">›</span></div>
+        <div class="row" onclick="toast('兑换记录：年度会员 Pro ×1')"><span>🎟️ 兑换记录</span><span class="arr">›</span></div>
+        <div class="row" onclick="toast('下载设置：仅 Wi-Fi 下自动缓存')"><span>⚙️ 下载设置</span><span class="arr">›</span></div>
+        <div class="row" onclick="toast('客服在线：9:00–21:00')"><span>💬 在线客服</span><span class="arr">›</span></div>
+        <div class="row" style="border:none" onclick="toast('账号与安全：已绑定手机+微信')"><span>🔐 账号与安全</span><span class="arr">›</span></div>
+      </div>
+      <div class="pix" style="text-align:center;margin-top:12px">// v2.4.1 //</div>
+    </div>
+  </section>
+
+  <!-- 底部 Tab -->
+  <nav class="tabbar">
+    <button class="tab on" data-pg="pg-home" onclick="switchTab('pg-home',this)"><i>🏠</i>首页</button>
+    <button class="tab" data-pg="pg-cat" onclick="switchTab('pg-cat',this)"><i>🗂️</i>分类</button>
+    <button class="tab" data-pg="pg-owned" onclick="switchTab('pg-owned',this)"><i>📚</i>已购</button>
+    <button class="tab" data-pg="pg-mine" onclick="switchTab('pg-mine',this)"><i>👤</i>我的</button>
+  </nav>
+  <div class="toast" id="toast"></div>
+</div>
+<script>
+var timer=null;
+function switchTab(id,el){
+  document.querySelectorAll('.page').forEach(function(p){p.classList.remove('on')});
+  document.getElementById(id).classList.add('on');
+  document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('on')});
+  el.classList.add('on');
+  window.scrollTo(0,0);
+}
+function openDetail(){
+  document.querySelectorAll('.page').forEach(function(p){p.classList.remove('on')});
+  document.getElementById('pg-detail').classList.add('on');
+  document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('on')});
+  window.scrollTo(0,0);
+}
+function goCat(name,el){
+  document.querySelectorAll('.cat').forEach(function(c){c.classList.remove('on')});
+  el.classList.add('on');
+  var names={course:'在线课程',soft:'软件工具',asset:'设计素材',book:'电子书',vip:'会员'};
+  var tab=document.querySelector('.tab[data-pg="pg-cat"]');
+  document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('on')});
+  tab.classList.add('on');
+  document.querySelectorAll('.page').forEach(function(p){p.classList.remove('on')});
+  document.getElementById('pg-cat').classList.add('on');
+  toast('已切换到「'+names[name]+'」分类');
+}
+var toastTimer=null;
+function toast(msg){
+  var t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(function(){t.classList.remove('show')},1800);
+}
+function doSearch(){
+  var kw=document.getElementById('kw').value.trim();
+  toast(kw?('搜索「'+kw+'」：找到 12 件相关商品'):'请输入关键词再搜索');
+}
+function copyKey(k){
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(k).catch(function(){});}
+  toast('授权码已复制：'+k);
+}
+function doRedeem(){
+  var v=document.getElementById('redeem').value.trim();
+  if(!v){toast('请输入兑换码');return;}
+  document.getElementById('redeem').value='';
+  toast('兑换成功：已到账 3 个月 Pro 会员');
+}
+/* 限时折扣倒计时 */
+var sec=7*3600+42*60+18;
+function tick(){
+  sec=Math.max(0,sec-1);
+  var h=Math.floor(sec/3600),m=Math.floor(sec%3600/60),s=sec%60;
+  var e1=document.getElementById('th'),e2=document.getElementById('tm'),e3=document.getElementById('ts');
+  if(e1){e1.textContent=('0'+h).slice(-2);e2.textContent=('0'+m).slice(-2);e3.textContent=('0'+s).slice(-2);}
+}
+tick(); timer=setInterval(tick,1000);
+</script>
+</body>
+</html>

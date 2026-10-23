@@ -1,0 +1,35 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>萤火之森</title><style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{width:430px;height:900px;margin:0 auto;position:relative;overflow:hidden;
+font-family:-apple-system,"PingFang SC","Microsoft YaHei","Noto Sans CJK SC",sans-serif;
+background:linear-gradient(180deg,#04140c 0%,#0a2a18 70%,#0e3a22 100%);color:#fff}
+.scene{position:absolute;inset:0}
+
+.mglow{position:absolute;top:60px;left:50%;transform:translateX(-50%);width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(220,255,180,.22),transparent 70%)}
+.trunk{position:absolute;bottom:0;width:34px;background:#020a06;border-radius:12px}
+.canopy{position:absolute;border-radius:50%;background:#03130b}
+.ff{position:absolute;width:7px;height:7px;border-radius:50%;background:#d8ff7a;box-shadow:0 0 12px 4px rgba(216,255,122,.75);animation:blink 2.6s ease-in-out infinite,drift 9s ease-in-out infinite alternate}
+@keyframes blink{0%,100%{opacity:.12}50%{opacity:1}}
+@keyframes drift{to{transform:translate(34px,-44px)}}
+.gnd3{position:absolute;bottom:-70px;left:-60px;width:550px;height:180px;background:#04180e;border-radius:50%}
+
+.brand{position:absolute;left:0;right:0;bottom:118px;text-align:center;z-index:5;
+color:#e8ffd0;opacity:0;animation:brandIn 1s ease 2.2s both}
+.brand h1{font-size:34px;letter-spacing:8px;font-weight:800;text-shadow:0 2px 14px rgba(0,0,0,.35)}
+.brand p{font-size:13px;letter-spacing:3px;margin-top:10px;opacity:.85;text-shadow:0 1px 10px rgba(0,0,0,.35)}
+@keyframes brandIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.replay{position:absolute;left:50%;bottom:44px;transform:translateX(-50%);z-index:6;
+padding:10px 28px;border-radius:24px;border:1px solid rgba(255,255,255,.45);
+background:rgba(255,255,255,.14);color:#e8ffd0;font-size:14px;letter-spacing:2px;cursor:pointer}
+</style></head><body>
+<div class="scene"><div class="mglow"></div>
+<div class="trunk" style="left:60px;height:340px"></div><div class="canopy" style="left:-10px;top:180px;width:180px;height:150px"></div>
+<div class="trunk" style="right:70px;height:420px"></div><div class="canopy" style="right:-16px;top:120px;width:200px;height:170px"></div>
+<div class="trunk" style="left:190px;height:280px"></div><div class="canopy" style="left:130px;top:260px;width:150px;height:120px"></div>
+<i class="ff" style="left:60px;top:420px;animation-delay:-0.4s,-2s"></i><i class="ff" style="left:120px;top:520px;animation-delay:-1.2s,-5s"></i><i class="ff" style="left:200px;top:380px;animation-delay:-2s,-1s"></i><i class="ff" style="left:280px;top:470px;animation-delay:-0.8s,-7s"></i><i class="ff" style="left:340px;top:400px;animation-delay:-1.6s,-3s"></i><i class="ff" style="left:90px;top:600px;animation-delay:-2.4s,-4s"></i><i class="ff" style="left:170px;top:650px;animation-delay:-0.2s,-6s"></i><i class="ff" style="left:250px;top:590px;animation-delay:-1s,-2.5s"></i><i class="ff" style="left:320px;top:630px;animation-delay:-2.2s,-5.5s"></i><i class="ff" style="left:45px;top:500px;animation-delay:-1.4s,-3.5s"></i><i class="ff" style="left:380px;top:540px;animation-delay:-0.6s,-6.5s"></i><i class="ff" style="left:140px;top:440px;animation-delay:-2.8s,-1.5s"></i><i class="ff" style="left:230px;top:680px;animation-delay:-1.8s,-4.5s"></i><i class="ff" style="left:300px;top:350px;animation-delay:-0.9s,-2.2s"></i><i class="ff" style="left:65px;top:670px;animation-delay:-2.6s,-5.8s"></i><i class="ff" style="left:355px;top:470px;animation-delay:-1.1s,-0.8s"></i><div class="gnd3"></div></div>
+<div class="brand"><h1>萤火之森</h1><p>微光成炬 照亮长夜</p></div>
+<button class="replay" onclick="location.reload()">重新播放</button>
+</body></html>

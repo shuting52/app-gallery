@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>描边点亮 · 底部Tab</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#20242e;display:flex;justify-content:center;min-height:100vh;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif}
+.phone{width:430px;height:900px;background:#101018;position:relative;overflow:hidden;color:#e8e8f0}
+.status{height:44px;display:flex;justify-content:space-between;align-items:center;padding:0 26px;font-size:14px;font-weight:700;color:#e8e8f0}
+.content{position:absolute;top:44px;left:0;right:0;bottom:0;overflow:hidden}
+.feed{padding:14px 16px 130px}
+.hero{border-radius:18px;padding:22px 18px;color:#fff;background:linear-gradient(120deg,#2b2b4a,#6c5ce7);margin-bottom:14px;border:1px solid #3a3a5e}
+.hero h2{font-size:20px}
+.hero p{font-size:12px;opacity:.8;margin-top:6px}
+.card{background:#1a1a28;border:1px solid #2c2c44;border-radius:14px;padding:14px 16px;margin-bottom:12px;display:flex;align-items:center;gap:12px}
+.sw{width:44px;height:44px;border-radius:12px;flex-shrink:0}
+.ct{font-size:14px;font-weight:600;color:#f0f0f8}
+.cs{font-size:12px;color:#8a8aa0;margin-top:4px}
+/* ---- 底栏 ---- */
+.dock{position:absolute;left:0;right:0;bottom:0;height:96px;background:#16161f;border-top:1px solid #2c2c44}
+.tabs{position:absolute;inset:0;display:flex}
+.tab{flex:1;background:none;border:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;cursor:pointer}
+.tab svg{width:32px;height:32px;fill:none;stroke-linecap:round;stroke-linejoin:round;transition:filter .3s}
+.tab svg .base{opacity:.22}
+.tab svg .base *{stroke:#8a8aa0;stroke-width:1.8}
+.tab svg .draw *{stroke:#8f7bff;stroke-width:1.8;stroke-dasharray:100;stroke-dashoffset:100;transition:stroke-dashoffset .35s ease}
+.tab.on svg{filter:drop-shadow(0 0 7px rgba(143,123,255,.9))}
+.tab.on svg .draw *{stroke-dashoffset:0;transition:stroke-dashoffset .9s ease .05s}
+.tlabel{font-size:11px;color:#6a6a80;transition:color .3s}
+.tab.on .tlabel{color:#8f7bff;font-weight:700}
+.dot{position:absolute;bottom:16px;left:12.5%;width:6px;height:6px;border-radius:50%;background:#8f7bff;box-shadow:0 0 8px #8f7bff;transform:translateX(-50%);transition:left .45s cubic-bezier(.5,0,.2,1.2)}
+.safe{position:absolute;bottom:0;left:0;right:0;height:10px;background:#16161f}
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="status"><span>9:41</span><span>5G ▮▮▮</span></div>
+  <div class="content"><div class="feed">
+    <div class="hero"><h2>深夜电台</h2><p>为你点亮的 6 档节目</p></div>
+    <div class="card"><div class="sw" style="background:linear-gradient(135deg,#6c5ce7,#a29bfe)"></div><div><div class="ct">城市造梦者</div><div class="cs">第 42 期 · 建筑师访谈</div></div></div>
+    <div class="card"><div class="sw" style="background:linear-gradient(135deg,#00cec9,#55efc4)"></div><div><div class="ct">白噪音研究所</div><div class="cs">雨声 · 篝火 · 深海</div></div></div>
+    <div class="card"><div class="sw" style="background:linear-gradient(135deg,#e17055,#fab1a0)"></div><div><div class="ct">独立音乐现场</div><div class="cs">本周三支新乐队</div></div></div>
+    <div class="card"><div class="sw" style="background:linear-gradient(135deg,#0984e3,#74b9ff)"></div><div><div class="ct">科幻短篇</div><div class="cs">连载 · 火星邮局</div></div></div>
+    <div class="card"><div class="sw" style="background:linear-gradient(135deg,#d63031,#ff7675)"></div><div><div class="ct">深夜食堂故事</div><div class="cs">听众来信特辑</div></div></div>
+    <div class="card"><div class="sw" style="background:linear-gradient(135deg,#fdcb6e,#ffeaa7)"></div><div><div class="ct">晨间新闻早餐</div><div class="cs">7 点准时开播</div></div></div>
+  </div></div>
+  <div class="dock">
+    <div class="tabs">
+      <button class="tab on"><svg viewBox="0 0 24 24"><g class="base"><path d="M4 11l8-7 8 7M6.5 9.5V20h11V9.5"/></g><g class="draw"><path pathLength="100" d="M4 11l8-7 8 7M6.5 9.5V20h11V9.5"/></g></svg><span class="tlabel">首页</span></button>
+      <button class="tab"><svg viewBox="0 0 24 24"><g class="base"><circle cx="12" cy="12" r="8.5"/><path d="M15.5 8.5l-2.8 5.2-4.2 1.2 2.8-5.2z"/></g><g class="draw"><circle pathLength="100" cx="12" cy="12" r="8.5"/><path pathLength="100" d="M15.5 8.5l-2.8 5.2-4.2 1.2 2.8-5.2z"/></g></svg><span class="tlabel">发现</span></button>
+      <button class="tab"><svg viewBox="0 0 24 24"><g class="base"><path d="M4 5h16v11h-9l-7 4V5z"/></g><g class="draw"><path pathLength="100" d="M4 5h16v11h-9l-7 4V5z"/></g></svg><span class="tlabel">消息</span></button>
+      <button class="tab"><svg viewBox="0 0 24 24"><g class="base"><circle cx="12" cy="8" r="3.6"/><path d="M5 20c1.2-3.8 3.8-5.6 7-5.6s5.8 1.8 7 5.6"/></g><g class="draw"><circle pathLength="100" cx="12" cy="8" r="3.6"/><path pathLength="100" d="M5 20c1.2-3.8 3.8-5.6 7-5.6s5.8 1.8 7 5.6"/></g></svg><span class="tlabel">我</span></button>
+    </div>
+    <div class="dot" id="dot"></div>
+    <div class="safe"></div>
+  </div>
+</div>
+<script>
+var tabs=Array.prototype.slice.call(document.querySelectorAll('.tab'));
+var dot=document.getElementById('dot');
+function go(i){
+  tabs.forEach(function(t,k){t.classList.toggle('on',k===i);});
+  dot.style.left=(12.5+25*i)+'%';
+}
+tabs.forEach(function(t,i){t.addEventListener('click',function(){go(i);});});
+var n=parseInt(new URLSearchParams(location.search).get('tab'),10);
+go((n>=0&&n<4)?n:0);
+</script>
+</body>
+</html>

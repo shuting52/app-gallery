@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>粒子爆炸</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{height:100%;}
+  body{
+    font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+    background:radial-gradient(120% 90% at 50% 10%, #1c0f14 0%, #0d070b 60%, #060407 100%);
+    color:#ffe9e4;display:flex;flex-direction:column;align-items:center;
+    min-height:100vh;padding:28px 16px;overflow:hidden;
+  }
+  h1{font-size:20px;font-weight:600;letter-spacing:4px;margin-bottom:6px;}
+  .sub{font-size:12px;color:#a88a80;letter-spacing:2px;margin-bottom:34px;}
+  .stage{
+    width:360px;max-width:92vw;height:420px;border-radius:20px;
+    background:rgba(255,255,255,.03);
+    border:1px solid rgba(255,140,120,.14);
+    box-shadow:inset 0 0 60px rgba(160,60,40,.12);
+    display:flex;align-items:center;justify-content:center;
+    position:relative;overflow:hidden;
+  }
+  #boom{position:absolute;inset:0;pointer-events:none;}
+  .btn{
+    position:relative;cursor:pointer;border:none;z-index:2;
+    padding:18px 64px;font-size:17px;font-weight:600;letter-spacing:6px;color:#fff;
+    border-radius:16px;
+    background:linear-gradient(135deg,#ff5f3c,#ff2e63);
+    box-shadow:0 8px 28px rgba(255,80,60,.45), inset 0 1px 0 rgba(255,255,255,.35);
+  }
+  .btn.shock{animation:shock .34s ease-out;}
+  @keyframes shock{
+    0%{transform:scale(1);}
+    30%{transform:scale(1.18);}
+    55%{transform:scale(.94);}
+    75%{transform:scale(1.05);}
+    100%{transform:scale(1);}
+  }
+  .hint{margin-top:26px;font-size:12px;color:#8a6a60;letter-spacing:1px;}
+</style>
+</head>
+<body>
+  <h1>粒子爆炸</h1>
+  <div class="sub">重力粒子 · 旋转碎片 · 冲击缩放</div>
+  <div class="stage" id="stage">
+    <canvas id="boom"></canvas>
+    <button class="btn" id="btn">爆 炸</button>
+  </div>
+  <div class="hint">点击按钮，粒子从中心炸开并受重力下落</div>
+<script>
+(function(){
+  var stage = document.getElementById('stage');
+  var canvas = document.getElementById('boom');
+  var btn = document.getElementById('btn');
+  var ctx = canvas.getContext('2d');
+  var parts = [];
+  var colors = ['#ffd166','#ff5f3c','#ff2e63','#ffffff','#ff9f1c','#f72585'];
+
+  function sizeCanvas(){
+    canvas.width = stage.clientWidth;
+    canvas.height = stage.clientHeight;
+  }
+  sizeCanvas();
+  window.addEventListener('resize', sizeCanvas);
+
+  function explode(cx, cy){
+    for(var i = 0; i < 46; i++){
+      var a = Math.random() * Math.PI * 2;
+      var sp = 2 + Math.random() * 7;
+      var frag = Math.random() < 0.35; // 碎片
+      parts.push({
+        x: cx, y: cy,
+        vx: Math.cos(a) * sp, vy: Math.sin(a) * sp - 3,
+        r: frag ? 4 + Math.random()*7 : 2 + Math.random()*4,
+        rot: Math.random() * Math.PI * 2,
+        vr: (Math.random() - .5) * 0.35,
+        life: 1, decay: 0.012 + Math.random() * 0.02,
+        color: colors[(Math.random()*colors.length)|0],
+        frag: frag
+      });
+    }
+  }
+
+  function tick(){
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    for(var i = parts.length - 1; i >= 0; i--){
+      var p = parts[i];
+      p.vy += 0.28;                 // 重力
+      p.vx *= 0.985; p.vy *= 0.99;  // 空气阻力
+      p.x += p.vx; p.y += p.vy;
+      p.rot += p.vr;
+      p.life -= p.decay;
+      if(p.life <= 0){ parts.splice(i, 1); continue; }
+      ctx.save();
+      ctx.globalAlpha = Math.max(p.life, 0);
+      ctx.translate(p.x, p.y);
+      ctx.fillStyle = p.color;
+      if(p.frag){
+        ctx.rotate(p.rot);
+        ctx.fillRect(-p.r/2, -p.r/4, p.r, p.r/2);
+      }else{
+        ctx.beginPath();
+        ctx.arc(0, 0, p.r * p.life, 0, Math.PI*2);
+        ctx.fill();
+      }
+      ctx.restore();
+    }
+    requestAnimationFrame(tick);
+  }
+  tick();
+
+  btn.addEventListener('click', function(){
+    var r = btn.getBoundingClientRect();
+    var s = stage.getBoundingClientRect();
+    explode(r.left - s.left + r.width/2, r.top - s.top + r.height/2);
+    btn.classList.remove('shock');
+    void btn.offsetWidth;           // 重启动画
+    btn.classList.add('shock');
+  });
+  btn.addEventListener('animationend', function(){ btn.classList.remove('shock'); });
+})();
+</script>
+</body>
+</html>

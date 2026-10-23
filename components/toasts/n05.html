@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>通知 Toast · 打字机</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{background:radial-gradient(1000px 700px at 50% 0%,#0d2117 0%,#08120d 55%,#050a07 100%);color:#c9f5d8;font-family:ui-monospace,SFMono-Regular,Menlo,"PingFang SC","Microsoft YaHei",monospace;display:flex;justify-content:center;padding:16px 0;min-height:100vh}
+.stage{width:360px;max-width:94vw}
+.head{text-align:center;padding:8px 0 12px;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif}
+.head .no{display:inline-block;font-size:11px;letter-spacing:3px;color:#4ade80;border:1px solid rgba(74,222,128,.45);border-radius:20px;padding:3px 12px;margin-bottom:8px}
+.head h1{font-size:20px;color:#eafff1}
+.head p{font-size:12px;color:#5f8a6d;margin-top:6px}
+.screen{position:relative;height:540px;border-radius:22px;overflow:hidden;background:repeating-linear-gradient(0deg,#0a140e 0 3px,#0a130d 3px 6px);border:1px solid rgba(74,222,128,.16);box-shadow:0 24px 60px rgba(0,0,0,.55),inset 0 0 80px rgba(0,0,0,.6)}
+.prompt{position:absolute;top:24px;left:20px;font-size:12px;color:#3f6b4d;z-index:1}
+.prompt b{color:#4ade80}
+.term{position:absolute;top:110px;left:16px;right:16px;background:rgba(4,10,6,.92);border:1px solid rgba(74,222,128,.4);border-radius:10px;box-shadow:0 0 24px rgba(74,222,128,.12),0 14px 34px rgba(0,0,0,.5);visibility:hidden;z-index:3;will-change:opacity}
+.term .bar{display:flex;gap:6px;align-items:center;padding:8px 12px;border-bottom:1px solid rgba(74,222,128,.2)}
+.term .bar i{width:10px;height:10px;border-radius:50%}
+.term .bar i:nth-child(1){background:#f87171}
+.term .bar i:nth-child(2){background:#fbbf24}
+.term .bar i:nth-child(3){background:#4ade80}
+.term .bar span{margin-left:6px;font-size:11px;color:#3f6b4d}
+.term .body{padding:14px;font-size:14px;line-height:1.7;color:#86efac;min-height:104px}
+.term .body .cur{display:inline-block;width:9px;height:18px;background:#4ade80;vertical-align:-3px;margin-left:2px}
+.term .body .cur.off{background:transparent}
+.foot{text-align:center;font-size:11px;color:#3f6b4d;padding:12px 0;letter-spacing:2px;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif}
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="head"><div class="no">N05 · 通知 TOAST</div><h1>打字机</h1><p>通知框先出现 · 文字逐字打出 · 打完停留后淡出</p></div>
+  <div class="screen" id="screen">
+    <div class="prompt"><b>notify</b> --daemon --loop<br>$ 等待推送 …</div>
+    <div class="term" id="term">
+      <div class="bar"><i></i><i></i><i></i><span id="tfile">push_01.log</span></div>
+      <div class="body"><span id="ttyped"></span><span class="cur" id="cur"></span></div>
+    </div>
+  </div>
+  <div class="foot">自动循环 · 每条展示约 2.5 秒</div>
+</div>
+<script>
+(function(){
+  var term=document.getElementById('term'),
+      typed=document.getElementById('ttyped'),
+      cur=document.getElementById('cur'),
+      tfile=document.getElementById('tfile');
+  var msgs=[
+    {f:'push_01.log',t:'[系统] 正在同步数据 … 同步完成，共 128 条'},
+    {f:'push_02.log',t:'[提醒] 例会将于 10 分钟后开始，请准备'},
+    {f:'push_03.log',t:'[安全] 检测到异地登录，请确认是本人操作'}
+  ];
+  function tw(dur,update,done){
+    var n=Math.max(1,Math.round(dur/16)),i=0;
+    (function tick(){
+      i++;var p=Math.min(1,i/n);update(p);
+      if(p<1){setTimeout(tick,16);}else if(done){done();}
+    })();
+  }
+  var idx=0,blinkTimer=null;
+  function startBlink(){
+    stopBlink();
+    var on=true;
+    blinkTimer=setInterval(function(){
+      on=!on;
+      cur.className=on?'cur':'cur off';
+    },320);
+  }
+  function stopBlink(){
+    if(blinkTimer){clearInterval(blinkTimer);blinkTimer=null;}
+    cur.className='cur';
+  }
+  function typeText(text,cb){
+    var i=0;
+    typed.textContent='';
+    startBlink();
+    (function step(){
+      i++;
+      typed.textContent=text.slice(0,i);
+      if(i<text.length){setTimeout(step,55);}
+      else{cb();}
+    })();
+  }
+  function show(m,cb){
+    tfile.textContent=m.f;
+    typed.textContent='';
+    term.style.visibility='visible';
+    term.style.opacity='0';
+    tw(260,function(p){term.style.opacity=p.toFixed(2);},function(){
+      typeText(m.t,cb);
+    });
+  }
+  function hide(cb){
+    stopBlink();
+    tw(400,function(p){term.style.opacity=(1-p).toFixed(2);},function(){
+      term.style.visibility='hidden';cb();
+    });
+  }
+  (function loop(){
+    show(msgs[idx],function(){
+      setTimeout(function(){
+        hide(function(){idx=(idx+1)%msgs.length;loop();});
+      },1500);
+    });
+  })();
+})();
+</script>
+</body>
+</html>

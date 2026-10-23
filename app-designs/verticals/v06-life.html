@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>帮帮到家 · 家政预约</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{background:#e8ded2;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;color:#2b2118}
+.phone{max-width:430px;margin:0 auto;min-height:100dvh;background:#fff7f0;position:relative;padding-bottom:84px}
+.screen{display:none;animation:fade .25s}
+.screen.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}}
+.hd{background:linear-gradient(135deg,#f97316,#fbbf24);color:#fff;padding:18px 16px 24px;border-radius:0 0 24px 24px}
+.hd .loc{font-size:13px}
+.search{margin-top:12px;background:#fff;border-radius:24px;padding:11px 16px;font-size:14px;color:#9aa3b5}
+.banner{margin:-4px 16px 0;background:#fff;border-radius:16px;padding:14px 16px;display:flex;align-items:center;box-shadow:0 4px 14px rgba(249,115,22,.12);position:relative;z-index:2}
+.banner .t1{font-size:15px;font-weight:700;color:#c2410c}
+.banner .t2{font-size:12px;color:#8a7a68;margin-top:3px}
+.banner .go{margin-left:auto;background:#f97316;color:#fff;border:0;border-radius:20px;padding:9px 18px;font-size:13px;flex:none}
+.sec{margin:18px 16px 0}.sec h3{font-size:15px;margin-bottom:10px}
+.grid8{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.cat{background:#fff;border-radius:16px;padding:14px 4px;text-align:center;font-size:12px;box-shadow:0 2px 8px rgba(120,70,20,.06)}
+.cat .e{font-size:26px;display:block;margin-bottom:6px}
+.svc{background:#fff;border-radius:16px;margin-bottom:10px;overflow:hidden;box-shadow:0 2px 8px rgba(120,70,20,.06);display:flex}
+.svc .pic{width:110px;flex:none;background:linear-gradient(135deg,#fdba74,#f97316);display:flex;align-items:center;justify-content:center;font-size:40px}
+.svc .bd{padding:12px 14px;flex:1}
+.svc .t{font-size:14px;font-weight:700}
+.svc .d{font-size:12px;color:#8a7a68;margin-top:4px}
+.svc .pr{font-size:15px;color:#ea580c;font-weight:700;margin-top:6px}
+.svc .pr small{font-size:11px;color:#8a7a68;font-weight:400}
+.svc button{margin:8px 12px 12px 0;align-self:flex-end;background:#f97316;color:#fff;border:0;border-radius:16px;padding:8px 18px;font-size:13px;flex:none}
+.back{background:none;border:0;color:#c2410c;font-size:15px;padding:14px 16px;cursor:pointer}
+.page-hd{padding:4px 16px 12px}.page-hd h2{font-size:20px}
+.form{background:#fff;border-radius:16px;margin:0 16px;padding:6px 16px}
+.frow{padding:14px 0;border-bottom:1px solid #f5ede2}
+.frow:last-child{border:0}
+.frow label{font-size:13px;color:#8a7a68;display:block;margin-bottom:8px}
+.frow input,.frow textarea{width:100%;border:1px solid #eadfce;border-radius:10px;padding:10px 12px;font-size:14px;outline:none;font-family:inherit}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{border:1px solid #eadfce;border-radius:16px;padding:7px 14px;font-size:13px;background:#fff;cursor:pointer}
+.chip.on{background:#f97316;color:#fff;border-color:#f97316}
+.submit{margin:18px 16px;width:calc(100% - 32px);background:#f97316;color:#fff;border:0;border-radius:14px;padding:15px;font-size:16px;font-weight:700}
+.master{background:#fff;border-radius:16px;padding:14px;margin:0 16px 10px;display:flex;gap:12px;align-items:center}
+.master .av{width:54px;height:54px;border-radius:50%;background:linear-gradient(135deg,#fdba74,#fb923c);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center;font-size:20px;flex:none}
+.master .nm{font-size:15px;font-weight:700}
+.master .sk{font-size:12px;color:#8a7a68;margin-top:3px}
+.master .rt{font-size:12px;color:#ea580c;margin-top:3px}
+.master .dt{margin-left:auto;font-size:12px;color:#c2410c;border:1px solid #f97316;border-radius:14px;padding:6px 12px;flex:none}
+.fchips{display:flex;gap:8px;margin:14px 16px;overflow-x:auto}
+.ord{background:#fff;border-radius:16px;padding:14px 16px;margin:0 16px 10px}
+.ord .top{display:flex;align-items:center}
+.ord .no{font-size:12px;color:#8a7a68}
+.ord .st{margin-left:auto;font-size:12px;padding:4px 10px;border-radius:12px}
+.st.ing{color:#c2410c;background:#ffedd5}.st.done{color:#15803d;background:#dcfce7}
+.ord .t{font-size:15px;font-weight:700;margin-top:8px}
+.ord .m{font-size:12px;color:#8a7a68;margin-top:4px}
+.ord .ft{display:flex;align-items:center;margin-top:10px}
+.ord .pr{font-size:15px;font-weight:700;color:#ea580c}
+.ord button{margin-left:auto;border:1px solid #f97316;color:#ea580c;background:#fff;border-radius:14px;padding:7px 14px;font-size:12px}
+.otabs{display:flex;gap:8px;margin:14px 16px}
+.me-hd{background:linear-gradient(135deg,#f97316,#fbbf24);color:#fff;padding:26px 18px;border-radius:0 0 24px 24px;display:flex;gap:14px;align-items:center}
+.me-hd .av{width:60px;height:60px;border-radius:50%;background:rgba(255,255,255,.3);display:flex;align-items:center;justify-content:center;font-size:26px}
+.wallet{display:flex;background:#fff;border-radius:16px;margin:14px 16px;padding:16px 0;text-align:center}
+.wallet div{flex:1}
+.wallet .v{font-size:17px;font-weight:700;color:#c2410c}
+.wallet .k{font-size:11px;color:#8a7a68;margin-top:4px}
+.menu{background:#fff;border-radius:16px;margin:0 16px 14px;overflow:hidden}
+.menu button{width:100%;display:flex;align-items:center;gap:12px;padding:15px 16px;border:0;border-bottom:1px solid #f8f1e7;background:#fff;font-size:14px;text-align:left}
+.menu button:last-child{border:0}
+.menu .arw{margin-left:auto;color:#c3c9d8}
+.rev{background:#fff7f0;border-radius:10px;padding:10px 12px;margin-top:8px;font-size:12px;color:#6b5d4f}
+.tabbar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:#fff;border-top:1px solid #f0e4d4;display:flex;z-index:50}
+.tab{flex:1;padding:8px 0 12px;text-align:center;font-size:11px;color:#a89a86;border:0;background:none;cursor:pointer}
+.tab .ic{font-size:22px;display:block;margin-bottom:2px}
+.tab.on{color:#ea580c;font-weight:700}
+.toast{position:fixed;bottom:96px;left:50%;transform:translateX(-50%) translateY(16px);background:rgba(30,22,14,.93);color:#fff;padding:11px 22px;border-radius:24px;font-size:13px;opacity:0;transition:.3s;z-index:99;pointer-events:none;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+<div class="phone">
+
+<!-- 下单 -->
+<div class="screen active" id="s-order">
+  <div class="hd"><div class="loc">📍 朝阳区 · 望京 ▾</div><div class="search">🔍&nbsp;搜服务：保洁 / 维修 / 月嫂…</div></div>
+  <div class="banner"><div><div class="t1">首次下单立减 30 元</div><div class="t2">持证师傅 · 先服务后付款</div></div><button class="go" data-go="s-booking">领券下单</button></div>
+  <div class="sec"><h3>全部服务</h3><div class="grid8">
+    <div class="cat"><span class="e">🧹</span>日常保洁</div><div class="cat"><span class="e">🍼</span>住家保姆</div>
+    <div class="cat"><span class="e">🤱</span>月嫂育婴</div><div class="cat"><span class="e">🔧</span>家电维修</div>
+    <div class="cat"><span class="e">👕</span>衣物洗护</div><div class="cat"><span class="e">🚚</span>搬家拉货</div>
+    <div class="cat"><span class="e">📦</span>收纳整理</div><div class="cat"><span class="e">🍳</span>上门做饭</div>
+  </div></div>
+  <div class="sec"><h3>热门服务</h3>
+    <div class="svc"><div class="pic">✨</div><div class="bd"><div class="t">深度保洁 4 小时</div><div class="d">⭐4.9 · 已售 2.3 万 · 全屋无死角</div><div class="pr">¥199 <small>起</small></div></div><button data-go="s-booking">预约</button></div>
+    <div class="svc"><div class="pic">❄️</div><div class="bd"><div class="t">空调深度清洗</div><div class="d">⭐4.8 · 已售 1.1 万 · 拆机洗</div><div class="pr">¥129 <small>起</small></div></div><button data-go="s-booking">预约</button></div>
+    <div class="svc"><div class="pic">👶</div><div class="bd"><div class="t">金牌月嫂 26 天</div><div class="d">⭐5.0 · 已售 3200 · 持证上岗</div><div class="pr">¥12800 <small>起</small></div></div><button data-go="s-booking">预约</button></div>
+  </div>
+</div>
+
+<!-- 预约表单 -->
+<div class="screen" id="s-booking">
+  <button class="back" data-go="s-order">‹ 返回</button>
+  <div class="page-hd"><h2>预约 · 深度保洁</h2></div>
+  <div class="form">
+    <div class="frow"><label>服务地址</label><input value="望京 SOHO T1 2308室"></div>
+    <div class="frow"><label>上门时间</label><div class="chips">
+      <span class="chip on">今天下午</span><span class="chip">明天上午</span><span class="chip">明天全天</span><span class="chip">周末</span>
+    </div></div>
+    <div class="frow"><label>备注需求</label><textarea rows="2" placeholder="如：带宠物、有老人，请轻声…"></textarea></div>
+  </div>
+  <button class="submit" data-toast="预约成功！师傅将在 30 分钟内与您联系">提交预约 · 预估 ¥199</button>
+</div>
+
+<!-- 师傅 -->
+<div class="screen" id="s-master">
+  <div class="page-hd" style="padding-top:18px"><h2>找师傅</h2></div>
+  <div class="fchips"><span class="chip on">全部</span><span class="chip">保洁</span><span class="chip">维修</span><span class="chip">月嫂</span><span class="chip">搬家</span></div>
+  <div class="master" data-go="s-master-detail"><div class="av">李</div><div><div class="nm">李阿姨 · 金牌保洁</div><div class="sk">擅长：深度保洁 / 开荒 / 收纳</div><div class="rt">⭐4.9 · 接单 1286</div></div><div class="dt">约她 ›</div></div>
+  <div class="master" data-go="s-master-detail"><div class="av">张</div><div><div class="nm">张师傅 · 家电维修</div><div class="sk">擅长：空调 / 洗衣机 / 热水器</div><div class="rt">⭐4.8 · 接单 932</div></div><div class="dt">约他 ›</div></div>
+  <div class="master" data-go="s-master-detail"><div class="av">王</div><div><div class="nm">王姐 · 育婴师</div><div class="sk">擅长：新生儿护理 / 产后餐</div><div class="rt">⭐5.0 · 接单 415</div></div><div class="dt">约她 ›</div></div>
+</div>
+
+<!-- 师傅详情 -->
+<div class="screen" id="s-master-detail">
+  <button class="back" data-go="s-master">‹ 返回</button>
+  <div class="page-hd"><h2>李阿姨</h2><div style="font-size:12px;color:#8a7a68">金牌保洁 · 从业 8 年 · 已实名认证 ✓</div></div>
+  <div class="sec" style="margin-top:6px"><h3>用户评价（1286）</h3>
+    <div class="rev">⭐⭐⭐⭐⭐ “打扫得特别仔细，厨房油污都清干净了！” — 陈女士</div>
+    <div class="rev">⭐⭐⭐⭐⭐ “准时有礼貌，收纳做得比我自己还好。” — 刘先生</div>
+  </div>
+  <button class="submit" data-go="s-booking">预约这位师傅</button>
+</div>
+
+<!-- 订单 -->
+<div class="screen" id="s-orders">
+  <div class="page-hd" style="padding-top:18px"><h2>我的订单</h2></div>
+  <div class="otabs"><span class="chip on" data-ot="ing">进行中</span><span class="chip" data-ot="done">已完成</span></div>
+  <div class="ord" data-s="ing"><div class="top"><span class="no">订单号 2026101901</span><span class="st ing">服务中</span></div><div class="t">深度保洁 4 小时</div><div class="m">李阿姨 · 今日 14:00 上门</div><div class="ft"><span class="pr">¥199</span><button data-toast="已联系师傅">联系师傅</button></div></div>
+  <div class="ord" data-s="ing"><div class="top"><span class="no">订单号 2026101803</span><span class="st ing">待上门</span></div><div class="t">空调深度清洗 ×2</div><div class="m">张师傅 · 明日 10:00 上门</div><div class="ft"><span class="pr">¥258</span><button data-toast="订单已取消">取消订单</button></div></div>
+  <div class="ord" data-s="done" style="display:none"><div class="top"><span class="no">订单号 2026100907</span><span class="st done">已完成</span></div><div class="t">日常保洁 2 小时</div><div class="m">李阿姨 · 10月9日完成 · ⭐5.0</div><div class="ft"><span class="pr">¥99</span><button data-toast="已再次预约">再来一单</button></div></div>
+</div>
+
+<!-- 我的 -->
+<div class="screen" id="s-me">
+  <div class="me-hd"><div class="av">👩</div><div><div style="font-size:18px;font-weight:700">陈女士</div><div style="font-size:12px;opacity:.9;margin-top:4px">黄金会员 · 138****6688</div></div></div>
+  <div class="wallet"><div><div class="v">¥120</div><div class="k">余额</div></div><div><div class="v">6 张</div><div class="k">优惠券</div></div><div><div class="v">860</div><div class="k">积分</div></div></div>
+  <div class="menu">
+    <button data-toast="打开服务地址">📍 服务地址 <span class="arw">›</span></button>
+    <button data-toast="打开常用师傅">⭐ 常用师傅 <span class="arw">›</span></button>
+    <button data-toast="打开发票管理">🧾 发票管理 <span class="arw">›</span></button>
+  </div>
+  <div class="menu">
+    <button data-toast="打开设置">⚙️ 设置 <span class="arw">›</span></button>
+    <button data-toast="客服电话 400-888-6666">🎧 客服 <span class="arw">›</span></button>
+  </div>
+</div>
+
+<nav class="tabbar">
+  <button class="tab on" data-go="s-order"><span class="ic">🧹</span>下单</button>
+  <button class="tab" data-go="s-master"><span class="ic">👷</span>师傅</button>
+  <button class="tab" data-go="s-orders"><span class="ic">📦</span>订单</button>
+  <button class="tab" data-go="s-me"><span class="ic">👤</span>我的</button>
+</nav>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+function go(id){document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('active',s.id===id));window.scrollTo(0,0);
+document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('on',t.dataset.go===id));}
+document.querySelectorAll('[data-go]').forEach(el=>el.addEventListener('click',()=>go(el.dataset.go)));
+let tt;function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('show'),1800);}
+document.querySelectorAll('[data-toast]').forEach(el=>el.addEventListener('click',e=>{e.stopPropagation();toast(el.dataset.toast);}));
+document.querySelectorAll('.chip[data-ot]').forEach(c=>c.addEventListener('click',()=>{
+document.querySelectorAll('.chip[data-ot]').forEach(x=>x.classList.remove('on'));c.classList.add('on');
+document.querySelectorAll('.ord').forEach(o=>o.style.display=o.dataset.s===c.dataset.ot?'':'none');}));
+document.querySelectorAll('.frow .chip, .fchips .chip:not([data-ot]), .otabs .chip:not([data-ot])').forEach(c=>c.addEventListener('click',()=>{
+const sib=[...c.parentElement.querySelectorAll('.chip')];sib.forEach(x=>x.classList.remove('on'));c.classList.add('on');}));
+if(location.hash){const id=location.hash.slice(1);if(document.getElementById(id))go(id);}
+</script>
+</body>
+</html>

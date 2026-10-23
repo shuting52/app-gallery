@@ -1,0 +1,22 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>黑洞吸积 · 加载动画</title><style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;background:#040308;display:flex;flex-direction:column;align-items:center;justify-content:center;
+font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;color:#e8eaf0;padding:24px 12px}
+h1{font-size:15px;font-weight:600;letter-spacing:4px;color:#ffb35c;margin-bottom:6px}
+.sub{font-size:11px;color:#8a90a6;margin-bottom:30px;letter-spacing:3px}
+.stage{width:360px;max-width:94vw;height:300px;position:relative;display:flex;align-items:center;justify-content:center}
+.bh{width:280px;height:280px;position:relative}
+.hole{position:absolute;top:50%;left:50%;width:92px;height:92px;margin:-46px 0 0 -46px;border-radius:50%;background:#000;
+box-shadow:0 0 34px 10px rgba(255,150,60,.4),0 0 90px 30px rgba(255,110,40,.16);z-index:3;animation:hp 4s ease-in-out infinite}
+@keyframes hp{50%{box-shadow:0 0 44px 14px rgba(255,150,60,.55),0 0 110px 36px rgba(255,110,40,.22)}}
+.dk{position:absolute;top:50%;left:50%;border-radius:50%;transform:rotateX(72deg);animation:spn linear infinite}
+.dk1{width:180px;height:180px;margin:-90px 0 0 -90px;border:2px dashed rgba(255,190,110,.55);animation-duration:6s}
+.dk2{width:238px;height:238px;margin:-119px 0 0 -119px;border:1.5px dashed rgba(255,140,80,.3);animation-duration:11s;animation-direction:reverse}
+@keyframes spn{to{transform:rotateX(72deg) rotateZ(360deg)}}
+.dw{position:absolute;top:50%;left:50%;width:0;height:0;transform:rotateX(72deg);animation:spn2 linear infinite}
+@keyframes spn2{to{transform:rotateX(72deg) rotateZ(-360deg)}}
+.dw b{position:absolute;width:9px;height:9px;margin:-4.5px;border-radius:50%;background:#ffd9a0;box-shadow:0 0 10px #ffb35c}
+.hole::after{content:"";position:absolute;inset:-16px;border-radius:50%;border:2px solid rgba(255,180,100,.25)}
+</style></head><body><h1>黑洞吸积</h1><div class="sub">LOADING · 加载中</div><div class="stage"><div class="bh"><div class="dk dk1"></div><div class="dk dk2"></div><i class="dw" style="animation-duration:5.0s"><b style="transform:rotate(0deg) translateX(86px)"></b></i><i class="dw" style="animation-duration:5.9s"><b style="transform:rotate(45deg) translateX(102px)"></b></i><i class="dw" style="animation-duration:6.8s"><b style="transform:rotate(90deg) translateX(118px)"></b></i><i class="dw" style="animation-duration:7.7s"><b style="transform:rotate(135deg) translateX(86px)"></b></i><i class="dw" style="animation-duration:8.6s"><b style="transform:rotate(180deg) translateX(102px)"></b></i><i class="dw" style="animation-duration:9.5s"><b style="transform:rotate(225deg) translateX(118px)"></b></i><i class="dw" style="animation-duration:10.4s"><b style="transform:rotate(270deg) translateX(86px)"></b></i><i class="dw" style="animation-duration:11.3s"><b style="transform:rotate(315deg) translateX(102px)"></b></i><div class="hole"></div></div></div></body></html>

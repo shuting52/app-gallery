@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>液态玻璃 · 全套App界面</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sans-serif;
+background:#07090d;display:flex;justify-content:center;color:#eef2f8}
+.phone{width:430px;height:900px;position:relative;overflow:hidden;
+background:radial-gradient(ellipse at 14% 18%,rgba(255,146,96,.55),transparent 34%),
+radial-gradient(ellipse at 84% 32%,rgba(207,72,119,.5),transparent 36%),
+radial-gradient(ellipse at 55% 88%,rgba(67,94,180,.5),transparent 38%),
+linear-gradient(145deg,#17172e,#39213e 52%,#17223d)}
+.screen{position:absolute;inset:0;padding:54px 18px 120px;overflow-y:auto;display:none;scrollbar-width:none}
+.screen::-webkit-scrollbar{display:none}
+.screen.on{display:block}
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.greet h2{font-size:22px;letter-spacing:1px}
+.greet p{font-size:12px;opacity:.55;margin-top:4px}
+.avatar{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font-size:18px;
+background:linear-gradient(135deg,#f8c79e,#a987c8 70%,#7267a9);border:1px solid rgba(255,255,255,.5)}
+.search{display:flex;align-items:center;gap:10px;padding:12px 16px;border-radius:18px;margin-bottom:16px;
+background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);
+backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);font-size:13px;color:rgba(255,255,255,.5)}
+.banner{border-radius:22px;padding:26px 20px;margin-bottom:16px;position:relative;overflow:hidden;
+background:linear-gradient(135deg,rgba(255,120,170,.35),rgba(120,90,255,.35));
+border:1px solid rgba(255,255,255,.25);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
+.banner::before{content:"";position:absolute;inset:0;
+background:linear-gradient(118deg,rgba(255,255,255,.3),transparent 45%);pointer-events:none}
+.banner h3{font-size:20px;margin-bottom:6px;position:relative}
+.banner p{font-size:12px;opacity:.7;position:relative}
+.sect{display:flex;justify-content:space-between;align-items:center;margin:18px 2px 12px}
+.sect h4{font-size:15px}
+.sect span{font-size:12px;opacity:.5}
+.feed{display:flex;flex-direction:column;gap:12px}
+.pcard{border-radius:20px;padding:14px;display:flex;gap:12px;align-items:center;position:relative;overflow:hidden;
+background:linear-gradient(135deg,rgba(255,255,255,.14),rgba(255,255,255,.05));
+border:1px solid rgba(255,255,255,.18);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
+.pcard::before{content:"";position:absolute;inset:0;
+background:linear-gradient(118deg,rgba(255,255,255,.22),transparent 42%);pointer-events:none}
+.thumb{width:56px;height:56px;border-radius:14px;flex:0 0 56px;display:grid;place-items:center;font-size:24px;
+background:linear-gradient(135deg,rgba(255,255,255,.25),rgba(255,255,255,.08));border:1px solid rgba(255,255,255,.2)}
+.pinfo{flex:1;min-width:0;position:relative}
+.pinfo b{font-size:14px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pinfo small{font-size:12px;opacity:.55}
+.pill{font-size:11px;padding:5px 10px;border-radius:99px;background:rgba(255,255,255,.12);
+border:1px solid rgba(255,255,255,.2);position:relative;white-space:nowrap}
+.chips{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin-bottom:14px}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:0 0 auto;font-size:12px;padding:8px 14px;border-radius:99px;background:rgba(255,255,255,.08);
+border:1px solid rgba(255,255,255,.14)}
+.chip.on{background:linear-gradient(135deg,#ff7ab8,#8a6bff);border-color:transparent}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.gcard{border-radius:18px;overflow:hidden;position:relative;
+background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.gimg{height:110px;display:grid;place-items:center;font-size:34px}
+.gcard p{padding:10px 12px;font-size:12px}
+.gcard small{display:block;opacity:.5;font-size:11px;margin-top:3px}
+.ncard{position:relative;overflow:hidden;padding:16px;border-radius:24px;margin-bottom:12px;
+border:1px solid rgba(255,255,255,.28);
+background:linear-gradient(135deg,rgba(255,255,255,.2),rgba(255,255,255,.08) 48%,rgba(202,170,255,.12));
+backdrop-filter:blur(24px) saturate(175%);-webkit-backdrop-filter:blur(24px) saturate(175%);
+box-shadow:inset 0 1px 0 rgba(255,255,255,.42),0 20px 48px rgba(8,8,24,.28)}
+.ncard::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+background:linear-gradient(118deg,rgba(255,255,255,.34),rgba(255,255,255,.08) 18%,transparent 42%,transparent 72%,rgba(255,206,234,.16))}
+.ncard::after{content:"";position:absolute;top:-58px;right:-42px;width:190px;height:130px;border-radius:50%;
+border:1px solid rgba(255,255,255,.22);background:radial-gradient(ellipse,rgba(255,255,255,.22),transparent 68%);
+filter:blur(2px);transform:rotate(-20deg);pointer-events:none}
+.ncard>*{position:relative;z-index:1}
+.ntop{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.npill{font-size:11px;padding:5px 11px;border-radius:99px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.3)}
+.nrow{display:flex;gap:12px;align-items:center}
+.nface{width:46px;height:46px;border-radius:50%;flex:0 0 46px;display:grid;place-items:center;font-size:18px;
+background:linear-gradient(145deg,rgba(255,225,194,.88),rgba(190,139,204,.78) 58%,rgba(111,133,201,.8));
+border:1px solid rgba(255,255,255,.45)}
+.ninfo{flex:1;min-width:0}
+.ninfo .tl{display:flex;justify-content:space-between;margin-bottom:4px}
+.ninfo b{font-size:14px}.ninfo time{font-size:11px;opacity:.6}
+.ninfo p{font-size:12px;opacity:.7;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nunread{font-size:11px;color:#d8d2ff;font-weight:600;white-space:nowrap}
+.profile{text-align:center;padding:10px 0 18px}
+.pbig{width:84px;height:84px;border-radius:50%;margin:0 auto 12px;display:grid;place-items:center;font-size:34px;
+background:linear-gradient(135deg,#f8c79e,#a987c8 70%,#7267a9);border:2px solid rgba(255,255,255,.5);
+box-shadow:0 8px 24px rgba(0,0,0,.35)}
+.profile h3{font-size:20px}.profile p{font-size:12px;opacity:.55;margin-top:4px}
+.stats{display:flex;gap:12px;margin:16px 0}
+.stat{flex:1;border-radius:18px;padding:14px 0;text-align:center;
+background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.stat b{font-size:18px;display:block}.stat small{font-size:11px;opacity:.55}
+.menu{display:flex;flex-direction:column;gap:10px}
+.mitem{display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:18px;
+background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);font-size:14px}
+.mitem i{width:34px;height:34px;border-radius:12px;display:grid;place-items:center;font-size:17px;font-style:normal;
+background:linear-gradient(135deg,rgba(255,255,255,.2),rgba(255,255,255,.06))}
+.mitem span:last-child{margin-left:auto;opacity:.4}
+/* 底部液态玻璃 Tab（悬浮胶囊·幻彩流光） */
+.tabbar{position:absolute;left:18px;right:18px;bottom:calc(24px + env(safe-area-inset-bottom));display:flex;
+border-radius:26px;padding:10px 6px;z-index:10;
+background:linear-gradient(135deg,rgba(255,122,184,.28),rgba(138,107,255,.28),rgba(80,200,255,.28));
+border:1px solid rgba(255,255,255,.35);
+backdrop-filter:blur(24px) saturate(180%);-webkit-backdrop-filter:blur(24px) saturate(180%);
+box-shadow:0 12px 40px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.5)}
+.tabbar::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+background:linear-gradient(118deg,rgba(255,255,255,.35),transparent 45%)}
+.tab{flex:1;background:none;border:0;color:rgba(255,255,255,.55);display:flex;flex-direction:column;
+align-items:center;gap:4px;font-size:11px;cursor:pointer;font-family:inherit;position:relative;padding:6px 0}
+.tab .ic{width:25px;height:25px;display:block}
+.tab .ic svg{width:100%;height:100%;display:block}
+.tab.on{color:#fff}
+.tab.on .ic{filter:drop-shadow(0 0 8px rgba(255,255,255,.9))}
+</style>
+</head>
+<body>
+<div class="phone">
+
+<!-- 首页 -->
+<section class="screen on" id="s-home">
+  <div class="topbar"><div class="greet"><h2>晚上好</h2><p>今天也有新的灵感在等你</p></div><div class="avatar">棠</div></div>
+  <div class="search">🔍&nbsp;&nbsp;搜索灵感、话题、朋友</div>
+  <div class="banner"><h3>液态灵感周</h3><p>100+ 玻璃质感组件 · 每日更新</p></div>
+  <div class="sect"><h4>为你推荐</h4><span>查看全部 ›</span></div>
+  <div class="feed">
+    <div class="pcard"><div class="thumb">🌊</div><div class="pinfo"><b>深海系玻璃拟态完全指南</b><small>设计干货 · 2.3w 阅读</small></div><span class="pill">收藏</span></div>
+    <div class="pcard"><div class="thumb">🍑</div><div class="pinfo"><b>蜜桃果冻色板分享</b><small>色彩灵感 · 8.1k 阅读</small></div><span class="pill">收藏</span></div>
+    <div class="pcard"><div class="thumb">🌌</div><div class="pinfo"><b>霓虹液光动效 12 例</b><small>动效教程 · 1.5w 阅读</small></div><span class="pill">收藏</span></div>
+    <div class="pcard"><div class="thumb">🏺</div><div class="pinfo"><b>东方质感：青瓷与冰裂纹</b><small>风格研究 · 9.6k 阅读</small></div><span class="pill">收藏</span></div>
+  </div>
+</section>
+
+<!-- 发现 -->
+<section class="screen" id="s-find">
+  <div class="topbar"><div class="greet"><h2>发现</h2><p>看看大家在玩什么</p></div></div>
+  <div class="chips"><span class="chip on">全部</span><span class="chip">玻璃拟态</span><span class="chip">动效</span><span class="chip">配色</span><span class="chip">东方美学</span></div>
+  <div class="grid">
+    <div class="gcard"><div class="gimg" style="background:linear-gradient(135deg,#1a2a6c,#b21f66)">💧</div><p>水滴胶囊按钮<small>2.1k 赞</small></p></div>
+    <div class="gcard"><div class="gimg" style="background:linear-gradient(135deg,#ff9a56,#ff5e7e)">🔥</div><p>熔岩流光卡片<small>1.8k 赞</small></p></div>
+    <div class="gcard"><div class="gimg" style="background:linear-gradient(135deg,#43cea2,#185a9d)">🌿</div><p>薄荷冰晶弹窗<small>3.4k 赞</small></p></div>
+    <div class="gcard"><div class="gimg" style="background:linear-gradient(135deg,#8e2de2,#4a00e0)">✨</div><p>紫晶星云加载<small>2.9k 赞</small></p></div>
+    <div class="gcard"><div class="gimg" style="background:linear-gradient(135deg,#f5d76e,#e67e22)">🍯</div><p>蜂蜜滴开关<small>1.2k 赞</small></p></div>
+    <div class="gcard"><div class="gimg" style="background:linear-gradient(135deg,#2c3e50,#7f8c8d)">🪞</div><p>水银镜面输入框<small>4.0k 赞</small></p></div>
+  </div>
+</section>
+
+<!-- 消息 -->
+<section class="screen" id="s-msg">
+  <div class="topbar"><div class="greet"><h2>消息</h2><p>轻一点的消息，也有自己的光</p></div></div>
+  <div class="ncard"><div class="ntop"><span class="npill">群聊</span><span class="nunread">4 条未读</span></div>
+    <div class="nrow"><div class="nface">林</div><div class="ninfo"><div class="tl"><b>周末计划</b><time>19:16</time></div><p>有人分享了一张新的路线图</p></div></div></div>
+  <div class="ncard"><div class="ntop"><span class="npill">点赞</span><time style="font-size:11px;opacity:.6">18:02</time></div>
+    <div class="nrow"><div class="nface">乔</div><div class="ninfo"><div class="tl"><b>乔木</b><time></time></div><p>赞了你的「霓虹液光卡片」</p></div></div></div>
+  <div class="ncard"><div class="ntop"><span class="npill">系统</span><time style="font-size:11px;opacity:.6">08:41</time></div>
+    <div class="nrow"><div class="nface">✦</div><div class="ninfo"><div class="tl"><b>更新提醒</b><time></time></div><p>液态组件库新增 100 款通知卡</p></div></div></div>
+</section>
+
+<!-- 我的 -->
+<section class="screen" id="s-me">
+  <div class="profile"><div class="pbig">棠</div><h3>沈棠梨</h3><p>UI 设计师 · 液态玻璃爱好者</p></div>
+  <div class="stats">
+    <div class="stat"><b>128</b><small>作品</small></div>
+    <div class="stat"><b>2.4w</b><small>粉丝</small></div>
+    <div class="stat"><b>36</b><small>收藏夹</small></div>
+  </div>
+  <div class="menu">
+    <div class="mitem"><i>🎨</i>我的作品<span>›</span></div>
+    <div class="mitem"><i>⭐</i>我的收藏<span>›</span></div>
+    <div class="mitem"><i>📦</i>组件库<span>›</span></div>
+    <div class="mitem"><i>⚙️</i>设置<span>›</span></div>
+  </div>
+</section>
+
+<nav class="tabbar"></nav>
+</div>
+<script>
+const nav=document.querySelector('.tabbar');
+const TABS=[
+ ['home','首页','<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11l8-7 8 7v9h-5v-5h-6v5H4z"/></svg>'],
+ ['find','发现','<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="8"/><path d="M15.5 8.5l-2.2 4.8-4.8 2.2 2.2-4.8z"/></svg>'],
+ ['msg','消息','<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16v10H9l-5 4z"/></svg>'],
+ ['me','我的','<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c1.2-4 4.2-6 8-6s6.8 2 8 6"/></svg>']
+];
+TABS.forEach(([k,lbl,ic])=>{const b=document.createElement('button');b.className='tab';b.dataset.k=k;
+b.innerHTML='<span class="ic">'+ic+'</span><span>'+lbl+'</span>';nav.appendChild(b);});
+const tabs=[...document.querySelectorAll('.tab')];
+function act(k){tabs.forEach(t=>t.classList.toggle('on',t.dataset.k===k));
+document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('on',s.id==='s-'+k));}
+tabs.forEach(t=>t.addEventListener('click',()=>{act(t.dataset.k);try{history.replaceState(null,'','?tab='+t.dataset.k);}catch(e){}}));
+(function(){const k=new URLSearchParams(location.search).get('tab');
+act(TABS.some(t=>t[0]===k)?k:'home');})();
+</script>
+</body>
+</html>

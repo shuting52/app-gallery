@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>版本更新 · 书法书写</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    min-height: 100vh; display: flex; align-items: center; justify-content: center;
+    font-family: -apple-system, "PingFang SC", "Microsoft YaHei", "Segoe UI", Roboto, sans-serif;
+    background: #3a3129;
+    background-image: radial-gradient(100% 100% at 50% 0%, #4a3f33 0%, #2c251e 80%);
+    padding: 24px 16px;
+  }
+  .scrim { position: fixed; inset: 0; background: rgba(0,0,0,.35); pointer-events: none; }
+  .modal {
+    position: relative; z-index: 2; width: 340px; max-width: 100%;
+    background: #f6f1e3;
+    background-image: radial-gradient(rgba(120,90,40,.06) 1px, transparent 1.4px);
+    background-size: 22px 22px;
+    border-radius: 6px;
+    box-shadow: 0 24px 60px rgba(0,0,0,.55), inset 0 0 60px rgba(120,90,40,.08);
+    padding: 24px 22px; color: #2b241a;
+  }
+  .modal.hidden { display: none; }
+  .header { display: flex; justify-content: space-between; align-items: center; }
+  .title { font-size: 17px; font-weight: 700; letter-spacing: .2em; font-family: "Kaiti SC","STKaiti","KaiTi","楷体",serif; }
+  .close { background: none; border: none; font-size: 20px; color: #a89a80; cursor: pointer; line-height: 1; padding: 4px; }
+  .close:hover { color: #2b241a; }
+  .status { font-size: 13px; color: #6b5d45; margin: 10px 0 4px; letter-spacing: .1em; font-family: "Kaiti SC","STKaiti","KaiTi","楷体",serif; }
+  .meta { font-size: 12px; color: #a89a80; margin-bottom: 12px; font-variant-numeric: tabular-nums; }
+  .paper-stage { position: relative; border: 1px solid rgba(120,90,40,.25); border-radius: 4px; background: rgba(255,255,255,.25); }
+  svg.calli { display: block; width: 100%; height: auto; }
+  .brushdot { transition: none; }
+  .brushdot.pulse { animation: bpulse .8s ease-in-out infinite; }
+  @keyframes bpulse { 0%,100% { opacity: 1; } 50% { opacity: .45; } }
+  #seal { transform-box: fill-box; transform-origin: center; transform: scale(2.4) rotate(-30deg); opacity: 0;
+    transition: transform .32s cubic-bezier(.2,1.5,.4,1), opacity .2s; }
+  #seal.stamped { transform: scale(1) rotate(-8deg); opacity: 1; }
+  .bignum { font-size: 40px; font-weight: 700; color: #2b241a; font-variant-numeric: tabular-nums; margin: 12px 0 2px;
+    font-family: "Kaiti SC","STKaiti","KaiTi","楷体",serif; }
+  .bignum small { font-size: 18px; }
+  .mainbtn { width: 100%; padding: 13px; border-radius: 6px; font-size: 15px; letter-spacing: .3em; text-indent: .3em;
+    background: #2b241a; color: #f6f1e3; border: none; cursor: pointer; margin-top: 12px;
+    font-family: "Kaiti SC","STKaiti","KaiTi","楷体",serif; font-weight: 700; }
+  .mainbtn:disabled { opacity: .45; cursor: default; }
+  .mainbtn.ghost { background: transparent; color: #2b241a; border: 1px solid #2b241a; }
+  .mainbtn.sealbtn { background: #b03a2e; }
+  .replay { display: block; margin: 12px auto 0; background: none; border: none; color: #a89a80; font-size: 12px; letter-spacing: .12em; cursor: pointer; }
+  .replay:hover { color: #b03a2e; }
+  .toast { position: fixed; top: 24px; left: 50%; transform: translateX(-50%) translateY(-12px);
+    background: #2b241a; color: #f6f1e3; font-size: 13px; letter-spacing: .1em;
+    padding: 10px 22px; border-radius: 99px; opacity: 0; pointer-events: none;
+    transition: opacity .25s, transform .25s; z-index: 10; }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+<div class="scrim"></div>
+<div class="modal" id="modal">
+  <div class="header">
+    <div class="title">版本更新 · 墨书</div>
+    <button class="close" id="closeBtn">×</button>
+  </div>
+  <div class="status" id="statusText">正在书写「新」字 · v4.0.0</div>
+  <div class="meta" id="metaText">0.0MB / 156.8MB · -- MB/s</div>
+  <div class="paper-stage">
+    <svg class="calli" viewBox="0 0 300 210">
+      <defs>
+        <clipPath id="inkClip"><rect id="clipRect" x="0" y="0" width="0" height="210"/></clipPath>
+      </defs>
+      <!-- 淡墨底稿 -->
+      <text id="ghostText" x="150" y="152" text-anchor="middle" font-size="148"
+        font-family="'Kaiti SC','STKaiti','KaiTi','楷体',serif" fill="#2b241a" opacity="0.13">新</text>
+      <!-- 浓墨书写（随进度揭示） -->
+      <g clip-path="url(#inkClip)">
+        <text id="inkText" x="150" y="152" text-anchor="middle" font-size="148"
+          font-family="'Kaiti SC','STKaiti','KaiTi','楷体',serif" fill="#1c1712">新</text>
+      </g>
+      <!-- 毛笔笔锋跟随 -->
+      <g id="brush" class="brushdot">
+        <ellipse id="brushBlob" cx="0" cy="150" rx="11" ry="8" fill="#1c1712" opacity="0.9"/>
+        <circle id="brushTip" cx="0" cy="150" r="4.5" fill="#000"/>
+      </g>
+      <!-- 印章 -->
+      <g transform="translate(238 42)"><g id="seal">
+        <rect x="-30" y="-30" width="60" height="60" rx="6" fill="#b03a2e"/>
+        <rect x="-24" y="-24" width="48" height="48" rx="3" fill="none" stroke="#f6f1e3" stroke-width="2"/>
+        <text x="0" y="7" text-anchor="middle" font-size="19" fill="#f6f1e3"
+          font-family="'Kaiti SC','STKaiti','KaiTi','楷体',serif">已更新</text>
+      </g></g>
+    </svg>
+  </div>
+  <div class="bignum"><span id="pctText">0</span><small>%</small></div>
+  <button class="mainbtn ghost" id="mainBtn">取消更新</button>
+  <button class="replay" id="replayBtn">↺ 重新演示</button>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+  const TOTAL_MB = 156.8;
+  let progress = 0, state = 'downloading', timer = null, showSpeed = 0, brushT = 0;
+  const modal = document.getElementById('modal');
+  const statusText = document.getElementById('statusText');
+  const metaText = document.getElementById('metaText');
+  const pctText = document.getElementById('pctText');
+  const mainBtn = document.getElementById('mainBtn');
+  const toast = document.getElementById('toast');
+  const clipRect = document.getElementById('clipRect');
+  const brush = document.getElementById('brush');
+  const brushBlob = document.getElementById('brushBlob');
+  const brushTip = document.getElementById('brushTip');
+  const seal = document.getElementById('seal');
+  const inkText = document.getElementById('inkText');
+  let textW = 140, textL = 80;
+
+  function measure() {
+    try {
+      textW = inkText.getComputedTextLength() || 140;
+    } catch (e) { textW = 140; }
+    textL = 150 - textW / 2;
+    clipRect.setAttribute('x', textL);
+    paint();
+  }
+  function paint() {
+    const w = textW * Math.min(Math.max(progress, 0), 100) / 100;
+    clipRect.setAttribute('width', w);
+    const bx = textL + w;
+    brushT += 0.25;
+    const by = 150 + Math.sin(brushT) * 5;
+    const vis = (state === 'downloading' || state === 'installing') && progress < 100 ? 1 : 0;
+    brush.setAttribute('opacity', vis);
+    brushBlob.setAttribute('cx', bx); brushBlob.setAttribute('cy', by);
+    brushTip.setAttribute('cx', bx); brushTip.setAttribute('cy', by);
+  }
+
+  function showToast(msg) {
+    toast.textContent = msg; toast.classList.add('show');
+    clearTimeout(showToast._t);
+    showToast._t = setTimeout(() => toast.classList.remove('show'), 1800);
+  }
+  function render() {
+    pctText.textContent = Math.floor(progress);
+    const mb = (progress / 100 * TOTAL_MB).toFixed(1);
+    metaText.textContent = mb + 'MB / ' + TOTAL_MB + 'MB · ' +
+      (state === 'downloading' ? showSpeed.toFixed(1) + ' MB/s' : '-- MB/s');
+    paint();
+  }
+  function setMain(label, cls, disabled) {
+    mainBtn.textContent = label;
+    mainBtn.className = 'mainbtn' + (cls ? ' ' + cls : '');
+    mainBtn.disabled = !!disabled;
+  }
+  function tick() {
+    if (state !== 'downloading') return;
+    const sp = 8 * (0.6 + Math.random() * 0.8);
+    showSpeed = showSpeed * 0.7 + sp * 0.3;
+    progress += sp * 0.1 / TOTAL_MB * 100;
+    if (progress >= 100) { progress = 100; render(); enterInstalling(); return; }
+    render();
+  }
+  function enterDownloading(reset) {
+    if (reset) { progress = 0; showSpeed = 0; seal.classList.remove('stamped'); brush.classList.remove('pulse'); }
+    state = 'downloading';
+    statusText.textContent = '正在书写「新」字 · v4.0.0';
+    setMain('取消更新', 'ghost', false);
+    clearInterval(timer); timer = setInterval(tick, 100); render();
+  }
+  function enterCancelled() {
+    state = 'cancelled'; clearInterval(timer);
+    inkText.setAttribute('fill', '#6b6257');
+    statusText.textContent = '笔墨已干 · 书写中断';
+    setMain('重新下载', 'ghost', false);
+    showToast('已取消更新'); render();
+  }
+  function enterInstalling() {
+    state = 'installing'; clearInterval(timer);
+    brush.classList.add('pulse');
+    statusText.textContent = '正在钤印…';
+    setMain('钤印中…', 'ghost', true);
+    setTimeout(() => { if (state === 'installing') enterDone(); }, 1800);
+    render();
+  }
+  function enterDone() {
+    state = 'done';
+    brush.classList.remove('pulse');
+    seal.classList.add('stamped');
+    statusText.textContent = '书写完成 · 新版本已就绪';
+    setMain('立即体验', 'sealbtn', false);
+    showToast('已更新到 v4.0.0'); render();
+  }
+  mainBtn.addEventListener('click', () => {
+    if (state === 'downloading') enterCancelled();
+    else if (state === 'cancelled') { inkText.setAttribute('fill', '#1c1712'); enterDownloading(true); }
+    else if (state === 'done') { modal.classList.add('hidden'); showToast('已进入 v4.0.0'); }
+  });
+  document.getElementById('closeBtn').addEventListener('click', () => {
+    if (state === 'downloading') enterCancelled();
+    else modal.classList.add('hidden');
+  });
+  document.getElementById('replayBtn').addEventListener('click', () => {
+    modal.classList.remove('hidden'); inkText.setAttribute('fill', '#1c1712'); enterDownloading(true);
+  });
+  // 笔锋呼吸（与下载tick解耦，持续柔动）
+  setInterval(() => { if (state === 'downloading' || state === 'installing') paint(); }, 120);
+  window.addEventListener('load', () => {
+    measure();
+    if (location.hash === '#mid') { progress = 55; }
+    else if (location.hash === '#done') { progress = 100; render(); enterInstalling(); setTimeout(() => enterDone(), 500); return; }
+    enterDownloading(false);
+  });
+  window.addEventListener('resize', measure);
+</script>
+</body>
+</html>

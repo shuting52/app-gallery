@@ -1,0 +1,26 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>琉璃折射</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:430px;height:900px}
+body{overflow:hidden;position:relative;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:#080812;color:#fff}
+.stage{position:absolute;inset:0;overflow:hidden}
+.brand{position:absolute;left:0;right:0;top:648px;text-align:center;z-index:5;animation:brandIn 1s ease 2s both}
+.brand h1{font-size:36px;letter-spacing:10px;font-weight:800}
+.brand p{font-size:13px;letter-spacing:6px;opacity:.65;margin-top:10px}
+@keyframes brandIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.replay{position:absolute;bottom:36px;left:50%;transform:translateX(-50%);z-index:9;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.35);color:#fff;font-size:13px;padding:9px 26px;border-radius:24px;cursor:pointer;backdrop-filter:blur(6px)}
+.beam{position:absolute;left:-40px;top:270px;width:260px;height:10px;background:linear-gradient(90deg,transparent,#fff);transform:rotate(14deg);transform-origin:right center;animation:beamIn 1s ease .3s both}
+@keyframes beamIn{from{transform:rotate(14deg) scaleX(0)}to{transform:rotate(14deg) scaleX(1)}}
+.prism{position:absolute;left:50%;top:300px;transform:translate(-50%,-50%);width:0;height:0;border-left:80px solid transparent;border-right:80px solid transparent;border-bottom:140px solid rgba(160,200,255,.28);filter:drop-shadow(0 0 24px #6db8ff66);animation:prismIn 1s ease .8s both}
+@keyframes prismIn{from{opacity:0;transform:translate(-50%,-30%)}to{opacity:1;transform:translate(-50%,-50%)}}
+.ray{position:absolute;left:50%;top:330px;width:200px;height:7px;border-radius:4px;transform-origin:left center;opacity:0;animation:rayIn .8s ease both}
+@keyframes rayIn{to{opacity:.9}}
+.shimmer{position:absolute;left:50%;top:300px;width:200px;height:200px;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle at 50% 50%,#6db8ff22,transparent 70%);animation:shim 3s ease-in-out infinite}
+@keyframes shim{50%{transform:translate(-50%,-50%) scale(1.2);opacity:.6}}
+</style></head><body>
+<div class="stage"><div class="shimmer"></div><div class="beam"></div><div class="prism"></div><div class="ray" style="background:#ff5d5d;transform:rotate(-6deg);animation-delay:1.30s"></div><div class="ray" style="background:#ff9f43;transform:rotate(2deg);animation-delay:1.42s"></div><div class="ray" style="background:#ffe14d;transform:rotate(10deg);animation-delay:1.54s"></div><div class="ray" style="background:#6bff9e;transform:rotate(18deg);animation-delay:1.66s"></div><div class="ray" style="background:#4dd2ff;transform:rotate(26deg);animation-delay:1.78s"></div><div class="ray" style="background:#b14dff;transform:rotate(34deg);animation-delay:1.90s"></div></div>
+<div class="brand"><h1>折射</h1><p>PRISM · 分光</p></div>
+<button class="replay" onclick="location.reload()">&#8635; 重新播放</button>
+</body></html>

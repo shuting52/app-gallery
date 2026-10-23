@@ -1,0 +1,26 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>云海翻涌</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:430px;height:900px}
+body{overflow:hidden;position:relative;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(#3d6fb5,#9fc6ee 55%,#e8f4ff);color:#fff}
+.stage{position:absolute;inset:0;overflow:hidden}
+.brand{position:absolute;left:0;right:0;top:648px;text-align:center;z-index:5;animation:brandIn 1s ease 2s both}
+.brand h1{font-size:36px;letter-spacing:10px;font-weight:800}
+.brand p{font-size:13px;letter-spacing:6px;opacity:.65;margin-top:10px}
+@keyframes brandIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.replay{position:absolute;bottom:36px;left:50%;transform:translateX(-50%);z-index:9;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.35);color:#fff;font-size:13px;padding:9px 26px;border-radius:24px;cursor:pointer;backdrop-filter:blur(6px)}
+.sea{position:absolute;bottom:0;left:-15%;width:130%;height:420px}
+.cl{position:absolute;background:#fff;border-radius:60px;opacity:.95;animation:seaM ease-in-out infinite}
+.cl::before,.cl::after{content:"";position:absolute;background:#fff;border-radius:50%}
+.cl::before{width:70px;height:70px;top:-34px;left:30px}
+.cl::after{width:48px;height:48px;top:-22px;left:90px}
+@keyframes seaM{50%{transform:translateX(46px)}}
+.sun3{position:absolute;left:50%;top:170px;width:130px;height:130px;transform:translateX(-50%);border-radius:50%;background:radial-gradient(circle at 50% 50%,#fffbd8,#ffe14d 60%,transparent 72%);animation:sunP 5s ease-in-out infinite}
+@keyframes sunP{50%{transform:translateX(-50%) scale(1.1)}}
+</style></head><body>
+<div class="stage"><div class="sun3"></div><div class="sea"><div class="cl" style="width:150px;height:44px;left:0px;top:0px;animation-duration:6s;animation-delay:-0.0s"></div><div class="cl" style="width:200px;height:58px;left:97px;top:53px;animation-duration:7s;animation-delay:-1.1s"></div><div class="cl" style="width:250px;height:44px;left:194px;top:106px;animation-duration:8s;animation-delay:-2.2s"></div><div class="cl" style="width:150px;height:58px;left:291px;top:159px;animation-duration:9s;animation-delay:-3.3s"></div><div class="cl" style="width:200px;height:44px;left:8px;top:212px;animation-duration:6s;animation-delay:-4.4s"></div><div class="cl" style="width:250px;height:58px;left:105px;top:265px;animation-duration:7s;animation-delay:-5.5s"></div><div class="cl" style="width:150px;height:44px;left:202px;top:18px;animation-duration:8s;animation-delay:-6.6s"></div><div class="cl" style="width:200px;height:58px;left:299px;top:71px;animation-duration:9s;animation-delay:-7.7s"></div><div class="cl" style="width:250px;height:44px;left:16px;top:124px;animation-duration:6s;animation-delay:-8.8s"></div><div class="cl" style="width:150px;height:58px;left:113px;top:177px;animation-duration:7s;animation-delay:-9.9s"></div></div></div>
+<div class="brand"><h1>云端</h1><p>CLOUDSEA · 翻涌</p></div>
+<button class="replay" onclick="location.reload()">&#8635; 重新播放</button>
+</body></html>

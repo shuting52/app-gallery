@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>天灯祈愿</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{background:#070a12;display:flex;align-items:center;justify-content:center;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;overflow:hidden}
+.stage{position:relative;width:430px;height:900px;flex:none;overflow:hidden}
+.stage i{display:block;position:absolute}
+.brand{position:absolute;left:0;right:0;bottom:104px;text-align:center;z-index:50;animation:brandIn 1s .9s both}
+.brand h1{font-size:32px;letter-spacing:10px;text-indent:10px;color:#fff;font-weight:700;text-shadow:0 2px 24px rgba(0,0,0,.45)}
+.brand p{margin-top:10px;font-size:11px;letter-spacing:5px;color:rgba(255,255,255,.62)}
+@keyframes brandIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.replay{position:absolute;bottom:30px;left:50%;transform:translateX(-50%);z-index:60;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.35);color:#fff;font-size:12px;letter-spacing:2px;padding:9px 24px;border-radius:20px;cursor:pointer;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.shade{position:absolute;left:0;right:0;bottom:0;height:360px;background:linear-gradient(transparent,rgba(8,6,18,.78));z-index:40;pointer-events:none}
+
+.stage{background:linear-gradient(#0a0f2e,#1c1440 58%,#37214c)}
+
+.star{width:4px;height:4px;border-radius:50%;background:#dfe8ff;animation:tw 2.6s ease-in-out infinite alternate}
+.t1{left:70px;top:120px}.t2{left:180px;top:70px;animation-delay:-1s}.t3{left:300px;top:150px;animation-delay:-1.8s}.t4{left:120px;top:300px;animation-delay:-.5s}.t5{left:350px;top:60px;animation-delay:-2.2s}
+@keyframes tw{to{opacity:.15}}
+.moon{width:90px;height:90px;left:300px;top:80px;border-radius:50%;background:radial-gradient(circle at 38% 35%,#fdf6dd,#e8d9a8 70%);box-shadow:0 0 50px 14px rgba(253,246,221,.25)}
+.lan{width:66px;height:88px;z-index:5;animation:rise 12s linear infinite}
+.lan .bd{width:66px;height:70px;left:0;top:8px;border-radius:46% 46% 44% 44%/60% 60% 40% 40%;background:radial-gradient(circle at 50% 32%,#ffe9bb,#ff9d5c 62%,#dd6428);box-shadow:0 0 44px 14px rgba(255,170,90,.42)}
+.lan .tp{width:34px;height:12px;left:16px;top:0;border-radius:6px;background:#b4501f}
+.lan .fl{width:20px;height:14px;left:23px;top:66px;border-radius:50%;background:radial-gradient(circle at 50% 50%,#fff3b0,#ff9d3d 70%);animation:flick .4s ease-in-out infinite alternate}
+@keyframes flick{to{transform:scale(1.15);opacity:.85}}
+.n1{left:80px;animation-duration:13s;animation-delay:-2s}
+.n2{left:190px;animation-duration:10s;animation-delay:-6s;--sc:.72}
+.n3{left:300px;animation-duration:15s;animation-delay:-9s;--sc:.55}
+.n4{left:140px;animation-duration:11s;animation-delay:-4s;--sc:.85}
+@keyframes rise{0%{top:860px;transform:translateX(0) scale(var(--sc,1))}50%{transform:translateX(26px) scale(var(--sc,1))}100%{top:-140px;transform:translateX(-14px) scale(var(--sc,1))}}
+.mts{position:absolute;left:0;right:0;bottom:0;height:220px;background:linear-gradient(#241a3e,#120d22);clip-path:polygon(0 100%,0 55%,12% 30%,24% 58%,38% 34%,52% 62%,66% 40%,80% 66%,92% 48%,100% 70%,100% 100%);z-index:4}
+
+</style></head><body>
+<div class="stage" id="stage">
+
+<i class="star t1"></i><i class="star t2"></i><i class="star t3"></i><i class="star t4"></i><i class="star t5"></i>
+<i class="moon"></i>
+<i class="lan n1"><i class="tp"></i><i class="bd"></i><i class="fl"></i></i>
+<i class="lan n2"><i class="tp"></i><i class="bd"></i><i class="fl"></i></i>
+<i class="lan n3"><i class="tp"></i><i class="bd"></i><i class="fl"></i></i>
+<i class="lan n4"><i class="tp"></i><i class="bd"></i><i class="fl"></i></i>
+<i class="mts"></i>
+
+<div class="shade"></div>
+<div class="brand"><h1>天灯祈愿</h1><p>SKY LANTERN</p></div>
+<button class="replay" onclick="var s=document.getElementById('stage');s.replaceWith(s.cloneNode(true))">重新播放</button>
+</div>
+</body></html>

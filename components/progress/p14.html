@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>编织 · 织布进度</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:#0d141c; color:#e8f4f8; font-family:"PingFang SC","Microsoft YaHei",sans-serif;
+         min-height:100vh; display:flex; align-items:center; justify-content:center; }
+  .stage { width:360px; max-width:94vw; background:#141e29; border-radius:18px;
+           padding:22px 20px 26px; box-shadow:0 10px 40px rgba(0,0,0,.5); }
+  .stage h2 { font-size:17px; font-weight:600; letter-spacing:1px; text-align:center; }
+  .stage .pct { text-align:center; font-size:40px; font-weight:700; color:#f2a3c0;
+                margin:6px 0 14px; font-variant-numeric:tabular-nums; }
+  .loom { position:relative; width:300px; height:330px; margin:0 auto; background:#0a0f16;
+          border-radius:12px; border:1px solid #24344a; overflow:hidden; }
+  .beam { position:absolute; left:10px; right:10px; height:10px; background:#5a4632;
+          border-radius:5px; z-index:3; }
+  .beam.top { top:8px; } .beam.bottom { bottom:8px; }
+  .warp { position:absolute; top:20px; bottom:20px; width:3px; background:rgba(240,220,190,.45); }
+  .weft { position:absolute; left:14px; right:14px; height:12px; opacity:0; }
+  .shuttle { position:absolute; font-size:22px; z-index:4; width:34px; height:26px; line-height:26px;
+             text-align:center; background:rgba(242,163,192,.18); border-radius:6px; }
+  .tip { text-align:center; color:#8aa0b4; font-size:12px; margin-top:12px; letter-spacing:1px; }
+</style>
+</head>
+<body>
+<div class="stage">
+  <h2>🧵 编织 · 织布进度</h2>
+  <div class="pct" id="pct">0%</div>
+  <div class="loom" id="loom">
+    <div class="beam top"></div><div class="beam bottom"></div>
+    <div class="shuttle" id="shuttle">🚀</div>
+  </div>
+  <div class="tip">梭子穿梭，格纹布面逐行织就</div>
+</div>
+<script>
+var p = 0;
+var loom = document.getElementById('loom');
+var shuttle = document.getElementById('shuttle');
+var pctEl = document.getElementById('pct');
+var ROWS = 20;                    // 20 行，每行 5%
+var ROWH = 14;                    // 行高
+var TOP = 22;                     // 布面起始 top
+var wefts = [];
+var warps = [];
+// 经线：固定 9 条竖线（直接画，不随进度变化）
+for (var w = 0; w < 9; w++) {
+  var wp = document.createElement('div');
+  wp.className = 'warp';
+  wp.style.left = (30 + w * 30) + 'px';
+  loom.appendChild(wp);
+}
+// 纬线：20 行，从下往上织（bottom 行先出现）
+var palette = ['#e74c3c','#f39c12','#f1c40f','#2ecc71','#3498db','#9b59b6'];
+for (var r = 0; r < ROWS; r++) {
+  var wf = document.createElement('div');
+  wf.className = 'weft';
+  wf.style.bottom = (20 + r * ROWH) + 'px';
+  wf.style.height = '12px';
+  // 格纹：横向多色段
+  var c1 = palette[r % palette.length], c2 = palette[(r + 3) % palette.length];
+  wf.style.background = 'repeating-linear-gradient(90deg,' + c1 + ' 0 24px,' + c2 + ' 24px 40px)';
+  wf.style.borderRadius = '3px';
+  loom.appendChild(wf);
+  wefts.push(wf);
+}
+function render() {
+  var shown = Math.floor(p / 5);      // 每行 5%，逐行显现
+  for (var r = 0; r < ROWS; r++) {
+    wefts[r].style.opacity = r < shown ? '1' : '0';
+  }
+  // 梭子在当前行左右穿梭
+  var cur = Math.min(shown, ROWS - 1);
+  var dir = cur % 2 === 0 ? 1 : -1;   // 偶数行左→右，奇数行右→左
+  var x = dir === 1 ? (14 + phase * 240) : (254 - phase * 240);
+  shuttle.style.left = x + 'px';
+  shuttle.style.bottom = (20 + cur * ROWH - 8) + 'px';
+  pctEl.textContent = Math.round(p) + '%';
+}
+var phase = 0;
+var start = Date.now();
+function loop() {
+  var t = (Date.now() - start) / 1000;
+  if (t < 7) p = t / 7 * 100;
+  else { p = 100; if (t > 8) start = Date.now(); }
+  phase = (phase + 0.012) % 1;        // 梭子穿梭相位（装饰性）
+  render();
+  requestAnimationFrame(loop);
+}
+render();
+if (location.hash === '#mid') { p = 55; render(); }
+else { requestAnimationFrame(loop); }
+</script>
+</body>
+</html>

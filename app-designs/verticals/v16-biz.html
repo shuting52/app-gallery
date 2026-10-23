@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>数智云 · 企业数据看板</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --navy:#081426;--navy2:#0b1e36;--navy3:#10294a;--line:rgba(94,168,255,.14);
+  --txt:#e8f1ff;--dim:#8ba3c4;--dim2:#5b7396;
+  --green:#10d9a3;--cyan:#38e1ff;--amber:#ffb84d;--red:#ff6b81;--blue:#5eb1ff;
+}
+html{background:#040b16}
+body{font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sans-serif;
+  color:var(--txt);background:#040b16;min-height:100vh;display:flex;justify-content:center}
+.phone{width:100%;max-width:430px;min-height:100vh;background:radial-gradient(120% 60% at 50% -10%,#123059 0%,var(--navy2) 45%,var(--navy) 100%);
+  position:relative;display:flex;flex-direction:column;overflow:hidden}
+.phone::before{content:"";position:absolute;inset:0;pointer-events:none;
+  background-image:linear-gradient(rgba(94,168,255,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(94,168,255,.05) 1px,transparent 1px);
+  background-size:26px 26px;mask-image:linear-gradient(#000 0%,transparent 45%)}
+.statusbar{display:flex;justify-content:space-between;align-items:center;padding:14px 20px 4px;font-size:12px;color:var(--dim);z-index:1}
+.page{display:none;flex:1;padding:6px 16px 96px;z-index:1}
+.page.on{display:block}
+.topbar{display:flex;justify-content:space-between;align-items:flex-end;margin:6px 0 14px}
+.topbar h1{font-size:21px;letter-spacing:1px}
+.topbar h1 small{display:block;font-size:11px;color:var(--dim);font-weight:400;margin-top:4px;letter-spacing:0}
+.topbar .date{font-size:11px;color:var(--dim);text-align:right;line-height:1.7}
+.badge-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--green);margin-right:6px;box-shadow:0 0 8px var(--green)}
+.kpis{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.kpi{background:linear-gradient(150deg,rgba(16,217,163,.09),rgba(16,217,163,.02) 55%),var(--navy3);
+  border:1px solid var(--line);border-radius:14px;padding:12px 13px;position:relative;overflow:hidden}
+.kpi::after{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(var(--green),var(--cyan))}
+.kpi .k{font-size:11px;color:var(--dim)}
+.kpi .v{font-size:22px;font-weight:700;margin:6px 0 4px;font-variant-numeric:tabular-nums}
+.kpi .v em{font-style:normal;font-size:12px;color:var(--dim);font-weight:400;margin-left:3px}
+.kpi .d{font-size:11px}
+.up{color:var(--green)}.down{color:var(--red)}
+.card{background:rgba(16,41,74,.72);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:14px;backdrop-filter:blur(4px)}
+.card h3{font-size:13px;font-weight:600;margin-bottom:4px;display:flex;justify-content:space-between;align-items:center}
+.card h3 .tag{font-size:10px;color:var(--dim);font-weight:400}
+.card .sub{font-size:10.5px;color:var(--dim2);margin-bottom:10px}
+svg.chart{width:100%;height:auto;display:block}
+.todo{display:flex;align-items:center;gap:10px;padding:10px 2px;border-top:1px solid var(--line);font-size:13px;cursor:pointer;user-select:none}
+.todo:first-of-type{border-top:none}
+.todo .ck{width:18px;height:18px;border-radius:50%;border:1.5px solid var(--dim2);flex:none;display:flex;align-items:center;justify-content:center;font-size:11px;color:transparent}
+.todo.done .ck{background:var(--green);border-color:var(--green);color:#04263b}
+.todo.done .tx{color:var(--dim2);text-decoration:line-through}
+.todo .tx{flex:1;line-height:1.5}
+.todo .prio{font-size:10px;padding:2px 8px;border-radius:20px;flex:none}
+.prio.h{color:#ff9db0;background:rgba(255,107,129,.14)}
+.prio.m{color:var(--amber);background:rgba(255,184,77,.14)}
+.prio.l{color:var(--cyan);background:rgba(56,225,255,.12)}
+/* 客户 */
+.searchbox{display:flex;align-items:center;background:var(--navy3);border:1px solid var(--line);border-radius:12px;padding:10px 13px;margin-bottom:10px;gap:8px}
+.searchbox input{flex:1;background:none;border:none;outline:none;color:var(--txt);font-size:13px}
+.searchbox input::placeholder{color:var(--dim2)}
+.chips{display:flex;gap:8px;margin-bottom:12px;overflow-x:auto;padding-bottom:2px}
+.chip{flex:none;font-size:12px;padding:7px 14px;border-radius:20px;border:1px solid var(--line);color:var(--dim);background:rgba(16,41,74,.5);cursor:pointer}
+.chip.on{background:linear-gradient(120deg,rgba(16,217,163,.25),rgba(56,225,255,.2));border-color:var(--green);color:#fff}
+.client{background:var(--navy3);border:1px solid var(--line);border-radius:13px;padding:12px 13px;margin-bottom:10px;display:flex;gap:12px;align-items:center}
+.client .av{width:44px;height:44px;border-radius:12px;flex:none;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:#04263b}
+.client .bd{flex:1;min-width:0}
+.client .nm{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.client .ct{font-size:11px;color:var(--dim);margin-top:3px}
+.client .amt{font-size:13px;font-weight:700;color:var(--green);font-variant-numeric:tabular-nums;white-space:nowrap}
+.stage{font-size:10px;padding:3px 9px;border-radius:20px;margin-top:5px;display:inline-block}
+.s0{color:var(--blue);background:rgba(94,177,255,.14)}
+.s1{color:var(--amber);background:rgba(255,184,77,.14)}
+.s2{color:var(--cyan);background:rgba(56,225,255,.13)}
+.s3{color:var(--green);background:rgba(16,217,163,.14)}
+.empty{color:var(--dim2);font-size:12px;text-align:center;padding:26px 0}
+/* 考勤 */
+.cal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.cal-head b{font-size:15px}
+.legend{display:flex;gap:12px;font-size:11px;color:var(--dim)}
+.legend i{width:9px;height:9px;border-radius:3px;display:inline-block;margin-right:4px}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
+.cal .wd{font-size:10px;color:var(--dim2);text-align:center;padding:4px 0}
+.cal .d{aspect-ratio:1;border-radius:9px;background:rgba(16,41,74,.5);border:1px solid rgba(94,168,255,.08);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:12px;position:relative}
+.cal .d.dim{opacity:.28}
+.cal .d.ok{background:rgba(16,217,163,.16);border-color:rgba(16,217,163,.35)}
+.cal .d.late{background:rgba(255,184,77,.16);border-color:rgba(255,184,77,.4)}
+.cal .d.leave{background:rgba(94,177,255,.14);border-color:rgba(94,177,255,.35)}
+.cal .d.today::after{content:"";position:absolute;top:4px;right:4px;width:6px;height:6px;border-radius:50%;background:var(--cyan);box-shadow:0 0 6px var(--cyan)}
+.cal .d small{font-size:8px;margin-top:1px;color:var(--dim)}
+.stats3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin:14px 0}
+.stat{background:var(--navy3);border:1px solid var(--line);border-radius:13px;padding:13px 6px;text-align:center}
+.stat .n{font-size:20px;font-weight:700}
+.stat .t{font-size:11px;color:var(--dim);margin-top:4px}
+.clockbtn{width:100%;border:none;border-radius:16px;padding:16px;font-size:16px;font-weight:700;color:#04263b;cursor:pointer;
+  background:linear-gradient(120deg,var(--green),var(--cyan));box-shadow:0 6px 24px rgba(16,217,163,.35);letter-spacing:2px}
+.clockbtn:disabled{opacity:.5;cursor:default}
+.clocklog{font-size:12px;color:var(--dim);margin-top:10px;line-height:2}
+/* 我的 */
+.admin{display:flex;gap:13px;align-items:center;background:linear-gradient(140deg,#123a2e,#0d2b4a 70%);
+  border:1px solid rgba(16,217,163,.3);border-radius:16px;padding:16px;margin-bottom:14px}
+.admin .face{width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,var(--green),var(--cyan));
+  display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;color:#04263b;flex:none}
+.admin .who{flex:1}
+.admin .who b{font-size:16px}
+.admin .who p{font-size:11px;color:var(--dim);margin-top:4px}
+.mrow{display:flex;align-items:center;gap:12px;background:var(--navy3);border:1px solid var(--line);
+  border-radius:13px;padding:13px 14px;margin-bottom:10px;font-size:13.5px;cursor:pointer}
+.mrow .ic{width:36px;height:36px;border-radius:10px;flex:none;display:flex;align-items:center;justify-content:center;font-size:17px}
+.mrow .t{flex:1}
+.mrow .t small{display:block;font-size:10.5px;color:var(--dim2);margin-top:3px}
+.mrow .arr{color:var(--dim2)}
+.count{background:var(--red);color:#fff;font-size:10px;min-width:19px;height:19px;border-radius:10px;display:inline-flex;align-items:center;justify-content:center;padding:0 6px}
+.appr{border-left:3px solid var(--amber);background:var(--navy3);border-radius:0 12px 12px 0;padding:11px 13px;margin-bottom:9px;font-size:12.5px}
+.appr b{font-size:13px}
+.appr .meta{color:var(--dim);font-size:11px;margin-top:4px}
+.appr .acts{margin-top:8px;display:flex;gap:8px}
+.abtn{border:none;border-radius:8px;padding:7px 16px;font-size:12px;cursor:pointer}
+.abtn.y{background:linear-gradient(120deg,var(--green),var(--cyan));color:#04263b;font-weight:700}
+.abtn.n{background:rgba(255,107,129,.14);color:#ff9db0;border:1px solid rgba(255,107,129,.35)}
+/* Tab 栏 */
+.tabbar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;z-index:10;
+  background:rgba(8,20,38,.92);backdrop-filter:blur(12px);border-top:1px solid var(--line);
+  display:flex;padding:8px 6px calc(10px + env(safe-area-inset-bottom))}
+.tab{flex:1;background:none;border:none;color:var(--dim2);font-size:10.5px;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;padding:4px 0}
+.tab .ti{font-size:21px;line-height:1}
+.tab.on{color:var(--green)}
+.tab.on .ti{filter:drop-shadow(0 0 6px rgba(16,217,163,.8))}
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="statusbar"><span id="sbTime">9:41</span><span>数智云 BizConsole</span></div>
+
+  <!-- 看板 -->
+  <section class="page" id="p0">
+    <div class="topbar">
+      <h1>经营看板<small><span class="badge-dot"></span>数据更新至今日 08:30 · 华东大区</small></h1>
+      <div class="date">2026年10月<br>第 43 周</div>
+    </div>
+    <div class="kpis">
+      <div class="kpi"><div class="k">本月营收</div><div class="v">¥128.6<em>万</em></div><div class="d up">▲ 12.4% 环比</div></div>
+      <div class="kpi"><div class="k">新增客户</div><div class="v">86<em>家</em></div><div class="d up">▲ 8.2% 环比</div></div>
+      <div class="kpi"><div class="k">订单量</div><div class="v">1,542<em>单</em></div><div class="d up">▲ 3.1% 环比</div></div>
+      <div class="kpi"><div class="k">线索转化率</div><div class="v">24.6<em>%</em></div><div class="d down">▼ 1.2% 环比</div></div>
+    </div>
+    <div class="card">
+      <h3>近 7 天销售额 <span class="tag">单位：万元</span></h3>
+      <div class="sub">10.13 – 10.19 · 周峰出现在周四</div>
+      <svg class="chart" viewBox="0 0 360 170" role="img" aria-label="近7天销售额柱状图">
+        <defs><linearGradient id="bg1" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#38e1ff"/><stop offset="1" stop-color="#10d9a3"/></linearGradient></defs>
+        <g font-size="9" fill="#5b7396" text-anchor="middle">
+          <text x="30" y="162">13日</text><text x="78" y="162">14日</text><text x="126" y="162">15日</text>
+          <text x="174" y="162">16日</text><text x="222" y="162">17日</text><text x="270" y="162">18日</text><text x="318" y="162">19日</text>
+        </g>
+        <g>
+          <rect x="16" y="96" width="28" height="52" rx="5" fill="url(#bg1)" opacity=".75"/>
+          <rect x="64" y="78" width="28" height="70" rx="5" fill="url(#bg1)" opacity=".75"/>
+          <rect x="112" y="104" width="28" height="44" rx="5" fill="url(#bg1)" opacity=".75"/>
+          <rect x="160" y="58" width="28" height="90" rx="5" fill="url(#bg1)"/>
+          <rect x="208" y="70" width="28" height="78" rx="5" fill="url(#bg1)" opacity=".85"/>
+          <rect x="256" y="88" width="28" height="60" rx="5" fill="url(#bg1)" opacity=".75"/>
+          <rect x="304" y="98" width="28" height="50" rx="5" fill="url(#bg1)" opacity=".75"/>
+        </g>
+        <g font-size="9" fill="#e8f1ff" text-anchor="middle">
+          <text x="30" y="90">18.2</text><text x="78" y="72">24.6</text><text x="126" y="98">15.4</text>
+          <text x="174" y="52">31.8</text><text x="222" y="64">27.5</text><text x="270" y="82">21.3</text><text x="318" y="92">17.9</text>
+        </g>
+        <line x1="8" y="148" x2="352" y="148" stroke="rgba(94,168,255,.2)"/>
+      </svg>
+    </div>
+    <div class="card">
+      <h3>客户增长趋势 <span class="tag">累计客户数 · 家</span></h3>
+      <div class="sub">近 6 个月 · 5月 412 → 10月 689</div>
+      <svg class="chart" viewBox="0 0 360 160" role="img" aria-label="客户增长折线图">
+        <defs><linearGradient id="ag" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#10d9a3" stop-opacity=".45"/><stop offset="1" stop-color="#10d9a3" stop-opacity="0"/></linearGradient></defs>
+        <g stroke="rgba(94,168,255,.15)"><line x1="30" y1="30" x2="345" y2="30"/><line x1="30" y1="65" x2="345" y2="65"/><line x1="30" y1="100" x2="345" y2="100"/><line x1="30" y1="135" x2="345" y2="135"/></g>
+        <path d="M30,120 L93,105 L156,88 L219,70 L282,50 L345,28 L345,135 L30,135 Z" fill="url(#ag)"/>
+        <polyline points="30,120 93,105 156,88 219,70 282,50 345,28" fill="none" stroke="#38e1ff" stroke-width="2.5" stroke-linecap="round"/>
+        <g fill="#10d9a3"><circle cx="30" cy="120" r="3.5"/><circle cx="93" cy="105" r="3.5"/><circle cx="156" cy="88" r="3.5"/><circle cx="219" cy="70" r="3.5"/><circle cx="282" cy="50" r="3.5"/><circle cx="345" cy="28" r="4"/></g>
+        <g font-size="9" fill="#5b7396" text-anchor="middle">
+          <text x="30" y="150">5月</text><text x="93" y="150">6月</text><text x="156" y="150">7月</text>
+          <text x="219" y="150">8月</text><text x="282" y="150">9月</text><text x="345" y="150">10月</text>
+        </g>
+        <text x="352" y="30" font-size="9" fill="#10d9a3" text-anchor="end">689</text>
+      </svg>
+    </div>
+    <div class="card">
+      <h3>今日待办 <span class="tag" id="todoCount">4 项未完成</span></h3>
+      <div id="todos">
+        <div class="todo" data-t><span class="ck">✓</span><span class="tx">跟进恒通科技报价单，确认折扣方案</span><span class="prio h">紧急</span></div>
+        <div class="todo" data-t><span class="ck">✓</span><span class="tx">审批 Q4 市场预算（市场部提交）</span><span class="prio h">紧急</span></div>
+        <div class="todo" data-t><span class="ck">✓</span><span class="tx">回访上周签约的 3 家新客户</span><span class="prio m">一般</span></div>
+        <div class="todo" data-t><span class="ck">✓</span><span class="tx">整理月度经营数据，准备周会汇报</span><span class="prio l">可延后</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 客户 -->
+  <section class="page" id="p1">
+    <div class="topbar"><h1>客户管理<small>共 689 家客户 · 本月新增 86 家</small></h1></div>
+    <div class="searchbox"><span style="color:var(--dim2)">⌕</span><input id="kw" type="text" placeholder="搜索公司名 / 联系人"></div>
+    <div class="chips" id="chips">
+      <button class="chip on" data-s="all">全部</button>
+      <button class="chip" data-s="0">初步接触</button>
+      <button class="chip" data-s="1">方案报价</button>
+      <button class="chip" data-s="2">谈判</button>
+      <button class="chip" data-s="3">成交</button>
+    </div>
+    <div id="clist"></div>
+    <div class="empty" id="cempty" style="display:none">没有匹配的客户，换个关键词试试</div>
+  </section>
+
+  <!-- 考勤 -->
+  <section class="page" id="p2">
+    <div class="topbar"><h1>考勤打卡<small>考勤组：华东销售一部</small></h1></div>
+    <div class="card">
+      <div class="cal-head"><b id="calTitle">2026年10月</b>
+        <div class="legend"><span><i style="background:#10d9a3"></i>正常</span><span><i style="background:#ffb84d"></i>迟到</span><span><i style="background:#5eb1ff"></i>请假</span></div>
+      </div>
+      <div class="cal" id="cal"></div>
+    </div>
+    <div class="stats3">
+      <div class="stat"><div class="n" style="color:var(--green)">96.8%</div><div class="t">本月出勤率</div></div>
+      <div class="stat"><div class="n" style="color:var(--amber)">2</div><div class="t">迟到次数</div></div>
+      <div class="stat"><div class="n" style="color:var(--blue)">1.5</div><div class="t">请假天数</div></div>
+    </div>
+    <button class="clockbtn" id="clockBtn">上 班 打 卡</button>
+    <div class="clocklog" id="clockLog">今日尚未打卡 · 标准上班时间 09:00</div>
+  </section>
+
+  <!-- 我的 -->
+  <section class="page" id="p3">
+    <div class="topbar"><h1>我的<small>数智云 BizConsole v2.4.1</small></h1></div>
+    <div class="admin">
+      <div class="face">陈</div>
+      <div class="who"><b>陈淑婷</b><p>销售总监 · 华东大区<br>工号 SD-0862 · 入职 2021.06</p></div>
+    </div>
+    <div class="card">
+      <h3>待审批 <span class="count">2</span></h3>
+      <div class="appr" data-appr><b>Q4 市场预算申请</b><div class="meta">市场部 · 张伟提交 · 2小时前 · ¥86,000</div>
+        <div class="acts"><button class="abtn y">通过</button><button class="abtn n">驳回</button></div></div>
+      <div class="appr" data-appr><b>恒通科技折扣审批（85折）</b><div class="meta">销售部 · 李娜提交 · 昨天 · 订单 ¥320,000</div>
+        <div class="acts"><button class="abtn y">通过</button><button class="abtn n">驳回</button></div></div>
+    </div>
+    <div class="mrow"><span class="ic" style="background:rgba(16,217,163,.15)">👥</span><span class="t">团队管理<small>华东销售一部 · 24 人</small></span><span class="arr">›</span></div>
+    <div class="mrow"><span class="ic" style="background:rgba(56,225,255,.13)">📊</span><span class="t">业绩排行<small>本月团队第 1 · 个人第 2</small></span><span class="arr">›</span></div>
+    <div class="mrow"><span class="ic" style="background:rgba(255,184,77,.13)">🔔</span><span class="t">消息通知<small>新客户提醒 / 审批提醒 / 打卡提醒</small></span><span class="arr">›</span></div>
+    <div class="mrow"><span class="ic" style="background:rgba(94,177,255,.13)">⚙️</span><span class="t">系统设置<small>账号安全 · 数据权限 · 关于</small></span><span class="arr">›</span></div>
+    <div class="mrow"><span class="ic" style="background:rgba(255,107,129,.13)">🚪</span><span class="t">退出登录</span></div>
+  </section>
+
+  <nav class="tabbar">
+    <button class="tab on" data-i="0"><span class="ti">📊</span>看板</button>
+    <button class="tab" data-i="1"><span class="ti">🤝</span>客户</button>
+    <button class="tab" data-i="2"><span class="ti">🕘</span>考勤</button>
+    <button class="tab" data-i="3"><span class="ti">👤</span>我的</button>
+  </nav>
+</div>
+<script>
+(function(){
+"use strict";
+/* 状态栏时间 */
+function tick(){var d=new Date(),h=d.getHours(),m=("0"+d.getMinutes()).slice(-2);
+  document.getElementById("sbTime").textContent=h+":"+m;}
+tick();setInterval(tick,30000);
+
+/* Tab 切换 + 深链 ?tab=0..3 */
+var tabs=document.querySelectorAll(".tab"),pages=document.querySelectorAll(".page");
+function go(i){i=Math.max(0,Math.min(3,i|0));
+  tabs.forEach(function(t){t.classList.toggle("on",+t.dataset.i===i);});
+  pages.forEach(function(p,pn){p.classList.toggle("on",pn===i);});
+  window.scrollTo(0,0);}
+tabs.forEach(function(t){t.addEventListener("click",function(){go(+t.dataset.i);});});
+(function(){var m=/[?&]tab=([0-3])/.exec(location.search);go(m?+m[1]:0);})();
+
+/* 待办勾选 */
+var todoCount=document.getElementById("todoCount");
+function refreshTodo(){var left=document.querySelectorAll("#todos .todo:not(.done)").length;
+  todoCount.textContent=left+" 项未完成";}
+document.querySelectorAll("#todos .todo").forEach(function(el){
+  el.addEventListener("click",function(){el.classList.toggle("done");refreshTodo();});});
+refreshTodo();
+
+/* 客户数据 + 搜索 + 阶段筛选 */
+var stageNames=["初步接触","方案报价","谈判","成交"];
+var avColors=["linear-gradient(135deg,#10d9a3,#38e1ff)","linear-gradient(135deg,#5eb1ff,#a06bff)","linear-gradient(135deg,#ffb84d,#ff7a5c)","linear-gradient(135deg,#ff6b81,#c86bff)"];
+var clients=[
+  {n:"恒通科技股份有限公司",c:"王建国 · 采购总监",s:2,amt:"¥320,000"},
+  {n:"云帆物流集团",c:"刘思远 · 运营副总",s:3,amt:"¥486,000"},
+  {n:"明州医药连锁",c:"赵雅 · 信息部主任",s:1,amt:"¥128,500"},
+  {n:"启明星教育科技",c:"孙立 · 创始人",s:0,amt:"—"},
+  {n:"华信地产开发",c:"周明轩 · 行政总监",s:2,amt:"¥265,000"},
+  {n:"绿源食品供应链",c:"吴小芳 · 采购经理",s:3,amt:"¥198,000"},
+  {n:"天工智能制造",c:"郑凯 · CTO",s:1,amt:"¥410,000"},
+  {n:"安居物业服务",c:"冯雪 · 总经理",s:0,amt:"—"},
+  {n:"博远汽车销售",c:"褚亮 · 市场总监",s:2,amt:"¥156,800"},
+  {n:"乐活连锁健身",c:"何佳怡 · 运营总监",s:3,amt:"¥96,000"}
+];
+var curStage="all";
+var clist=document.getElementById("clist"),cempty=document.getElementById("cempty"),kw=document.getElementById("kw");
+function renderClients(){
+  var q=kw.value.trim().toLowerCase(),html="",shown=0;
+  clients.forEach(function(c,idx){
+    if(curStage!=="all"&&c.s!==+curStage)return;
+    if(q&&(c.n.toLowerCase().indexOf(q)<0&&c.c.toLowerCase().indexOf(q)<0))return;
+    shown++;
+    html+='<div class="client"><div class="av" style="background:'+avColors[idx%4]+'">'+c.n.charAt(0)+'</div>'+
+      '<div class="bd"><div class="nm">'+c.n+'</div><div class="ct">'+c.c+'</div>'+
+      '<span class="stage s'+c.s+'">'+stageNames[c.s]+'</span></div>'+
+      '<div class="amt">'+c.amt+'</div></div>';
+  });
+  clist.innerHTML=html;cempty.style.display=shown?"none":"block";
+}
+kw.addEventListener("input",renderClients);
+document.querySelectorAll("#chips .chip").forEach(function(ch){
+  ch.addEventListener("click",function(){
+    document.querySelectorAll("#chips .chip").forEach(function(x){x.classList.remove("on");});
+    ch.classList.add("on");curStage=ch.dataset.s;renderClients();});});
+renderClients();
+
+/* 考勤日历：按当前年月生成，示例标注 */
+(function(){
+  var now=new Date(),Y=now.getFullYear(),M=now.getMonth();
+  document.getElementById("calTitle").textContent=Y+"年"+(M+1)+"月";
+  var first=new Date(Y,M,1).getDay(),days=new Date(Y,M+1,0).getDate(),today=now.getDate();
+  var lateDays={3:1,11:1},leaveDays={7:1,8:.5}; /* 示例标注 */
+  var html=["日","一","二","三","四","五","六"].map(function(w){return '<div class="wd">'+w+'</div>';}).join("");
+  for(var i=0;i<first;i++)html+='<div class="d dim"></div>';
+  for(var d=1;d<=days;d++){
+    var cls="",sub="";
+    if(lateDays[d]){cls="late";sub="迟到";}
+    else if(leaveDays[d]){cls="leave";sub=leaveDays[d]===.5?"半天":"请假";}
+    else if(d<=today){cls="ok";sub=""; }
+    html+='<div class="d '+cls+(d===today?" today":"")+'">'+d+(sub?'<small>'+sub+'</small>':"")+'</div>';
+  }
+  document.getElementById("cal").innerHTML=html;
+})();
+
+/* 打卡 */
+var clockBtn=document.getElementById("clockBtn"),clockLog=document.getElementById("clockLog"),clocked=false;
+clockBtn.addEventListener("click",function(){
+  if(clocked)return;clocked=true;
+  var d=new Date(),p=function(n){return ("0"+n).slice(-2);};
+  var t=p(d.getHours())+":"+p(d.getMinutes())+":"+p(d.getSeconds());
+  var late=d.getHours()>9||(d.getHours()===9&&d.getMinutes()>0);
+  clockBtn.disabled=true;clockBtn.textContent="已 打 卡 ✓";
+  clockLog.innerHTML="上班打卡 <b style='color:var(--green)'>"+t+"</b> · "+(late?"<b style='color:var(--amber)'>迟到</b>":"<b style='color:var(--green)'>正常</b>")+"<br>打卡地点：华东销售中心 · 考勤有效";
+});
+
+/* 审批 */
+document.querySelectorAll("[data-appr]").forEach(function(box){
+  var btns=box.querySelectorAll(".abtn");
+  btns[0].addEventListener("click",function(){box.querySelector(".acts").innerHTML="<span style='color:var(--green);font-size:12px'>✓ 已通过</span>";});
+  btns[1].addEventListener("click",function(){box.querySelector(".acts").innerHTML="<span style='color:#ff9db0;font-size:12px'>✕ 已驳回</span>";});
+});
+})();
+</script>
+</body>
+</html>

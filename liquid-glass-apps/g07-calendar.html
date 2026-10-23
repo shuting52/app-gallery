@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>日历日程 · 液态App套装</title>
+<style>
+/* ============ tokens（照抄脚手架） ============ */
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --glass-radius:34px; --glass-blur:24px;
+  --glass-tint-top:rgba(255,255,255,.17); --glass-tint-mid:rgba(255,255,255,.05); --glass-tint-bot:rgba(255,255,255,.10);
+  --glass-edge-width:1.2px;
+  --glass-edge-strong:rgba(255,255,255,.95); --glass-edge-mid:rgba(255,255,255,.22);
+  --glass-edge-weak:rgba(255,255,255,.05); --glass-edge-mid2:rgba(255,255,255,.12); --glass-edge-soft:rgba(255,255,255,.78);
+  --glass-shadow-far:0 26px 60px -26px rgba(0,0,0,.85); --glass-shadow-near:0 10px 26px -14px rgba(0,0,0,.55);
+  --text-1:#fff; --text-2:rgba(255,255,255,.62); --text-3:rgba(255,255,255,.60);
+  --ease-liquid:cubic-bezier(.22,.9,.28,1.2);
+}
+html,body{height:100%}
+body{font:400 15px/1.45 -apple-system,"SF Pro Text","PingFang SC","Helvetica Neue",system-ui,sans-serif;
+  color:var(--text-1);background:#07060b;overflow-x:hidden;-webkit-font-smoothing:antialiased;
+  display:flex;justify-content:center}
+/* ============ 壁纸（照抄 LiquidWallpaper.vue） ============ */
+.wallpaper{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none}
+.wallpaper i{position:absolute;inset:-30%;display:block;
+  background:radial-gradient(42% 32% at 20% 22%,#ff3b5c 0%,transparent 62%),
+  radial-gradient(38% 30% at 84% 16%,#ff9f1c 0%,transparent 60%),
+  radial-gradient(52% 42% at 76% 74%,#ff2d55 0%,transparent 64%),
+  radial-gradient(42% 38% at 24% 82%,#6b5cff 0%,transparent 62%),
+  radial-gradient(30% 26% at 52% 48%,#ffd166 0%,transparent 68%),#140a20;
+  filter:blur(48px) saturate(150%);animation:drift 26s ease-in-out infinite alternate}
+.wallpaper i:nth-child(2){background:conic-gradient(from 200deg at 50% 55%,#ff2d55,#ff9f0a,#ffd60a,#34c759,#0a84ff,#bf5af2,#ff2d55);
+  filter:blur(110px);opacity:.5;mix-blend-mode:screen;animation-duration:34s;animation-direction:alternate-reverse}
+@keyframes drift{from{transform:translate3d(-3%,-2%,0) scale(1.05) rotate(-3deg)}
+  to{transform:translate3d(4%,3%,0) scale(1.16) rotate(4deg)}}
+/* ============ 玻璃卡（照抄 LiquidGlass.vue） ============ */
+.lg{position:relative;isolation:isolate;border-radius:var(--lg-r,var(--glass-radius));
+  background:linear-gradient(155deg,var(--glass-tint-top) 0%,var(--glass-tint-mid) 42%,var(--glass-tint-bot) 100%);
+  -webkit-backdrop-filter:blur(var(--lg-blur,var(--glass-blur))) saturate(180%) brightness(1.06);
+  backdrop-filter:blur(var(--lg-blur,var(--glass-blur))) saturate(180%) brightness(1.06);
+  box-shadow:inset 0 1px 1px -.5px rgba(255,255,255,.70),inset 0 -1px 1px -.5px rgba(255,255,255,.18),
+  inset 0 14px 22px -14px rgba(255,255,255,.45),var(--glass-shadow-far),var(--glass-shadow-near);
+  transition:transform .38s var(--ease-liquid)}
+.lg:active{transform:scale(.982)}
+.lg::before{content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;pointer-events:none;
+  mix-blend-mode:screen;opacity:.85;
+  background:radial-gradient(120% 62% at 18% -26%,rgba(255,255,255,.78),transparent 58%),
+  radial-gradient(70% 46% at 92% -12%,rgba(255,255,255,.34),transparent 60%),
+  repeating-linear-gradient(102deg,rgba(255,255,255,.055) 0 2px,transparent 2px 26px)}
+.lg::after{content:"";position:absolute;inset:0;z-index:1;border-radius:inherit;padding:var(--glass-edge-width);
+  pointer-events:none;
+  background:linear-gradient(150deg,var(--glass-edge-strong) 0%,var(--glass-edge-mid) 22%,var(--glass-edge-weak) 48%,var(--glass-edge-mid2) 72%,var(--glass-edge-soft) 100%);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;mask-composite:exclude}
+/* ============ 屏幕骨架 ============ */
+.screen{position:relative;z-index:1;width:430px;max-width:100%;min-height:900px;height:900px;overflow:hidden;
+  display:flex;flex-direction:column;padding:18px 14px 12px}
+.statusbar{display:flex;justify-content:space-between;align-items:center;font-size:13px;font-weight:600;
+  padding:2px 8px 10px;color:var(--text-1)}
+.statusbar .sic{display:flex;gap:6px;align-items:center;font-size:12px}
+.apptitle{font-size:30px;font-weight:700;letter-spacing:1px;padding:6px 4px 14px}
+.apptitle small{display:block;font-size:12px;font-weight:400;color:var(--text-2);letter-spacing:2px;margin-top:4px}
+.content{flex:1;overflow:hidden;display:flex;flex-direction:column;gap:14px}
+.homebar{width:134px;height:5px;border-radius:3px;background:rgba(255,255,255,.85);margin:10px auto 4px}
+/* ============ 通用小件 ============ */
+.av{display:block;flex:none;border-radius:50%;
+  background:conic-gradient(from calc(var(--hue,0)*1deg),#ff9f0a,#ff2d55,#bf5af2,#0a84ff,#ff9f0a);
+  box-shadow:0 0 0 1px rgba(255,255,255,.4),0 6px 16px rgba(0,0,0,.4)}
+.row{display:flex;align-items:center;gap:12px;min-width:0}
+.row .main{flex:1;min-width:0}
+.row .name{font-size:16px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row .sub{font-size:13px;color:var(--text-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:3px}
+.row .time{margin-left:auto;flex:none;font-size:12px;color:var(--text-2)}
+.badge{flex:none;padding:3px 9px;border-radius:999px;font-size:11.5px;font-weight:600;color:#fff;
+  background:linear-gradient(135deg,#3b6bff,#8a3bff);
+  box-shadow:0 0 12px rgba(92,92,255,.75),inset 0 1px 0 rgba(255,255,255,.5)}
+/* ============ 日历 ============ */
+.cal{padding:18px 18px 16px;animation:rise .55s var(--ease-liquid) both}
+.cal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.cal-head b{font-size:18px;letter-spacing:1px}
+.cal-head b span{color:var(--text-2);font-weight:400;font-size:14px;margin-left:6px}
+.nav{display:flex;gap:8px}
+.nav button{width:30px;height:30px;border-radius:999px;border:1px solid rgba(255,255,255,.25);
+  background:rgba(255,255,255,.08);color:#fff;font-size:14px;cursor:pointer;font-family:inherit;
+  display:grid;place-items:center}
+.cal-week{display:grid;grid-template-columns:repeat(7,1fr);margin-bottom:6px}
+.cal-week span{text-align:center;font-size:12px;color:var(--text-2);padding:4px 0}
+.cal-week span.wknd{color:#ff8aa0}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);row-gap:2px}
+.cal-day{position:relative;height:44px;display:flex;align-items:center;justify-content:center;
+  font-size:14px;color:var(--text-1);border-radius:12px}
+.cal-day.dim{color:var(--text-3);opacity:.45}
+.cal-day.wknd{color:#ffb3c2}
+.cal-day.today{color:#fff;font-weight:700}
+.cal-day.today::before{content:"";position:absolute;width:34px;height:34px;border-radius:50%;
+  background:linear-gradient(135deg,#ff5e7e,#ff9f1c);
+  box-shadow:0 4px 14px rgba(255,94,126,.55),inset 0 1px 0 rgba(255,255,255,.5)}
+.cal-day.today i{position:relative;font-style:normal}
+.cal-day .dot{position:absolute;bottom:5px;width:4px;height:4px;border-radius:50%;background:var(--dot,#4de8ff)}
+/* ============ 当日日程 ============ */
+.sched{padding:18px 18px 16px;animation:rise .55s .08s var(--ease-liquid) both}
+.sched h3{font-size:16px;margin-bottom:4px}
+.sched h3 span{font-size:12px;color:var(--text-2);font-weight:400;margin-left:8px}
+.tl{position:relative;margin-top:12px;padding-left:24px}
+.tl::before{content:"";position:absolute;left:7px;top:8px;bottom:8px;width:2px;border-radius:2px;
+  background:linear-gradient(180deg,rgba(255,255,255,.35),rgba(255,255,255,.08))}
+.tl-item{position:relative;padding:9px 0}
+.tl-item::before{content:"";position:absolute;left:-24px;top:14px;width:12px;height:12px;border-radius:50%;
+  background:var(--c);box-shadow:0 0 10px var(--c);border:2px solid rgba(255,255,255,.65)}
+.tl-item .t{font-size:13px;font-weight:700;color:var(--c);letter-spacing:.5px}
+.tl-item .ti{font-size:15px;font-weight:600;margin:2px 0}
+.tl-item .loc{font-size:12px;color:var(--text-3)}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<div class="wallpaper" aria-hidden="true"><i></i><i></i></div>
+<div class="screen">
+  <div class="statusbar"><span>9:41</span><span class="sic">📶 📡 🔋</span></div>
+  <div class="apptitle">日历日程<small>CALENDAR · 2026</small></div>
+  <div class="content">
+    <section class="lg cal">
+      <div class="cal-head">
+        <b>10月<span>October</span></b>
+        <div class="nav"><button>‹</button><button>›</button></div>
+      </div>
+      <div class="cal-week">
+        <span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span class="wknd">六</span><span class="wknd">日</span>
+      </div>
+      <div class="cal-grid">
+        <span class="cal-day dim"></span><span class="cal-day dim"></span><span class="cal-day dim"></span>
+        <span class="cal-day">1</span><span class="cal-day">2</span><span class="cal-day wknd">3</span><span class="cal-day wknd">4</span>
+        <span class="cal-day">5</span><span class="cal-day">6</span><span class="cal-day">7</span><span class="cal-day">8</span><span class="cal-day">9</span><span class="cal-day wknd">10</span><span class="cal-day wknd">11</span>
+        <span class="cal-day">12</span><span class="cal-day">13</span><span class="cal-day">14</span><span class="cal-day">15</span><span class="cal-day">16</span><span class="cal-day wknd">17</span><span class="cal-day wknd">18</span>
+        <span class="cal-day">19</span><span class="cal-day">20</span><span class="cal-day">21</span><span class="cal-day">22</span><span class="cal-day today"><i>23</i></span><span class="cal-day wknd">24<span class="dot" style="--dot:#ff9f1c"></span></span><span class="cal-day wknd">25</span>
+        <span class="cal-day">26</span><span class="cal-day">27<span class="dot" style="--dot:#bf5af2"></span></span><span class="cal-day">28</span><span class="cal-day">29</span><span class="cal-day">30</span><span class="cal-day wknd">31<span class="dot" style="--dot:#34c759"></span></span><span class="cal-day dim"></span>
+      </div>
+    </section>
+    <section class="lg sched">
+      <h3>今日日程<span>10月23日 · 星期五 · 4 项安排</span></h3>
+      <div class="tl">
+        <div class="tl-item" style="--c:#4da6ff">
+          <div class="t">09:30</div><div class="ti">产品周例会</div><div class="loc">📍 3 楼大会议室</div>
+        </div>
+        <div class="tl-item" style="--c:#ff9f1c">
+          <div class="t">12:00</div><div class="ti">和大学室友聚餐</div><div class="loc">📍 湖畔小馆 · 提前半小时出发</div>
+        </div>
+        <div class="tl-item" style="--c:#bf5af2">
+          <div class="t">15:00</div><div class="ti">新版本评审会</div><div class="loc">📍 线上会议 · 记得带原型稿</div>
+        </div>
+        <div class="tl-item" style="--c:#34c759">
+          <div class="t">19:30</div><div class="ti">江滨夜跑 5 公里</div><div class="loc">📍 江滨步道东入口集合</div>
+        </div>
+      </div>
+    </section>
+  </div>
+  <div class="homebar"></div>
+</div>
+</body>
+</html>

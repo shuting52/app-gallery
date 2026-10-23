@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>d06 · 3D翻牌底栏</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{background:#10141c;display:flex;justify-content:center;align-items:center;min-height:100vh;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif}
+.phone{width:430px;height:900px;max-height:100vh;background:#f4f1ea;position:relative;overflow:hidden;perspective:1200px}
+.status{height:40px;display:flex;align-items:center;justify-content:space-between;padding:0 22px;font-size:12px;font-weight:600;color:#111}
+.nav{height:50px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:#111}
+.feed{position:absolute;top:90px;bottom:120px;left:0;right:0;overflow:hidden}
+.card{margin:10px 12px;border-radius:12px;padding:14px;background:#fff;display:flex;gap:12px;align-items:center;border:1px solid #e8e2d4}
+.av{width:50px;height:50px;border-radius:10px;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:#fff;font-size:19px;font-weight:700}
+.tt{font-size:14px;font-weight:600;color:#333}
+.dd{font-size:12px;color:#999;margin-top:4px}
+/* ---- 3D翻牌底栏 ---- */
+.tabbar{position:absolute;left:0;right:0;bottom:0;height:110px;background:#2b2f3a;display:flex;align-items:center;justify-content:space-around;z-index:5;box-shadow:0 -8px 24px rgba(0,0,0,.3)}
+.tab{width:80px;height:80px;cursor:pointer;perspective:400px}
+.flip{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform .6s cubic-bezier(.4,0,.2,1)}
+.tab.on .flip{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;border-radius:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.front{background:#3a4050;color:#9aa3b5;font-size:11px}
+.front .ic{font-size:26px}
+.back{background:linear-gradient(135deg,#ff7a59,#ff4d6a);color:#fff;font-size:13px;font-weight:700;transform:rotateY(180deg);letter-spacing:2px;box-shadow:0 6px 18px rgba(255,90,90,.45)}
+.back .en{font-size:9px;font-weight:400;opacity:.8;letter-spacing:1px}
+</style>
+</head>
+<body>
+<div class="phone">
+<div class="status"><span>21:56</span><span>5G 🔋</span></div>
+<div class="nav">3D翻牌 · 底栏演示</div>
+<div class="feed" id="feed"></div>
+<div class="tabbar">
+<div class="tab on"><div class="flip"><div class="face front"><span class="ic">🏠</span>首页</div><div class="face back">首 页<span class="en">HOME</span></div></div></div>
+<div class="tab"><div class="flip"><div class="face front"><span class="ic">🧭</span>发现</div><div class="face back">发 现<span class="en">DISCOVER</span></div></div></div>
+<div class="tab"><div class="flip"><div class="face front"><span class="ic">✉️</span>消息</div><div class="face back">消 息<span class="en">MESSAGE</span></div></div></div>
+<div class="tab"><div class="flip"><div class="face front"><span class="ic">👤</span>我</div><div class="face back">我 的<span class="en">MINE</span></div></div></div>
+</div>
+</div>
+<script>
+var rows=[["扑克","德州扑克入门","#333","扑"],["麻将","地方规则集","#2a7a4a","麻"],["桌游","剧本杀推荐","#7a4ab8","桌"],["象棋","残局破解","#a33","棋"],["UNO","聚会神器","#ff4d4d","U"],["狼人杀","发言技巧","#4a6a8a","狼"],["大富翁","联机开黑","#3fa7ff","富"]];
+var h="";
+for(var i=0;i<rows.length;i++){h+='<div class="card"><div class="av" style="background:'+rows[i][2]+'">'+rows[i][3]+'</div><div><div class="tt">'+rows[i][0]+'</div><div class="dd">'+rows[i][1]+'</div></div></div>';}
+document.getElementById('feed').innerHTML=h;
+var tabs=document.querySelectorAll('.tab');
+function go(n){for(var i=0;i<tabs.length;i++){tabs[i].classList.toggle('on',i===n);}}
+for(var i=0;i<tabs.length;i++){(function(k){tabs[k].addEventListener('click',function(){go(k);});})(i);}
+try{var q=new URLSearchParams(location.search).get('tab');if(q!==null&&+q>=0&&+q<4){go(+q);}}catch(e){}
+</script>
+</body>
+</html>

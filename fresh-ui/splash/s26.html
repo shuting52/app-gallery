@@ -1,0 +1,35 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>海浪拍岸</title><style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{background:#0a2a3d;display:flex;justify-content:center;font-family:-apple-system,"PingFang SC","Microsoft YaHei","Noto Sans CJK SC",sans-serif;overflow:hidden}
+.stage{width:430px;height:900px;max-height:100vh;position:relative;overflow:hidden;background:linear-gradient(180deg,#ffd9a0 0%,#ffb27a 26%,#7ec8d8 60%,#0a5a7a 100%)}
+.sun{position:absolute;left:50%;top:150px;width:110px;height:110px;margin-left:-55px;border-radius:50%;background:radial-gradient(circle at 42% 38%,#fff8dd,#ffdf8e 60%,#ffb35e);box-shadow:0 0 70px 22px rgba(255,200,120,.55);animation:sinkin 3s ease .2s both}
+@keyframes sinkin{from{top:60px}to{top:150px}}
+.sea{position:absolute;left:0;right:0;bottom:0;height:420px;overflow:hidden}
+.wave{position:absolute;bottom:0;left:0;width:200%;display:flex;animation:slide 7s linear -3s infinite}
+.wave svg{width:860px;height:150px;flex-shrink:0}
+.wave.w1{bottom:150px;animation-duration:9s;opacity:.55}
+.wave.w2{bottom:70px;animation-duration:6s}
+.wave.w3{bottom:-10px;animation-duration:4.5s;animation-delay:-2s}
+@keyframes slide{to{transform:translateX(-50%)}}
+.foam{position:absolute;left:40px;right:40px;bottom:210px;height:20px;border-radius:50%;background:rgba(255,255,255,.75);filter:blur(8px);animation:foamp 2.8s ease-in-out -1.2s infinite}
+@keyframes foamp{0%,100%{transform:scaleX(.92);opacity:.5}50%{transform:scaleX(1.05);opacity:.9}}
+.brand{position:absolute;left:0;right:0;bottom:330px;text-align:center;animation:rise 1.6s cubic-bezier(.2,.9,.3,1) .7s both}
+@keyframes rise{from{opacity:0;transform:translateY(70px)}to{opacity:1;transform:none}}
+.brand h1{font-size:88px;font-weight:800;letter-spacing:26px;text-indent:26px;color:#fff;text-shadow:0 4px 30px rgba(10,60,90,.55)}
+.brand p{margin-top:10px;font-size:14px;letter-spacing:8px;color:#eaf7ff;text-shadow:0 2px 12px rgba(10,60,90,.5)}
+.replay{position:absolute;bottom:34px;left:50%;transform:translateX(-50%);z-index:50;padding:10px 26px;border-radius:999px;border:1px solid rgba(255,255,255,.6);background:rgba(255,255,255,.16);color:#fff;font-size:13px;letter-spacing:4px;text-indent:4px;cursor:pointer}
+.replay:active{transform:translateX(-50%) scale(.94)}
+</style></head><body><div class="stage">
+<div class="sun"></div>
+<div class="sea">
+<div class="wave w1"><svg viewBox="0 0 860 150" preserveAspectRatio="none"><path d="M0,75 Q72,35 144,75 T288,75 T432,75 T576,75 T720,75 T864,75 V150 H0 Z" fill="#3d9dbd"/></svg><svg viewBox="0 0 860 150" preserveAspectRatio="none"><path d="M0,75 Q72,35 144,75 T288,75 T432,75 T576,75 T720,75 T864,75 V150 H0 Z" fill="#3d9dbd"/></svg></div>
+<div class="wave w2"><svg viewBox="0 0 860 150" preserveAspectRatio="none"><path d="M0,75 Q72,40 144,75 T288,75 T432,75 T576,75 T720,75 T864,75 V150 H0 Z" fill="#1e7d9e"/></svg><svg viewBox="0 0 860 150" preserveAspectRatio="none"><path d="M0,75 Q72,40 144,75 T288,75 T432,75 T576,75 T720,75 T864,75 V150 H0 Z" fill="#1e7d9e"/></svg></div>
+<div class="wave w3"><svg viewBox="0 0 860 150" preserveAspectRatio="none"><path d="M0,75 Q72,45 144,75 T288,75 T432,75 T576,75 T720,75 T864,75 V150 H0 Z" fill="#0a5a7a"/></svg><svg viewBox="0 0 860 150" preserveAspectRatio="none"><path d="M0,75 Q72,45 144,75 T288,75 T432,75 T576,75 T720,75 T864,75 V150 H0 Z" fill="#0a5a7a"/></svg></div>
+</div>
+<div class="foam"></div>
+<div class="brand"><h1>潮汐</h1><p>浪起 有信</p></div>
+<button class="replay" onclick="location.reload()">重新播放</button>
+</div></body></html>

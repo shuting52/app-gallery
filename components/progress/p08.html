@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>p08 星系点亮 · 进度指示</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0b0e14;color:#e8ecf4;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+.stage{width:360px;max-width:94vw;background:#141926;border:1px solid #232c3f;border-radius:18px;padding:18px 16px 20px;box-shadow:0 10px 40px rgba(0,0,0,.5)}
+.title{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:14px}
+.title h3{font-size:16px;font-weight:600;letter-spacing:2px}
+.title .pct{font-size:22px;font-weight:700;color:#ffd166;font-variant-numeric:tabular-nums}
+.scene{position:relative;height:392px;border-radius:12px;overflow:hidden;border:1px solid #1a2138;
+background:radial-gradient(ellipse at 50% 118%,#0b1026 0%,#05070f 62%)}
+#spin{position:absolute;inset:0;transform-origin:164px 208px}
+#arms{position:absolute;inset:0;width:100%;height:100%}
+.star{position:absolute;border-radius:50%}
+.nebula{position:absolute;inset:0;pointer-events:none;
+background:
+ radial-gradient(circle at 38% 46%,rgba(90,118,216,.16),transparent 34%),
+ radial-gradient(circle at 62% 56%,rgba(160,90,200,.12),transparent 30%),
+ radial-gradient(circle at 50% 50%,rgba(60,90,180,.10),transparent 46%)}
+.core{position:absolute;left:156px;top:200px;width:16px;height:16px;border-radius:50%;background:#05060c;
+box-shadow:0 0 0 2px rgba(255,255,255,.85),0 0 14px 4px rgba(180,200,255,.8)}
+#corona{position:absolute;left:104px;top:148px;width:120px;height:120px;border-radius:50%;pointer-events:none;
+background:radial-gradient(circle,rgba(190,210,255,.55) 0%,rgba(140,170,255,.22) 38%,transparent 68%)}
+.cap{position:absolute;left:0;right:0;bottom:0;height:40px;display:flex;align-items:center;justify-content:center;font-size:13px;color:#9aa7c2;letter-spacing:1px}
+.cap b{color:#ffd166;font-variant-numeric:tabular-nums}
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="title"><h3>星系点亮</h3><span class="pct" id="pct">0%</span></div>
+  <div class="scene">
+    <div class="nebula"></div>
+    <div id="spin">
+      <svg id="arms" viewBox="0 0 328 392" preserveAspectRatio="none"></svg>
+      <div id="gal"></div>
+    </div>
+    <div id="corona"></div>
+    <div class="core"></div>
+    <div class="cap" id="cap">已点亮 <b>0</b>/60</div>
+  </div>
+</div>
+<script>
+var pctEl=document.getElementById('pct');
+var cap=document.getElementById('cap');
+var spin=document.getElementById('spin');
+var gal=document.getElementById('gal');
+var corona=document.getElementById('corona');
+var armsSvg=document.getElementById('arms');
+var CX=164,CY=208;
+function spiralPath(phase){
+  var d='',first=true;
+  for(var a=0;a<=Math.PI*3.4;a+=0.12){
+    var r=18+a*13;
+    var x=CX+r*Math.cos(a+phase),y=CY+r*Math.sin(a+phase)*0.62;
+    d+=(first?'M':'L')+x.toFixed(1)+','+y.toFixed(1)+' ';
+    first=false;
+  }
+  return d;
+}
+for(var arm=0;arm<2;arm++){
+  var pa=document.createElementNS('http://www.w3.org/2000/svg','path');
+  pa.setAttribute('d',spiralPath(arm*Math.PI));
+  pa.setAttribute('stroke','#5a76d8');
+  pa.setAttribute('stroke-width','16');
+  pa.setAttribute('fill','none');
+  pa.setAttribute('opacity','.16');
+  pa.setAttribute('stroke-linecap','round');
+  armsSvg.appendChild(pa);
+}
+var colors=['#9fd8ff','#fff3c4','#ffffff','#ffc4d0'];
+var stars=[];
+for(var k=0;k<60;k++){
+  var t=Math.floor(k/2)/30;
+  var a=t*Math.PI*3.1+(k%2)*Math.PI+((k*37)%10-5)*0.06;
+  var r=18+t*128;
+  var x=CX+r*Math.cos(a),y=CY+r*Math.sin(a)*0.62;
+  var d=document.createElement('div');
+  d.className='star';
+  var sz=2+(k*53)%45/10;
+  d.style.width=d.style.height=sz.toFixed(1)+'px';
+  d.style.left=(x-sz/2).toFixed(1)+'px';
+  d.style.top=(y-sz/2).toFixed(1)+'px';
+  d.style.opacity='.14';
+  d.style.background='#5b6b8c';
+  gal.appendChild(d);
+  stars.push({el:d,r:r,c:colors[k%4]});
+}
+stars.sort(function(a,b){return a.r-b.r;});
+var p=0,isMid=location.hash==='#mid';
+function render(){
+  pctEl.textContent=Math.round(p)+'%';
+  var lit=Math.round(p/100*60);
+  for(var i=0;i<60;i++){
+    var s=stars[i],on=i<lit;
+    s.el.style.opacity=on?'1':'.14';
+    s.el.style.background=on?s.c:'#5b6b8c';
+    s.el.style.boxShadow=on?('0 0 8px 2px '+s.c):'none';
+  }
+  corona.style.opacity=(0.12+0.78*p/100).toFixed(3);
+  corona.style.transform='scale('+(0.75+p/100*0.9).toFixed(3)+')';
+  cap.innerHTML='已点亮 <b>'+lit+'</b>/60';
+}
+var DUR=7000;
+function startLoop(){
+  var t0=performance.now();
+  function tick(now){
+    var el=now-t0;
+    if(el>=DUR){p=100;render();setTimeout(startLoop,1000);return;}
+    p=el/DUR*100;
+    render();
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+}
+if(isMid){
+  p=55;render();
+  spin.style.transform='rotate(24deg)';
+}else{
+  startLoop();
+  var ang=0,last=performance.now();
+  (function spinTick(now){
+    var dt=now-last;last=now;
+    ang=(ang+dt*0.004)%360;
+    spin.style.transform='rotate('+ang.toFixed(2)+'deg)';
+    requestAnimationFrame(spinTick);
+  })(last);
+}
+</script>
+</body>
+</html>

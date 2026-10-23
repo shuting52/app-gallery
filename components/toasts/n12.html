@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>n12 · 印章 Toast</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;background:#141824;display:flex;flex-direction:column;align-items:center;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;color:#fff}
+.head{text-align:center;padding:20px 16px 12px}
+.head h1{font-size:17px;color:#ff8a7a;letter-spacing:1px}
+.head p{font-size:12px;color:#8b93a7;margin-top:6px}
+.stage{width:360px;max-width:94vw;height:480px;border-radius:18px;position:relative;overflow:hidden;background:radial-gradient(circle at 50% 38%,#3a2320,#171216 75%);border:1px solid #4a2c28;box-shadow:0 12px 40px rgba(0,0,0,.4)}
+.seal{position:absolute;left:50%;top:110px;transform:translate(-50%,-160px) scale(2.4) rotate(-16deg);opacity:0;background:#c0301c;color:#fff6e8;font-size:38px;font-weight:900;letter-spacing:10px;padding:26px 26px 26px 36px;border-radius:14px;border:4px solid #8f1f10;box-shadow:inset 0 0 22px rgba(80,8,0,.6),0 10px 26px rgba(0,0,0,.5);text-shadow:0 2px 0 rgba(90,10,0,.5);white-space:nowrap}
+.seal.stamp{animation:stamp .5s cubic-bezier(.2,1.4,.4,1) forwards}
+.seal.out{animation:sealOut .45s ease-in forwards}
+@keyframes stamp{0%{transform:translate(-50%,-160px) scale(2.4) rotate(-16deg);opacity:0}45%{opacity:1}70%{transform:translate(-50%,0) scale(.92) rotate(-4deg)}100%{transform:translate(-50%,0) scale(1) rotate(-6deg);opacity:1}}
+@keyframes sealOut{from{transform:translate(-50%,0) scale(1) rotate(-6deg);opacity:1}to{transform:translate(-50%,0) scale(.7) rotate(-6deg);opacity:0}}
+.flash{position:absolute;inset:0;background:radial-gradient(circle at 50% 40%,rgba(255,240,220,.85),transparent 60%);opacity:0;pointer-events:none}
+.flash.go{animation:flashA .35s ease-out}
+@keyframes flashA{0%{opacity:1}100%{opacity:0}}
+.caption{position:absolute;top:310px;width:100%;text-align:center;font-size:13px;color:#d8c9b8;opacity:0}
+.caption.show{animation:capIn .4s forwards}
+@keyframes capIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.hint{position:absolute;bottom:14px;width:100%;text-align:center;font-size:11px;color:#6b5a52}
+</style>
+</head>
+<body>
+<div class="head"><h1>n12 · 印章</h1><p>印章从上方"砰"地盖下 → 红色印泥质感 → 淡出</p></div>
+<div class="stage">
+  <div class="flash" id="flash"></div>
+  <div class="seal" id="seal">审核通过</div>
+  <div class="caption" id="cap"></div>
+  <div class="hint">自动循环播放中 · 3 条通知轮播</div>
+</div>
+<script>
+const msgs=[
+  ["审核通过","财务部 · 2026-10-19"],
+  ["已发货","顺丰速运 · 已揽收"],
+  ["查验合格","质检部 · A级"]
+];
+const seal=document.getElementById('seal'),flash=document.getElementById('flash'),cap=document.getElementById('cap');
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+async function show(i){
+  seal.textContent=msgs[i][0];cap.textContent=msgs[i][1];
+  seal.classList.remove('out');flash.classList.remove('go');cap.classList.remove('show');
+  void seal.offsetWidth;
+  seal.classList.add('stamp');
+  setTimeout(()=>flash.classList.add('go'),180);
+  setTimeout(()=>cap.classList.add('show'),450);
+  await sleep(3100);
+  seal.classList.remove('stamp');seal.classList.add('out');cap.classList.remove('show');
+  await sleep(500);
+  seal.classList.remove('out');
+  await sleep(300);
+}
+(async()=>{let i=0;while(true){await show(i%msgs.length);i++;}})();
+</script>
+</body>
+</html>

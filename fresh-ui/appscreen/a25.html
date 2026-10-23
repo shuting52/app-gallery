@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>语岛漂流</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{background:#0b1220;display:flex;align-items:center;justify-content:center;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sans-serif;color:#22303f;min-height:100vh}
+.phone{width:430px;height:900px;border-radius:44px;overflow:hidden;position:relative;background:linear-gradient(180deg,#dfeef5 0%,#eef6f3 42%,#f7f3e8 78%,#f3e9d4 100%);box-shadow:0 30px 80px rgba(0,0,0,.55),0 0 0 10px #101826,0 0 0 12px #33415a}
+.mist{position:absolute;inset:0;pointer-events:none;background:
+ radial-gradient(420px 150px at 20% 12%,rgba(255,255,255,.75),transparent 70%),
+ radial-gradient(500px 180px at 85% 30%,rgba(255,255,255,.55),transparent 70%),
+ radial-gradient(600px 220px at 50% 62%,rgba(255,255,255,.35),transparent 70%)}
+.island{position:absolute;left:50%;transform:translateX(-50%);bottom:96px;width:340px;height:120px;pointer-events:none;opacity:.5}
+.screen{position:absolute;inset:0;display:flex;flex-direction:column;padding:22px 20px 0;z-index:2}
+@keyframes rise{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:translateY(0)}}
+.rise{animation:rise .8s cubic-bezier(.2,.8,.25,1) both}
+.topbar{display:flex;align-items:center;justify-content:space-between}
+.streak{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.72);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.9);border-radius:18px;padding:10px 14px;box-shadow:0 8px 20px rgba(90,130,160,.15)}
+.flame{display:inline-block;width:30px;height:30px;font-size:22px;line-height:30px;text-align:center;animation:flick 1.6s ease-in-out -1s infinite}
+@keyframes flick{0%,100%{transform:scale(1) rotate(-3deg)}50%{transform:scale(1.12) rotate(3deg)}}
+.streak b{font-size:20px;color:#e0703a}
+.streak small{display:block;font-size:11px;color:#7d94a8}
+.avatar{width:46px;height:46px;border-radius:50%;background:conic-gradient(from 40deg,#7fc8d8,#a8d8c8,#f0d9a8,#7fc8d8);display:flex;align-items:center;justify-content:center;font-size:20px;border:3px solid #fff;box-shadow:0 6px 14px rgba(90,130,160,.25)}
+.xp{margin-top:16px;background:rgba(255,255,255,.72);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.9);border-radius:18px;padding:14px 16px;box-shadow:0 8px 20px rgba(90,130,160,.15)}
+.xp .row{display:flex;justify-content:space-between;font-size:12px;color:#7d94a8;margin-bottom:8px}
+.xp .row b{color:#3a6a7f;font-size:13px}
+.track{height:10px;border-radius:6px;background:#dce9ef;overflow:hidden}
+.fill{height:100%;width:68%;border-radius:6px;background:linear-gradient(90deg,#5fb8c9,#8fd6b8);animation:fillin 2s ease-out -2s both}
+@keyframes fillin{from{width:8%}to{width:68%}}
+.sec-title{margin:22px 2px 12px;font-size:15px;font-weight:700;color:#2c4a5c;letter-spacing:1px}
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:12px;perspective:800px}
+.card{height:132px;position:relative;cursor:pointer;transform-style:preserve-3d;transition:transform .55s cubic-bezier(.3,.9,.3,1.2)}
+.card.flip{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;box-shadow:0 10px 22px rgba(90,130,160,.18);border:1px solid rgba(255,255,255,.9)}
+.front{background:rgba(255,255,255,.8);backdrop-filter:blur(8px)}
+.front .w{font-size:22px;font-weight:700;color:#2c4a5c;letter-spacing:.5px}
+.front .p{font-size:12px;color:#93a9b8}
+.front .hint{font-size:11px;color:#5fb8c9;margin-top:4px}
+.back{background:linear-gradient(150deg,#3f7d92,#5fb8c9);transform:rotateY(180deg);color:#fff}
+.back .w{font-size:20px;font-weight:700}
+.back .m{font-size:13px;opacity:.95}
+.back .s{font-size:11px;opacity:.75;margin-top:4px}
+.quest{margin-top:auto;margin-bottom:16px}
+.btn{width:100%;height:62px;border:none;border-radius:20px;font-size:18px;font-weight:700;letter-spacing:3px;color:#fff;background:linear-gradient(120deg,#e8915a,#e0703a);box-shadow:0 14px 28px rgba(224,112,58,.4),inset 0 2px 0 rgba(255,255,255,.35);cursor:pointer;position:relative;overflow:hidden;font-family:inherit;transition:transform .15s}
+.btn:active{transform:scale(.97)}
+.btn .prog{position:absolute;inset:0;background:rgba(255,255,255,.25);width:0%}
+.btn.running .prog{animation:prog 4s linear forwards}
+@keyframes prog{from{width:0}to{width:100%}}
+.tabbar{height:86px;background:rgba(255,255,255,.85);backdrop-filter:blur(12px);border-top:1px solid rgba(255,255,255,.9);display:flex;margin:0 -20px;padding:0 10px}
+.tab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:11px;color:#93a9b8;cursor:pointer;border:none;background:none;font-family:inherit}
+.tab .ic{display:block;width:26px;height:26px;font-size:21px;line-height:26px;text-align:center;transition:transform .2s}
+.tab.on{color:#3a7d92;font-weight:700}
+.tab.on .ic{transform:translateY(-2px) scale(1.12)}
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="mist"></div>
+  <svg class="island" viewBox="0 0 340 120"><ellipse cx="170" cy="108" rx="150" ry="14" fill="#9fc6b8" opacity=".8"/><path d="M90 106 Q170 30 250 106 Z" fill="#8fb8a6" opacity=".9"/><path d="M140 106 Q170 62 200 106 Z" fill="#7ba78f"/><circle cx="262" cy="34" r="20" fill="#f5d98b" opacity=".9"/></svg>
+  <div class="screen">
+    <div class="topbar rise" style="animation-delay:-.7s">
+      <div class="streak"><span class="flame">🔥</span><div><b>连续 7 天</b><small>再坚持 3 天解锁新岛屿</small></div></div>
+      <div class="avatar">🐚</div>
+    </div>
+    <div class="xp rise" style="animation-delay:-.55s">
+      <div class="row"><span>今日经验</span><b>680 / 1000</b></div>
+      <div class="track"><div class="fill"></div></div>
+    </div>
+    <div class="sec-title rise" style="animation-delay:-.4s">今日单词 · 点卡片翻转</div>
+    <div class="cards">
+      <div class="card rise" style="animation-delay:-.3s" onclick="this.classList.toggle('flip')">
+        <div class="face front"><span class="w">island</span><span class="p">/ˈaɪlənd/</span><span class="hint">点我看释义</span></div>
+        <div class="face back"><span class="w">岛屿</span><span class="m">名词</span><span class="s">a piece of land surrounded by water</span></div>
+      </div>
+      <div class="card rise" style="animation-delay:-.25s" onclick="this.classList.toggle('flip')">
+        <div class="face front"><span class="w">voyage</span><span class="p">/ˈvɔɪɪdʒ/</span><span class="hint">点我看释义</span></div>
+        <div class="face back"><span class="w">航行</span><span class="m">名词 / 动词</span><span class="s">a long journey by sea</span></div>
+      </div>
+      <div class="card rise" style="animation-delay:-.2s" onclick="this.classList.toggle('flip')">
+        <div class="face front"><span class="w">harbor</span><span class="p">/ˈhɑːbə/</span><span class="hint">点我看释义</span></div>
+        <div class="face back"><span class="w">港湾</span><span class="m">名词</span><span class="s">a sheltered place for ships</span></div>
+      </div>
+      <div class="card rise" style="animation-delay:-.15s" onclick="this.classList.toggle('flip')">
+        <div class="face front"><span class="w">breeze</span><span class="p">/briːz/</span><span class="hint">点我看释义</span></div>
+        <div class="face back"><span class="w">微风</span><span class="m">名词</span><span class="s">a gentle light wind</span></div>
+      </div>
+    </div>
+    <div class="quest rise" style="animation-delay:-.05s">
+      <button class="btn" id="goBtn" onclick="startQuest()"><span class="prog"></span><span id="goTxt">开始闯关</span></button>
+    </div>
+    <div class="tabbar">
+      <button class="tab on" onclick="setTab(this)"><span class="ic">📖</span>学习</button>
+      <button class="tab" onclick="setTab(this)"><span class="ic">🗂️</span>词库</button>
+      <button class="tab" onclick="setTab(this)"><span class="ic">🏆</span>排行</button>
+      <button class="tab" onclick="setTab(this)"><span class="ic">👤</span>我的</button>
+    </div>
+  </div>
+</div>
+<script>
+function startQuest(){
+  var b=document.getElementById('goBtn'),t=document.getElementById('goTxt');
+  if(b.classList.contains('running'))return;
+  b.classList.add('running');t.textContent='闯关中…';
+  setTimeout(function(){t.textContent='闯关完成！+120 经验';},4100);
+  setTimeout(function(){b.classList.remove('running');t.textContent='开始闯关';},7000);
+}
+function setTab(el){document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('on')});el.classList.add('on');}
+</script>
+</body>
+</html>

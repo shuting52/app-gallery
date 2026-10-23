@@ -1,0 +1,76 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>w36 · 拼图解锁</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC",sans-serif;background:#05070c;display:flex;justify-content:center;color:#fff;overflow:hidden}
+.stage{width:430px;height:900px;position:relative;overflow:hidden;flex-shrink:0;background:radial-gradient(120% 90% at 50% 0%,#2a1a3e 0%,#191226 55%,#0b0e16 100%)}
+.mock{position:absolute;inset:0;filter:blur(6px) brightness(.55)}
+.sb{height:46px;display:flex;justify-content:space-between;align-items:center;padding:0 26px;font-size:13px;font-weight:600}
+.sic{width:70px;height:12px;border-radius:6px;background:#2a3040}
+.mh{display:flex;align-items:center;gap:10px;padding:14px 20px}
+.mh i{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,#3c2c5c,#281e3e);display:block}
+.mh em{width:110px;height:14px;border-radius:7px;background:#322652;display:block}
+.banner{height:150px;margin:6px 20px 14px;border-radius:18px;background:linear-gradient(135deg,#34245a,#221640)}
+.row{display:flex;gap:12px;align-items:center;margin:0 20px 12px}
+.row i{width:52px;height:52px;border-radius:14px;background:#322652;display:block;flex-shrink:0}
+.row b{display:block;width:150px;height:13px;border-radius:6px;background:#3e3170;margin-bottom:8px}
+.row s{display:block;width:100px;height:10px;border-radius:5px;background:#2a2148;text-decoration:none}
+.tabbar{position:absolute;bottom:0;left:0;right:0;height:84px;background:rgba(25,18,38,.9);display:flex;justify-content:space-around;align-items:center;border-top:1px solid #322652}
+.tabbar i{width:26px;height:26px;border-radius:8px;background:#3e3170;display:block}
+.ov{position:absolute;inset:0;z-index:10;display:flex;align-items:center;justify-content:center;background:rgba(14,9,26,.6);animation:fadeIn .4s both}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.modal{width:340px;border-radius:26px;padding:30px 24px 26px;text-align:center;position:relative;background:linear-gradient(165deg,#33245e,#1c1338);border:1px solid rgba(180,140,255,.3);box-shadow:0 30px 80px rgba(0,0,0,.55);animation:pop .55s cubic-bezier(.2,1.4,.4,1) both;animation-delay:.12s}
+@keyframes pop{from{opacity:0;transform:scale(.7) translateY(30px)}to{opacity:1;transform:none}}
+.x{position:absolute;top:14px;right:14px;width:30px;height:30px;border-radius:50%;border:0;background:rgba(255,255,255,.12);color:#fff;font-size:15px;cursor:pointer;z-index:3}
+h2{font-size:21px;margin:4px 0 6px}
+p.sub{font-size:13px;color:#bfaee8;line-height:1.7}
+.puzzle{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;width:216px;margin:18px auto 4px;perspective:600px}
+.tile{aspect-ratio:1;border-radius:12px;cursor:pointer;position:relative;transform-style:preserve-3d;transition:transform .5s cubic-bezier(.3,1.2,.4,1)}
+.tile .f,.tile .b{position:absolute;inset:0;border-radius:12px;display:flex;align-items:center;justify-content:center;backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.tile .f{background:rgba(255,255,255,.07);border:1px dashed rgba(180,140,255,.5);font-size:22px;color:#9d8fd8}
+.tile .b{transform:rotateY(180deg);background:linear-gradient(135deg,#ff9a6a,#f06a9a 55%,#7c5cf0);background-size:300% 300%}
+.tile.flip{transform:rotateY(180deg);cursor:default}
+.count{font-size:12px;color:#9d8fd8;margin-top:10px}
+.count b{color:#ffd98a;font-size:15px}
+.btn{display:none;width:100%;border:0;border-radius:16px;padding:14px;font-size:16px;font-weight:700;cursor:pointer;margin-top:16px;background:linear-gradient(180deg,#c4a8ff,#8b5cf6);color:#fff;box-shadow:0 8px 22px rgba(139,92,246,.45);animation:pop2 .45s cubic-bezier(.2,1.6,.4,1) both}
+@keyframes pop2{from{transform:scale(.7);opacity:0}to{transform:scale(1);opacity:1}}
+.btn:active{transform:scale(.97)}
+.skip{display:inline-block;margin-top:12px;font-size:12px;color:#8f80b8;background:none;border:0;cursor:pointer}
+.replay{position:absolute;bottom:24px;left:50%;transform:translateX(-50%);z-index:20;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.1);color:#fff;border-radius:999px;padding:10px 22px;font-size:13px;cursor:pointer;backdrop-filter:blur(8px)}
+</style></head>
+<body><div class="stage">
+<div class="mock"><div class="sb"><span>9:41</span><span class="sic"></span></div>
+<div class="mh"><i></i><em></em></div><div class="banner"></div>
+<div class="row"><i></i><div><b></b><s></s></div></div>
+<div class="row"><i></i><div><b></b><s></s></div></div>
+<div class="tabbar"><i></i><i></i><i></i><i></i></div></div>
+<div class="ov" id="ov"><div class="modal">
+<button class="x" id="x">✕</button>
+<h2>拼图解锁</h2>
+<p class="sub">翻开 9 张卡片，拼出欢迎彩蛋<br>集齐即可领取新人奖励</p>
+<div class="puzzle" id="pz"></div>
+<div class="count">已翻开 <b id="n">0</b> / 9</div>
+<button class="btn" id="go">领取新人奖励</button>
+<button class="skip" id="skip">跳过 →</button>
+</div></div>
+<button class="replay" id="replay">重新弹出</button>
+</div>
+<script>
+const pz=document.getElementById('pz'),n=document.getElementById('n'),go=document.getElementById('go'),ov=document.getElementById('ov');
+let flipped=0;const total=9;
+const emo=['🌅','🌇','🎆','🌈','🎇','🌃','🎑','🌠','✨'];
+for(let r=0;r<3;r++)for(let c=0;c<3;c++){
+const t=document.createElement('div');t.className='tile';
+t.innerHTML='<div class="f">?</div><div class="b" style="background-position:'+(c*50)+'% '+(r*50)+'%">'+emo[r*3+c]+'</div>';
+t.onclick=()=>{if(t.classList.contains('flip'))return;t.classList.add('flip');
+flipped++;n.textContent=flipped;
+if(flipped===total){go.style.display='block';}};pz.appendChild(t);}
+go.onclick=()=>ov.style.display='none';
+document.getElementById('skip').onclick=()=>ov.style.display='none';
+document.getElementById('x').onclick=()=>ov.style.display='none';
+document.getElementById('replay').onclick=()=>{ov.style.display='flex';flipped=0;n.textContent='0';go.style.display='none';
+document.querySelectorAll('.tile').forEach(t=>t.classList.remove('flip'));
+const m=ov.querySelector('.modal');m.style.animation='none';void m.offsetWidth;m.style.animation='';};
+</script></body></html>

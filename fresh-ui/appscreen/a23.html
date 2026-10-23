@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>绿野管家</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{background:#12261a;display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sans-serif}
+.phone{width:430px;height:900px;background:linear-gradient(180deg,#f2f9f0,#e6f2e4);border-radius:44px;overflow:hidden;position:relative;box-shadow:0 30px 80px rgba(0,0,0,.6),0 0 0 1px rgba(255,255,255,.12);display:flex;flex-direction:column}
+.topbar{padding:56px 24px 0;display:flex;justify-content:space-between;align-items:center}
+.topbar .t{font-size:20px;font-weight:800;color:#1e3d24;letter-spacing:1px}
+.topbar .s{font-size:12px;color:#7fa383;margin-top:4px}
+.avatar{width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,#7fbf7a,#4a8f5d);display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 4px 12px rgba(74,143,93,.4);cursor:pointer}
+.weather{margin:16px 24px 0;background:#fff;border-radius:18px;padding:14px 18px;display:flex;align-items:center;gap:12px;box-shadow:0 6px 16px rgba(74,143,93,.12);animation:slidein .6s ease both;animation-delay:-.15s}
+@keyframes slidein{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.weather .em{font-size:30px;display:block}
+.weather .wt{font-size:14px;font-weight:700;color:#1e3d24}
+.weather .wd{font-size:12px;color:#7fa383;margin-top:3px}
+.list{flex:1;overflow:hidden;margin:14px 24px 0}
+.plant{background:#fff;border-radius:20px;padding:16px;margin-bottom:12px;display:flex;gap:14px;box-shadow:0 6px 16px rgba(74,143,93,.1);animation:slidein .6s ease both;position:relative;overflow:hidden}
+.plant:nth-child(2){animation-delay:-.35s}.plant:nth-child(3){animation-delay:-.22s}
+.pot{width:74px;height:88px;flex-shrink:0;position:relative}
+.pot .leaves{position:absolute;top:0;left:50%;transform:translateX(-50%);width:64px;height:52px}
+.leaf{position:absolute;bottom:0;width:16px;height:44px;border-radius:50% 50% 50% 50%/60% 60% 40% 40%;transform-origin:bottom center;animation:sway 3s ease-in-out infinite;display:block}
+@keyframes sway{0%,100%{transform:rotate(-6deg)}50%{transform:rotate(6deg)}}
+.pot .body{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:56px;height:40px;background:linear-gradient(135deg,#d98a5b,#b5653a);clip-path:polygon(8% 0,92% 0,80% 100%,20% 100%);border-radius:0 0 8px 8px}
+.pot .soil{position:absolute;bottom:38px;left:50%;transform:translateX(-50%);width:52px;height:8px;background:#6b4a33;border-radius:50%}
+.info{flex:1;min-width:0}
+.info .nm{font-size:16px;font-weight:800;color:#1e3d24}
+.info .sp{font-size:12px;color:#9dbfa4;margin-top:2px}
+.wbar{height:10px;border-radius:6px;background:#e3efe1;margin-top:10px;overflow:hidden}
+.wbar i{display:block;height:100%;border-radius:6px;background:linear-gradient(90deg,#5ec8e8,#2f9fd0);transition:width .8s cubic-bezier(.2,.8,.3,1);width:60%}
+.wlbl{display:flex;justify-content:space-between;font-size:12px;color:#7fa383;margin-top:6px}
+.wbtn{margin-top:10px;width:100%;border:none;border-radius:12px;padding:10px;background:linear-gradient(135deg,#5ec8e8,#2f9fd0);color:#fff;font-size:14px;font-weight:700;cursor:pointer;transition:transform .15s;position:relative;overflow:hidden}
+.wbtn:active{transform:scale(.97)}
+.drop{position:absolute;font-size:16px;pointer-events:none;animation:drop 1s ease-in forwards;display:block}
+@keyframes drop{0%{opacity:0;transform:translateY(-6px) scale(.6)}30%{opacity:1}100%{opacity:0;transform:translateY(26px) scale(1.1)}}
+.timeline{margin:0 24px 10px;background:#fff;border-radius:18px;padding:16px 18px;box-shadow:0 6px 16px rgba(74,143,93,.1)}
+.timeline .th{font-size:14px;font-weight:800;color:#1e3d24;margin-bottom:12px}
+.tl{position:relative;padding-left:20px}
+.tl::before{content:"";position:absolute;left:6px;top:6px;bottom:6px;width:2px;background:#dcead9;display:block}
+.tl-item{position:relative;padding:7px 0;font-size:13px;color:#4a6b52}
+.tl-item::before{content:"";position:absolute;left:-19px;top:12px;width:10px;height:10px;border-radius:50%;background:#7fbf7a;border:2px solid #fff;box-shadow:0 0 0 2px #7fbf7a;display:block}
+.tl-item.warn::before{background:#f4b942;box-shadow:0 0 0 2px #f4b942}
+.tl-item .tm{color:#9dbfa4;font-size:12px;margin-left:8px}
+.tabbar{display:flex;background:#ffffff;border-top:1px solid #dcead9;padding:12px 8px 34px}
+.tab{flex:1;text-align:center;color:#9dbfa4;font-size:11px;cursor:pointer;padding:6px 0}
+.tab .ic{font-size:22px;display:block;margin-bottom:4px;transition:transform .25s}
+.tab.on{color:#2f9f5f;font-weight:700}
+.tab.on .ic{transform:translateY(-3px) scale(1.15)}
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="topbar">
+    <div><div class="t">绿野管家</div><div class="s">今日有 2 株植物需要喝水 💧</div></div>
+    <div class="avatar">🌿</div>
+  </div>
+  <div class="weather">
+    <span class="em">🌤️</span>
+    <div><div class="wt">今日多云 24°C · 湿度 62%</div><div class="wd">适合开窗通风，龟背竹可以晒晒散射光</div></div>
+  </div>
+  <div class="list" id="list">
+    <div class="plant" data-w="35">
+      <div class="pot"><div class="leaves">
+        <i class="leaf" style="left:6px;background:#4a8f5d;animation-delay:-1s"></i>
+        <i class="leaf" style="left:24px;background:#5fa96f;height:50px;animation-delay:-2s"></i>
+        <i class="leaf" style="left:42px;background:#3f7d4f;animation-delay:-.5s"></i>
+      </div><div class="soil"></div><div class="body"></div></div>
+      <div class="info"><div class="nm">龟背竹</div><div class="sp">客厅 · 喜散射光</div>
+        <div class="wbar"><i style="width:35%"></i></div>
+        <div class="wlbl"><span>💧 水分</span><span class="wp">35%</span></div>
+        <button class="wbtn">浇水</button></div>
+    </div>
+    <div class="plant" data-w="70">
+      <div class="pot"><div class="leaves">
+        <i class="leaf" style="left:10px;background:#7fbf7a;animation-delay:-1.6s"></i>
+        <i class="leaf" style="left:28px;background:#8fd08a;height:48px;animation-delay:-.8s"></i>
+        <i class="leaf" style="left:44px;background:#6fb567;animation-delay:-2.4s"></i>
+      </div><div class="soil"></div><div class="body"></div></div>
+      <div class="info"><div class="nm">绿萝</div><div class="sp">书房 · 耐阴好养</div>
+        <div class="wbar"><i style="width:70%"></i></div>
+        <div class="wlbl"><span>💧 水分</span><span class="wp">70%</span></div>
+        <button class="wbtn">浇水</button></div>
+    </div>
+    <div class="plant" data-w="20">
+      <div class="pot"><div class="leaves">
+        <i class="leaf" style="left:8px;background:#e8a0b0;height:40px;animation-delay:-.3s"></i>
+        <i class="leaf" style="left:26px;background:#f2b8c6;height:46px;animation-delay:-1.9s"></i>
+        <i class="leaf" style="left:42px;background:#df8fa2;animation-delay:-1.1s"></i>
+      </div><div class="soil"></div><div class="body"></div></div>
+      <div class="info"><div class="nm">蝴蝶兰</div><div class="sp">卧室 · 花期中</div>
+        <div class="wbar"><i style="width:20%"></i></div>
+        <div class="wlbl"><span>💧 水分</span><span class="wp">20%</span></div>
+        <button class="wbtn">浇水</button></div>
+    </div>
+  </div>
+  <div class="timeline">
+    <div class="th">📅 养护提醒</div>
+    <div class="tl">
+      <div class="tl-item warn">蝴蝶兰急需补水<span class="tm">今天</span></div>
+      <div class="tl-item">龟背竹擦拭叶片<span class="tm">明天</span></div>
+      <div class="tl-item">全屋植物施肥日<span class="tm">10月25日</span></div>
+    </div>
+  </div>
+  <div class="tabbar" id="tabbar">
+    <div class="tab on"><span class="ic">🪴</span>我的植物</div>
+    <div class="tab"><span class="ic">📖</span>养护百科</div>
+    <div class="tab"><span class="ic">⏰</span>提醒</div>
+    <div class="tab"><span class="ic">👤</span>我的</div>
+  </div>
+</div>
+<script>
+(function(){
+  document.getElementById('list').addEventListener('click',function(e){
+    var b=e.target.closest('.wbtn');if(!b)return;
+    var card=b.closest('.plant');
+    var bar=card.querySelector('.wbar i'),wp=card.querySelector('.wp');
+    bar.style.width='100%';wp.textContent='100%';
+    for(var i=0;i<6;i++){var d=document.createElement('i');d.className='drop';d.textContent='💧';
+      d.style.left=(20+Math.random()*60)+'%';d.style.top='0px';d.style.animationDelay=(i*0.12)+'s';
+      b.appendChild(d);(function(el){setTimeout(function(){el.remove()},1400)})(d);}
+    b.textContent='已浇水 ✓';b.disabled=true;b.style.background='linear-gradient(135deg,#9dbfa4,#7fa383)';
+    setTimeout(function(){b.textContent='浇水';b.disabled=false;b.style.background='';},2500);
+  });
+  var tb=document.getElementById('tabbar');
+  tb.addEventListener('click',function(e){
+    var t=e.target.closest('.tab');if(!t)return;
+    tb.querySelectorAll('.tab').forEach(function(x){x.classList.remove('on')});
+    t.classList.add('on');
+  });
+})();
+</script>
+</body>
+</html>

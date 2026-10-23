@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>版本更新 · 轻奢黑金</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    min-height: 100vh;
+    background: radial-gradient(ellipse at 50% 30%, #1c1712 0%, #0d0b08 70%);
+    font-family: Georgia, "Songti SC", "STSong", serif;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 24px 16px;
+  }
+  .backdrop-word {
+    position: fixed; top: 8%; left: 50%; transform: translateX(-50%);
+    font-size: 15vw; color: rgba(212,175,55,0.045); letter-spacing: 0.2em;
+    pointer-events: none; white-space: nowrap; font-style: italic;
+  }
+  .modal {
+    width: 330px;
+    background: linear-gradient(160deg, #171310 0%, #100d0a 100%);
+    border: 1px solid #d4af37;
+    border-radius: 18px;
+    box-shadow: 0 0 0 1px rgba(0,0,0,0.6), 0 24px 60px rgba(0,0,0,0.6), 0 0 44px rgba(212,175,55,0.12);
+    padding: 30px 28px;
+    display: flex; flex-direction: column; align-items: center;
+    position: relative;
+  }
+  .modal.hidden { display: none; }
+  .modal::before {
+    content: ""; position: absolute; inset: 6px;
+    border: 1px solid rgba(212,175,55,0.25); border-radius: 13px;
+    pointer-events: none;
+  }
+
+  .header { width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+  .title-area { display: flex; align-items: center; gap: 10px; font-size: 20px; color: #f5e6c4; letter-spacing: 0.12em; }
+  .title-area svg { width: 24px; height: 24px; }
+  .close-btn {
+    background: none; border: 1px solid rgba(212,175,55,0.4); border-radius: 50%;
+    width: 28px; height: 28px; color: #a89878; font-size: 15px; cursor: pointer; line-height: 1;
+  }
+  .close-btn:hover { color: #d4af37; border-color: #d4af37; }
+
+  .divider { width: 44px; height: 1px; background: linear-gradient(90deg, transparent, #d4af37, transparent); margin: 10px 0 12px; }
+  .subtitle { width: 100%; font-size: 14px; color: #cbb98f; margin-bottom: 4px; text-align: center; letter-spacing: 0.06em; }
+  .meta { width: 100%; font-size: 12px; color: #7a6c52; margin-bottom: 24px; text-align: center; font-variant-numeric: tabular-nums; letter-spacing: 0.04em; }
+
+  /* --- 纤细金色进度环 --- */
+  .ring-wrap { position: relative; width: 168px; height: 168px; margin-bottom: 20px; }
+  .ring-svg { transform: rotate(-90deg); }
+  .ring-svg.spin { animation: spin 1.4s linear infinite; }
+  @keyframes spin { to { transform: rotate(270deg); } }
+  .ring-track { fill: none; stroke: #38301f; stroke-width: 3; }
+  .ring-prog {
+    fill: none; stroke: url(#goldGrad); stroke-width: 3; stroke-linecap: round;
+    filter: drop-shadow(0 0 5px rgba(212,175,55,0.7));
+  }
+  .ring-center {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+  }
+  .ring-pct { font-size: 32px; color: #f5e6c4; font-variant-numeric: tabular-nums; }
+  .ring-label { font-size: 11px; color: #7a6c52; letter-spacing: 0.3em; }
+  .ring-center svg { width: 40px; height: 40px; display: none; }
+  .ring-center.done .ring-pct, .ring-center.done .ring-label { display: none; }
+  .ring-center.done svg { display: block; }
+
+  .main-btn {
+    width: 100%; padding: 13px 0;
+    border-radius: 99px; border: 1px solid rgba(212,175,55,0.55);
+    background: transparent; color: #d4af37;
+    font-size: 15px; letter-spacing: 0.28em; text-indent: 0.28em;
+    font-family: inherit; cursor: pointer;
+  }
+  .main-btn:hover { background: rgba(212,175,55,0.1); }
+  .main-btn.solid { background: linear-gradient(135deg, #e8c85a, #b8860b); color: #14110c; border: none; font-weight: bold; }
+  .main-btn:disabled { opacity: 0.45; cursor: default; }
+
+  .replay {
+    margin-top: 22px; background: none; border: none;
+    color: #6b5f47; font-size: 13px; letter-spacing: 0.2em; cursor: pointer; font-family: inherit;
+  }
+  .replay:hover { color: #d4af37; }
+  .toast {
+    position: fixed; top: 26px; left: 50%;
+    transform: translateX(-50%) translateY(-12px);
+    background: rgba(20,16,10,0.95); color: #f5e6c4;
+    border: 1px solid rgba(212,175,55,0.5);
+    padding: 10px 24px; border-radius: 99px; font-size: 14px; letter-spacing: 0.1em;
+    opacity: 0; pointer-events: none; transition: opacity 0.25s, transform 0.25s; z-index: 60;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+<div class="backdrop-word">LUXE</div>
+
+<div class="modal" id="modal">
+  <div class="header">
+    <div class="title-area">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#d4af37" stroke-width="1.6">
+        <path d="M12 3l2.2 6.2L21 11l-6.8 1.8L12 19l-2.2-6.2L3 11l6.8-1.8z"/>
+      </svg>
+      版本更新
+    </div>
+    <button class="close-btn" id="closeBtn">×</button>
+  </div>
+  <div class="divider"></div>
+  <div class="subtitle" id="statusText">正在下载 3.3.1 尊享版</div>
+  <div class="meta" id="metaText">0.0MB / 156.8MB · -- MB/s</div>
+
+  <div class="ring-wrap">
+    <svg class="ring-svg" id="ringSvg" width="168" height="168" viewBox="0 0 168 168">
+      <defs>
+        <linearGradient id="goldGrad" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#f6e27a"/>
+          <stop offset="0.5" stop-color="#d4af37"/>
+          <stop offset="1" stop-color="#a67c1a"/>
+        </linearGradient>
+      </defs>
+      <circle class="ring-track" cx="84" cy="84" r="72"></circle>
+      <circle class="ring-prog" id="ringProg" cx="84" cy="84" r="72"></circle>
+    </svg>
+    <div class="ring-center" id="ringCenter">
+      <div class="ring-pct" id="percentText">0%</div>
+      <div class="ring-label">下载中</div>
+      <svg viewBox="0 0 24 24" fill="none" stroke="#d4af37" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M20 6L9 17l-5-5"/>
+      </svg>
+    </div>
+  </div>
+
+  <button class="main-btn" id="mainBtn">取消更新</button>
+</div>
+
+<button class="replay" id="replayBtn">↺ 重新演示</button>
+<div class="toast" id="toast"></div>
+
+<script>
+  const $ = id => document.getElementById(id);
+  const modal = $('modal'), ringProg = $('ringProg'), ringSvg = $('ringSvg'),
+        ringCenter = $('ringCenter'), percentText = $('percentText'),
+        statusText = $('statusText'), metaText = $('metaText'),
+        mainBtn = $('mainBtn'), toast = $('toast');
+
+  const R = 72, C = 2 * Math.PI * R;
+  const TOTAL_MB = 156.8, VERSION = '3.3.1';
+  let progress = 0, state = 'downloading', timer = null, showSpeed = 0;
+
+  ringProg.style.strokeDasharray = C.toFixed(1);
+  ringProg.style.strokeDashoffset = C.toFixed(1);
+
+  function showToast(msg) {
+    toast.textContent = msg;
+    toast.classList.add('show');
+    clearTimeout(showToast._t);
+    showToast._t = setTimeout(() => toast.classList.remove('show'), 1800);
+  }
+  function render() {
+    percentText.textContent = Math.floor(progress) + '%';
+    ringProg.style.strokeDashoffset = (C - (progress / 100) * C).toFixed(1);
+    metaText.textContent = `${(progress/100*TOTAL_MB).toFixed(1)}MB / ${TOTAL_MB}MB · ${showSpeed.toFixed(1)} MB/s`;
+  }
+  function tick() {
+    if (state !== 'downloading') return;
+    const sp = 8 * (0.6 + Math.random() * 0.8);
+    showSpeed = showSpeed * 0.7 + sp * 0.3;
+    progress += sp * 0.1 / TOTAL_MB * 100;
+    if (progress >= 100) { progress = 100; render(); enterInstalling(); return; }
+    render();
+  }
+  function startTimer() { clearInterval(timer); timer = setInterval(tick, 100); }
+  function stopTimer() { clearInterval(timer); timer = null; }
+
+  function enterDownloading(fresh) {
+    state = 'downloading';
+    if (fresh) {
+      progress = 0; showSpeed = 0;
+      ringSvg.classList.remove('spin');
+      ringCenter.classList.remove('done');
+      mainBtn.classList.remove('solid');
+      mainBtn.disabled = false;
+      ringProg.style.strokeDasharray = C.toFixed(1);
+    }
+    statusText.textContent = `正在下载 ${VERSION} 尊享版`;
+    mainBtn.textContent = '取消更新';
+    startTimer(); render();
+  }
+  function enterInstalling() {
+    state = 'installing'; stopTimer();
+    statusText.textContent = '正在安装…';
+    metaText.textContent = `${TOTAL_MB}MB / ${TOTAL_MB}MB · 校验完成`;
+    // 不确定态：金色弧段旋转
+    ringProg.style.strokeDasharray = (C * 0.28).toFixed(1) + ' ' + C.toFixed(1);
+    ringProg.style.strokeDashoffset = '0';
+    ringSvg.classList.add('spin');
+    mainBtn.textContent = '安装中';
+    mainBtn.disabled = true;
+    setTimeout(() => { if (state === 'installing') enterDone(); }, 2400);
+  }
+  function enterDone() {
+    state = 'done';
+    ringSvg.classList.remove('spin');
+    ringProg.style.strokeDasharray = C.toFixed(1);
+    ringProg.style.strokeDashoffset = '0';
+    ringCenter.classList.add('done');
+    statusText.textContent = '更新完成';
+    metaText.textContent = `${VERSION} 已安装 · 欢迎回来`;
+    mainBtn.textContent = '完成';
+    mainBtn.disabled = false;
+    mainBtn.classList.add('solid');
+    showToast('已更新到最新版本');
+  }
+  function enterCancelled() {
+    state = 'cancelled'; stopTimer();
+    statusText.textContent = '已取消下载';
+    metaText.textContent = `${(progress/100*TOTAL_MB).toFixed(1)}MB / ${TOTAL_MB}MB · 已停止`;
+    mainBtn.textContent = '重新下载';
+    mainBtn.disabled = false;
+    showToast('已取消下载');
+  }
+
+  mainBtn.addEventListener('click', () => {
+    if (state === 'downloading') enterCancelled();
+    else if (state === 'cancelled') enterDownloading(true);
+    else if (state === 'done') { modal.classList.add('hidden'); showToast(`已更新到 ${VERSION}`); }
+  });
+  $('closeBtn').addEventListener('click', () => {
+    if (state === 'downloading') enterCancelled();
+    else modal.classList.add('hidden');
+  });
+  $('replayBtn').addEventListener('click', () => {
+    modal.classList.remove('hidden');
+    enterDownloading(true);
+    showToast('重新开始演示');
+  });
+
+  window.addEventListener('load', () => {
+    if (location.hash === '#done') {
+      enterDownloading(true);
+      progress = 100; render(); enterInstalling();
+      setTimeout(() => enterDone(), 400);
+    } else {
+      enterDownloading(true);
+    }
+  });
+</script>
+</body>
+</html>

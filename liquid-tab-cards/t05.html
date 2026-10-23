@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=430,initial-scale=1">
+<title>熔岩晚霞 · 液态页签卡片</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{width:430px;min-height:900px;margin:0 auto;position:relative;overflow-x:hidden;
+font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+background:#0c060a;color:#f5ece4;user-select:none}
+/* ===== 熔岩流体背景 ===== */
+.bg{position:fixed;inset:0;z-index:0;overflow:hidden;background:radial-gradient(120% 100% at 50% 0%,#2a0f14 0%,#0c060a 55%)}
+.bg i{position:absolute;border-radius:50%;filter:blur(70px);opacity:.85}
+.bg i:nth-child(1){width:340px;height:340px;left:-90px;top:-70px;background:radial-gradient(circle,#ff5a00,transparent 70%);animation:drift1 14s ease-in-out -7s infinite alternate}
+.bg i:nth-child(2){width:300px;height:300px;right:-80px;top:180px;background:radial-gradient(circle,#ff2d55,transparent 70%);animation:drift2 17s ease-in-out -11s infinite alternate}
+.bg i:nth-child(3){width:380px;height:380px;left:-120px;top:520px;background:radial-gradient(circle,#a855f7,transparent 70%);opacity:.7;animation:drift1 20s ease-in-out -3s infinite alternate-reverse}
+.bg i:nth-child(4){width:220px;height:220px;right:-40px;bottom:-60px;background:radial-gradient(circle,#ff8a3d,transparent 70%);animation:drift2 12s ease-in-out -9s infinite alternate}
+.bg i:nth-child(5){width:180px;height:180px;left:120px;top:320px;background:radial-gradient(circle,#ffd166,transparent 70%);opacity:.5;animation:drift1 10s ease-in-out -5s infinite alternate}
+@keyframes drift1{from{transform:translate(0,0) scale(1)}to{transform:translate(70px,50px) scale(1.18)}}
+@keyframes drift2{from{transform:translate(0,0) scale(1.1)}to{transform:translate(-60px,70px) scale(.92)}}
+.grain{position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.5;
+background-image:radial-gradient(rgba(255,255,255,.05) 1px,transparent 1px);background-size:26px 26px}
+.wrap{position:relative;z-index:2;padding:0 16px 130px}
+/* ===== 状态栏 ===== */
+.status{display:flex;justify-content:space-between;align-items:center;padding:16px 8px 6px;font-size:13px;font-weight:600;color:#ffe9d6}
+.sicons{display:flex;align-items:center;gap:6px}
+.sig{display:flex;align-items:flex-end;gap:2px}
+.sig b{width:3px;background:#ffe9d6;border-radius:1px;display:block}
+.sig b:nth-child(1){height:5px}.sig b:nth-child(2){height:8px}.sig b:nth-child(3){height:11px}.sig b:nth-child(4){height:13px;opacity:.4}
+.wifi{width:16px;height:11px;border:2px solid #ffe9d6;border-bottom:0;border-radius:8px 8px 0 0;position:relative}
+.wifi:after{content:"";position:absolute;left:4px;top:4px;width:4px;height:4px;border-radius:50%;background:#ffe9d6}
+.bat{width:24px;height:12px;border:1.5px solid #ffe9d6;border-radius:3px;position:relative}
+.bat:after{content:"";position:absolute;inset:2px;right:6px;background:linear-gradient(90deg,#ff8a3d,#ff2d55);border-radius:1px}
+.bat:before{content:"";position:absolute;right:-4px;top:3px;width:2px;height:4px;background:#ffe9d6;border-radius:1px}
+/* ===== 标题行 ===== */
+.topbar{display:flex;align-items:center;justify-content:space-between;margin:10px 0 12px;animation:rise .6s cubic-bezier(.34,1.9,.4,1) .05s both}
+.topbar h1{font-size:26px;font-weight:800;letter-spacing:.02em;
+background:linear-gradient(100deg,#ffd166,#ff8a3d 35%,#ff2d55 65%,#c084fc);-webkit-background-clip:text;background-clip:text;color:transparent}
+.topbar h1 small{display:block;font-size:11px;font-weight:500;color:#d8a583;letter-spacing:.28em;margin-top:3px;-webkit-text-fill-color:#d8a583}
+.tbtns{display:flex;gap:10px}
+.tbtn{width:42px;height:42px;border-radius:50%;border:1px solid rgba(255,255,255,.22);
+background:rgba(255,255,255,.1);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+display:flex;align-items:center;justify-content:center;font-size:18px;color:#ffe9d6;cursor:pointer;
+box-shadow:inset 0 1px 0 rgba(255,255,255,.3);transition:transform .3s cubic-bezier(.34,1.9,.4,1)}
+.tbtn:active{transform:scale(.86)}
+@keyframes rise{from{opacity:0;transform:translateY(26px)}}
+/* ===== 一周条 ===== */
+.week{display:flex;justify-content:space-between;margin:2px 2px 16px;animation:rise .6s cubic-bezier(.34,1.9,.4,1) .12s both}
+.day{flex:1;text-align:center;padding:9px 0 8px;border-radius:16px;font-size:11px;color:#c99a78}
+.day b{display:block;font-size:15px;margin-top:3px;font-weight:700;color:#ffe9d6}
+.day.today{background:linear-gradient(160deg,rgba(255,122,24,.5),rgba(255,45,85,.45));
+border:1px solid rgba(255,150,80,.5);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+box-shadow:0 6px 18px rgba(255,90,0,.35),inset 0 1px 0 rgba(255,255,255,.35)}
+.day.today b{color:#fff}
+/* ===== 页签分组卡片 ===== */
+.card{position:relative;border-radius:26px;margin-bottom:16px;overflow:hidden;
+background:rgba(30,14,16,.42);backdrop-filter:blur(20px) saturate(1.5);-webkit-backdrop-filter:blur(20px) saturate(1.5);
+box-shadow:inset 0 1px 0 rgba(255,255,255,.28),inset 0 -1px 0 rgba(0,0,0,.25),0 14px 34px rgba(0,0,0,.45);
+animation:rise .65s cubic-bezier(.34,1.9,.4,1) both}
+.card:nth-of-type(1){animation-delay:.18s}.card:nth-of-type(2){animation-delay:.26s}
+.card:nth-of-type(3){animation-delay:.34s}.card:nth-of-type(4){animation-delay:.42s}
+.card:nth-of-type(5){animation-delay:.5s}
+.card::before{content:"";position:absolute;inset:0;border-radius:26px;padding:1.6px;pointer-events:none;z-index:3;
+background:var(--glow);-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
+-webkit-mask-composite:xor;mask-composite:exclude;opacity:.95;animation:hue 9s linear infinite}
+@keyframes hue{to{filter:hue-rotate(360deg)}}
+.g1{--glow:linear-gradient(140deg,#ffb020,#ff5a00,#ff2d55)}
+.g2{--glow:linear-gradient(140deg,#ff2d55,#ff5a8a,#a855f7)}
+.g3{--glow:linear-gradient(140deg,#ff8a3d,#ff3d00,#7c2d12)}
+.g4{--glow:linear-gradient(140deg,#c084fc,#a855f7,#ff2d55)}
+.g5{--glow:linear-gradient(140deg,#ffd166,#ff8a3d,#ff5a00)}
+/* 分组头 */
+.ghead{display:flex;align-items:center;gap:10px;padding:15px 16px 12px;cursor:pointer;position:relative;z-index:2}
+.gdot{width:9px;height:9px;border-radius:50%;background:var(--glow);box-shadow:0 0 12px 2px rgba(255,120,40,.7);flex-shrink:0}
+.gname{font-size:16px;font-weight:800;letter-spacing:.02em}
+.gcount{font-size:11px;color:#e8b48c;background:rgba(255,120,40,.16);border:1px solid rgba(255,150,80,.35);
+padding:2px 9px;border-radius:10px;white-space:nowrap}
+.chev{margin-left:auto;font-size:13px;color:#f0b98a;transition:transform .45s cubic-bezier(.34,1.9,.4,1)}
+.card.closed .chev{transform:rotate(-90deg)}
+.avs{position:relative;height:34px;overflow:hidden;flex-shrink:0;margin-left:2px}
+.avs-in{display:flex;transition:transform .5s cubic-bezier(.34,1.9,.4,1)}
+.av{width:34px;height:34px;border-radius:50%;border:2px solid rgba(20,8,10,.9);margin-left:-10px;flex-shrink:0;
+display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff;
+box-shadow:0 3px 8px rgba(0,0,0,.4)}
+.av:first-child{margin-left:0}
+/* 会话行 */
+.rows{display:grid;grid-template-rows:1fr;transition:grid-template-rows .55s cubic-bezier(.34,1.9,.4,1)}
+.card.closed .rows{grid-template-rows:0fr}
+.rows-in{overflow:hidden;min-height:0}
+.row{display:flex;align-items:center;gap:12px;padding:10px 16px;cursor:pointer;position:relative;z-index:2;
+transition:transform .3s cubic-bezier(.34,1.9,.4,1),background .2s}
+.row:active{transform:scale(.96)}
+.row+.row{border-top:1px solid rgba(255,255,255,.07)}
+.rav{width:46px;height:46px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;
+font-size:17px;font-weight:800;color:#fff;box-shadow:0 4px 12px rgba(0,0,0,.4),inset 0 2px 4px rgba(255,255,255,.35)}
+.rmid{flex:1;min-width:0}
+.rname{font-size:14.5px;font-weight:700;margin-bottom:3px}
+.rmsg{font-size:12px;color:#d9a87f;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rright{text-align:right;flex-shrink:0}
+.rtime{font-size:10.5px;color:#b9835f;margin-bottom:6px}
+.badge{min-width:19px;height:19px;padding:0 5px;border-radius:10px;background:linear-gradient(135deg,#ff5a00,#ff2d55);
+color:#fff;font-size:11px;font-weight:800;display:inline-flex;align-items:center;justify-content:center;
+box-shadow:0 3px 10px rgba(255,45,85,.6)}
+.badge.dot{width:9px;min-width:9px;height:9px;padding:0}
+/* ===== seam 胶囊导航 ===== */
+.seam{position:fixed;left:50%;transform:translateX(-50%);bottom:22px;z-index:10;width:352px;
+display:flex;align-items:center;justify-content:space-around;padding:10px 8px 12px;border-radius:30px;
+background:rgba(24,10,12,.62);backdrop-filter:blur(24px) saturate(1.6);-webkit-backdrop-filter:blur(24px) saturate(1.6);
+border:1px solid rgba(255,150,80,.28);box-shadow:inset 0 1px 0 rgba(255,255,255,.25),0 16px 40px rgba(0,0,0,.55),0 0 30px rgba(255,90,0,.18);
+animation:seamIn .7s cubic-bezier(.34,1.9,.4,1) .55s both}
+@keyframes seamIn{from{opacity:0;transform:translateX(-50%) translateY(60px)}}
+.nitem{position:relative;width:56px;height:48px;display:flex;flex-direction:column;align-items:center;justify-content:center;
+gap:3px;cursor:pointer;color:#a9765a;font-size:9.5px;transition:color .25s}
+.nitem .ic{font-size:21px;line-height:1;transition:transform .35s cubic-bezier(.34,1.9,.4,1);filter:grayscale(.4)}
+.nitem.on{color:#ffd9b0}
+.nitem.on .ic{filter:none;transform:translateY(-2px) scale(1.12)}
+.ndrop{position:absolute;bottom:2px;width:6px;height:8px;border-radius:50% 50% 50% 50%/60% 60% 40% 40%;
+background:linear-gradient(180deg,#ffb020,#ff2d55);box-shadow:0 0 10px 2px rgba(255,110,30,.8);
+opacity:0;transform:scale(.4);transition:all .4s cubic-bezier(.34,1.9,.4,1)}
+.nitem.on .ndrop{opacity:1;transform:scale(1)}
+.nmain{width:60px;height:60px;margin-top:-34px;border-radius:50%;flex-shrink:0;cursor:pointer;
+background:linear-gradient(150deg,#ffb020,#ff5a00 45%,#ff2d55);display:flex;align-items:center;justify-content:center;
+font-size:26px;color:#fff;box-shadow:0 10px 26px rgba(255,90,0,.55),inset 0 2px 5px rgba(255,255,255,.5),inset 0 -3px 6px rgba(120,10,20,.4);
+border:2px solid rgba(255,200,140,.5);transition:transform .35s cubic-bezier(.34,1.9,.4,1)}
+.nmain:active{transform:scale(.88)}
+</style>
+</head>
+<body>
+<div class="bg"><i></i><i></i><i></i><i></i><i></i></div>
+<div class="grain"></div>
+<div class="wrap">
+  <div class="status"><span>21:07</span>
+    <div class="sicons"><div class="sig"><b></b><b></b><b></b><b></b></div><div class="wifi"></div><div class="bat"></div></div>
+  </div>
+  <div class="topbar">
+    <h1>熔岩晚霞<small>LAVA DUSK · 液态页签</small></h1>
+    <div class="tbtns"><div class="tbtn">⌕</div><div class="tbtn">＋</div></div>
+  </div>
+  <div class="week">
+    <div class="day">一<b>12</b></div><div class="day">二<b>13</b></div><div class="day">三<b>14</b></div>
+    <div class="day">四<b>15</b></div><div class="day">五<b>16</b></div><div class="day today">六<b>17</b></div><div class="day">日<b>18</b></div>
+  </div>
+
+  <!-- 卡1 烈焰密友 -->
+  <div class="card g1">
+    <div class="ghead"><span class="gdot"></span><span class="gname">烈焰密友</span><span class="gcount">5 个会话</span>
+      <div class="avs"><div class="avs-in">
+        <div class="av" style="background:linear-gradient(135deg,#ff8a3d,#ff2d55)">燃</div>
+        <div class="av" style="background:linear-gradient(135deg,#a855f7,#ff2d55)">棠</div>
+        <div class="av" style="background:linear-gradient(135deg,#ff5a00,#ffb020)">烁</div>
+        <div class="av" style="background:linear-gradient(135deg,#ff2d55,#7c1d3f)">彤</div>
+        <div class="av" style="background:linear-gradient(135deg,#ffd166,#ff5a00)">曜</div>
+        <div class="av" style="background:linear-gradient(135deg,#c084fc,#ff5a8a)">霓</div>
+      </div></div><span class="chev">▼</span>
+    </div>
+    <div class="rows"><div class="rows-in">
+      <div class="row"><div class="rav" style="background:linear-gradient(135deg,#ff8a3d,#ff2d55)">燃</div>
+        <div class="rmid"><div class="rname">沈燃</div><div class="rmsg">晚霞太绝了！天台集合看日落</div></div>
+        <div class="rright"><div class="rtime">18:42</div><span class="badge">3</span></div></div>
+      <div class="row"><div class="rav" style="background:linear-gradient(135deg,#a855f7,#ff2d55)">棠</div>
+        <div class="rmid"><div class="rname">海棠</div><div class="rmsg">那家熔岩蛋糕我订到周末位了</div></div>
+        <div class="rright"><div class="rtime">17:05</div><span class="badge">1</span></div></div>
+      <div class="row"><div class="rav" style="background:linear-gradient(135deg,#ff5a00,#ffb020)">烁</div>
+        <div class="rmid"><div class="rname">陈烁</div><div class="rmsg">[语音 12"] 兄弟快听这段 riff</div></div>
+        <div class="rright"><div class="rtime">昨天</div></div></div>
+    </div></div>
+  </div>
+
+  <!-- 卡2 熔炉家族 -->
+  <div class="card g2">
+    <div class="ghead"><span class="gdot"></span><span class="gname">熔炉家族</span><span class="gcount">4 个会话</span>
+      <div class="avs"><div class="avs-in">
+        <div class="av" style="background:linear-gradient(135deg,#ff2d55,#7c1d3f)">妈</div>
+        <div class="av" style="background:linear-gradient(135deg,#ff8a3d,#b34700)">爸</div>
+        <div class="av" style="background:linear-gradient(135deg,#a855f7,#5b21b6)">姐</div>
+        <div class="av" style="background:linear-gradient(135deg,#ff5a8a,#ff2d55)">妹</div>
+        <div class="av" style="background:linear-gradient(135deg,#ffd166,#ff5a00)">奶</div>
+        <div class="av" style="background:linear-gradient(135deg,#ff5a00,#7c2d12)">爷</div>
+      </div></div><span class="chev">▼</span>
+    </div>
+    <div class="rows"><div class="rows-in">
+      <div class="row"><div class="rav" style="background:linear-gradient(135deg,#ff2d55,#7c1d3f)">妈</div>
+        <div class="rmid"><div class="rname">妈妈</div><div class="rmsg">天冷了，秋裤给你寄过去了</div></div>
+        <div class="rright"><div class="rtime">19:20</div><span class="badge">2</span></div></div>
+      <div class="row"><div class="rav" style="background:linear-gradient(135deg,#a855f7,#5b21b6)">姐</div>
+        <div class="rmid"><div class="rname">姐姐</div><div class="rmsg">爸的体检报告我发群里了</div></div>
+        <div class="rright"><div class="rtime">15:31</div><span class="badge dot"></span></div></div>
+      <div class="row"><div class="rav" style="background:linear-gradient(135deg,#ffd166,#ff5a00)">奶</div>
+        <div class="rmid"><div class="rname">奶奶</div><div class="rmsg">[视频通话] 未接来电</div></div>
+        <div class="rright"><div class="rtime">昨天</div></div></div>
+    </div></div>
+  </div>
+
+  <!-- 卡3 火山项目 -->
+  <div class="card g3">
+    <div class="ghead"><span class="gdot"></span><span class="gname">火山项目</span><span class="gcount">6 个会话</span>
+      <div class="avs"><div class="avs-in">
+        <div class="av" style="background:linear-gradient(135deg,#ff8a3d,#7c2d12)">岩</div>
+        <div class="av" style="background:linear-gradient(135deg,#ff5a00,#ff2d55)">浆</div>
+        <div class="av" style="background:linear-gradient(135deg,#ffb020,#b34700)">炉</div>
+        <div class="av" style="background:linear-gradient(135deg,#ff3d00,#7c1d3f)">焰</div>
+        <div class="av" style="background:linear-gradient(135deg,#ff2d55,#ff8a3d)">灼</div>
+        <div class="av" style="background:linear-gradient(135deg,#ffd166,#ff5a00)">沸</div>
+      </div></div><span class="chev">▼</span>
+    </div>
+    <div class="rows"><div class="rows-in">
+      <div class="row"><div class="rav" style="background:linear-gradient(135deg,#ff8a3d,#7c2d12)">岩</div>
+        <div class="rmid"><div class="rname">岩姐（产品）</div><div class="rmsg">v3.2 评审提前到明天上午十点</div></div>
+        <div class="rright"><div class="rtime">20:15</div><span class="badge">5</span></div></div>
+      <div class="row"><div class="rav" style="background:linear-gradient(135deg,#ff5a00,#ff2d55)">浆</div>
+        <div class="rmid"><div class="rname">浆果（设计）</div><div class="rmsg">熔岩质感那版稿子发你了，看看</div></div>
+        <div class="rright"><div class="rtime">19:48</div><span class="badge">2</span></div></div>
+      <div class="row"><div class="rav" style="background:linear-gradient(135deg,#ffb020,#b34700)">炉</div>
+        <div class="rmid"><div class="rname">老炉（后端）</div><div class="rmsg">接口联调通过，可以提测了 ✅</div></div>
+        <div class="rright"><div class="rtime">18:02</div></div></div>
+    </div></div>
+  </div>
+
+  <!-- 卡4 晚霞订阅 -->
+  <div class="card g4">
+    <div class="ghead"><span class="gdot"></span><span class="gname">晚霞订阅</span><span class="gcount">3 个会话</span>
+      <div class="avs"><div class="avs-in">
+        <div class="av" style="background:linear-gradient(135deg,#c084fc,#a855f7)">霞</div>
+        <div class="av" style="background:linear-gradient(135deg,#ff5a8a,#ff2d55)">映</div>
+        <div class="av" style="background:linear-gradient(135deg,#a855f7,#ff5a00)">紫</div>
+        <div class="av" style="background:linear-gradient(135deg,#ff2d55,#7c1d3f)">绯</div>
+        <div class="av" style="background:linear-gradient(135deg,#ffd166,#ff2d55)">橙</div>
+        <div class="av" style="background:linear-gradient(135deg,#ff8a3d,#a855f7)">曦</div>
+      </div></div><span class="chev">▼</span>
+    </div>
+    <div class="rows"><div class="rows-in">
+      <div class="row"><div class="rav" style="background:linear-gradient(135deg,#c084fc,#a855f7)">霞</div>
+        <div class="rmid"><div class="rname">霞光摄影</div><div class="rmsg">本周日落机位合集更新了 12 张</div></div>
+        <div class="rright"><div class="rtime">16:40</div><span class="badge">4</span></div></div>
+      <div class="row"><div class="rav" style="background:linear-gradient(135deg,#ff5a8a,#ff2d55)">映</div>
+        <div class="rmid"><div class="rname">映山红电台</div><div class="rmsg">第 88 期：晚霞与合成器浪潮</div></div>
+        <div class="rright"><div class="rtime">12:00</div><span class="badge dot"></span></div></div>
+    </div></div>
+  </div>
+
+  <!-- 卡5 开黑小队 -->
+  <div class="card g5">
+    <div class="ghead"><span class="gdot"></span><span class="gname">开黑小队</span><span class="gcount">5 个会话</span>
+      <div class="avs"><div class="avs-in">
+        <div class="av" style="background:linear-gradient(135deg,#ffd166,#ff5a00)">队</div>
+        <div class="av" style="background:linear-gradient(135deg,#ff5a00,#ff2d55)">野</div>
+        <div class="av" style="background:linear-gradient(135deg,#ff8a3d,#7c2d12)">坦</div>
+        <div class="av" style="background:linear-gradient(135deg,#ff2d55,#5b21b6)">奶</div>
+        <div class="av" style="background:linear-gradient(135deg,#ffb020,#ff3d00)">射</div>
+        <div class="av" style="background:linear-gradient(135deg,#c084fc,#ff5a00)">补</div>
+      </div></div><span class="chev">▼</span>
+    </div>
+    <div class="rows"><div class="rows-in">
+      <div class="row"><div class="rav" style="background:linear-gradient(135deg,#ffd166,#ff5a00)">队</div>
+        <div class="rmid"><div class="rname">队长阿沸</div><div class="rmsg">今晚九点五排，缺个打野速来</div></div>
+        <div class="rright"><div class="rtime">20:55</div><span class="badge">9</span></div></div>
+      <div class="row"><div class="rav" style="background:linear-gradient(135deg,#ff5a00,#ff2d55)">野</div>
+        <div class="rmid"><div class="rname">野王小烬</div><div class="rmsg">刚拿了五杀！回放发群里了</div></div>
+        <div class="rright"><div class="rtime">20:31</div><span class="badge">6</span></div></div>
+      <div class="row"><div class="rav" style="background:linear-gradient(135deg,#ff8a3d,#7c2d12)">坦</div>
+        <div class="rmid"><div class="rname">坦克大山</div><div class="rmsg">新赛季皮肤你们抽到了吗</div></div>
+        <div class="rright"><div class="rtime">昨天</div></div></div>
+    </div></div>
+  </div>
+</div>
+
+<nav class="seam">
+  <div class="nitem on"><span class="ic">💬</span>聊天<span class="ndrop"></span></div>
+  <div class="nitem"><span class="ic">👥</span>通讯录<span class="ndrop"></span></div>
+  <div class="nmain">🔥</div>
+  <div class="nitem"><span class="ic">🧭</span>发现<span class="ndrop"></span></div>
+  <div class="nitem"><span class="ic">👤</span>我的<span class="ndrop"></span></div>
+</nav>
+
+<script>
+document.querySelectorAll('.ghead').forEach(h=>{
+  h.addEventListener('click',()=>{
+    h.closest('.card').classList.toggle('closed');
+  });
+});
+document.querySelectorAll('.avs').forEach(a=>{
+  let busy=false;
+  a.addEventListener('click',e=>{
+    e.stopPropagation();
+    if(busy)return;busy=true;
+    const inn=a.querySelector('.avs-in');
+    inn.style.transform='translateX(-46px)';
+    setTimeout(()=>{inn.style.transform='translateX(0)';},650);
+    setTimeout(()=>{busy=false;},1100);
+  });
+});
+document.querySelectorAll('.nitem').forEach(n=>{
+  n.addEventListener('click',()=>{
+    document.querySelectorAll('.nitem').forEach(x=>x.classList.remove('on'));
+    n.classList.add('on');
+  });
+});
+document.querySelector('.nmain').addEventListener('click',function(){
+  this.style.transform='scale(.85) rotate(-12deg)';
+  setTimeout(()=>{this.style.transform='';},320);
+});
+</script>
+</body>
+</html>

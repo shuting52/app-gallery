@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>寰宇臻选 · 全球购</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --navy:#0A2540;--navy2:#12325A;--gold:#C9A96A;--gold-dk:#A9834B;--gold-lt:#F3E8D2;
+  --bg:#FAFAF8;--card:#FFFFFF;--line:#E8E2D4;--ink:#1E2A38;--soft:#8B95A3;--red:#C0392B;
+}
+body{background:#D8DDE3;font-family:-apple-system,"PingFang SC","Microsoft YaHei",serif;color:var(--ink)}
+.phone{max-width:430px;margin:0 auto;background:var(--bg);min-height:100vh;position:relative;
+  box-shadow:0 0 30px rgba(10,37,64,.25);padding-bottom:80px}
+.page{display:none;animation:fade .28s ease}
+.page.active{display:block}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.serif{font-family:Georgia,"Songti SC","STSong",serif;letter-spacing:2px}
+/* 顶栏 */
+.topbar{background:var(--navy);color:#fff;padding:16px 20px 20px}
+.topbar .brand{font-size:24px;color:var(--gold);font-weight:400}
+.topbar .brand small{font-size:10px;color:rgba(201,169,106,.7);letter-spacing:6px;display:block;margin-top:2px}
+.search{margin-top:14px;background:rgba(255,255,255,.1);border:1px solid rgba(201,169,106,.4);
+  border-radius:24px;padding:10px 16px;display:flex;gap:10px;align-items:center;color:rgba(255,255,255,.6);
+  font-size:13px;cursor:pointer}
+.search:active{background:rgba(255,255,255,.16)}
+/* 国家馆横滑 */
+.sec{padding:22px 20px 0}
+.sec-t{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:14px}
+.sec-t h2{font-size:19px;font-weight:500;letter-spacing:3px;color:var(--navy)}
+.sec-t h2::after{content:"";display:block;width:34px;height:2px;background:var(--gold);margin-top:6px}
+.sec-t a{font-size:12px;color:var(--gold-dk);cursor:pointer}
+.pav{display:flex;gap:12px;overflow-x:auto;padding:2px 20px 6px;margin:0 -20px;scrollbar-width:none}
+.pav::-webkit-scrollbar{display:none}
+.pav .pc{flex:0 0 108px;background:var(--card);border:1px solid var(--line);border-radius:6px;
+  padding:16px 8px;text-align:center;cursor:pointer;transition:transform .15s}
+.pav .pc:active{transform:scale(.95)}
+.pav .flag{font-size:34px}
+.pav .nm{font-size:14px;margin-top:8px;letter-spacing:2px}
+.pav .en{font-size:10px;color:var(--soft);letter-spacing:1px;margin-top:2px}
+/* 闪购 */
+.flash{margin:22px 20px 0;background:var(--navy);border-radius:8px;padding:18px;color:#fff;position:relative;overflow:hidden}
+.flash::before{content:"";position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+.flash .ft{display:flex;justify-content:space-between;align-items:center}
+.flash h3{font-size:17px;color:var(--gold);letter-spacing:4px;font-weight:500}
+.count{display:flex;gap:6px;align-items:center;font-size:13px}
+.count .cell{background:rgba(201,169,106,.18);border:1px solid rgba(201,169,106,.5);color:var(--gold);
+  font-size:17px;font-weight:700;min-width:34px;text-align:center;padding:4px 0;border-radius:4px;font-variant-numeric:tabular-nums}
+.flash-items{display:flex;gap:12px;margin-top:14px;overflow-x:auto;scrollbar-width:none}
+.flash-items::-webkit-scrollbar{display:none}
+.fi{flex:0 0 110px;cursor:pointer}
+.fi .pic{height:96px;background:var(--navy2);border:1px solid rgba(201,169,106,.25);border-radius:6px;
+  display:flex;align-items:center;justify-content:center;font-size:40px}
+.fi .p{color:var(--gold);font-size:15px;font-weight:700;margin-top:6px}
+.fi .p s{color:var(--soft);font-size:11px;font-weight:400;margin-left:4px}
+/* 全球爆款 */
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.gcard{background:var(--card);border:1px solid var(--line);border-radius:8px;overflow:hidden;cursor:pointer}
+.gcard:active{opacity:.85}
+.gcard .pic{height:150px;display:flex;align-items:center;justify-content:center;font-size:58px;background:#F5F3EC;position:relative}
+.gcard .origin{position:absolute;top:8px;left:8px;font-size:10px;background:var(--navy);color:var(--gold);
+  padding:2px 8px;border-radius:3px;letter-spacing:1px}
+.gcard .bd{padding:12px 14px 14px}
+.gcard .t{font-size:13px;line-height:1.5;height:40px;overflow:hidden}
+.gcard .tax{font-size:11px;color:var(--gold-dk);margin-top:6px;letter-spacing:1px}
+.gcard .pr{display:flex;align-items:baseline;gap:6px;margin-top:4px}
+.gcard .pr b{color:var(--navy);font-size:18px}
+.gcard .pr s{color:var(--soft);font-size:11px}
+/* 分类页 */
+.cate-tabs{display:flex;background:var(--card);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}
+.cate-tabs div{flex:1;text-align:center;padding:14px 0;font-size:14px;letter-spacing:2px;color:var(--soft);cursor:pointer;position:relative}
+.cate-tabs div.on{color:var(--navy);font-weight:700}
+.cate-tabs div.on::after{content:"";position:absolute;bottom:0;left:30%;right:30%;height:2px;background:var(--gold)}
+.clist{padding:14px 20px}
+.citem{display:flex;gap:14px;background:var(--card);border:1px solid var(--line);border-radius:8px;
+  padding:12px;margin-bottom:12px;cursor:pointer}
+.citem:active{background:#FBFAF6}
+.citem .pic{width:92px;height:92px;flex:none;background:#F5F3EC;border-radius:6px;display:flex;
+  align-items:center;justify-content:center;font-size:42px}
+.citem .mid{flex:1;min-width:0}
+.citem .t{font-size:13px;line-height:1.5;height:40px;overflow:hidden}
+.citem .tag{font-size:10px;color:var(--gold-dk);border:1px solid var(--gold);border-radius:3px;
+  padding:1px 6px;margin-right:6px;letter-spacing:1px}
+.citem .pr{margin-top:8px;color:var(--navy);font-size:17px;font-weight:700}
+.citem .pr small{font-size:11px;color:var(--soft);font-weight:400;margin-left:6px}
+/* 商品详情弹窗 */
+.mask{position:fixed;inset:0;background:rgba(10,37,64,.55);z-index:80;display:none;align-items:flex-end;justify-content:center}
+.mask.show{display:flex}
+.sheet{width:100%;max-width:430px;background:var(--bg);border-radius:16px 16px 0 0;max-height:86vh;
+  overflow-y:auto;animation:up .3s ease}
+@keyframes up{from{transform:translateY(60px);opacity:.5}to{transform:none;opacity:1}}
+.sheet .pic{height:220px;background:#F5F3EC;display:flex;align-items:center;justify-content:center;font-size:96px;position:relative}
+.sheet .close{position:absolute;top:12px;right:14px;width:32px;height:32px;border-radius:50%;background:rgba(10,37,64,.5);
+  color:#fff;display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer}
+.sheet .bd{padding:18px 22px 26px}
+.sheet .t{font-size:16px;line-height:1.6}
+.price-line{display:flex;align-items:baseline;gap:8px;margin:12px 0 4px}
+.price-line .now{color:var(--red);font-size:26px;font-weight:800}
+.price-line .now small{font-size:13px}
+.price-line s{color:var(--soft);font-size:13px}
+.tax-note{font-size:12px;color:var(--gold-dk);letter-spacing:1px}
+.ship-box{margin:14px 0;border:1px solid var(--line);border-radius:8px;background:var(--card)}
+.ship-box .r{display:flex;gap:10px;padding:12px 14px;font-size:13px;border-bottom:1px dashed var(--line)}
+.ship-box .r:last-child{border:none}
+.ship-box .k{color:var(--soft);width:72px;flex:none}
+.sheet .desc{font-size:13px;color:var(--soft);line-height:1.9;margin-top:6px}
+.sheet-btns{display:flex;gap:10px;margin-top:18px}
+.btn{flex:1;padding:14px;border-radius:26px;font-size:15px;letter-spacing:3px;cursor:pointer;border:1px solid var(--navy)}
+.btn.ghost{background:#fff;color:var(--navy)}
+.btn.solid{background:var(--navy);color:var(--gold)}
+.btn:active{transform:scale(.98)}
+/* 购物车 */
+.cart-list{padding:14px 20px}
+.cart-item{display:flex;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:8px;padding:12px;margin-bottom:12px}
+.cart-item .pic{width:76px;height:76px;flex:none;background:#F5F3EC;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:36px}
+.cart-item .mid{flex:1;min-width:0}
+.cart-item .t{font-size:12px;line-height:1.5;height:36px;overflow:hidden}
+.cart-item .tax{font-size:11px;color:var(--gold-dk);margin-top:4px}
+.qty{display:flex;align-items:center;gap:0;border:1px solid var(--line);border-radius:16px;overflow:hidden;width:fit-content;margin-top:8px}
+.qty button{width:28px;height:26px;border:none;background:#fff;font-size:15px;color:var(--navy);cursor:pointer}
+.qty span{min-width:32px;text-align:center;font-size:13px;font-weight:700}
+.cart-item .rm{font-size:11px;color:var(--soft);cursor:pointer;margin-top:6px;text-decoration:underline}
+.bill{background:var(--card);border:1px solid var(--line);border-radius:8px;margin:0 20px;padding:4px 16px}
+.bill .r{display:flex;justify-content:space-between;padding:11px 0;border-bottom:1px dashed var(--line);font-size:13px}
+.bill .r:last-child{border:none;font-size:15px;font-weight:700;color:var(--navy)}
+.bill .r .k{color:var(--soft)}
+.checkout-bar{position:fixed;bottom:66px;left:50%;transform:translateX(-50%);width:100%;max-width:430px;
+  background:var(--card);border-top:1px solid var(--line);display:flex;align-items:center;padding:10px 20px;z-index:40}
+.checkout-bar .sum{flex:1;font-size:13px;color:var(--soft)}
+.checkout-bar .sum b{color:var(--red);font-size:20px}
+.btn-pay{background:var(--navy);color:var(--gold);border:none;border-radius:24px;padding:12px 34px;
+  font-size:15px;letter-spacing:4px;cursor:pointer}
+.btn-pay:active{transform:scale(.97)}
+/* 我的页 */
+.me-head{background:var(--navy);padding:26px 20px 30px;color:#fff;position:relative;overflow:hidden}
+.me-head::after{content:"";position:absolute;bottom:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+.me-head .row{display:flex;align-items:center;gap:14px}
+.me-head .av{width:62px;height:62px;border-radius:50%;border:1px solid var(--gold);display:flex;align-items:center;
+  justify-content:center;font-size:26px;background:var(--navy2);color:var(--gold)}
+.me-head .nm{font-size:18px;letter-spacing:2px}
+.me-head .vip{font-size:11px;color:var(--gold);letter-spacing:3px;margin-top:4px}
+.order-card{background:var(--card);border:1px solid var(--line);border-radius:8px;margin:-22px 20px 0;
+  padding:16px;position:relative;z-index:2}
+.order-card .hd{display:flex;justify-content:space-between;font-size:14px;letter-spacing:2px;margin-bottom:12px}
+.order-card .hd a{font-size:12px;color:var(--gold-dk);cursor:pointer;letter-spacing:0}
+.ostatus{display:flex}
+.ostatus .o{flex:1;text-align:center;cursor:pointer}
+.ostatus .ic{font-size:24px}
+.ostatus .tx{font-size:11px;margin-top:6px;color:var(--soft);letter-spacing:1px}
+.coupon{margin:14px 20px 0;border:1px dashed var(--gold);border-radius:8px;background:#FFFDF6;
+  padding:14px 16px;display:flex;align-items:center;gap:14px;cursor:pointer}
+.coupon .amt{color:var(--red);font-size:26px;font-weight:800;flex:none}
+.coupon .amt small{font-size:12px}
+.coupon .inf{flex:1}
+.coupon .inf .a{font-size:13px;font-weight:700}
+.coupon .inf .b{font-size:11px;color:var(--soft);margin-top:3px}
+.coupon .go{font-size:12px;color:var(--gold-dk);border:1px solid var(--gold);border-radius:14px;padding:5px 12px}
+.menu{background:var(--card);border:1px solid var(--line);border-radius:8px;margin:14px 20px 0;overflow:hidden}
+.menu .mi{display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid #F1EDE1;font-size:14px;cursor:pointer}
+.menu .mi:last-child{border:none}
+.menu .mi:active{background:#FBFAF6}
+.menu .arr{margin-left:auto;color:var(--soft)}
+/* 底部 Tab */
+.tabbar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;
+  background:var(--navy);display:flex;padding:10px 0 calc(10px + env(safe-area-inset-bottom));z-index:50}
+.tab{flex:1;text-align:center;font-size:11px;color:rgba(255,255,255,.5);cursor:pointer;letter-spacing:2px}
+.tab .ic{font-size:21px;display:block;margin-bottom:3px}
+.tab.on{color:var(--gold)}
+.tab .dot{position:relative;display:inline-block}
+.tab .n{position:absolute;top:-6px;right:-12px;background:var(--red);color:#fff;font-size:9px;min-width:16px;height:16px;
+  border-radius:8px;display:flex;align-items:center;justify-content:center;padding:0 4px;font-weight:700}
+.toast{position:fixed;bottom:120px;left:50%;transform:translateX(-50%) translateY(20px);background:rgba(10,37,64,.94);
+  color:var(--gold-lt);padding:11px 24px;border:1px solid rgba(201,169,106,.5);border-radius:24px;font-size:14px;
+  opacity:0;transition:all .3s;z-index:99;pointer-events:none;white-space:nowrap;letter-spacing:1px}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.empty{text-align:center;color:var(--soft);padding:60px 20px;font-size:14px;letter-spacing:2px}
+</style>
+</head>
+<body>
+<div class="phone">
+
+  <!-- ===== 首页 ===== -->
+  <section class="page active" id="pg-home">
+    <div class="topbar">
+      <div class="brand serif">寰宇臻选<small>GLOBAL SELECTION</small></div>
+      <div class="search" onclick="toast('搜索全球好物：如 SK-II 神仙水')">🔍 搜索全球好物 · SK-II / 戴森 / Swisse</div>
+    </div>
+    <div class="sec">
+      <div class="sec-t"><h2 class="serif">国家馆</h2><a onclick="toast('查看全部国家馆')">全部 ›</a></div>
+      <div class="pav" id="pav"></div>
+    </div>
+    <div class="flash">
+      <div class="ft">
+        <h3 class="serif">限时闪购</h3>
+        <div class="count"><span style="font-size:12px;color:rgba(255,255,255,.6)">距结束</span>
+          <span class="cell" id="ch">05</span>:<span class="cell" id="cm">23</span>:<span class="cell" id="cs">41</span></div>
+      </div>
+      <div class="flash-items" id="flashItems"></div>
+    </div>
+    <div class="sec">
+      <div class="sec-t"><h2 class="serif">全球爆款</h2><a onclick="switchTab('cate')">更多 ›</a></div>
+      <div class="grid" id="hotGrid"></div>
+    </div>
+    <div style="text-align:center;padding:22px;color:var(--soft);font-size:11px;letter-spacing:4px">— 正品保障 · 海外直邮 —</div>
+  </section>
+
+  <!-- ===== 分类页 ===== -->
+  <section class="page" id="pg-cate">
+    <div class="topbar" style="padding-bottom:0">
+      <div class="brand serif" style="font-size:20px">选购分类</div>
+      <div class="search" style="margin-bottom:14px" onclick="toast('在分类中搜索')">🔍 在分类中搜索</div>
+    </div>
+    <div class="cate-tabs" id="cateTabs"></div>
+    <div class="clist" id="cateList"></div>
+  </section>
+
+  <!-- ===== 购物车 ===== -->
+  <section class="page" id="pg-cart">
+    <div class="topbar"><div class="brand serif" style="font-size:20px">购物车</div></div>
+    <div class="cart-list" id="cartList"></div>
+    <div class="bill" id="billBox"></div>
+    <div class="checkout-bar">
+      <div class="sum">合计 <b id="sumTotal">¥0</b><br><span style="font-size:11px">含税含运费</span></div>
+      <button class="btn-pay" onclick="checkout()">结 算</button>
+    </div>
+  </section>
+
+  <!-- ===== 我的页 ===== -->
+  <section class="page" id="pg-me">
+    <div class="me-head">
+      <div class="row">
+        <div class="av">陈</div>
+        <div><div class="nm">陈淑婷</div><div class="vip serif">黑金会员 · GLOBAL VIP</div></div>
+      </div>
+    </div>
+    <div class="order-card">
+      <div class="hd"><span>我的订单</span><a onclick="toast('查看全部订单')">全部订单 ›</a></div>
+      <div class="ostatus">
+        <div class="o" onclick="toast('待发货订单：2')"><div class="ic">📦</div><div class="tx">待发货</div></div>
+        <div class="o" onclick="toast('运输中订单：1')"><div class="ic">✈️</div><div class="tx">运输中</div></div>
+        <div class="o" onclick="toast('清关中订单：1')"><div class="ic">🛃</div><div class="tx">清关中</div></div>
+        <div class="o" onclick="toast('已签收订单：18')"><div class="ic">✅</div><div class="tx">已签收</div></div>
+      </div>
+    </div>
+    <div class="coupon" onclick="toast('已领取：满999减80优惠券')">
+      <div class="amt"><small>¥</small>80</div>
+      <div class="inf"><div class="a">黑金会员专享券</div><div class="b">满 ¥999 可用 · 有效期至 2026-11-30</div></div>
+      <div class="go">领取</div>
+    </div>
+    <div class="coupon" onclick="toast('已领取：跨境包邮券')">
+      <div class="amt" style="font-size:16px">包邮</div>
+      <div class="inf"><div class="a">海外直邮包邮券</div><div class="b">不限金额 · 有效期至 2026-12-31</div></div>
+      <div class="go">领取</div>
+    </div>
+    <div class="menu">
+      <div class="mi" onclick="toast('我的收藏：42 件')">🤍 我的收藏<span class="arr">›</span></div>
+      <div class="mi" onclick="toast('收货地址：上海市浦东新区…')">📍 收货地址<span class="arr">›</span></div>
+      <div class="mi" onclick="toast('身份信息已认证')">🪪 清关身份认证<span class="arr">›</span></div>
+      <div class="mi" onclick="toast('联系客服：400-820-0000')">🎧 联系客服<span class="arr">›</span></div>
+      <div class="mi" onclick="toast('设置页面')">⚙️ 设置<span class="arr">›</span></div>
+    </div>
+  </section>
+
+  <nav class="tabbar">
+    <div class="tab on" data-p="home"><span class="ic">◇</span>首页</div>
+    <div class="tab" data-p="cate"><span class="ic">▦</span>分类</div>
+    <div class="tab" data-p="cart"><span class="dot"><span class="ic">◈</span><span class="n" id="cartN">2</span></span>购物车</div>
+    <div class="tab" data-p="me"><span class="ic">○</span>我的</div>
+  </nav>
+
+  <div class="mask" id="mask">
+    <div class="sheet">
+      <div class="pic"><span id="dEmoji">🧴</span><div class="close" onclick="closeDetail()">✕</div></div>
+      <div class="bd">
+        <div class="t" id="dTitle"></div>
+        <div class="price-line"><span class="now"><small>¥</small><span id="dPrice"></span></span><s id="dOrig"></s></div>
+        <div class="tax-note">✓ 含税价 · 下单即享包税，无需补缴</div>
+        <div class="ship-box">
+          <div class="r"><span class="k">发货方式</span><span>海外直邮 · 预计 7-12 天送达</span></div>
+          <div class="r"><span class="k">税费</span><span id="dTax">行邮税已含，单价低于 ¥2000 免税额度内</span></div>
+          <div class="r"><span class="k">保障</span><span>正品溯源 · 假一赔十 · 支持7天无理由</span></div>
+        </div>
+        <div class="desc" id="dDesc"></div>
+        <div class="sheet-btns">
+          <button class="btn ghost" onclick="addToCart(true)">加入购物车</button>
+          <button class="btn solid" onclick="addToCart(false)">立即购买</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="toast" id="toast"></div>
+</div>
+
+<script>
+var pavs=[
+ {f:"🗾",n:"日本",e:"JAPAN"},{f:"🇰🇷",n:"韩国",e:"KOREA"},
+ {f:"🇦🇺",n:"澳洲",e:"AUSTRALIA"},{f:"🇪🇺",n:"欧洲",e:"EUROPE"}
+];
+var goods=[
+ {e:"🧴",t:"SK-II 护肤精华露 神仙水 230ml 日本直邮",o:"日本馆",p:1459,s:1699,tax:"含税价 · 行邮税已含",c:"美妆",d:"日本本土版神仙水，Pitera™ 专利成分，改善肌肤粗糙暗沉。"},
+ {e:"💄",t:"YSL 圣罗兰小金条 21号 复古正红 韩国免税版",o:"韩国馆",p:235,s:320,tax:"含税价 · 行邮税已含",c:"美妆",d:"韩国免税店直供，高显色哑光唇膏，复古正红百搭。"},
+ {e:"🍼",t:"澳洲 Aptamil 爱他美白金版 奶粉 3段 900g*2",o:"澳洲馆",p:389,s:459,tax:"含税价 · 奶粉税率10%",c:"母婴",d:"澳洲药房直采，白金版含DHA+益生元，适合1-3岁。"},
+ {e:"💊",t:"Swisse 钙+维生素D 柠檬酸钙 150片 澳洲直邮",o:"澳洲馆",p:129,s:179,tax:"含税价 · 行邮税已含",c:"保健",d:"澳洲国民保健品牌，柠檬酸钙好吸收，维护骨骼健康。"},
+ {e:"🍫",t:"瑞士莲 Lindt 软心黑巧克力 600g 礼盒装",o:"欧洲馆",p:159,s:219,tax:"含税价 · 行邮税已含",c:"食品",d:"瑞士原装进口，多口味软心巧克力，节日送礼首选。"},
+ {e:"🧸",t:"乐高 LEGO 城市系列消防局 60320 欧洲版",o:"欧洲馆",p:499,s:649,tax:"含税价 · 行邮税已含",c:"母婴",d:"欧洲仓直发，正品乐高，60320消防局套装。"},
+ {e:"☕",t:"illy 意利深度烘焙咖啡豆 1kg 意大利原装",o:"欧洲馆",p:289,s:359,tax:"含税价 · 行邮税已含",c:"食品",d:"意大利百年咖啡品牌，深度烘焙，油脂丰富。"},
+ {e:"🧷",t:"花王妙而舒纸尿裤 XL44片*4包 日本本土版",o:"日本馆",p:329,s:419,tax:"含税价 · 行邮税已含",c:"母婴",d:"日本本土版，透气干爽不断层，整箱更划算。"}
+];
+var flashGoods=goods.slice(0,4);
+var cateNames=["美妆","母婴","保健","食品"];
+var cart=[
+ {g:goods[0],q:1},
+ {g:goods[3],q:2}
+];
+function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;")}
+function renderPav(){
+ document.getElementById("pav").innerHTML=pavs.map(function(p){
+  return '<div class="pc" onclick="toast(\''+p.n+'国家馆：'+(2+Math.floor(Math.random()*3))+'00+ 件好物\')">'+
+   '<div class="flag">'+p.f+'</div><div class="nm">'+p.n+'</div><div class="en">'+p.e+'</div></div>';
+ }).join("");
+}
+function gcard(g,i){
+ return '<div class="gcard" onclick="openDetail('+i+')"><div class="pic">'+g.e+
+  '<span class="origin">'+g.o+'</span></div><div class="bd"><div class="t">'+esc(g.t)+'</div>'+
+  '<div class="tax">'+g.tax+'</div><div class="pr"><b>¥'+g.p+'</b><s>¥'+g.s+'</s></div></div></div>';
+}
+function renderHome(){
+ document.getElementById("hotGrid").innerHTML=goods.map(gcard).join("");
+ document.getElementById("flashItems").innerHTML=flashGoods.map(function(g,i){
+  return '<div class="fi" onclick="openDetail('+goods.indexOf(g)+')"><div class="pic">'+g.e+'</div>'+
+   '<div class="p">¥'+g.p+'<s>¥'+g.s+'</s></div></div>';
+ }).join("");
+}
+function renderCate(sel){
+ sel=sel||cateNames[0];
+ document.getElementById("cateTabs").innerHTML=cateNames.map(function(c){
+  return '<div class="'+(c===sel?'on':'')+'" onclick="renderCate(\''+c+'\')">'+c+'</div>';
+ }).join("");
+ var list=goods.filter(function(g){return g.c===sel});
+ if(!list.length)list=goods.slice(0,4);
+ document.getElementById("cateList").innerHTML=list.map(function(g){
+  var i=goods.indexOf(g);
+  return '<div class="citem" onclick="openDetail('+i+')"><div class="pic">'+g.e+'</div>'+
+   '<div class="mid"><div class="t">'+esc(g.t)+'</div>'+
+   '<div style="margin-top:6px"><span class="tag">'+g.o+'</span><span class="tag">包税</span></div>'+
+   '<div class="pr">¥'+g.p+'<small>含税价</small></div></div></div>';
+ }).join("");
+}
+var curG=null;
+function openDetail(i){
+ curG=goods[i];
+ document.getElementById("dEmoji").textContent=curG.e;
+ document.getElementById("dTitle").textContent=curG.t;
+ document.getElementById("dPrice").textContent=curG.p;
+ document.getElementById("dOrig").textContent="¥"+curG.s;
+ document.getElementById("dDesc").textContent=curG.d;
+ document.getElementById("mask").classList.add("show");
+}
+function closeDetail(){document.getElementById("mask").classList.remove("show");}
+document.getElementById("mask").addEventListener("click",function(e){if(e.target===this)closeDetail();});
+function addToCart(stay){
+ var found=null;
+ for(var i=0;i<cart.length;i++)if(cart[i].g===curG)found=cart[i];
+ if(found)found.q++;else cart.push({g:curG,q:1});
+ renderCart();closeDetail();
+ toast(stay?"已加入购物车":"已加入购物车，前往结算");
+ if(!stay)switchTab("cart");
+}
+function renderCart(){
+ var box=document.getElementById("cartList");
+ if(!cart.length){box.innerHTML='<div class="empty">购物车空空如也<br>去挑选全球好物吧</div>';}
+ else box.innerHTML=cart.map(function(it,i){
+  return '<div class="cart-item"><div class="pic">'+it.g.e+'</div><div class="mid">'+
+   '<div class="t">'+esc(it.g.t)+'</div><div class="tax">'+it.g.tax+' · 海外直邮 7-12 天</div>'+
+   '<div style="display:flex;justify-content:space-between;align-items:center">'+
+   '<div class="qty"><button onclick="chQty('+i+',-1)">−</button><span>'+it.q+'</span><button onclick="chQty('+i+',1)">＋</button></div>'+
+   '<div style="color:var(--red);font-weight:700">¥'+(it.g.p*it.q)+'</div></div></div>'+
+   '<div class="rm" onclick="rmItem('+i+')">删除</div></div>';
+ }).join("");
+ var sub=0;for(var j=0;j<cart.length;j++)sub+=cart[j].g.p*cart[j].q;
+ var tax=Math.round(sub*0.091);
+ var ship=sub>=299?0:60;
+ document.getElementById("billBox").innerHTML=
+  '<div class="r"><span class="k">商品小计</span><span>¥'+sub+'</span></div>'+
+  '<div class="r"><span class="k">行邮税（预估）</span><span>¥'+tax+'</span></div>'+
+  '<div class="r"><span class="k">国际运费</span><span>'+(ship===0?"包邮":"¥"+ship)+'</span></div>'+
+  '<div class="r"><span class="k">应付总额</span><span>¥'+(sub+tax+ship)+'</span></div>';
+ document.getElementById("sumTotal").textContent="¥"+(sub+tax+ship);
+ var n=0;for(var k2=0;k2<cart.length;k2++)n+=cart[k2].q;
+ document.getElementById("cartN").textContent=n;
+ document.getElementById("cartN").style.display=n?"flex":"none";
+}
+function chQty(i,d){
+ cart[i].q+=d;
+ if(cart[i].q<1)cart.splice(i,1);
+ renderCart();
+}
+function rmItem(i){cart.splice(i,1);renderCart();toast("已删除该商品");}
+function checkout(){
+ if(!cart.length){toast("购物车是空的，先去挑选好物吧");return;}
+ toast("订单已提交！海外仓 48 小时内发出");
+}
+/* 倒计时 */
+var remain=5*3600+23*60+41;
+function tick(){
+ remain=Math.max(0,remain-1);
+ var h=Math.floor(remain/3600),m=Math.floor(remain%3600/60),s=remain%60;
+ document.getElementById("ch").textContent=(h<10?"0":"")+h;
+ document.getElementById("cm").textContent=(m<10?"0":"")+m;
+ document.getElementById("cs").textContent=(s<10?"0":"")+s;
+}
+setInterval(tick,1000);
+var toastTimer=null;
+function toast(msg){
+ var el=document.getElementById("toast");
+ el.textContent=msg;el.classList.add("show");
+ clearTimeout(toastTimer);
+ toastTimer=setTimeout(function(){el.classList.remove("show")},2200);
+}
+function switchTab(p){
+ var pages=document.querySelectorAll(".page");
+ for(var i=0;i<pages.length;i++)pages[i].classList.remove("active");
+ document.getElementById("pg-"+p).classList.add("active");
+ var tabs=document.querySelectorAll(".tab");
+ for(var j=0;j<tabs.length;j++)tabs[j].classList.toggle("on",tabs[j].dataset.p===p);
+ window.scrollTo(0,0);
+}
+var tabEls=document.querySelectorAll(".tab");
+for(var k=0;k<tabEls.length;k++){
+ tabEls[k].addEventListener("click",function(){switchTab(this.dataset.p)});
+}
+renderPav();renderHome();renderCate();renderCart();
+(function(){var m=location.search.match(/tab=(\w+)/);if(m&&document.getElementById("pg-"+m[1]))switchTab(m[1]);})();
+</script>
+</body>
+</html>

@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>暴雨预警</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      min-height: 100vh; margin: 0; padding: 48px 18px; color: #fff;
+      font: 15px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(ellipse at 20% 15%, rgba(64,86,140,.9), transparent 36%),
+        radial-gradient(ellipse at 80% 40%, rgba(30,42,80,.85), transparent 38%),
+        radial-gradient(ellipse at 50% 90%, rgba(90,110,170,.5), transparent 40%),
+        linear-gradient(160deg, #0b1020, #141b31 55%, #0a0e1c);
+      background-attachment: fixed;
+    }
+    main { width: min(440px, 100%); margin: 0 auto; display: grid; gap: 18px; }
+    .heading { padding: 4px 6px 8px; }
+    .eyebrow { margin: 0 0 8px; color: rgba(255,255,255,.68); font-size: 11px; letter-spacing: .18em; }
+    h1 { margin: 0; font-size: 30px; letter-spacing: -.04em; }
+    .hint { margin: 7px 0 0; color: rgba(255,255,255,.68); }
+    .card {
+      position: relative; isolation: isolate; overflow: hidden; padding: 18px;
+      border: 1px solid rgba(255,255,255,.28); border-radius: 28px;
+      background: linear-gradient(135deg, rgba(140,170,255,.20), rgba(140,170,255,.07) 48%, rgba(90,120,220,.14));
+      -webkit-backdrop-filter: blur(24px) saturate(175%);
+      backdrop-filter: blur(24px) saturate(175%);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.42), inset 0 -1px 0 rgba(255,255,255,.08), 0 20px 48px rgba(8,8,24,.28);
+      transition: transform .25s ease, border-color .25s ease;
+    }
+    .card::before {
+      content: ""; position: absolute; z-index: 0; inset: 0; border-radius: inherit; pointer-events: none;
+      background: linear-gradient(118deg, rgba(180,200,255,.34) 0%, rgba(180,200,255,.08) 18%, transparent 42%, transparent 72%, rgba(150,180,255,.16) 100%);
+      opacity: .8;
+    }
+    .card::after {
+      content: ""; position: absolute; z-index: 0; top:-58px;right:-42px;;
+      width: 190px; height: 130px; border: 1px solid rgba(255,255,255,.22); border-radius: 50%;
+      background: radial-gradient(ellipse, rgba(255,255,255,.22), transparent 68%);
+      filter: blur(2px); transform: rotate(-20deg); pointer-events: none;
+    }
+    .card > * { position: relative; z-index: 1; }
+    .card:hover { transform: translateY(-3px); border-color: rgba(255,255,255,.46); }
+    .top, .title-line { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .top { margin-bottom: 15px; }
+    .pill { padding: 6px 12px; border: 1px solid rgba(255,255,255,.30); border-radius: 999px;
+      background: rgba(255,255,255,.10); color: rgba(255,255,255,.94); font-size: 12px;
+      box-shadow: inset 0 1px rgba(255,255,255,.18); white-space: nowrap; }
+    .pill.hot { background: linear-gradient(135deg,#ff6b6b,#ff3d5a); border-color: transparent; font-weight: 700; }
+    .row { display: flex; align-items: center; gap: 12px; min-width: 0; }
+    .face { display: grid; flex: 0 0 52px; width: 52px; height: 52px; place-items: center;
+      border: 1px solid rgba(255,255,255,.45); border-radius: 18px;
+      background: linear-gradient(145deg, #5a6fa8, #33406e 60%, #1d2547); color: #fff;
+      box-shadow: inset 0 1px 5px rgba(255,255,255,.5), 0 5px 15px rgba(15,12,35,.2); }
+    .face svg { width: 30px; height: 30px; display: block; }
+    .copy { flex: 1; min-width: 0; }
+    .title-line { margin-bottom: 5px; }
+    .title-line strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 16px; }
+    time, .preview { color: rgba(255,255,255,.72); font-size: 12px; }
+    .preview { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .unread { flex: 0 0 auto; color: #ffd9a8; font-size: 12px; font-weight: 700; }
+    .big { font-size: 34px; font-weight: 800; letter-spacing: -.02em; line-height: 1.1; }
+    .big small { font-size: 14px; font-weight: 400; opacity: .7; }
+    .sub { color: rgba(255,255,255,.72); font-size: 12px; margin-top: 4px; }
+    .bar { height: 8px; border-radius: 4px; background: rgba(255,255,255,.14); margin-top: 12px; overflow: hidden; }
+    .bar i { display: block; height: 100%; border-radius: 4px; background: linear-gradient(135deg,#ff6b6b,#ff3d5a); width: 86%; }
+    .tl { display: flex; align-items: center; gap: 0; margin-top: 14px; }
+    .tl .st { text-align: center; flex: 0 0 auto; }
+    .tl .st b { display: block; font-size: 17px; }
+    .tl .st span { font-size: 11px; color: rgba(255,255,255,.65); }
+    .tl .ln { flex: 1; height: 2px; background: rgba(255,255,255,.2); margin: 0 10px; position: relative; border-radius: 2px; }
+    .tl .ln i { position: absolute; left: 0; top: 0; bottom: 0; width: 62%; border-radius: 2px; background: linear-gradient(135deg,#ff6b6b,#ff3d5a); }
+    .btns { display: flex; gap: 10px; margin-top: 14px; }
+    .btn { flex: 1; text-align: center; padding: 10px 0; border-radius: 14px; font-size: 13px; font-weight: 700;
+      border: 1px solid rgba(255,255,255,.3); background: rgba(255,255,255,.10); color: #fff; }
+    .btn.pri { background: linear-gradient(135deg,#ff6b6b,#ff3d5a); border-color: transparent; }
+    .chips { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+    .chip { font-size: 11px; padding: 5px 10px; border-radius: 999px; background: rgba(255,255,255,.12);
+      border: 1px solid rgba(255,255,255,.2); color: rgba(255,255,255,.85); }
+    .dot { width: 8px; height: 8px; border-radius: 50%; background: #ff5f56; box-shadow: 0 0 8px #ff5f56; display: inline-block; margin-right: 6px; }
+    @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+      .card { background: rgba(43,35,68,.88); }
+    }
+    
+
+  </style>
+</head>
+<body>
+  <main>
+    <header class="heading">
+      <p class="eyebrow">LIQUID GLASS · 出行</p>
+      <h1>暴雨预警</h1>
+      <p class="hint">红色预警生效中，请注意防范。</p>
+    </header>
+
+    <section class="card">
+      <div class="top">
+        <span class="pill hot">气象预警</span>
+        <span class="unread"><span class="dot"></span>生效中</span>
+      </div>
+      <div class="row">
+        <div class="face"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4 14h6l-1 8 9-12h-6z"/></svg></div>
+        <div class="copy">
+          <div class="title-line"><strong>暴雨红色预警</strong><time>09:12</time></div>
+          <div class="preview">未来3小时降雨量可达80毫米</div>
+        </div>
+        <span class="unread">Ⅰ级</span>
+      </div>
+      <div class="bar"><i></i></div>
+      <div class="chips"><span class="chip">停止户外作业</span><span class="chip">远离低洼路段</span><span class="chip">关好门窗</span></div>
+    </section>
+
+    <section class="card">
+      <div class="top">
+        <span class="pill">防御指南</span>
+        <time>刚刚</time>
+      </div>
+      <div class="row">
+        <div class="face"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M7 15a5 5 0 1 1 1-9.9A6 6 0 0 1 19.5 8 4.5 4.5 0 0 1 18 17H7z"/><path d="M8 19l-1 2M12 19l-1 2M16 19l-1 2"/></svg></div>
+        <div class="copy">
+          <div class="title-line"><strong>强降雨应对</strong><time>09:05</time></div>
+          <div class="preview">地下车库入口已加装挡水板，请车主留意挪车通知</div>
+        </div>
+      </div>
+      <div class="btns"><span class="btn pri">查看避险地图</span><span class="btn">稍后提醒</span></div>
+    </section>
+  </main>
+</body>
+</html>

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>植物生长 · 进度指示</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:#0d1117;color:#e6edf3;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;
+       min-height:100vh;display:flex;justify-content:center;align-items:flex-start;padding:36px 0}
+  .stage{width:360px;max-width:94vw;display:flex;flex-direction:column;align-items:center}
+  .head{display:flex;justify-content:space-between;align-items:baseline;width:100%;margin-bottom:14px}
+  .head h1{font-size:17px;font-weight:600;letter-spacing:2px}
+  .head .pct{font-size:15px;color:#7ee787;font-variant-numeric:tabular-nums}
+  .garden{position:relative;width:300px;height:300px;background:linear-gradient(to bottom,#0d1420 0%,#0d1a12 70%,#0a120c 100%);
+          border:1px solid #1c2b22;border-radius:14px;overflow:hidden}
+  .soil{position:absolute;left:0;right:0;bottom:0;height:44px;
+        background:linear-gradient(to bottom,#4a3420,#241a10);
+        border-top:3px solid #5d452a}
+  .cap{position:absolute;bottom:10px;left:0;right:0;text-align:center;font-size:12px;color:#9db3a3;letter-spacing:1px;z-index:5}
+  .leaf{transform-box:fill-box;transform-origin:center}
+  .sprout{transform-box:fill-box;transform-origin:center}
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="head"><h1>植物生长</h1><span class="pct" id="pct">0%</span></div>
+  <div class="garden">
+    <svg width="300" height="300" viewBox="0 0 300 300">
+      <!-- 茎 -->
+      <path id="stem" d="M150,78 C148,105 144,128 138,155 C128,195 150,215 150,256"
+            fill="none" stroke="#3fa34d" stroke-width="7" stroke-linecap="round"/>
+      <!-- 叶1 (25%) -->
+      <g id="leaf1" class="leaf"><ellipse cx="122" cy="196" rx="26" ry="12" fill="#57c46a" transform="rotate(-24 122 196)"/></g>
+      <!-- 叶2 (50%) -->
+      <g id="leaf2" class="leaf"><ellipse cx="162" cy="152" rx="26" ry="12" fill="#63d677" transform="rotate(24 162 152)"/></g>
+      <!-- 叶3 (75%) -->
+      <g id="leaf3" class="leaf"><ellipse cx="128" cy="112" rx="22" ry="10" fill="#57c46a" transform="rotate(-22 128 112)"/></g>
+      <!-- 花 (100%) -->
+      <g id="flower" class="sprout">
+        <g transform="translate(150,64)">
+          <circle r="11" fill="#ff8fb2"/>
+          <circle r="11" cx="-13" fill="#ff6b9d"/><circle r="11" cx="13" fill="#ff6b9d"/>
+          <circle r="11" cy="-13" fill="#ff6b9d"/><circle r="11" cy="13" fill="#ff6b9d"/>
+          <circle r="11" cx="-9" cy="-9" fill="#ff8fb2"/><circle r="11" cx="9" cy="-9" fill="#ff8fb2"/>
+          <circle r="11" cx="-9" cy="9" fill="#ff8fb2"/><circle r="11" cx="9" cy="9" fill="#ff8fb2"/>
+          <circle r="7" fill="#ffd93a"/>
+        </g>
+      </g>
+    </svg>
+    <div class="soil"></div>
+    <div class="cap">茎随进度生长 · 叶子在 25 / 50 / 75% 弹出 · 100% 开花</div>
+  </div>
+</div>
+<script>
+(function(){
+  var pct=document.getElementById('pct'),stem=document.getElementById('stem'),
+      leaf1=document.getElementById('leaf1'),leaf2=document.getElementById('leaf2'),
+      leaf3=document.getElementById('leaf3'),flower=document.getElementById('flower');
+  var L=stem.getTotalLength();
+  var p=0,D=7000,HOLD=1000;
+  function render(){
+    pct.textContent=Math.round(p)+'%';
+    var r=p/100;
+    stem.style.strokeDasharray=L;
+    stem.style.strokeDashoffset=L*(1-r);
+    leaf1.style.transform=p>=25?'scale(1)':'scale(0)';
+    leaf2.style.transform=p>=50?'scale(1)':'scale(0)';
+    leaf3.style.transform=p>=75?'scale(1)':'scale(0)';
+    if(p>=99.5){flower.style.opacity='1';flower.style.transform='scale(1)';}
+    else{flower.style.opacity='0';flower.style.transform='scale(0.3)';}
+  }
+  function tick(now){
+    if(tick.t0===undefined)tick.t0=now;
+    var e=now-tick.t0;
+    if(e>=D){p=100;render();if(e>=D+HOLD){tick.t0=now;p=0;}requestAnimationFrame(tick);return;}
+    p=e/D*100;render();requestAnimationFrame(tick);
+  }
+  if(location.hash==='#mid'){p=55;render();}
+  else{requestAnimationFrame(tick);}
+})();
+</script>
+</body>
+</html>

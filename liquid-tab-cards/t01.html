@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>幻彩螺旋 · 液态页签卡片</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{width:430px;height:900px;margin:0 auto;position:relative;overflow:hidden;background:#07070f;color:#f2f4fb;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;user-select:none}
+/* ---------- 液态背景 ---------- */
+.bg{position:absolute;inset:0;overflow:hidden}
+.bg i{position:absolute;display:block;border-radius:50%;filter:blur(70px);opacity:.75;animation:drift 16s ease-in-out infinite alternate}
+.bg i:nth-child(1){width:300px;height:300px;left:-80px;top:-60px;background:radial-gradient(circle,#ff5ac8,transparent 70%);animation-delay:-3s}
+.bg i:nth-child(2){width:340px;height:340px;right:-100px;top:120px;background:radial-gradient(circle,#a855f7,transparent 70%);animation-delay:-7s}
+.bg i:nth-child(3){width:260px;height:260px;left:60px;top:330px;background:radial-gradient(circle,#ff8a3d,transparent 70%);animation-delay:-11s}
+.bg i:nth-child(4){width:300px;height:300px;right:-60px;top:520px;background:radial-gradient(circle,#3ddc84,transparent 70%);animation-delay:-5s;opacity:.55}
+.bg i:nth-child(5){width:280px;height:280px;left:-70px;bottom:-40px;background:radial-gradient(circle,#22d3ee,transparent 70%);animation-delay:-9s;opacity:.6}
+.bg i:nth-child(6){width:200px;height:200px;left:120px;top:640px;background:radial-gradient(circle,#ff5ac8,transparent 70%);animation-delay:-13s;opacity:.5}
+@keyframes drift{from{transform:translate(0,0) scale(1) rotate(0deg)}to{transform:translate(46px,-54px) scale(1.18) rotate(40deg)}}
+.bg::after{content:'';position:absolute;inset:0;background:radial-gradient(120% 100% at 50% 0%,transparent 40%,rgba(4,4,10,.55))}
+/* ---------- 状态栏 ---------- */
+.status{position:relative;z-index:5;height:46px;display:flex;align-items:center;justify-content:space-between;padding:0 26px;font-size:14px;font-weight:600}
+.sicons{display:flex;align-items:center;gap:6px}
+.sig{display:flex;align-items:flex-end;gap:2px;height:12px}
+.sig i{display:block;width:3px;border-radius:1px;background:#fff}
+.sig i:nth-child(1){height:4px}.sig i:nth-child(2){height:6px}.sig i:nth-child(3){height:9px}.sig i:nth-child(4){height:12px}
+.wifi{width:16px;height:12px;position:relative}
+.wifi i{position:absolute;display:block;border:2px solid transparent;border-top-color:#fff;border-radius:50%}
+.wifi i:nth-child(1){width:6px;height:6px;left:5px;top:7px}
+.wifi i:nth-child(2){width:11px;height:11px;left:2.5px;top:4px}
+.wifi i:nth-child(3){width:16px;height:16px;left:0;top:1px}
+.bat{width:24px;height:12px;border:1.5px solid #fff;border-radius:4px;position:relative}
+.bat::before{content:'';position:absolute;left:2px;top:2px;bottom:2px;width:14px;border-radius:2px;background:linear-gradient(90deg,#3ddc84,#a3e635)}
+.bat::after{content:'';position:absolute;right:-4px;top:3px;width:2.5px;height:4px;border-radius:0 2px 2px 0;background:#fff}
+/* ---------- 标题行 ---------- */
+.top{position:relative;z-index:5;display:flex;align-items:center;justify-content:space-between;padding:8px 20px 12px}
+.top h1{font-size:25px;font-weight:800;letter-spacing:.5px;background:linear-gradient(100deg,#ff8ac8,#c084fc 35%,#7dd3fc 70%,#6ee7b7);-webkit-background-clip:text;background-clip:text;color:transparent}
+.top p{font-size:12px;color:rgba(255,255,255,.55);margin-top:3px;letter-spacing:2px}
+.tbtns{display:flex;gap:10px}
+.tbtn{width:42px;height:42px;border-radius:50%;border:1px solid rgba(255,255,255,.22);background:rgba(255,255,255,.1);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);color:#fff;font-size:19px;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:inset 0 1px 0 rgba(255,255,255,.35)}
+.tbtn:active{transform:scale(.92)}
+/* ---------- 主滚动区 ---------- */
+.main{position:relative;z-index:5;height:calc(900px - 46px - 84px - 66px - 118px);overflow-y:auto;padding:2px 16px 14px;scrollbar-width:none}
+.main::-webkit-scrollbar{display:none}
+/* ---------- 分组卡片 ---------- */
+.gcard{position:relative;border-radius:26px;margin-bottom:14px;background:rgba(255,255,255,.07);backdrop-filter:blur(20px) saturate(1.5);-webkit-backdrop-filter:blur(20px) saturate(1.5);box-shadow:inset 0 1px 0 rgba(255,255,255,.28),0 12px 32px rgba(0,0,0,.35);overflow:hidden}
+.gcard::before{content:'';position:absolute;inset:0;border-radius:26px;padding:1.6px;background:linear-gradient(135deg,var(--c1),var(--c2),var(--c3),var(--c1));background-size:220% 220%;-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none;animation:edgeflow 5s linear infinite,edgebr 3.6s ease-in-out infinite alternate;animation-delay:var(--ed,0s),var(--ed,0s)}
+@keyframes edgeflow{to{background-position:220% 0}}
+@keyframes edgebr{from{opacity:.55}to{opacity:1}}
+.ghead{width:100%;border:0;background:none;color:inherit;display:flex;align-items:center;gap:10px;padding:14px 14px 12px;cursor:pointer;text-align:left}
+.gdot{width:9px;height:9px;border-radius:50%;background:linear-gradient(135deg,var(--c1),var(--c2));box-shadow:0 0 10px var(--c2);flex-shrink:0}
+.ginfo{flex:1;min-width:0}
+.gname{font-size:16px;font-weight:700}
+.gcount{font-size:11px;color:rgba(255,255,255,.55);margin-top:2px;display:block}
+.gavrow{display:flex;align-items:center;flex-shrink:0;transition:transform .5s cubic-bezier(.34,1.9,.4,1);cursor:pointer}
+.gavrow.slide{transform:translateX(-30px)}
+.gavrow .av{margin-left:-10px;border:2px solid rgba(10,10,20,.6)}
+.gavrow .av:first-child{margin-left:0}
+.gmore{width:30px;height:30px;border-radius:50%;margin-left:-10px;background:rgba(0,0,0,.45);border:2px solid rgba(255,255,255,.25);font-size:10px;display:flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0}
+.chev{font-size:20px;color:rgba(255,255,255,.6);transition:transform .5s cubic-bezier(.34,1.9,.4,1);flex-shrink:0}
+.gcard:not(.open) .chev{transform:rotate(-90deg)}
+/* 头像 */
+.av{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0}
+.av.big{width:46px;height:46px;font-size:16px}
+.a1{background:linear-gradient(135deg,#ff5ac8,#a855f7)}
+.a2{background:linear-gradient(135deg,#ff8a3d,#ff5ac8)}
+.a3{background:linear-gradient(135deg,#22d3ee,#3b82f6)}
+.a4{background:linear-gradient(135deg,#3ddc84,#22d3ee)}
+.a5{background:linear-gradient(135deg,#fbbf24,#ff8a3d)}
+.a6{background:linear-gradient(135deg,#a855f7,#6366f1)}
+.a7{background:linear-gradient(135deg,#f472b6,#fb7185)}
+.a8{background:linear-gradient(135deg,#34d399,#10b981)}
+/* 会话行 */
+.rows{display:grid;grid-template-rows:1fr;transition:grid-template-rows .55s cubic-bezier(.34,1.9,.4,1)}
+.gcard:not(.open) .rows{grid-template-rows:0fr}
+.rows-in{overflow:hidden;min-height:0}
+.row{display:flex;align-items:center;gap:11px;padding:9px 14px;cursor:pointer;border-top:1px solid rgba(255,255,255,.07)}
+.row.tap{animation:rowtap .45s cubic-bezier(.34,1.9,.4,1)}
+@keyframes rowtap{0%{transform:scale(1)}35%{transform:scale(.965)}100%{transform:scale(1)}}
+.rmeta{flex:1;min-width:0}
+.rname{font-size:14.5px;font-weight:600;display:flex;align-items:center;gap:6px}
+.rmsg{font-size:12.5px;color:rgba(255,255,255,.55);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rtime{font-size:11px;color:rgba(255,255,255,.45);text-align:right;flex-shrink:0}
+.badge{min-width:19px;height:19px;border-radius:10px;background:linear-gradient(135deg,#ff4d6d,#ff8a3d);font-size:11px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;padding:0 6px;margin-top:5px;color:#fff;box-shadow:0 2px 8px rgba(255,77,109,.6)}
+.dot{width:8px;height:8px;border-radius:50%;background:#ff4d6d;display:inline-block;margin-top:8px;box-shadow:0 0 8px #ff4d6d}
+/* ---------- 日历条 ---------- */
+.week{position:relative;z-index:5;display:flex;justify-content:space-between;padding:6px 22px 8px}
+.day{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:11px;color:rgba(255,255,255,.5);cursor:pointer;padding:6px 0;width:40px;border-radius:14px}
+.day b{font-size:14px;font-weight:700}
+.day.today{background:rgba(255,255,255,.12);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);color:#fff;border:1px solid rgba(255,255,255,.25);box-shadow:inset 0 1px 0 rgba(255,255,255,.3),0 0 16px rgba(168,85,247,.5)}
+.day.today b{background:linear-gradient(120deg,#ff8ac8,#c084fc,#7dd3fc);-webkit-background-clip:text;background-clip:text;color:transparent}
+/* ---------- seam 胶囊导航 ---------- */
+.navwrap{position:relative;z-index:6;height:118px;display:flex;justify-content:center}
+.seam{position:absolute;bottom:26px;width:330px;height:70px;border-radius:38px;background:rgba(12,12,24,.62);backdrop-filter:blur(22px) saturate(1.4);-webkit-backdrop-filter:blur(22px) saturate(1.4);border:1px solid rgba(255,255,255,.16);box-shadow:inset 0 1px 0 rgba(255,255,255,.25),0 14px 34px rgba(0,0,0,.5);display:flex;align-items:center;justify-content:space-around;padding:0 14px}
+.seam::before{content:'';position:absolute;inset:-1px;border-radius:39px;padding:1px;background:linear-gradient(120deg,#ff5ac8,#a855f7,#22d3ee,#3ddc84,#ff8a3d,#ff5ac8);background-size:300% 100%;-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude;opacity:.7;animation:edgeflow 6s linear infinite;pointer-events:none}
+.nav{display:flex;flex-direction:column;align-items:center;gap:3px;color:rgba(255,255,255,.45);font-size:10px;cursor:pointer;position:relative;padding:8px 6px;transition:color .25s}
+.nav svg{width:23px;height:23px}
+.nav.on{color:#fff}
+.nav.on svg{filter:drop-shadow(0 0 6px currentColor)}
+.nav .drop{width:5px;height:5px;border-radius:50%;background:linear-gradient(135deg,#ff8ac8,#c084fc);opacity:0;transform:scale(0);transition:all .35s cubic-bezier(.34,1.9,.4,1)}
+.nav.on .drop{opacity:1;transform:scale(1)}
+.nav:active{transform:scale(.88)}
+.mainbtn{width:58px;height:58px;border-radius:50%;background:linear-gradient(135deg,#ff5ac8,#a855f7 55%,#22d3ee);border:2px solid rgba(255,255,255,.35);color:#fff;font-size:28px;font-weight:300;display:flex;align-items:center;justify-content:center;cursor:pointer;margin-top:-44px;box-shadow:0 8px 24px rgba(168,85,247,.65),inset 0 1px 0 rgba(255,255,255,.5);transition:transform .3s cubic-bezier(.34,1.9,.4,1)}
+.mainbtn:active{transform:scale(.9) rotate(90deg)}
+.homebar{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:134px;height:5px;border-radius:3px;background:rgba(255,255,255,.85)}
+</style>
+</head>
+<body>
+<div class="bg"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+
+<div class="status">
+  <span>9:41</span>
+  <div class="sicons">
+    <span class="sig"><i></i><i></i><i></i><i></i></span>
+    <span class="wifi"><i></i><i></i><i></i></span>
+    <span class="bat"></span>
+  </div>
+</div>
+
+<div class="top">
+  <div><h1>幻彩螺旋</h1><p>LIQUID TABS · 会话分组</p></div>
+  <div class="tbtns"><button class="tbtn" aria-label="搜索"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M16.5 16.5L21 21"/></svg></button><button class="tbtn" aria-label="新建">＋</button></div>
+</div>
+
+<div class="main" id="main">
+  <!-- 卡1 星标密友 -->
+  <section class="gcard open" style="--c1:#ff5ac8;--c2:#a855f7;--c3:#ff8a3d;--ed:-1s">
+    <button class="ghead">
+      <span class="gdot"></span>
+      <span class="ginfo"><span class="gname">星标密友</span><span class="gcount">3 条未读 · 6 位成员</span></span>
+      <span class="gavrow"><span class="av a1">沈</span><span class="av a2">陆</span><span class="av a3">顾</span><span class="av a4">苏</span><span class="av a5">白</span><span class="gmore">+1</span></span>
+      <span class="chev">›</span>
+    </button>
+    <div class="rows"><div class="rows-in">
+      <div class="row"><span class="av big a1">沈</span><div class="rmeta"><div class="rname">沈晚晴</div><div class="rmsg">明天彩排别迟到，服装我帮你带了～</div></div><div class="rtime">21:42<br><span class="badge">2</span></div></div>
+      <div class="row"><span class="av big a2">陆</span><div class="rmeta"><div class="rname">陆之遥</div><div class="rmsg">刚剪完的 demo，发你邮箱了，听听看</div></div><div class="rtime">20:15<br><span class="badge">1</span></div></div>
+      <div class="row"><span class="av big a3">顾</span><div class="rmeta"><div class="rname">顾一舟</div><div class="rmsg">机票订好了，周五落地叫我</div></div><div class="rtime">昨天</div></div>
+    </div></div>
+  </section>
+
+  <!-- 卡2 老友群 -->
+  <section class="gcard open" style="--c1:#a855f7;--c2:#22d3ee;--c3:#ff5ac8;--ed:-2.2s">
+    <button class="ghead">
+      <span class="gdot"></span>
+      <span class="ginfo"><span class="gname">老友群</span><span class="gcount">5 条未读 · 12 位成员</span></span>
+      <span class="gavrow"><span class="av a4">苏</span><span class="av a5">白</span><span class="av a6">秦</span><span class="av a7">林</span><span class="av a8">许</span><span class="gmore">+7</span></span>
+      <span class="chev">›</span>
+    </button>
+    <div class="rows"><div class="rows-in">
+      <div class="row"><span class="av big a6">秦</span><div class="rmeta"><div class="rname">周末爬山小分队</div><div class="rmsg">阿哲：集合点改到南门，别走错了</div></div><div class="rtime">19:02<br><span class="badge">5</span></div></div>
+      <div class="row"><span class="av big a7">林</span><div class="rmeta"><div class="rname">大学室友群</div><div class="rmsg">林夏：聚餐照片发群里了，快去看</div></div><div class="rtime">昨天</div></div>
+    </div></div>
+  </section>
+
+  <!-- 卡3 协作组 -->
+  <section class="gcard open" style="--c1:#ff8a3d;--c2:#ff5ac8;--c3:#3ddc84;--ed:-.6s">
+    <button class="ghead">
+      <span class="gdot"></span>
+      <span class="ginfo"><span class="gname">协作组</span><span class="gcount">3 条未读 · 8 位成员</span></span>
+      <span class="gavrow"><span class="av a3">叶</span><span class="av a8">陈</span><span class="av a1">方</span><span class="av a2">高</span><span class="av a4">何</span><span class="gmore">+3</span></span>
+      <span class="chev">›</span>
+    </button>
+    <div class="rows"><div class="rows-in">
+      <div class="row"><span class="av big a3">叶</span><div class="rmeta"><div class="rname">项目冲刺群</div><div class="rmsg">产品：需求文档 v3 已更新，大家过目</div></div><div class="rtime">18:40<br><span class="badge">3</span></div></div>
+      <div class="row"><span class="av big a8">陈</span><div class="rmeta"><div class="rname">设计评审</div><div class="rmsg">老陈：走查意见都改完了，提测吧</div></div><div class="rtime">17:22</div></div>
+    </div></div>
+  </section>
+
+  <!-- 卡4 资讯订阅 -->
+  <section class="gcard open" style="--c1:#22d3ee;--c2:#3b82f6;--c3:#a855f7;--ed:-3s">
+    <button class="ghead">
+      <span class="gdot"></span>
+      <span class="ginfo"><span class="gname">资讯订阅</span><span class="gcount">2 个更新</span></span>
+      <span class="gavrow"><span class="av a5">灵</span><span class="av a7">刊</span><span class="av a6">读</span><span class="av a2">播</span><span class="av a1">报</span><span class="gmore">+2</span></span>
+      <span class="chev">›</span>
+    </button>
+    <div class="rows"><div class="rows-in">
+      <div class="row"><span class="av big a5">灵</span><div class="rmeta"><div class="rname">每日灵感</div><div class="rmsg">今日份配色灵感推送：霓虹液态 12 组</div></div><div class="rtime">12:00<br><span class="dot"></span></div></div>
+      <div class="row"><span class="av big a7">刊</span><div class="rmeta"><div class="rname">技术周刊</div><div class="rmsg">本周 5 篇精选，含前端性能专刊</div></div><div class="rtime">昨天</div></div>
+    </div></div>
+  </section>
+
+  <!-- 卡5 开黑小队 -->
+  <section class="gcard open" style="--c1:#3ddc84;--c2:#fbbf24;--c3:#ff8a3d;--ed:-1.7s">
+    <button class="ghead">
+      <span class="gdot"></span>
+      <span class="ginfo"><span class="gname">开黑小队</span><span class="gcount">4 条未读 · 5 位成员</span></span>
+      <span class="gavrow"><span class="av a8">野</span><span class="av a1">法</span><span class="av a5">射</span><span class="av a3">辅</span><span class="av a6">坦</span><span class="gmore">+0</span></span>
+      <span class="chev">›</span>
+    </button>
+    <div class="rows"><div class="rows-in">
+      <div class="row"><span class="av big a8">野</span><div class="rmeta"><div class="rname">五排车队</div><div class="rmsg">今晚八点开车，不见不散，带奶</div></div><div class="rtime">15:30<br><span class="badge">4</span></div></div>
+      <div class="row"><span class="av big a1">法</span><div class="rmeta"><div class="rname">战绩播报</div><div class="rmsg">三连胜！MVP 截图已发群相册</div></div><div class="rtime">昨天</div></div>
+    </div></div>
+  </section>
+</div>
+
+<div class="week" id="week">
+  <span class="day">日<b>18</b></span><span class="day">一<b>19</b></span><span class="day today">二<b>20</b></span><span class="day">三<b>21</b></span><span class="day">四<b>22</b></span><span class="day">五<b>23</b></span><span class="day">六<b>24</b></span>
+</div>
+
+<div class="navwrap">
+  <nav class="seam" id="seam">
+    <a class="nav on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h5v-6h4v6h5V10"/></svg>首页<span class="drop"></span></a>
+    <a class="nav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-8 8H4l2-3a8 8 0 1 1 15-5z"/></svg>消息<span class="drop"></span></a>
+    <button class="mainbtn" id="mainbtn" aria-label="新建">＋</button>
+    <a class="nav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M15 9l-2 5-4 1 2-5z"/></svg>发现<span class="drop"></span></a>
+    <a class="nav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 5-6 8-6s6.5 2 8 6"/></svg>我的<span class="drop"></span></a>
+  </nav>
+  <div class="homebar"></div>
+</div>
+
+<script>
+document.querySelectorAll('.ghead').forEach(h=>{
+  h.addEventListener('click',()=>h.closest('.gcard').classList.toggle('open'));
+});
+document.querySelectorAll('.gavrow').forEach(r=>{
+  r.addEventListener('click',e=>{e.stopPropagation();r.classList.toggle('slide');});
+});
+document.querySelectorAll('.row').forEach(r=>{
+  r.addEventListener('click',()=>{r.classList.remove('tap');void r.offsetWidth;r.classList.add('tap');});
+});
+document.querySelectorAll('#seam .nav').forEach(a=>{
+  a.addEventListener('click',e=>{e.preventDefault();
+    document.querySelectorAll('#seam .nav').forEach(x=>x.classList.remove('on'));
+    a.classList.add('on');});
+});
+document.getElementById('mainbtn').addEventListener('click',function(){
+  this.style.transform='scale(.85) rotate(90deg)';
+  setTimeout(()=>this.style.transform='',320);
+});
+document.querySelectorAll('#week .day').forEach(d=>{
+  d.addEventListener('click',()=>{
+    document.querySelectorAll('#week .day').forEach(x=>x.classList.remove('today'));
+    d.classList.add('today');});
+});
+</script>
+</body>
+</html>

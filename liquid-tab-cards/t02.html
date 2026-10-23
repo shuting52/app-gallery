@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=430,initial-scale=1">
+<title>粉紫星云 · 液态页签卡片</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{width:430px;height:900px;overflow:hidden;position:relative;margin:0 auto;
+font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sans-serif;
+background:#150a24;color:#f4efff;user-select:none}
+/* ===== 液态流体背景 ===== */
+.bg{position:absolute;inset:0;overflow:hidden;background:linear-gradient(160deg,#1c0e30,#241040 45%,#160b28)}
+.blob{position:absolute;border-radius:50%;filter:blur(70px);opacity:.75;animation:drift 26s ease-in-out infinite alternate}
+.b1{width:340px;height:340px;left:-90px;top:-70px;background:radial-gradient(circle,#ff5fae,transparent 70%);animation-delay:-6s}
+.b2{width:300px;height:300px;right:-80px;top:180px;background:radial-gradient(circle,#8b5cf6,transparent 70%);animation-delay:-14s}
+.b3{width:280px;height:280px;left:40px;top:520px;background:radial-gradient(circle,#d946ef,transparent 70%);animation-delay:-20s}
+.b4{width:200px;height:200px;right:30px;bottom:-40px;background:radial-gradient(circle,#7c3aed,transparent 70%);animation-delay:-9s}
+.b5{width:150px;height:150px;left:150px;top:330px;background:radial-gradient(circle,#f9a8d4,transparent 70%);opacity:.5;animation-delay:-3s}
+@keyframes drift{from{transform:translate(0,0) scale(1) rotate(0deg)}to{transform:translate(60px,80px) scale(1.25) rotate(40deg)}}
+.stars{position:absolute;inset:0}
+.stars i{position:absolute;width:3px;height:3px;border-radius:50%;background:#fff;opacity:.7;animation:tw 3s ease-in-out infinite alternate}
+@keyframes tw{from{opacity:.15;transform:scale(.7)}to{opacity:.9;transform:scale(1.2)}}
+/* ===== 顶栏 ===== */
+.status{position:relative;z-index:2;display:flex;justify-content:space-between;align-items:center;padding:14px 26px 4px;font-size:13px;font-weight:600}
+.status .sic{display:flex;gap:6px;align-items:center}
+.head{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;padding:12px 22px 6px}
+.head h1{font-size:24px;font-weight:800;letter-spacing:.06em;background:linear-gradient(120deg,#fbcfe8,#e9a8ff,#c4b5fd);-webkit-background-clip:text;background-clip:text;color:transparent}
+.head h1 small{display:block;font-size:11px;font-weight:500;letter-spacing:.28em;color:#c9b8ee;-webkit-text-fill-color:#c9b8ee;margin-top:2px}
+.hbtns{display:flex;gap:10px}
+.hbtn{width:38px;height:38px;border-radius:50%;border:1px solid rgba(255,255,255,.25);
+background:rgba(255,255,255,.1);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+display:flex;align-items:center;justify-content:center;font-size:17px;color:#f5efff;cursor:pointer;
+box-shadow:inset 0 1px 0 rgba(255,255,255,.35)}
+.hbtn:active{transform:scale(.9)}
+/* ===== 页签分组卡片 ===== */
+.list{position:relative;z-index:2;padding:8px 16px 12px;display:flex;flex-direction:column;gap:13px;max-height:562px;overflow-y:auto;scrollbar-width:none}
+.list::-webkit-scrollbar{display:none}
+.tcard{border-radius:26px;padding:1.6px;cursor:pointer;
+background:linear-gradient(135deg,#ff7ad9,#a78bfa,#7c3aed,#f0abfc,#ff7ad9);
+background-size:320% 320%;animation:borderflow 9s ease-in-out infinite alternate;
+box-shadow:0 10px 30px rgba(168,85,247,.22)}
+.tcard:nth-child(2){animation-delay:-3s}.tcard:nth-child(3){animation-delay:-6s}
+.tcard:nth-child(4){animation-delay:-2s}.tcard:nth-child(5){animation-delay:-7s}
+@keyframes borderflow{from{background-position:0% 40%}to{background-position:100% 60%}}
+.tcard-in{border-radius:24.5px;background:rgba(34,19,56,.62);
+backdrop-filter:blur(24px) saturate(150%);-webkit-backdrop-filter:blur(24px) saturate(150%);
+box-shadow:inset 0 1px 0 rgba(255,255,255,.28);overflow:hidden}
+.ghead{display:flex;align-items:center;gap:10px;padding:13px 15px 11px}
+.gdot{width:9px;height:9px;border-radius:50%;background:linear-gradient(135deg,#ff7ad9,#a78bfa);box-shadow:0 0 10px #e879f9;flex-shrink:0}
+.gname{font-size:15.5px;font-weight:700}
+.gnum{font-size:11px;color:#d8c7f5;background:rgba(216,180,254,.16);border:1px solid rgba(216,180,254,.3);padding:2px 8px;border-radius:10px}
+.garrow{margin-left:auto;font-size:13px;color:#c9aef2;transition:transform .45s cubic-bezier(.34,1.9,.4,1)}
+.tcard.open .garrow{transform:rotate(180deg)}
+.avrow{overflow:hidden;width:132px;flex-shrink:0}
+.avtrack{display:flex;transition:transform .55s cubic-bezier(.34,1.9,.4,1)}
+.av{width:30px;height:30px;border-radius:50%;border:2px solid rgba(255,255,255,.5);margin-left:-9px;flex-shrink:0;
+display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff}
+.av:first-child{margin-left:0}
+.rows{display:grid;grid-template-rows:1fr;transition:grid-template-rows .55s cubic-bezier(.34,1.9,.4,1)}
+.tcard.closed .rows{grid-template-rows:0fr}
+.rows-in{overflow:hidden;min-height:0}
+.row{display:flex;align-items:center;gap:11px;padding:10px 15px;border-top:1px solid rgba(255,255,255,.08);cursor:pointer;
+transition:transform .35s cubic-bezier(.34,1.9,.4,1),background .2s}
+.row:active{transform:scale(.965)}
+.row:hover{background:rgba(255,255,255,.05)}
+.rav{width:42px;height:42px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;
+font-size:16px;font-weight:700;color:#fff;border:1.5px solid rgba(255,255,255,.35);box-shadow:0 4px 12px rgba(0,0,0,.3)}
+.rmid{flex:1;min-width:0}
+.rname{font-size:14px;font-weight:600;display:flex;align-items:center;gap:6px}
+.rprev{font-size:12px;color:#c4b3e4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:3px}
+.rright{text-align:right;flex-shrink:0}
+.rtime{font-size:10.5px;color:#a78fb8}
+.unread{min-width:18px;height:18px;border-radius:9px;background:linear-gradient(135deg,#f472b6,#e879f9);
+font-size:10.5px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;padding:0 5px;margin-top:5px;
+box-shadow:0 0 10px rgba(244,114,182,.7)}
+.udot{width:9px;height:9px;border-radius:50%;background:#f472b6;box-shadow:0 0 8px #f472b6;display:inline-block;margin-top:7px}
+/* ===== 一周条 ===== */
+.week{position:relative;z-index:2;display:flex;justify-content:space-between;padding:12px 30px 6px}
+.wd{width:34px;text-align:center;font-size:10.5px;color:#a78fb8;cursor:pointer}
+.wd b{display:flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:50%;font-size:13px;margin-top:4px;color:#d9c9f2;font-weight:600}
+.wd.on b{background:linear-gradient(135deg,#e879f9,#8b5cf6);color:#fff;box-shadow:0 0 14px rgba(232,121,249,.8)}
+/* ===== seam 胶囊导航 ===== */
+.dock{position:absolute;left:50%;transform:translateX(-50%);bottom:18px;width:330px;height:66px;border-radius:34px;
+display:flex;align-items:center;justify-content:space-around;padding:0 14px;
+background:rgba(28,15,48,.72);backdrop-filter:blur(24px) saturate(160%);-webkit-backdrop-filter:blur(24px) saturate(160%);
+border:1px solid rgba(216,180,254,.28);box-shadow:inset 0 1px 0 rgba(255,255,255,.3),0 12px 34px rgba(0,0,0,.5)}
+.nitem{position:relative;width:48px;height:48px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#9c86c2;transition:color .25s,transform .35s cubic-bezier(.34,1.9,.4,1)}
+.nitem svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.nitem.on{color:#f0a6fc;transform:translateY(-3px)}
+.nitem.on svg{filter:drop-shadow(0 0 6px rgba(240,166,252,.9))}
+.ndrop{position:absolute;bottom:4px;left:50%;transform:translateX(-50%) scale(0);width:6px;height:8px;border-radius:50% 50% 50% 50%/60% 60% 40% 40%;
+background:linear-gradient(180deg,#fbcfe8,#e879f9);transition:transform .4s cubic-bezier(.34,1.9,.4,1);box-shadow:0 0 8px #e879f9}
+.nitem.on .ndrop{transform:translateX(-50%) scale(1)}
+.nmain{width:56px;height:56px;border-radius:50%;margin-top:-34px;flex-shrink:0;cursor:pointer;
+background:linear-gradient(135deg,#f472b6,#a855f7);display:flex;align-items:center;justify-content:center;
+font-size:26px;color:#fff;box-shadow:0 8px 22px rgba(217,70,239,.55),inset 0 2px 4px rgba(255,255,255,.5);
+transition:transform .35s cubic-bezier(.34,1.9,.4,1)}
+.nmain:active{transform:scale(.88)}
+</style>
+</head>
+<body>
+<div class="bg">
+  <div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div><div class="blob b4"></div><div class="blob b5"></div>
+  <div class="stars" id="stars"></div>
+</div>
+
+<div class="status"><span>21:47</span><span class="sic"><span>5G</span><span>▰▰▰</span><span>🔋</span></span></div>
+<div class="head">
+  <h1>粉紫星云<small>NEBULA CHAT</small></h1>
+  <div class="hbtns"><div class="hbtn">🔍</div><div class="hbtn">＋</div></div>
+</div>
+
+<div class="list" id="list"></div>
+
+<div class="week" id="week"></div>
+
+<nav class="dock" id="dock">
+  <div class="nitem on" data-n="0"><svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg><span class="ndrop"></span></div>
+  <div class="nitem" data-n="1"><svg viewBox="0 0 24 24"><path d="M21 12a8 8 0 0 1-8 8H4l2-3a8 8 0 1 1 15-5z"/></svg><span class="ndrop"></span></div>
+  <div class="nmain" id="nmain">✦</div>
+  <div class="nitem" data-n="2"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M14.8 9.2l-1.8 5.4-5.4 1.8 1.8-5.4z"/></svg><span class="ndrop"></span></div>
+  <div class="nitem" data-n="3"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/></svg><span class="ndrop"></span></div>
+</nav>
+
+<script>
+var G=[
+ {n:"星海好友",c:6,av:[["眠","linear-gradient(135deg,#f472b6,#a855f7)"],["桃","linear-gradient(135deg,#fb7185,#e879f9)"],["舟","linear-gradient(135deg,#a78bfa,#6366f1)"],["棠","linear-gradient(135deg,#e879f9,#8b5cf6)"],["屿","linear-gradient(135deg,#f0abfc,#d946ef)"],["遥","linear-gradient(135deg,#c084fc,#7c3aed)"]],
+  rows:[["眠","linear-gradient(135deg,#f472b6,#a855f7)","沈星眠","今晚云层散了，适合看星星","21:40",3],
+        ["桃","linear-gradient(135deg,#fb7185,#e879f9)","陆桃","新到的紫薯奶茶分你一半","20:15",1],
+        ["舟","linear-gradient(135deg,#a78bfa,#6366f1)","顾晚舟","周末去山顶看流星雨吗","昨天",0]]},
+ {n:"追剧小分队",c:4,av:[["蔓","linear-gradient(135deg,#e879f9,#7c3aed)"],["离","linear-gradient(135deg,#f0abfc,#a855f7)"],["晏","linear-gradient(135deg,#c4b5fd,#8b5cf6)"],["梨","linear-gradient(135deg,#f9a8d4,#d946ef)"],["柚","linear-gradient(135deg,#f472b6,#c026d3)"]],
+  rows:[["蔓","linear-gradient(135deg,#e879f9,#7c3aed)","苏蔓","第8集反转我人傻了！！","19:02",5],
+        ["离","linear-gradient(135deg,#f0abfc,#a855f7)","江离","结局he了，泪目","18:47",0],
+        ["晏","linear-gradient(135deg,#c4b5fd,#8b5cf6)","沈清晏","更新到12集了快追","周二",0]]},
+ {n:"工作后援团",c:5,av:[["梨","linear-gradient(135deg,#a78bfa,#4c1d95)"],["桃","linear-gradient(135deg,#f0abfc,#7c3aed)"],["风","linear-gradient(135deg,#d8b4fe,#6d28d9)"],["禾","linear-gradient(135deg,#e9d5ff,#9333ea)"],["麦","linear-gradient(135deg,#c084fc,#581c87)"]],
+  rows:[["梨","linear-gradient(135deg,#a78bfa,#4c1d95)","产品-阿梨","原型稿v3发你了，抽空看下","17:30",2],
+        ["桃","linear-gradient(135deg,#f0abfc,#7c3aed)","设计-桃子","紫色渐变那版客户通过了！","16:20",0],
+        ["风","linear-gradient(135deg,#d8b4fe,#6d28d9)","运营-南风","明天的推文标题定了","昨天",0]]},
+ {n:"树洞电台",c:3,av:[["船","linear-gradient(135deg,#8b5cf6,#312e81)"],["岛","linear-gradient(135deg,#a855f7,#4c1d95)"],["雾","linear-gradient(135deg,#c4b5fd,#5b21b6)"],["萤","linear-gradient(135deg,#e879f9,#6d28d9)"],["屿","linear-gradient(135deg,#f5d0fe,#7e22ce)"]],
+  rows:[["船","linear-gradient(135deg,#8b5cf6,#312e81)","夜航船","今晚的歌单治愈了我的失眠","23:12",1],
+        ["岛","linear-gradient(135deg,#a855f7,#4c1d95)","匿名岛","把烦恼写下来，风会带走","周一",0]]},
+ {n:"旅行搭子",c:4,av:[["云","linear-gradient(135deg,#f472b6,#7c3aed)"],["野","linear-gradient(135deg,#e879f9,#581c87)"],["风","linear-gradient(135deg,#d946ef,#3b0764)"],["鹿","linear-gradient(135deg,#f0abfc,#9333ea)"],["屿","linear-gradient(135deg,#fb7185,#8b5cf6)"]],
+  rows:[["云","linear-gradient(135deg,#f472b6,#7c3aed)","云游者","川西的机票降价了！","14:05",4],
+        ["野","linear-gradient(135deg,#e879f9,#581c87)","阿野","帐篷和相机都准备好了","12:30",0],
+        ["风","linear-gradient(135deg,#d946ef,#3b0764)","晚风","记得带厚外套，山上冷","上周",0]]}
+];
+var list=document.getElementById('list');
+G.forEach(function(g,gi){
+  var avs=g.av.slice(0,6).map(function(a){return '<span class="av" style="background:'+a[1]+'">'+a[0]+'</span>'}).join('');
+  var rows=g.rows.map(function(r){
+    var badge=r[5]>0?'<span class="unread">'+r[5]+'</span>':(gi===0&&r[4]==='昨天'?'<span class="udot"></span>':'');
+    return '<div class="row"><div class="rav" style="background:'+r[1]+'">'+r[0]+'</div>'+
+    '<div class="rmid"><div class="rname">'+r[2]+'</div><div class="rprev">'+r[3]+'</div></div>'+
+    '<div class="rright"><div class="rtime">'+r[4]+'</div>'+badge+'</div></div>';
+  }).join('');
+  var d=document.createElement('div');d.className='tcard open';
+  d.innerHTML='<div class="tcard-in"><div class="ghead"><span class="gdot"></span>'+
+   '<span class="gname">'+g.n+'</span><span class="gnum">'+g.c+' 个会话</span>'+
+   '<div class="avrow"><div class="avtrack">'+avs+'</div></div>'+
+   '<span class="garrow">▼</span></div>'+
+   '<div class="rows"><div class="rows-in">'+rows+'</div></div></div>';
+  list.appendChild(d);
+  // 分组展开/收起
+  d.querySelector('.ghead').addEventListener('click',function(e){
+    if(e.target.closest('.avrow'))return;
+    d.classList.toggle('closed');d.classList.toggle('open');
+  });
+  // 头像排左滑
+  var slid=false,tr=d.querySelector('.avtrack');
+  d.querySelector('.avrow').addEventListener('click',function(e){
+    e.stopPropagation();slid=!slid;tr.style.transform=slid?'translateX(-34px)':'translateX(0)';
+  });
+});
+// 星星
+var st=document.getElementById('stars'),sh='';
+for(var i=0;i<36;i++){var x=(i*67)%430,y=(i*137)%880;
+  sh+='<i style="left:'+x+'px;top:'+y+'px;animation-delay:-'+(i%7)+'s"></i>';}
+st.innerHTML=sh;
+// 一周条
+var days=['日','一','二','三','四','五','六'],wk=document.getElementById('week'),wh='';
+days.forEach(function(d,i){wh+='<div class="wd'+(i===2?' on':'')+'">'+d+'<b>'+(20+i)+'</b></div>';});
+wk.innerHTML=wh;
+// 导航
+document.querySelectorAll('.nitem').forEach(function(n){
+  n.addEventListener('click',function(){
+    document.querySelectorAll('.nitem').forEach(function(x){x.classList.remove('on')});
+    n.classList.add('on');
+  });
+});
+document.getElementById('nmain').addEventListener('click',function(){
+  this.style.transform='scale(.85)';var t=this;
+  setTimeout(function(){t.style.transform='';},220);
+});
+</script>
+</body>
+</html>

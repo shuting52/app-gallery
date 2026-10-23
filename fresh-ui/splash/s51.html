@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>旋转木马</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{background:#070a12;display:flex;align-items:center;justify-content:center;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;overflow:hidden}
+.stage{position:relative;width:430px;height:900px;flex:none;overflow:hidden}
+.stage i{display:block;position:absolute}
+.brand{position:absolute;left:0;right:0;bottom:104px;text-align:center;z-index:50;animation:brandIn 1s .9s both}
+.brand h1{font-size:32px;letter-spacing:10px;text-indent:10px;color:#fff;font-weight:700;text-shadow:0 2px 24px rgba(0,0,0,.45)}
+.brand p{margin-top:10px;font-size:11px;letter-spacing:5px;color:rgba(255,255,255,.62)}
+@keyframes brandIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.replay{position:absolute;bottom:30px;left:50%;transform:translateX(-50%);z-index:60;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.35);color:#fff;font-size:12px;letter-spacing:2px;padding:9px 24px;border-radius:20px;cursor:pointer;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.shade{position:absolute;left:0;right:0;bottom:0;height:360px;background:linear-gradient(transparent,rgba(8,6,18,.78));z-index:40;pointer-events:none}
+
+.stage{background:linear-gradient(#2a1a3e,#4c2a58 58%,#221231)}
+
+.canopy{width:360px;height:130px;left:35px;top:150px;clip-path:polygon(50% 0,100% 100%,0 100%);background:repeating-conic-gradient(from 0deg at 50% 100%,#ff6b8a 0 12deg,#fdf0f0 12deg 24deg);z-index:6}
+.crown{width:26px;height:26px;left:202px;top:128px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#ffe66d,#e0a92d);box-shadow:0 0 24px 8px rgba(255,230,109,.5);z-index:7}
+.deck{width:380px;height:60px;left:25px;top:560px;border-radius:50%;background:linear-gradient(#8a5a8a,#5a3560);z-index:4}
+.pole{width:8px;height:290px;left:50%;top:270px;margin-left:-4px;background:linear-gradient(90deg,#d9b36a,#f4d68a,#d9b36a);z-index:5}
+.horse{width:90px;height:120px;z-index:6;animation:gallop 1.6s ease-in-out infinite alternate}
+.h1{left:60px;top:400px}.h2{left:175px;top:380px;animation-delay:-.5s}.h3{left:285px;top:400px;animation-delay:-1s}
+@keyframes gallop{to{transform:translateY(-30px)}}
+.horse .bd{width:62px;height:34px;left:14px;top:52px;border-radius:50%;background:linear-gradient(135deg,#f2e3d5,#c9a184)}
+.horse .neck{width:20px;height:44px;left:58px;top:22px;border-radius:10px;background:#dfc0a4;transform:rotate(18deg)}
+.horse .head{width:30px;height:20px;left:66px;top:12px;border-radius:50% 50% 40% 40%;background:#efcfae;transform:rotate(12deg)}
+.horse .mane{width:12px;height:40px;left:52px;top:24px;border-radius:6px;background:#8a4a3a;transform:rotate(14deg)}
+.horse .leg{width:9px;height:40px;top:82px;border-radius:5px;background:#c9a184}
+.lg1{left:24px}.lg2{left:40px}.lg3{left:58px}.lg4{left:72px}
+.horse .saddle{width:34px;height:14px;left:28px;top:46px;border-radius:7px;background:#d94f6a}
+.light{width:10px;height:10px;border-radius:50%;background:#ffe66d;box-shadow:0 0 12px 4px rgba(255,230,109,.7);animation:blink 1.2s ease-in-out infinite alternate;z-index:7}
+.lt1{left:60px;top:268px}.lt2{left:130px;top:250px;animation-delay:-.4s}.lt3{left:215px;top:244px;animation-delay:-.8s}
+.lt4{left:300px;top:250px;animation-delay:-.2s}.lt5{left:365px;top:268px;animation-delay:-.6s}
+@keyframes blink{to{opacity:.25}}
+.ground2{position:absolute;left:0;right:0;bottom:0;height:200px;background:#1a0f28;z-index:3}
+
+</style></head><body>
+<div class="stage" id="stage">
+
+<i class="ground2"></i>
+<i class="deck"></i>
+<i class="canopy"></i><i class="crown"></i>
+<i class="light lt1"></i><i class="light lt2"></i><i class="light lt3"></i><i class="light lt4"></i><i class="light lt5"></i>
+<i class="horse h1"><i class="pole" style="left:41px;top:-130px;margin:0"></i><i class="bd"></i><i class="neck"></i><i class="head"></i><i class="mane"></i><i class="saddle"></i><i class="leg lg1"></i><i class="leg lg2"></i><i class="leg lg3"></i><i class="leg lg4"></i></i>
+<i class="horse h2"><i class="pole" style="left:41px;top:-110px;margin:0"></i><i class="bd"></i><i class="neck"></i><i class="head"></i><i class="mane"></i><i class="saddle"></i><i class="leg lg1"></i><i class="leg lg2"></i><i class="leg lg3"></i><i class="leg lg4"></i></i>
+<i class="horse h3"><i class="pole" style="left:41px;top:-130px;margin:0"></i><i class="bd"></i><i class="neck"></i><i class="head"></i><i class="mane"></i><i class="saddle"></i><i class="leg lg1"></i><i class="leg lg2"></i><i class="leg lg3"></i><i class="leg lg4"></i></i>
+
+<div class="shade"></div>
+<div class="brand"><h1>木马</h1><p>CAROUSEL</p></div>
+<button class="replay" onclick="var s=document.getElementById('stage');s.replaceWith(s.cloneNode(true))">重新播放</button>
+</div>
+</body></html>

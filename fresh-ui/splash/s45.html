@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>飞瀑流泉</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{background:#070a12;display:flex;align-items:center;justify-content:center;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;overflow:hidden}
+.stage{position:relative;width:430px;height:900px;flex:none;overflow:hidden}
+.stage i{display:block;position:absolute}
+.brand{position:absolute;left:0;right:0;bottom:104px;text-align:center;z-index:50;animation:brandIn 1s .9s both}
+.brand h1{font-size:32px;letter-spacing:10px;text-indent:10px;color:#fff;font-weight:700;text-shadow:0 2px 24px rgba(0,0,0,.45)}
+.brand p{margin-top:10px;font-size:11px;letter-spacing:5px;color:rgba(255,255,255,.62)}
+@keyframes brandIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.replay{position:absolute;bottom:30px;left:50%;transform:translateX(-50%);z-index:60;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.35);color:#fff;font-size:12px;letter-spacing:2px;padding:9px 24px;border-radius:20px;cursor:pointer;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.shade{position:absolute;left:0;right:0;bottom:0;height:360px;background:linear-gradient(transparent,rgba(8,6,18,.78));z-index:40;pointer-events:none}
+
+.stage{background:linear-gradient(#9fd0e8,#d9edf6 70%,#bcdcec)}
+
+.cliff{width:170px;height:640px;top:60px;background:linear-gradient(100deg,#5a6a78,#3c4854);z-index:4}
+.c1{left:-30px;clip-path:polygon(0 0,100% 6%,78% 100%,0 100%)}
+.c2{right:-30px;left:auto;clip-path:polygon(0 6%,100% 0,100% 100%,22% 100%)}
+.c1{left:-30px}.c2{left:290px}
+.fall{left:148px;top:110px;width:134px;height:560px;z-index:5;background:repeating-linear-gradient(0deg,rgba(255,255,255,.95) 0 9px,rgba(190,225,242,.5) 9px 21px);-webkit-mask:linear-gradient(90deg,transparent,#000 18%,#000 82%,transparent);mask:linear-gradient(90deg,transparent,#000 18%,#000 82%,transparent);animation:flow 1s linear infinite}
+@keyframes flow{to{background-position:0 42px}}
+.foam{left:120px;top:640px;width:190px;height:70px;border-radius:50%;background:rgba(255,255,255,.75);filter:blur(12px);animation:foam 2.2s ease-in-out infinite alternate;z-index:6}
+@keyframes foam{to{transform:scaleX(1.15);opacity:.7}}
+.pool{position:absolute;left:40px;right:40px;bottom:60px;height:150px;z-index:3}
+.rip{left:50%;top:40px;width:200px;height:56px;margin-left:-100px;border:2px solid rgba(255,255,255,.7);border-radius:50%;transform:scale(.3);opacity:0;animation:rip 3s ease-out infinite}
+.rp2{animation-delay:-1.5s}
+@keyframes rip{0%{transform:scale(.3);opacity:0}25%{opacity:.9}100%{transform:scale(1.5);opacity:0}}
+.drop{width:8px;height:14px;border-radius:50%;background:rgba(255,255,255,.9);animation:drop 1.6s linear infinite;opacity:0;z-index:6}
+.dp1{left:170px;top:600px;animation-delay:-.3s}.dp2{left:230px;top:620px;animation-delay:-1s}.dp3{left:200px;top:640px;animation-delay:-.7s}
+@keyframes drop{0%{transform:translateY(0);opacity:0}20%{opacity:1}100%{transform:translateY(-90px);opacity:0}}
+
+</style></head><body>
+<div class="stage" id="stage">
+
+<i class="cliff c1"></i><i class="cliff c2"></i>
+<i class="fall"></i>
+<i class="pool"><i class="rip rp1"></i><i class="rip rp2"></i></i>
+<i class="foam"></i>
+<i class="drop dp1"></i><i class="drop dp2"></i><i class="drop dp3"></i>
+
+<div class="shade"></div>
+<div class="brand"><h1>飞瀑</h1><p>WATERFALL</p></div>
+<button class="replay" onclick="var s=document.getElementById('stage');s.replaceWith(s.cloneNode(true))">重新播放</button>
+</div>
+</body></html>

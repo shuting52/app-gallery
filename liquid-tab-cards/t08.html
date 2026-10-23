@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>晨雾奶白 · 液态页签卡片</title>
+<style>
+@property --a{syntax:'<angle>';initial-value:0deg;inherits:false}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;background:#efe9dd;color:#4a4238;overflow:hidden}
+.screen{position:relative;width:430px;height:100vh;margin:0 auto;overflow:hidden;background:linear-gradient(165deg,#fdfaf3 0%,#f8f2e6 42%,#f4ecdd 78%,#f1e9da 100%);display:flex;flex-direction:column}
+
+/* ---------- 液态流体背景 ---------- */
+.liquid{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.blob{position:absolute;border-radius:50%;filter:blur(46px);will-change:transform}
+.b1{width:340px;height:340px;left:-90px;top:-70px;background:#ffd9ae;opacity:.62;animation:drift1 17s ease-in-out -4s infinite alternate}
+.b2{width:300px;height:300px;right:-80px;top:60px;background:#f7c3d4;opacity:.55;animation:drift2 21s ease-in-out -9s infinite alternate}
+.b3{width:280px;height:280px;left:-60px;top:330px;background:#cfe4c2;opacity:.5;animation:drift3 19s ease-in-out -13s infinite alternate}
+.b4{width:320px;height:320px;right:-70px;top:420px;background:#bfd6f2;opacity:.52;animation:drift1 23s ease-in-out -7s infinite alternate-reverse}
+.b5{width:240px;height:240px;left:90px;bottom:-60px;background:#e3d5f7;opacity:.5;animation:drift2 18s ease-in-out -2s infinite alternate-reverse}
+.b6{width:170px;height:170px;left:200px;top:180px;background:#ffedbe;opacity:.6;animation:drift3 15s ease-in-out -6s infinite alternate}
+@keyframes drift1{from{transform:translate(0,0) scale(1)}to{transform:translate(52px,38px) scale(1.12)}}
+@keyframes drift2{from{transform:translate(0,0) scale(1.05)}to{transform:translate(-46px,54px) scale(.94)}}
+@keyframes drift3{from{transform:translate(0,0) rotate(0deg)}to{transform:translate(38px,-42px) rotate(24deg)}}
+.mist{position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.5),rgba(255,255,255,0) 26%,rgba(255,255,255,0) 72%,rgba(255,251,243,.55))}
+
+/* ---------- 顶部 ---------- */
+header{position:relative;z-index:3;padding:14px 20px 6px}
+.status{display:flex;justify-content:space-between;align-items:center;font-size:13px;font-weight:600;color:#57493a;letter-spacing:.02em}
+.status .sic{display:flex;gap:6px;align-items:center}
+.titlerow{display:flex;align-items:flex-end;justify-content:space-between;margin-top:12px}
+h1{font-size:27px;font-weight:800;color:#463b2f;letter-spacing:.01em}
+h1 small{display:block;font-size:10.5px;font-weight:600;letter-spacing:.34em;color:#a08b6d;margin-top:3px}
+.hbtns{display:flex;gap:10px}
+.hbtn{width:38px;height:38px;border-radius:50%;border:1px solid rgba(255,255,255,.85);background:rgba(255,255,255,.5);backdrop-filter:blur(14px) saturate(1.5);-webkit-backdrop-filter:blur(14px) saturate(1.5);box-shadow:inset 0 1px 0 rgba(255,255,255,.95),0 4px 14px rgba(160,135,95,.16);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform .45s cubic-bezier(.34,1.9,.4,1)}
+.hbtn:active{transform:scale(.86)}
+.hbtn svg{width:18px;height:18px;stroke:#6b5844;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+/* ---------- 卡片列表 ---------- */
+main{position:relative;z-index:2;flex:1;overflow-y:auto;padding:10px 16px 14px;scrollbar-width:none}
+main::-webkit-scrollbar{display:none}
+.card{position:relative;border-radius:26px;padding:12px 14px 10px;margin-bottom:12px;
+  border:1.5px solid transparent;
+  background:linear-gradient(rgba(255,253,248,.66),rgba(255,253,248,.44)) padding-box,
+             conic-gradient(from var(--a),#ffcf9a,#f4aec4,#a9cfae,#93bde8,#cdbcf2,#ffe3a1,#ffcf9a) border-box;
+  backdrop-filter:blur(22px) saturate(1.45);-webkit-backdrop-filter:blur(22px) saturate(1.45);
+  box-shadow:inset 0 1.5px 0 rgba(255,255,255,.95),inset 0 -8px 18px rgba(255,255,255,.25),0 10px 26px rgba(166,140,100,.14);
+  animation:spinA 10s linear infinite}
+.card:nth-child(2){animation-duration:13s}.card:nth-child(3){animation-duration:11s}
+.card:nth-child(4){animation-duration:14s}.card:nth-child(5){animation-duration:12s}
+@keyframes spinA{to{--a:360deg}}
+
+.ghead{display:flex;align-items:center;gap:9px;cursor:pointer;padding:2px 2px 8px;user-select:none}
+.gname{font-size:16.5px;font-weight:800;color:#463b2f}
+.gcount{font-size:11px;font-weight:700;color:#9c8465;background:rgba(255,255,255,.65);border:1px solid rgba(255,255,255,.8);padding:2px 8px;border-radius:9px;box-shadow:inset 0 1px 0 #fff}
+.chev{margin-left:2px;width:16px;height:16px;stroke:#a08b6d;fill:none;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;transition:transform .5s cubic-bezier(.34,1.9,.4,1)}
+.card.closed .chev{transform:rotate(-90deg)}
+.pile{margin-left:auto;width:118px;height:30px;overflow:hidden;cursor:pointer;-webkit-mask-image:linear-gradient(90deg,#000 82%,transparent);mask-image:linear-gradient(90deg,#000 82%,transparent)}
+.pile-track{display:flex;transition:transform .6s cubic-bezier(.34,1.9,.4,1)}
+.pile.shift .pile-track{transform:translateX(-25px)}
+.pile .av{flex:0 0 auto;margin-left:-7px;border:2px solid rgba(255,255,255,.9)}
+.pile .av:first-child{margin-left:0}
+
+.av{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;text-shadow:0 1px 2px rgba(90,60,20,.25);box-shadow:inset 0 1.5px 2px rgba(255,255,255,.65),inset 0 -3px 6px rgba(120,85,40,.18)}
+.av.big{width:44px;height:44px;font-size:16px;border-radius:16px}
+
+.rows{overflow:hidden;transition:max-height .55s cubic-bezier(.34,1.9,.4,1)}
+.row{display:flex;align-items:center;gap:11px;padding:7px 4px;border-radius:16px;cursor:pointer;transition:background .2s}
+.row:hover{background:rgba(255,255,255,.35)}
+.row.tap{animation:tapJelly .5s cubic-bezier(.34,1.9,.4,1)}
+@keyframes tapJelly{0%{transform:scale(1)}35%{transform:scale(.955)}70%{transform:scale(1.018)}100%{transform:scale(1)}}
+.rmeta{flex:1;min-width:0}
+.rname{font-size:14.5px;font-weight:700;color:#4a3e30;display:flex;align-items:center;gap:6px}
+.rtag{font-size:9.5px;font-weight:700;color:#b07f4f;background:rgba(255,214,150,.5);border:1px solid rgba(255,226,175,.9);padding:1px 6px;border-radius:7px}
+.rmsg{font-size:12.5px;color:#8a7a63;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}
+.rside{text-align:right;flex:0 0 auto}
+.rtime{font-size:11px;color:#ab9878}
+.unread{margin-top:4px;margin-left:auto;min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:linear-gradient(135deg,#ff7d6b,#ff5a5a);color:#fff;font-size:10.5px;font-weight:800;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 8px rgba(255,90,90,.4),inset 0 1px 0 rgba(255,255,255,.5)}
+.dot{width:9px;height:9px;border-radius:50%;background:#ff5a5a;margin-top:6px;margin-left:auto;box-shadow:0 0 0 3px rgba(255,90,90,.18)}
+
+/* ---------- 底部 ---------- */
+footer{position:relative;z-index:3;padding:2px 16px 16px}
+.week{display:flex;justify-content:space-between;align-items:center;background:rgba(255,255,255,.45);border:1px solid rgba(255,255,255,.8);backdrop-filter:blur(16px) saturate(1.4);-webkit-backdrop-filter:blur(16px) saturate(1.4);border-radius:20px;padding:8px 12px;margin-bottom:10px;box-shadow:inset 0 1px 0 rgba(255,255,255,.95),0 6px 18px rgba(166,140,100,.12)}
+.day{text-align:center;width:38px;padding:5px 0;border-radius:13px;cursor:pointer;transition:transform .4s cubic-bezier(.34,1.9,.4,1)}
+.day:active{transform:scale(.88)}
+.day b{display:block;font-size:13px;font-weight:700;color:#6d5b44}
+.day span{display:block;font-size:10px;color:#ab9878;margin-top:1px}
+.day.today{background:linear-gradient(135deg,#ffd9a3,#f6b8c8);box-shadow:0 4px 12px rgba(240,175,130,.45),inset 0 1px 0 rgba(255,255,255,.8)}
+.day.today b,.day.today span{color:#7c4a21}
+.seam{display:flex;align-items:center;justify-content:space-around;background:rgba(43,38,33,.86);backdrop-filter:blur(20px) saturate(1.3);-webkit-backdrop-filter:blur(20px) saturate(1.3);border:1px solid rgba(255,255,255,.16);border-radius:32px;padding:9px 10px;box-shadow:inset 0 1px 0 rgba(255,255,255,.22),0 14px 30px rgba(80,60,35,.35)}
+.navi{position:relative;width:52px;height:44px;border:0;background:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;color:#a89a86;transition:color .25s}
+.navi svg{width:23px;height:23px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;transition:transform .5s cubic-bezier(.34,1.9,.4,1)}
+.navi.on{color:#ffd9a3}
+.navi.on svg{transform:translateY(-2px) scale(1.08)}
+.navi .drop{position:absolute;bottom:1px;left:50%;width:5px;height:5px;border-radius:50% 50% 50% 4px;background:#ffd9a3;transform:translateX(-50%) scale(0) rotate(45deg);transition:transform .5s cubic-bezier(.34,1.9,.4,1);box-shadow:0 0 8px rgba(255,217,163,.9)}
+.navi.on .drop{transform:translateX(-50%) scale(1) rotate(45deg)}
+.navi.main{width:54px;height:54px;margin:-22px 2px 0;border-radius:50%;background:linear-gradient(140deg,#ffe3b3,#f7b7c9 55%,#cdbcf2);box-shadow:0 10px 22px rgba(240,170,140,.5),inset 0 2px 3px rgba(255,255,255,.9),inset 0 -4px 8px rgba(190,120,90,.25);align-items:center;justify-content:center;transition:transform .45s cubic-bezier(.34,1.9,.4,1)}
+.navi.main:active{transform:scale(.88)}
+.navi.main svg{stroke:#6d4423;width:25px;height:25px;stroke-width:2.2}
+</style>
+</head>
+<body>
+<div class="screen">
+  <div class="liquid">
+    <div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
+    <div class="blob b4"></div><div class="blob b5"></div><div class="blob b6"></div>
+    <div class="mist"></div>
+  </div>
+
+  <header>
+    <div class="status">
+      <span>9:41</span>
+      <span class="sic">
+        <svg width="17" height="11" viewBox="0 0 17 11" fill="#57493a"><rect x="0" y="7" width="3" height="4" rx="1"/><rect x="4.5" y="5" width="3" height="6" rx="1"/><rect x="9" y="2.5" width="3" height="8.5" rx="1"/><rect x="13.5" y="0" width="3" height="11" rx="1" opacity=".35"/></svg>
+        <svg width="16" height="11" viewBox="0 0 16 12" fill="none" stroke="#57493a" stroke-width="1.8" stroke-linecap="round"><path d="M1.5 4.2a10 10 0 0 1 13 0"/><path d="M4 7a6.4 6.4 0 0 1 8 0"/><circle cx="8" cy="10" r="1.15" fill="#57493a" stroke="none"/></svg>
+        <svg width="25" height="12" viewBox="0 0 25 12"><rect x=".7" y=".7" width="20" height="10.6" rx="3.2" fill="none" stroke="#57493a" opacity=".45" stroke-width="1.2"/><rect x="2.4" y="2.4" width="13.5" height="7.2" rx="1.8" fill="#57493a"/><path d="M23 4v4a2.2 2.2 0 0 0 0-4z" fill="#57493a" opacity=".45"/></svg>
+      </span>
+    </div>
+    <div class="titlerow">
+      <h1>晨雾奶白<small>MORNING MIST</small></h1>
+      <div class="hbtns">
+        <button class="hbtn" aria-label="搜索"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.8-3.8"/></svg></button>
+        <button class="hbtn" aria-label="新建"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main"></main>
+
+  <footer>
+    <div class="week" id="week"></div>
+    <nav class="seam" id="seam">
+      <button class="navi on" data-n="首页"><svg viewBox="0 0 24 24"><path d="M4 11.2 12 4l8 7.2"/><path d="M6.2 9.8V20h11.6V9.8"/></svg><span class="drop"></span></button>
+      <button class="navi" data-n="消息"><svg viewBox="0 0 24 24"><path d="M4 6.5h16v10.5H9l-5 3.5z"/><path d="M8 10.2h8M8 13.4h5"/></svg><span class="drop"></span></button>
+      <button class="navi main" data-n="新建"><svg viewBox="0 0 24 24"><path d="M12 5.5v13M5.5 12h13"/></svg></button>
+      <button class="navi" data-n="发现"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M15.2 8.8 13.4 13.4 8.8 15.2 10.6 10.6z"/></svg><span class="drop"></span></button>
+      <button class="navi" data-n="我的"><svg viewBox="0 0 24 24"><circle cx="12" cy="8.4" r="3.8"/><path d="M5 20c1.2-3.4 3.9-5 7-5s5.8 1.6 7 5"/></svg><span class="drop"></span></button>
+    </nav>
+  </footer>
+</div>
+
+<script>
+var GROUPS=[
+ {name:"晨光家人",count:"5 条会话",members:[["妈","#f2a65a,#e2703a"],["姐","#e88bb0,#d45d8c"],["爸","#7fa8c9,#4f7fa8"],["弟","#8fc7a0,#5da377"],["婶","#c9a86a,#a37f3f"],["+3","#b9a98f,#97835f"]],
+  rows:[
+   {av:"妈",g:"#f2a65a,#e2703a",name:"妈妈",msg:"周末回家吃饭，炖了你爱喝的莲藕排骨汤",time:"09:12",un:2},
+   {av:"姐",g:"#e88bb0,#d45d8c",name:"姐姐",msg:"高铁票订好啦，周五晚上七点到站",time:"08:47",un:0},
+   {av:"爸",g:"#7fa8c9,#4f7fa8",name:"爸爸",msg:"[图片] 阳台的茉莉开花了",time:"昨天",un:0}]},
+ {name:"读书小分队",count:"3 条会话",members:[["遥","#a58fd6,#7c63b8"],["默","#7fb0a5,#4f8a7d"],["晴","#e5a3b4,#cf7590"],["屿","#93a8d8,#6883bd"],["+2","#b9a98f,#97835f"]],
+  rows:[
+   {av:"遥",g:"#a58fd6,#7c63b8",name:"许知遥",msg:"这周共读《慢煮生活》，我先划了线",time:"09:02",un:5},
+   {av:"默",g:"#7fb0a5,#4f8a7d",name:"陈默",msg:"笔记拍照发群里了，第三章写得最好",time:"08:31",un:0},
+   {av:"晴",g:"#e5a3b4,#cf7590",name:"苏晚晴",msg:"周六下午老地方，靠窗的位置留好了",time:"昨天",un:0}]},
+ {name:"项目推进组",count:"4 条会话",members:[["翔","#6fa8dc,#4176b5"],["可","#f0b26b,#d18a35"],["罗","#8a9bb5,#5f718f"],["宁","#d98cb3,#b85d8a"],["+4","#b9a98f,#97835f"]],
+  rows:[
+   {av:"翔",g:"#6fa8dc,#4176b5",name:"高翔",msg:"新版流程图更新了，麻烦大家过一眼",time:"09:20",un:1},
+   {av:"可",g:"#f0b26b,#d18a35",name:"郑亦可",msg:"评审改到明天下午三点，会议室 B",time:"08:58",un:0},
+   {av:"罗",g:"#8a9bb5,#5f718f",name:"罗宾",tag:"产品",msg:"需求池排好了优先级，置顶那份",time:"昨天",un:0}]},
+ {name:"灵感收藏夹",count:"3 条订阅",members:[["晨","#e8b04b,#c98f2a"],["隅","#94bfae,#6a9c88"],["织","#d79bc0,#b06f9c"],["岚","#8fb6d9,#5e8dbc"],["+6","#b9a98f,#97835f"]],
+  rows:[
+   {av:"晨",g:"#e8b04b,#c98f2a",name:"晨间手记",tag:"订阅",msg:"今日宜：把窗台的花换一次水",time:"07:30",un:0,dot:1},
+   {av:"隅",g:"#94bfae,#6a9c88",name:"城市角落",tag:"订阅",msg:"老城区的早市，藏着半座城的清晨",time:"昨天",un:0},
+   {av:"织",g:"#d79bc0,#b06f9c",name:"织物研究所",tag:"订阅",msg:"奶白针织的三种叠穿公式",time:"周一",un:0}]},
+ {name:"周末饭搭子",count:"3 条会话",members:[["哲","#e2795b,#c2512f"],["桃","#f2a0b5,#d9738f"],["团","#a3c585,#7ba355"],["面","#d9b36c,#b28c42"],["+1","#b9a98f,#97835f"]],
+  rows:[
+   {av:"哲",g:"#e2795b,#c2512f",name:"阿哲",msg:"新开的那家手擀面，周六去试试？",time:"08:15",un:3},
+   {av:"桃",g:"#f2a0b5,#d9738f",name:"桃子",msg:"我带自制的桂花酸梅汤，冰镇的",time:"昨天",un:0},
+   {av:"团",g:"#a3c585,#7ba355",name:"干饭团",msg:"[投票] 这周吃什么：火锅 vs 日料",time:"周一",un:0}]}
+];
+var main=document.getElementById('main');
+GROUPS.forEach(function(gr){
+  var card=document.createElement('section');card.className='card';
+  var pile=gr.members.map(function(m){return '<span class="av" style="background:linear-gradient(135deg,'+m[1]+')">'+m[0]+'</span>'}).join('');
+  var rows=gr.rows.map(function(r){
+    var badge=r.un?'<div class="unread">'+r.un+'</div>':(r.dot?'<div class="dot"></div>':'');
+    return '<div class="row"><span class="av big" style="background:linear-gradient(135deg,'+r.g+')">'+r.av+'</span>'+
+      '<div class="rmeta"><div class="rname">'+r.name+(r.tag?'<span class="rtag">'+r.tag+'</span>':'')+'</div><div class="rmsg">'+r.msg+'</div></div>'+
+      '<div class="rside"><div class="rtime">'+r.time+'</div>'+badge+'</div></div>'}).join('');
+  card.innerHTML='<div class="ghead"><span class="gname">'+gr.name+'</span><span class="gcount">'+gr.count+'</span>'+
+    '<svg class="chev" viewBox="0 0 24 24"><path d="M6 9.5 12 15.5 18 9.5"/></svg>'+
+    '<div class="pile"><div class="pile-track">'+pile+'</div></div></div>'+
+    '<div class="rows">'+rows+'</div>';
+  main.appendChild(card);
+  var rowsEl=card.querySelector('.rows');
+  rowsEl.style.maxHeight=rowsEl.scrollHeight+'px';
+  card.querySelector('.ghead').addEventListener('click',function(e){
+    if(e.target.closest('.pile'))return;
+    var closed=card.classList.toggle('closed');
+    rowsEl.style.maxHeight=closed?'0px':rowsEl.scrollHeight+'px';
+  });
+  card.querySelector('.pile').addEventListener('click',function(e){
+    e.stopPropagation();this.classList.toggle('shift');
+  });
+  card.querySelectorAll('.row').forEach(function(row){
+    row.addEventListener('click',function(){
+      row.classList.remove('tap');void row.offsetWidth;row.classList.add('tap');
+    });
+  });
+});
+var week=document.getElementById('week');
+["日","一","二","三","四","五","六"].forEach(function(w,i){
+  var d=document.createElement('div');d.className='day'+(i===2?' today':'');
+  d.innerHTML='<b>'+(18+i)+'</b><span>周'+w+'</span>';
+  d.addEventListener('click',function(){
+    week.querySelectorAll('.day').forEach(function(x){x.classList.remove('today')});
+    d.classList.add('today');
+  });
+  week.appendChild(d);
+});
+document.querySelectorAll('#seam .navi:not(.main)').forEach(function(b){
+  b.addEventListener('click',function(){
+    document.querySelectorAll('#seam .navi').forEach(function(x){x.classList.remove('on')});
+    b.classList.add('on');
+  });
+});
+document.querySelector('#seam .main').addEventListener('click',function(){
+  this.animate([{transform:'scale(1)'},{transform:'scale(.84)'},{transform:'scale(1.06)'},{transform:'scale(1)'}],{duration:480,easing:'cubic-bezier(.34,1.9,.4,1)'});
+});
+</script>
+</body>
+</html>

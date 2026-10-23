@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>潮汐</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;display:flex;align-items:center;justify-content:center;background:#0e0f13;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;color:#e8eaf0;padding:20px}
+body.freeze *{transition:none!important;animation:none!important}
+.stage{width:360px;max-width:100%;text-align:center}
+h2{font-size:17px;letter-spacing:3px;margin-bottom:4px}
+.sub{font-size:12px;color:#8a8fa3;margin-bottom:20px}
+.device{cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent}
+.coast{width:330px;height:330px;margin:0 auto;border-radius:20px;position:relative;overflow:hidden;background:linear-gradient(180deg,#0b1430 0%,#1d3a63 55%,#122a4a 100%);box-shadow:0 12px 32px rgba(0,0,0,.5)}
+.moon{position:absolute;top:52px;left:50%;width:64px;height:64px;margin-left:-32px;border-radius:50%;background:radial-gradient(circle at 35% 32%,#fdf6d8,#d9cfa8 75%);box-shadow:0 0 34px 8px rgba(253,246,216,.45);transition:transform 1.5s ease,box-shadow 1.5s;transform:translateY(34px)}
+.device.on .moon{transform:translateY(-6px) scale(1.08);box-shadow:0 0 48px 14px rgba(253,246,216,.6)}
+.moon::after{content:'';position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 30% 40%,rgba(170,160,120,.5) 0 8px,transparent 9px),radial-gradient(circle at 62% 60%,rgba(170,160,120,.45) 0 6px,transparent 7px)}
+.sand{position:absolute;bottom:0;left:0;right:0;height:52px;background:linear-gradient(180deg,#c9a86a,#8f6f3e)}
+.rock{position:absolute;bottom:34px;left:56px;width:64px;height:52px;background:linear-gradient(180deg,#6e7688,#454c5c);border-radius:60% 40% 55% 45%/70% 60% 40% 50%;box-shadow:0 4px 10px rgba(0,0,0,.4);z-index:2;transition:transform 1.5s}
+.shell{position:absolute;bottom:44px;left:72px;width:26px;height:20px;background:radial-gradient(circle at 50% 30%,#ffb3d9,#d63d86);border-radius:50% 50% 50% 50%/70% 70% 30% 30%;z-index:3;transition:transform 1.5s}
+.sea{position:absolute;left:0;right:0;bottom:0;height:30%;background:linear-gradient(180deg,rgba(62,150,210,.92),rgba(22,84,140,.96));transition:height 1.5s ease;z-index:4}
+.device.on .sea{height:56%}
+.wv{position:absolute;top:-13px;left:0;width:200%;height:15px;background:radial-gradient(circle at 20px 2px,transparent 15px,#3e96d2 16px);background-size:44px 15px;animation:wv 2.6s linear infinite}
+.wv.w2{top:-8px;opacity:.5;animation-duration:3.8s;animation-direction:reverse}
+@keyframes wv{to{transform:translateX(44px)}}
+.device.on .wv{animation-duration:1.4s}
+.device.on .wv.w2{animation-duration:2.2s}
+.boat{position:absolute;bottom:32%;left:50%;width:74px;height:26px;margin-left:-37px;z-index:5;transition:bottom 1.5s ease}
+.device.on .boat{bottom:58%}
+.boat .hull{position:absolute;bottom:0;left:0;right:0;height:16px;background:linear-gradient(180deg,#b0603c,#7e3f22);clip-path:polygon(0 0,100% 0,86% 100%,14% 100%)}
+.boat .sail{position:absolute;bottom:14px;left:50%;width:0;height:0;margin-left:-16px;border-left:16px solid transparent;border-right:16px solid transparent;border-bottom:30px solid #f4f6fa;filter:drop-shadow(0 2px 3px rgba(0,0,0,.3))}
+.boat{animation:bob 3s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(-6px) rotate(2deg)}}
+.gauge{position:absolute;top:14px;right:14px;z-index:6;background:rgba(0,0,0,.4);border-radius:12px;padding:8px 12px;font-size:12px;letter-spacing:2px;color:#9fc6e8}
+.device.on .gauge{color:#ffd479}
+.status{margin-top:18px;font-size:14px;color:#9aa0b4}
+.status b{color:#ffd479}
+.hint{font-size:11px;color:#5c6172;margin-top:6px}
+</style>
+</head>
+<body>
+<div class="stage">
+<h2>潮汐</h2>
+<div class="sub">点击引动月相，涨潮 / 退潮</div>
+<div class="device" id="dev">
+<div class="coast">
+<div class="moon"></div>
+<div class="gauge" id="gg">退潮</div>
+<div class="sand"></div>
+<div class="rock"></div><div class="shell"></div>
+<div class="sea"><div class="wv"></div><div class="wv w2"></div></div>
+<div class="boat"><div class="sail"></div><div class="hull"></div></div>
+</div>
+</div>
+<div class="status">状态：<b id="st">关 · 退潮</b></div>
+<div class="hint">点击海面切换</div>
+</div>
+<script>
+var dev=document.getElementById('dev'),st=document.getElementById('st'),gg=document.getElementById('gg'),on=location.search.indexOf('s=1')>-1;
+function render(){dev.classList.toggle('on',on);st.textContent=on?'开 · 涨潮':'关 · 退潮';gg.textContent=on?'涨潮':'退潮';}
+if(on)document.body.classList.add('freeze');
+dev.addEventListener('click',function(){on=!on;render();});
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>液体阀门</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;display:flex;align-items:center;justify-content:center;background:#0e0f13;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;color:#e8eaf0;padding:20px}
+body.freeze *{transition:none!important;animation:none!important}
+.stage{width:360px;max-width:100%;text-align:center}
+h2{font-size:17px;letter-spacing:3px;margin-bottom:4px}
+.sub{font-size:12px;color:#8a8fa3;margin-bottom:20px}
+.device{cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent}
+.rig{width:320px;height:270px;margin:0 auto;position:relative}
+.tank{position:absolute;top:0;left:16px;width:120px;height:120px;border:4px solid #5a6478;border-bottom:0;border-radius:14px 14px 0 0;background:rgba(90,160,255,.06);overflow:hidden}
+.tank .tw{position:absolute;bottom:0;left:0;right:0;height:78%;background:linear-gradient(180deg,#5db9ff,#1e6fd9)}
+.tank .tw::before{content:'';position:absolute;top:-10px;left:-50%;width:200%;height:12px;background:radial-gradient(circle at 20px -2px,transparent 16px,#5db9ff 17px);background-size:40px 12px;animation:wv 2.2s linear infinite}
+@keyframes wv{to{transform:translateX(40px)}}
+.pipe{position:absolute;top:116px;left:60px;width:190px;height:28px;background:linear-gradient(180deg,#6e7688,#454c5c);border-radius:14px;box-shadow:inset 0 2px 4px rgba(0,0,0,.4)}
+.pipe .flow{position:absolute;top:7px;bottom:7px;left:10px;right:10px;border-radius:7px;background:repeating-linear-gradient(90deg,#6ec6ff 0 16px,rgba(110,198,255,.15) 16px 32px);opacity:0;transition:opacity .5s}
+.device.on .pipe .flow{opacity:1;animation:fl .7s linear infinite}
+@keyframes fl{to{background-position:32px 0}}
+.elbow{position:absolute;top:116px;left:236px;width:28px;height:64px;background:linear-gradient(90deg,#6e7688,#454c5c);border-radius:0 0 10px 10px}
+.wheel{position:absolute;top:96px;left:138px;width:44px;height:44px;border-radius:50%;border:7px solid #d64545;background:radial-gradient(circle,#2b2f3a 0 26%,transparent 27%);box-shadow:0 4px 10px rgba(0,0,0,.5);transition:transform .6s cubic-bezier(.4,0,.3,1.2)}
+.wheel::before,.wheel::after{content:'';position:absolute;background:#d64545;border-radius:3px}
+.wheel::before{top:50%;left:2px;right:2px;height:6px;margin-top:-3px}
+.wheel::after{left:50%;top:2px;bottom:2px;width:6px;margin-left:-3px}
+.device.on .wheel{transform:rotate(135deg)}
+.basin{position:absolute;bottom:0;right:8px;width:150px;height:96px;border:4px solid #5a6478;border-top:0;border-radius:0 0 18px 18px;overflow:hidden;background:rgba(90,160,255,.05);transition:box-shadow .8s}
+.basin .bw{position:absolute;bottom:0;left:0;right:0;height:0;background:linear-gradient(180deg,#6ec6ff,#1e6fd9);transition:height 1.4s ease .25s}
+.basin .bw::before{content:'';position:absolute;top:-10px;left:-50%;width:200%;height:12px;background:radial-gradient(circle at 20px -2px,transparent 16px,#6ec6ff 17px);background-size:40px 12px;animation:wv 1.8s linear infinite}
+.device.on .basin .bw{height:82%}
+.device.on .basin{box-shadow:0 0 26px rgba(90,170,255,.55)}
+.drop{position:absolute;top:176px;left:244px;width:10px;height:14px;border-radius:50% 50% 60% 60%;background:#6ec6ff;opacity:0}
+.device.on .drop{animation:dr 1.1s ease-in infinite}
+@keyframes dr{0%{opacity:0;transform:translateY(0)}15%{opacity:1}90%{opacity:1;transform:translateY(34px)}100%{opacity:0;transform:translateY(40px)}}
+.lb{position:absolute;font-size:11px;color:#8a8fa3;letter-spacing:2px}
+.lb.t{top:126px;left:20px}.lb.b{bottom:36px;right:170px}
+.status{margin-top:14px;font-size:14px;color:#9aa0b4}
+.status b{color:#ffd479}
+.hint{font-size:11px;color:#5c6172;margin-top:6px}
+</style>
+</head>
+<body>
+<div class="stage">
+<h2>液体阀门</h2>
+<div class="sub">点击旋转阀门，液体开始流动</div>
+<div class="device" id="dev">
+<div class="rig">
+<div class="tank"><div class="tw"></div></div>
+<div class="pipe"><div class="flow"></div></div>
+<div class="elbow"></div>
+<div class="wheel"></div>
+<div class="basin"><div class="bw"></div></div>
+<div class="drop"></div>
+<div class="lb t">储液罐</div><div class="lb b">阀门</div>
+</div>
+</div>
+<div class="status">状态：<b id="st">关 · 阀门关闭</b></div>
+<div class="hint">点击阀门切换</div>
+</div>
+<script>
+var dev=document.getElementById('dev'),st=document.getElementById('st'),on=location.search.indexOf('s=1')>-1;
+function render(){dev.classList.toggle('on',on);st.textContent=on?'开 · 正在注液':'关 · 阀门关闭';}
+if(on)document.body.classList.add('freeze');
+dev.addEventListener('click',function(){on=!on;render();});
+render();
+</script>
+</body>
+</html>

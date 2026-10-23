@@ -1,0 +1,45 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>纸鸢乘风</title><style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{background:#cfe8fa;display:flex;justify-content:center;font-family:-apple-system,"PingFang SC","Microsoft YaHei","Noto Sans CJK SC",sans-serif;overflow:hidden}
+.stage{width:430px;height:900px;max-height:100vh;position:relative;overflow:hidden;background:linear-gradient(180deg,#7fb8e8 0%,#bfe0f7 50%,#eaf6ff 100%)}
+.cloud{position:absolute;background:#fff;border-radius:999px;opacity:.9;animation:drift 30s linear -12s infinite}
+.cloud::before,.cloud::after{content:"";position:absolute;background:#fff;border-radius:50%}
+.cloud.c1{width:130px;height:40px;top:120px;left:-150px}
+.cloud.c1::before{width:60px;height:60px;left:20px;top:-28px}
+.cloud.c1::after{width:42px;height:42px;left:70px;top:-20px}
+.cloud.c2{width:100px;height:32px;top:420px;left:-120px;animation-duration:40s;animation-delay:-28s;opacity:.75}
+.cloud.c2::before{width:48px;height:48px;left:16px;top:-22px}
+.cloud.c2::after{width:34px;height:34px;left:56px;top:-16px}
+@keyframes drift{to{transform:translateX(640px)}}
+.kitefly{position:absolute;top:230px;left:0;animation:glide 9s ease-in-out -3s infinite}
+@keyframes glide{0%,100%{transform:translate(60px,0) rotate(-4deg)}50%{transform:translate(250px,-40px) rotate(5deg)}}
+.kite{position:relative;width:130px;height:150px;animation:sway 2.4s ease-in-out -1s infinite;transform-origin:top center}
+@keyframes sway{0%,100%{transform:rotate(-7deg)}50%{transform:rotate(7deg)}}
+.diamond{position:absolute;left:25px;top:0;width:80px;height:96px;background:linear-gradient(135deg,#ff6b6b 0 50%,#ffd93d 50% 100%);transform:rotate(45deg) skew(8deg,8deg);border-radius:10px;box-shadow:0 10px 30px rgba(255,107,107,.4)}
+.cross{position:absolute;background:rgba(120,70,40,.7)}
+.cross.h{left:8px;top:44px;width:114px;height:3px}
+.cross.v{left:63px;top:-8px;width:3px;height:112px}
+.tail{position:absolute;left:62px;top:96px;width:3px;height:70px;background:rgba(120,70,40,.6)}
+.bow{position:absolute;left:54px;width:20px;height:14px;background:#4ecdc4;border-radius:50%;animation:wig 1.2s ease-in-out -0.4s infinite}
+.bow.b1{top:112px}.bow.b2{top:136px;animation-delay:-0.8s;background:#ff6b6b}.bow.b3{top:160px;animation-delay:-0.1s;background:#ffd93d}
+@keyframes wig{0%,100%{transform:rotate(-18deg)}50%{transform:rotate(18deg)}}
+.string{position:absolute;left:64px;top:166px;width:2px;height:420px;background:linear-gradient(180deg,rgba(90,60,40,.7),rgba(90,60,40,.15));transform-origin:top;transform:rotate(4deg)}
+.brand{position:absolute;left:0;right:0;bottom:170px;text-align:center;animation:up 1.2s ease .9s both}
+.brand h1{font-size:54px;letter-spacing:22px;text-indent:22px;color:#1f4e79;font-weight:800}
+.brand p{margin-top:14px;font-size:14px;letter-spacing:6px;color:#4a7ba6}
+@keyframes up{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:none}}
+.replay{position:absolute;bottom:34px;left:50%;transform:translateX(-50%);z-index:50;padding:10px 26px;border-radius:999px;border:1px solid rgba(31,78,121,.45);background:rgba(255,255,255,.6);color:#1f4e79;font-size:13px;letter-spacing:4px;text-indent:4px;cursor:pointer}
+.replay:active{transform:translateX(-50%) scale(.94)}
+</style></head><body><div class="stage">
+<div class="cloud c1"></div><div class="cloud c2"></div>
+<div class="kitefly"><div class="kite">
+<div class="diamond"></div><div class="cross h"></div><div class="cross v"></div>
+<div class="tail"></div><div class="bow b1"></div><div class="bow b2"></div><div class="bow b3"></div>
+<div class="string"></div>
+</div></div>
+<div class="brand"><h1>纸鸢</h1><p>乘风而起 扶摇直上</p></div>
+<button class="replay" onclick="location.reload()">重新播放</button>
+</div></body></html>

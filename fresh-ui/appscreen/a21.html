@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>人间食味</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{background:#241a12;display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sans-serif}
+.phone{width:430px;height:900px;background:linear-gradient(180deg,#fff8f0,#ffefe2);border-radius:44px;overflow:hidden;position:relative;box-shadow:0 30px 80px rgba(0,0,0,.6),0 0 0 1px rgba(255,255,255,.12);display:flex;flex-direction:column}
+.topbar{padding:56px 20px 0}
+.search{display:flex;align-items:center;background:#fff;border-radius:999px;padding:13px 18px;box-shadow:0 6px 18px rgba(200,120,60,.15);color:#b9a08a;font-size:14px;gap:8px}
+.search .ph{flex:1}
+.search .go{background:linear-gradient(135deg,#ff8a3d,#e85d2a);color:#fff;border:none;border-radius:999px;padding:7px 16px;font-size:13px;font-weight:700;cursor:pointer}
+.banner{margin:16px 20px 0;border-radius:20px;padding:20px;background:linear-gradient(120deg,#e85d2a,#ff9a3d);color:#fff;position:relative;overflow:hidden;animation:slidein .6s ease both;animation-delay:-.15s}
+@keyframes slidein{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.banner .b1{font-size:19px;font-weight:800}
+.banner .b2{font-size:13px;opacity:.9;margin-top:6px}
+.banner .emo{position:absolute;right:14px;bottom:6px;font-size:64px;opacity:.85;transform:rotate(-8deg);display:block}
+.cats{display:flex;gap:10px;overflow-x:auto;margin:16px 0 0;padding:2px 20px 8px;scrollbar-width:none}
+.cats::-webkit-scrollbar{display:none}
+.cat{flex-shrink:0;padding:9px 18px;border-radius:999px;background:#fff;border:1px solid #f0ddc8;color:#9c7b5e;font-size:14px;cursor:pointer;transition:all .25s;white-space:nowrap}
+.cat.on{background:linear-gradient(135deg,#ff8a3d,#e85d2a);color:#fff;border-color:transparent;font-weight:700;box-shadow:0 6px 16px rgba(232,93,42,.4);transform:scale(1.05)}
+.flow{flex:1;overflow:hidden;margin:8px 20px 0;columns:2;column-gap:12px}
+.card{break-inside:avoid;background:#fff;border-radius:18px;overflow:hidden;margin-bottom:12px;box-shadow:0 6px 16px rgba(200,120,60,.12);cursor:pointer;transition:transform .15s;position:relative;animation:slidein .6s ease both}
+.card:nth-child(2){animation-delay:-.35s}.card:nth-child(3){animation-delay:-.25s}.card:nth-child(4){animation-delay:-.15s}.card:nth-child(5){animation-delay:-.3s}.card:nth-child(6){animation-delay:-.2s}
+.card:active{transform:scale(.97)}
+.food{height:120px;display:flex;align-items:center;justify-content:center;font-size:56px;position:relative;overflow:hidden}
+.food.tall{height:170px}
+.f1{background:linear-gradient(135deg,#ffd166,#f4a259)}
+.f2{background:linear-gradient(135deg,#ef8354,#d1495b)}
+.f3{background:linear-gradient(135deg,#9bc53d,#5a9e3f)}
+.f4{background:linear-gradient(135deg,#f6bd60,#e07a3f)}
+.f5{background:linear-gradient(135deg,#84a59d,#52796f)}
+.f6{background:linear-gradient(135deg,#f28482,#c94f4f)}
+.food .em{filter:drop-shadow(0 8px 10px rgba(0,0,0,.25));display:block;animation:float 3s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-8px) rotate(4deg)}}
+.heart{position:absolute;top:10px;right:10px;width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.9);display:flex;align-items:center;justify-content:center;font-size:18px;box-shadow:0 3px 10px rgba(0,0,0,.15);z-index:2}
+.heart.liked{color:#e63946;animation:beat .5s ease}
+@keyframes beat{0%{transform:scale(.5)}40%{transform:scale(1.35)}70%{transform:scale(.9)}100%{transform:scale(1)}}
+.card .bd{padding:12px 14px 14px}
+.card .nm{font-size:15px;font-weight:700;color:#3d2c20}
+.card .meta{font-size:12px;color:#b9a08a;margin-top:6px;display:flex;gap:10px}
+.tabbar{display:flex;background:#fffdf9;border-top:1px solid #f0ddc8;padding:12px 8px 34px}
+.tab{flex:1;text-align:center;color:#c4a988;font-size:11px;cursor:pointer;padding:6px 0}
+.tab .ic{font-size:22px;display:block;margin-bottom:4px;transition:transform .25s}
+.tab.on{color:#e85d2a;font-weight:700}
+.tab.on .ic{transform:translateY(-3px) scale(1.15)}
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="topbar">
+    <div class="search"><span>🔍</span><span class="ph">搜一搜：麻婆豆腐怎么做…</span><button class="go">搜索</button></div>
+  </div>
+  <div class="banner">
+    <div class="b1">今晚吃什么？</div>
+    <div class="b2">三万道家常菜谱 · 跟着做零失败</div>
+    <span class="emo">🍲</span>
+  </div>
+  <div class="cats" id="cats">
+    <button class="cat on">推荐</button><button class="cat">川菜</button><button class="cat">烘焙</button><button class="cat">快手菜</button><button class="cat">减脂餐</button><button class="cat">煲汤</button><button class="cat">早餐</button>
+  </div>
+  <div class="flow" id="flow">
+    <div class="card"><div class="heart">🤍</div><div class="food f1 tall"><span class="em">🍜</span></div><div class="bd"><div class="nm">老坛酸菜面</div><div class="meta"><span>⏱ 15分钟</span><span>🔥 2.3万做过</span></div></div></div>
+    <div class="card"><div class="heart">🤍</div><div class="food f2"><span class="em">🍰</span></div><div class="bd"><div class="nm">巴斯克蛋糕</div><div class="meta"><span>⏱ 50分钟</span><span>🔥 8千做过</span></div></div></div>
+    <div class="card"><div class="heart">🤍</div><div class="food f3"><span class="em">🥗</span></div><div class="bd"><div class="nm">田园时蔬沙拉</div><div class="meta"><span>⏱ 10分钟</span><span>🔥 5千做过</span></div></div></div>
+    <div class="card"><div class="heart">🤍</div><div class="food f4 tall"><span class="em">🍗</span></div><div class="bd"><div class="nm">蜜汁烤鸡翅</div><div class="meta"><span>⏱ 40分钟</span><span>🔥 1.8万做过</span></div></div></div>
+    <div class="card"><div class="heart">🤍</div><div class="food f5"><span class="em">🍵</span></div><div class="bd"><div class="nm">陈皮白茶</div><div class="meta"><span>⏱ 5分钟</span><span>🔥 3千做过</span></div></div></div>
+    <div class="card"><div class="heart">🤍</div><div class="food f6"><span class="em">🍓</span></div><div class="bd"><div class="nm">草莓大福</div><div class="meta"><span>⏱ 30分钟</span><span>🔥 9千做过</span></div></div></div>
+  </div>
+  <div class="tabbar" id="tabbar">
+    <div class="tab on"><span class="ic">🍳</span>菜谱</div>
+    <div class="tab"><span class="ic">📹</span>视频</div>
+    <div class="tab"><span class="ic">❤️</span>收藏</div>
+    <div class="tab"><span class="ic">👤</span>我的</div>
+  </div>
+</div>
+<script>
+(function(){
+  var cats=document.getElementById('cats');
+  cats.addEventListener('click',function(e){
+    var c=e.target.closest('.cat');if(!c)return;
+    cats.querySelectorAll('.cat').forEach(function(x){x.classList.remove('on')});
+    c.classList.add('on');
+  });
+  var flow=document.getElementById('flow');
+  flow.addEventListener('click',function(e){
+    var card=e.target.closest('.card');if(!card)return;
+    var h=card.querySelector('.heart');
+    var liked=h.classList.toggle('liked');
+    h.textContent=liked?'❤️':'🤍';
+    h.style.animation='none';void h.offsetWidth;h.style.animation='';
+  });
+  var tb=document.getElementById('tabbar');
+  tb.addEventListener('click',function(e){
+    var t=e.target.closest('.tab');if(!t)return;
+    tb.querySelectorAll('.tab').forEach(function(x){x.classList.remove('on')});
+    t.classList.add('on');
+  });
+})();
+</script>
+</body>
+</html>

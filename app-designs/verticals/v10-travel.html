@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>夜行打车 · 出行交通</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#0F1B33; --bg2:#13213F; --card:#16263F; --line:#24375C;
+  --acc:#22D3EE; --acc-d:#0EA5C6; --txt:#EAF2FF; --mut:#8CA0C4;
+  --gold:#FFC53D; --ok:#34D399; --warn:#FB923C; --red:#F87171;
+}
+html{background:#0A1326}
+body{font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif;background:#0A1326;color:var(--txt);min-height:100vh;display:flex;justify-content:center}
+.phone{width:100%;max-width:430px;min-height:100vh;background:linear-gradient(180deg,#101C38 0%,#0F1B33 30%,#0D1830 100%);position:relative;overflow:hidden;box-shadow:0 0 60px rgba(34,211,238,.08)}
+.statusbar{height:14px}
+.page{display:none;min-height:calc(100vh - 118px);padding-bottom:20px}
+.page.on{display:block;animation:fade .25s}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.topbar{padding:14px 18px 6px;display:flex;align-items:center;justify-content:space-between}
+.topbar h1{font-size:20px;font-weight:700;letter-spacing:2px}
+.topbar h1 .dot{color:var(--acc)}
+.topbar .city{font-size:12px;color:var(--mut);display:flex;align-items:center;gap:4px}
+/* ===== 叫车 ===== */
+.mapbox{margin:10px 14px 0;height:300px;border-radius:18px;position:relative;overflow:hidden;border:1px solid var(--line);
+  background:
+    radial-gradient(circle at 78% 30%,rgba(34,211,238,.16) 0 46px,transparent 47px),
+    radial-gradient(circle at 20% 70%,rgba(34,211,238,.08) 0 60px,transparent 61px),
+    repeating-linear-gradient(0deg,transparent 0 34px,rgba(34,211,238,.10) 34px 36px),
+    repeating-linear-gradient(90deg,transparent 0 44px,rgba(34,211,238,.10) 44px 46px),
+    linear-gradient(160deg,#15294B,#0E1B36)}
+.mapbox::after{content:"";position:absolute;left:0;right:0;top:118px;height:7px;background:linear-gradient(90deg,transparent,#22D3EE55,#22D3EE55,transparent)}
+.route{position:absolute;left:30px;top:40px;right:60px;bottom:60px}
+.route svg{width:100%;height:100%}
+.mep{position:absolute;width:14px;height:14px;border-radius:50%;transform:translate(-50%,-50%)}
+.me{left:18%;top:66%;background:var(--acc);box-shadow:0 0 0 6px rgba(34,211,238,.22),0 0 18px var(--acc);z-index:3}
+.me::after{content:"";position:absolute;left:5px;top:-14px;border:7px solid transparent;border-bottom-color:var(--acc)}
+.dest{left:76%;top:26%;background:#FF5C7A;box-shadow:0 0 0 6px rgba(255,92,122,.20),0 0 16px #FF5C7A}
+.car{position:absolute;width:26px;height:26px;left:52%;top:52%;transform:translate(-50%,-50%) rotate(-20deg);background:linear-gradient(135deg,#22D3EE,#0EA5C6);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:13px;color:#06263B;box-shadow:0 0 16px rgba(34,211,238,.8);z-index:2;animation:carjit .8s infinite alternate}
+@keyframes carjit{from{margin-top:-2px}to{margin-top:2px}}
+.map-tag{position:absolute;font-size:10px;background:#0B1730ee;border:1px solid var(--line);padding:3px 8px;border-radius:20px;color:var(--mut)}
+.map-tag.me-t{left:18%;top:76%;transform:translateX(-50%)}
+.map-tag.de-t{left:76%;top:36%;transform:translateX(-50%)}
+.map-tag.ca-t{left:52%;top:44%;transform:translateX(-50%);color:var(--acc);border-color:#22D3EE55}
+.locbtn{position:absolute;right:12px;bottom:12px;width:38px;height:38px;border-radius:50%;background:#0B1730dd;border:1px solid var(--line);color:var(--acc);font-size:18px;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.addr-card{margin:12px 14px 0;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:6px 14px;position:relative}
+.addr-row{display:flex;align-items:center;gap:10px;padding:9px 0}
+.addr-row .tick{width:9px;height:9px;border-radius:50%;flex:none}
+.addr-row.s .tick{background:var(--ok)} .addr-row.e .tick{background:#FF5C7A}
+.addr-row input{flex:1;background:none;border:none;outline:none;color:var(--txt);font-size:15px}
+.addr-row input::placeholder{color:#5C6F93}
+.addr-row .clr{color:#5C6F93;font-size:14px;cursor:pointer}
+.addr-div{height:1px;background:var(--line);margin:0 4px}
+.swap{position:absolute;right:14px;top:50%;transform:translateY(-50%);width:34px;height:34px;border-radius:50%;background:#0B1730;border:1px solid var(--acc);color:var(--acc);font-size:15px;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 0 12px rgba(34,211,238,.35)}
+.carlist{display:flex;gap:10px;margin:12px 14px 0;overflow-x:auto;padding-bottom:4px}
+.caropt{flex:1;min-width:92px;background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:12px 8px;text-align:center;cursor:pointer;transition:.15s}
+.caropt .ico{font-size:24px}
+.caropt .nm{font-size:13px;margin-top:6px}
+.caropt .pr{font-size:14px;color:var(--acc);font-weight:700;margin-top:2px}
+.caropt .note{font-size:10px;color:var(--mut);margin-top:2px}
+.caropt.sel{border-color:var(--acc);background:linear-gradient(180deg,#1B3355,#152A48);box-shadow:0 0 14px rgba(34,211,238,.35)}
+.coupon-strip{margin:12px 14px 0;display:flex;align-items:center;justify-content:space-between;background:linear-gradient(90deg,rgba(34,211,238,.12),rgba(34,211,238,.03));border:1px dashed #22D3EE66;border-radius:12px;padding:10px 14px;font-size:13px;cursor:pointer;color:var(--acc)}
+.callbtn{margin:14px;display:block;width:calc(100% - 28px);border:none;cursor:pointer;border-radius:16px;padding:16px;font-size:17px;font-weight:700;color:#04263B;letter-spacing:4px;
+  background:linear-gradient(135deg,#67E8F9,#22D3EE 45%,#0EA5C6);box-shadow:0 0 22px rgba(34,211,238,.55),0 6px 18px rgba(14,165,198,.35)}
+.callbtn:active{transform:scale(.98)}
+.callbtn.waiting{background:linear-gradient(135deg,#3A4E77,#2A3D63);color:var(--acc);box-shadow:0 0 14px rgba(34,211,238,.25);letter-spacing:2px}
+.status-line{margin:0 14px;background:#0B1730;border:1px solid var(--line);border-radius:14px;padding:14px;display:none}
+.status-line.on{display:block;animation:fade .3s}
+.status-line .steps{display:flex;align-items:center;margin-top:10px}
+.step{flex:1;text-align:center;font-size:11px;color:#5C6F93;position:relative}
+.step .n{width:24px;height:24px;border-radius:50%;background:#1B2B4D;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;margin:0 auto 5px;font-size:12px;color:var(--mut)}
+.step.act{color:var(--acc)} .step.act .n{border-color:var(--acc);box-shadow:0 0 10px rgba(34,211,238,.6);color:var(--acc)}
+.step.done{color:var(--ok)} .step.done .n{border-color:var(--ok);color:var(--ok)}
+.driver{display:none;margin-top:12px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px;align-items:center;gap:12px}
+.driver.on{display:flex}
+.driver .av{width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,#22D3EE,#6366F1);display:flex;align-items:center;justify-content:center;font-size:20px}
+.driver .inf{flex:1}.driver .inf .t{font-size:14px}.driver .inf .s{font-size:12px;color:var(--mut);margin-top:2px}
+.driver .plate{background:#0B1730;border:1px solid var(--acc);color:var(--acc);border-radius:8px;padding:6px 10px;font-weight:700;letter-spacing:1px}
+/* ===== 通用卡片 ===== */
+.sec{margin:14px 14px 0}
+.sec-h{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.sec-h h2{font-size:16px;font-weight:700}
+.sec-h a{font-size:12px;color:var(--acc);text-decoration:none}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px}
+.trip-now{border:1px solid #22D3EE55;box-shadow:0 0 16px rgba(34,211,238,.18)}
+.trip-now .hd{display:flex;justify-content:space-between;align-items:center}
+.badge{font-size:11px;padding:4px 10px;border-radius:20px}
+.b-on{background:rgba(52,211,153,.15);color:var(--ok);border:1px solid #34D39966}
+.b-done{background:rgba(140,160,196,.12);color:var(--mut);border:1px solid var(--line)}
+.b-cancel{background:rgba(248,113,113,.12);color:var(--red);border:1px solid #F8717166}
+.trip-route{margin:12px 0;font-size:14px}
+.trip-route .from-to{display:flex;align-items:center;gap:8px;margin:5px 0}
+.trip-route .dot{width:8px;height:8px;border-radius:50%;flex:none}
+.trip-meta{display:flex;gap:16px;font-size:12px;color:var(--mut);border-top:1px solid var(--line);padding-top:10px;margin-top:6px}
+.trip-meta b{color:var(--txt);font-size:14px}
+.hist-item{margin-top:10px}
+.hist-item .row{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.hist-item .t{font-size:13px;color:var(--mut)}
+.hist-item .amt{font-size:17px;font-weight:700;color:var(--acc)}
+.rebook{background:none;border:1px solid var(--acc);color:var(--acc);border-radius:10px;padding:7px 14px;font-size:13px;cursor:pointer}
+/* ===== 钱包 ===== */
+.bal{background:linear-gradient(135deg,#0EA5C6,#22D3EE 55%,#67E8F9);border-radius:18px;padding:20px;margin:12px 14px 0;color:#04263B;box-shadow:0 8px 26px rgba(34,211,238,.35);position:relative;overflow:hidden}
+.bal::after{content:"";position:absolute;right:-40px;top:-40px;width:160px;height:160px;border-radius:50%;background:rgba(255,255,255,.18)}
+.bal .lb{font-size:12px;opacity:.75}
+.bal .num{font-size:38px;font-weight:800;margin:6px 0}
+.bal .acts{display:flex;gap:10px;margin-top:12px;position:relative;z-index:1}
+.bal .acts button{flex:1;border:none;border-radius:10px;padding:10px;font-size:14px;font-weight:700;cursor:pointer;background:#04263B;color:#A5F3FC}
+.bal .acts button.ghost{background:rgba(255,255,255,.25);color:#04263B}
+.cp{display:flex;margin-top:10px;background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden;cursor:pointer}
+.cp .L{width:96px;background:linear-gradient(135deg,#22D3EE22,#0EA5C622);border-right:1px dashed #22D3EE55;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:14px 6px;color:var(--acc)}
+.cp .L b{font-size:22px}.cp .L span{font-size:11px;color:var(--mut)}
+.cp .R{flex:1;padding:12px 14px}.cp .R .t{font-size:14px;font-weight:700}.cp .R .s{font-size:12px;color:var(--mut);margin-top:4px}.cp .R .e{font-size:11px;color:#5C6F93;margin-top:4px}
+.cp.used{opacity:.45}
+.pay{display:flex;align-items:center;gap:12px;margin-top:10px;background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:13px 14px;cursor:pointer}
+.pay.sel{border-color:var(--acc);box-shadow:0 0 12px rgba(34,211,238,.25)}
+.pay .pic{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:19px;color:#fff;font-weight:800}
+.pay .nm{flex:1;font-size:15px}.pay .nm small{display:block;font-size:11px;color:var(--mut);margin-top:2px}
+.radio{width:20px;height:20px;border-radius:50%;border:2px solid #3A5079;position:relative}
+.pay.sel .radio{border-color:var(--acc)} .pay.sel .radio::after{content:"";position:absolute;inset:4px;border-radius:50%;background:var(--acc)}
+/* ===== 我的 ===== */
+.me-hd{display:flex;align-items:center;gap:14px;margin:12px 14px 0;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px 14px}
+.me-hd .av{width:62px;height:62px;border-radius:50%;background:linear-gradient(135deg,#22D3EE,#6366F1);display:flex;align-items:center;justify-content:center;font-size:26px;border:2px solid #22D3EE66;box-shadow:0 0 16px rgba(34,211,238,.4)}
+.me-hd .t{font-size:18px;font-weight:700}.me-hd .s{font-size:12px;color:var(--mut);margin-top:4px}
+.me-hd .lv{font-size:11px;color:#04263B;background:var(--gold);border-radius:6px;padding:2px 8px;margin-left:6px;font-weight:700}
+.addr2{display:flex;gap:10px;margin-top:10px}
+.addr2 .it{flex:1;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;display:flex;gap:10px;align-items:center;cursor:pointer}
+.addr2 .it .ic{width:36px;height:36px;border-radius:50%;background:#22D3EE18;display:flex;align-items:center;justify-content:center;font-size:17px}
+.addr2 .it .a{font-size:13px;font-weight:700}.addr2 .it .b{font-size:11px;color:var(--mut);margin-top:2px}
+.menu{margin:14px 14px 0;background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.mi{display:flex;align-items:center;gap:12px;padding:14px;border-bottom:1px solid var(--line);cursor:pointer;font-size:15px}
+.mi:last-child{border:none}
+.mi .ic{width:34px;height:34px;border-radius:10px;background:#22D3EE14;display:flex;align-items:center;justify-content:center;font-size:16px}
+.mi .arr{margin-left:auto;color:#5C6F93}
+.mi:active{background:#1B2B4D}
+/* ===== Tab ===== */
+.tabbar{position:sticky;bottom:0;background:#0B1730ee;backdrop-filter:blur(10px);border-top:1px solid var(--line);display:flex;z-index:10}
+.tab{flex:1;text-align:center;padding:9px 0 12px;font-size:11px;color:#5C6F93;cursor:pointer}
+.tab .i{font-size:21px;display:block;margin-bottom:2px}
+.tab.on{color:var(--acc)} .tab.on .i{text-shadow:0 0 12px var(--acc)}
+/* ===== 弹层 ===== */
+.mask{position:fixed;inset:0;background:rgba(4,10,22,.7);display:none;align-items:flex-end;justify-content:center;z-index:50}
+.mask.on{display:flex}
+.sheet{width:100%;max-width:430px;background:#12203C;border-radius:20px 20px 0 0;border-top:1px solid #22D3EE55;padding:18px;max-height:75vh;overflow:auto;animation:up .25s}
+@keyframes up{from{transform:translateY(60px);opacity:0}to{transform:none;opacity:1}}
+.sheet h3{font-size:17px;margin-bottom:12px}
+.sheet .close{float:right;color:var(--mut);cursor:pointer;font-size:18px}
+.sheet p{font-size:13px;color:var(--mut);line-height:1.8}
+.sheet .rule{font-size:13px;line-height:2}
+.sheet .rule b{color:var(--acc)}
+.toast{position:fixed;left:50%;bottom:120px;transform:translateX(-50%);background:#0B1730f2;border:1px solid #22D3EE88;color:var(--txt);padding:11px 20px;border-radius:24px;font-size:14px;z-index:99;display:none;box-shadow:0 0 18px rgba(34,211,238,.4);white-space:nowrap}
+.toast.on{display:block;animation:fade .25s}
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="statusbar"></div>
+
+  <!-- ============ 叫车 ============ -->
+  <section class="page on" id="p-call">
+    <div class="topbar">
+      <h1>夜行<span class="dot">·</span>打车</h1>
+      <div class="city">📍 上海市 ▾</div>
+    </div>
+    <div class="mapbox" id="mapbox">
+      <div class="mep me"></div><div class="map-tag me-t">我的位置</div>
+      <div class="mep dest"></div><div class="map-tag de-t">目的地</div>
+      <div class="car" id="carDot">🚕</div><div class="map-tag ca-t" id="carTag">附近有 6 辆车</div>
+      <div class="locbtn" onclick="toast('已回到当前定位')">◎</div>
+    </div>
+    <div class="addr-card">
+      <div class="addr-row s"><span class="tick"></span><input id="fromIn" value="上海南站" placeholder="输入起点"><span class="clr" onclick="clr('fromIn')">✕</span></div>
+      <div class="addr-div"></div>
+      <div class="addr-row e"><span class="tick"></span><input id="toIn" value="陆家嘴金融中心" placeholder="你要去哪儿"><span class="clr" onclick="clr('toIn')">✕</span></div>
+      <div class="swap" onclick="swapAddr()">⇅</div>
+    </div>
+    <div class="carlist" id="carlist">
+      <div class="caropt sel" data-p="拼车" data-f="18"><div class="ico">🚗</div><div class="nm">拼车</div><div class="pr">¥18</div><div class="note">约25分钟</div></div>
+      <div class="caropt" data-p="快车" data-f="32"><div class="ico">🚙</div><div class="nm">快车</div><div class="pr">¥32</div><div class="note">约12分钟</div></div>
+      <div class="caropt" data-p="优享" data-f="48"><div class="ico">🚘</div><div class="nm">优享</div><div class="pr">¥48</div><div class="note">约10分钟</div></div>
+      <div class="caropt" data-p="专车" data-f="76"><div class="ico">🏎️</div><div class="nm">专车</div><div class="pr">¥76</div><div class="note">约8分钟</div></div>
+    </div>
+    <div class="coupon-strip" onclick="openSheet('cp')"><span>🎟 优惠券：满30减8 可用 3 张</span><span>›</span></div>
+    <button class="callbtn" id="callBtn">立即叫车</button>
+    <div class="status-line" id="statusLine">
+      <div style="font-size:14px;font-weight:700" id="stTitle">正在为您匹配司机…</div>
+      <div class="steps">
+        <div class="step act" id="s1"><div class="n">1</div>排队中</div>
+        <div class="step" id="s2"><div class="n">2</div>司机接单</div>
+        <div class="step" id="s3"><div class="n">3</div>前往上车点</div>
+        <div class="step" id="s4"><div class="n">4</div>行程中</div>
+      </div>
+      <div class="driver" id="driverBox">
+        <div class="av">🧑‍✈️</div>
+        <div class="inf"><div class="t">王师傅 · 4.9分</div><div class="s" id="drvCar">大众朗逸 · 白色 · 预计3分钟到达</div></div>
+        <div class="plate">沪A·8D3K6</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 行程 ============ -->
+  <section class="page" id="p-trip">
+    <div class="topbar"><h1>我的<span class="dot">行</span>程</h1><div class="city">全部 ▾</div></div>
+    <div class="sec">
+      <div class="sec-h"><h2>进行中</h2></div>
+      <div class="card trip-now">
+        <div class="hd"><span class="badge b-on">● 进行中</span><span style="font-size:12px;color:var(--mut)">优享 · 预计18:42到达</span></div>
+        <div class="trip-route">
+          <div class="from-to"><span class="dot" style="background:var(--ok)"></span>陆家嘴金融中心</div>
+          <div class="from-to"><span class="dot" style="background:#FF5C7A"></span>上海虹桥机场 T2</div>
+        </div>
+        <div class="trip-meta"><span>里程 <b>12.6km</b></span><span>时长 <b>28分钟</b></span><span>预估 <b style="color:var(--acc)">¥58</b></span></div>
+      </div>
+    </div>
+    <div class="sec">
+      <div class="sec-h"><h2>历史行程</h2><a href="javascript:void(0)" onclick="toast('已加载全部 42 条行程')">查看全部 ›</a></div>
+      <div class="card hist-item">
+        <div class="row"><span class="t">10-18 21:05 · 快车</span><span class="badge b-done">已完成</span></div>
+        <div class="trip-route"><div class="from-to"><span class="dot" style="background:var(--ok)"></span>上海南站 → <span class="dot" style="background:#FF5C7A"></span>陆家嘴金融中心</div></div>
+        <div class="row"><span class="amt">¥32.5</span><button class="rebook" onclick="rebook('快车','上海南站','陆家嘴金融中心')">再叫一单</button></div>
+      </div>
+      <div class="card hist-item">
+        <div class="row"><span class="t">10-16 08:32 · 专车</span><span class="badge b-done">已完成</span></div>
+        <div class="trip-route"><div class="from-to"><span class="dot" style="background:var(--ok)"></span>静安寺 → <span class="dot" style="background:#FF5C7A"></span>浦东机场 T1</div></div>
+        <div class="row"><span class="amt">¥118.0</span><button class="rebook" onclick="rebook('专车','静安寺','浦东机场 T1')">再叫一单</button></div>
+      </div>
+      <div class="card hist-item">
+        <div class="row"><span class="t">10-12 19:47 · 拼车</span><span class="badge b-cancel">已取消</span></div>
+        <div class="trip-route"><div class="from-to"><span class="dot" style="background:var(--ok)"></span>五角场 → <span class="dot" style="background:#FF5C7A"></span>外滩</div></div>
+        <div class="row"><span class="amt" style="color:var(--mut)">¥0.0</span><button class="rebook" onclick="rebook('拼车','五角场','外滩')">再叫一单</button></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 钱包 ============ -->
+  <section class="page" id="p-wallet">
+    <div class="topbar"><h1>夜行<span class="dot">钱</span>包</h1><div class="city" onclick="toast('账单导出功能即将上线')">账单 ›</div></div>
+    <div class="bal">
+      <div class="lb">账户余额（元）</div>
+      <div class="num">¥ 128.60</div>
+      <div class="acts"><button onclick="toast('充值功能演示：已发起 ¥100 充值')">充值</button><button class="ghost" onclick="toast('提现已提交，预计1-3个工作日到账')">提现</button></div>
+    </div>
+    <div class="sec">
+      <div class="sec-h"><h2>优惠券 <span style="color:var(--acc)">3</span></h2><a href="javascript:void(0)" onclick="openSheet('cpAll')">全部 ›</a></div>
+      <div class="cp" onclick="openSheet('cp1')">
+        <div class="L"><b>¥8</b><span>满30可用</span></div>
+        <div class="R"><div class="t">快车立减券</div><div class="s">快车/优享可用 · 不可叠加</div><div class="e">有效期至 2026-11-30</div></div>
+      </div>
+      <div class="cp" onclick="openSheet('cp2')">
+        <div class="L"><b>¥15</b><span>满60可用</span></div>
+        <div class="R"><div class="t">专车尊享券</div><div class="s">仅专车可用 · 单笔限用1张</div><div class="e">有效期至 2026-12-31</div></div>
+      </div>
+      <div class="cp used">
+        <div class="L"><b>¥5</b><span>满20可用</span></div>
+        <div class="R"><div class="t">新用户体验券</div><div class="s" style="color:#5C6F93">已使用 · 10-18 抵扣 ¥5</div><div class="e">已过期</div></div>
+      </div>
+    </div>
+    <div class="sec">
+      <div class="sec-h"><h2>支付方式</h2></div>
+      <div class="pay sel" onclick="selPay(this)"><div class="pic" style="background:#07C160">微</div><div class="nm">微信支付<small>尾号 8823 · 默认</small></div><div class="radio"></div></div>
+      <div class="pay" onclick="selPay(this)"><div class="pic" style="background:#1677FF">支</div><div class="nm">支付宝<small>尾号 1190</small></div><div class="radio"></div></div>
+      <div class="pay" onclick="selPay(this)"><div class="pic" style="background:#E60012">闪</div><div class="nm">云闪付<small>尾号 6654</small></div><div class="radio"></div></div>
+    </div>
+  </section>
+
+  <!-- ============ 我的 ============ -->
+  <section class="page" id="p-me">
+    <div class="topbar"><h1>个人中<span class="dot">心</span></h1><div class="city" onclick="toast('消息中心：暂无新消息')">🔔</div></div>
+    <div class="me-hd">
+      <div class="av">🧝</div>
+      <div><div class="t">夜行者<span class="lv">Lv.5 铂金</span></div><div class="s">累计行程 128 单 · 好评率 99%</div></div>
+    </div>
+    <div class="sec">
+      <div class="sec-h"><h2>常用地址</h2><a href="javascript:void(0)" onclick="toast('新增地址功能演示')">+ 新增</a></div>
+      <div class="addr2">
+        <div class="it" onclick="useAddr('家','闵行区莲花南路 1288 弄')"><div class="ic">🏠</div><div><div class="a">家</div><div class="b">莲花南路1288弄</div></div></div>
+        <div class="it" onclick="useAddr('公司','浦东新区张江高科 88 号')"><div class="ic">🏢</div><div><div class="a">公司</div><div class="b">张江高科88号</div></div></div>
+      </div>
+    </div>
+    <div class="sec">
+      <div class="menu">
+        <div class="mi" onclick="openSheet('help')"><div class="ic">🎧</div>联系客服<span class="arr">›</span></div>
+        <div class="mi" onclick="openSheet('safe')"><div class="ic">🛡️</div>安全中心<span class="arr">›</span></div>
+        <div class="mi" onclick="openSheet('inv')"><div class="ic">🎁</div>邀请有礼<span class="arr">›</span></div>
+        <div class="mi" onclick="openSheet('set')"><div class="ic">⚙️</div>设置<span class="arr">›</span></div>
+      </div>
+    </div>
+    <div class="sec" style="text-align:center;color:#5C6F93;font-size:11px;padding-top:8px">夜行打车 v2.4.1 · 让每个深夜都有车回家</div>
+  </section>
+
+  <nav class="tabbar">
+    <div class="tab on" data-p="p-call"><span class="i">🚕</span>叫车</div>
+    <div class="tab" data-p="p-trip"><span class="i">🧾</span>行程</div>
+    <div class="tab" data-p="p-wallet"><span class="i">👛</span>钱包</div>
+    <div class="tab" data-p="p-me"><span class="i">👤</span>我的</div>
+  </nav>
+</div>
+
+<!-- 弹层 -->
+<div class="mask" id="mask" onclick="if(event.target===this)closeSheet()">
+  <div class="sheet" id="sheetBox"></div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+var tabs=document.querySelectorAll('.tab'),pages=document.querySelectorAll('.page');
+tabs.forEach(function(t){t.addEventListener('click',function(){
+  tabs.forEach(function(x){x.classList.remove('on')});
+  pages.forEach(function(p){p.classList.remove('on')});
+  t.classList.add('on');
+  document.getElementById(t.dataset.p).classList.add('on');
+  window.scrollTo(0,0);
+})});
+function clr(id){document.getElementById(id).value='';}
+function swapAddr(){var a=document.getElementById('fromIn'),b=document.getElementById('toIn'),t=a.value;a.value=b.value;b.value=t;toast('起点终点已交换');}
+var toastT=null;
+function toast(msg){var e=document.getElementById('toast');e.textContent=msg;e.classList.add('on');clearTimeout(toastT);toastT=setTimeout(function(){e.classList.remove('on')},2200);}
+document.querySelectorAll('.caropt').forEach(function(o){o.addEventListener('click',function(){
+  document.querySelectorAll('.caropt').forEach(function(x){x.classList.remove('sel')});o.classList.add('sel');
+  document.getElementById('callBtn').textContent='立即叫车 · '+o.dataset.p+' ¥'+o.dataset.f;
+});});
+function selPay(el){document.querySelectorAll('.pay').forEach(function(x){x.classList.remove('sel')});el.classList.add('sel');toast('已切换为'+el.querySelector('.nm').childNodes[0].textContent.trim());}
+var calling=false,stepT=[];
+function callCar(){
+  if(calling){return;}
+  var sel=document.querySelector('.caropt.sel');
+  var from=document.getElementById('fromIn').value.trim(),to=document.getElementById('toIn').value.trim();
+  if(!from||!to){toast('请先填写起点和终点');return;}
+  calling=true;
+  var btn=document.getElementById('callBtn'),sl=document.getElementById('statusLine');
+  btn.classList.add('waiting');btn.textContent='取消叫车';
+  sl.classList.add('on');sl.scrollIntoView({block:'nearest'});
+  ['s1','s2','s3','s4'].forEach(function(id){var e=document.getElementById(id);e.classList.remove('act','done');});
+  document.getElementById('s1').classList.add('act');
+  document.getElementById('driverBox').classList.remove('on');
+  document.getElementById('stTitle').textContent='正在为您匹配'+sel.dataset.p+'司机…';
+  document.getElementById('carTag').textContent='正在匹配…';
+  toast('已发出叫车请求 · '+sel.dataset.p+' ¥'+sel.dataset.f);
+  stepT.push(setTimeout(function(){
+    document.getElementById('s1').classList.add('done');document.getElementById('s1').classList.remove('act');
+    document.getElementById('s2').classList.add('act');
+    document.getElementById('driverBox').classList.add('on');
+    document.getElementById('stTitle').textContent='司机已接单，正在赶来';
+    document.getElementById('carTag').textContent='王师傅 · 3分钟后到达';
+    document.getElementById('drvCar').textContent=sel.dataset.p+' · 预计3分钟到达上车点';
+    toast('王师傅已接单，车牌 沪A·8D3K6');
+  },2600));
+  stepT.push(setTimeout(function(){
+    document.getElementById('s2').classList.add('done');document.getElementById('s2').classList.remove('act');
+    document.getElementById('s3').classList.add('act');
+    document.getElementById('stTitle').textContent='司机已到达上车点，请上车';
+    toast('司机已到达，请前往上车点');
+  },5200));
+  stepT.push(setTimeout(function(){
+    document.getElementById('s3').classList.add('done');document.getElementById('s3').classList.remove('act');
+    document.getElementById('s4').classList.add('act');
+    document.getElementById('stTitle').textContent='行程进行中，祝您一路顺风';
+    toast('行程开始，祝您一路顺风');
+  },7800));
+}
+document.getElementById('callBtn').addEventListener('click',function(){
+  if(calling){cancelCall();}
+  else{callCar();}
+});
+function cancelCall(){
+  var btn=document.getElementById('callBtn');
+  stepT.forEach(clearTimeout);stepT=[];calling=false;
+  btn.classList.remove('waiting');
+  var sel=document.querySelector('.caropt.sel');
+  btn.textContent='立即叫车 · '+sel.dataset.p+' ¥'+sel.dataset.f;
+  document.getElementById('statusLine').classList.remove('on');
+  toast('已取消叫车，不收取费用');
+}
+function rebook(p,from,to){
+  tabs.forEach(function(x){x.classList.remove('on')});pages.forEach(function(pg){pg.classList.remove('on')});
+  tabs[0].classList.add('on');document.getElementById('p-call').classList.add('on');
+  document.getElementById('fromIn').value=from;document.getElementById('toIn').value=to;
+  document.querySelectorAll('.caropt').forEach(function(o){
+    var on=o.dataset.p===p;o.classList.toggle('sel',on);
+    if(on)document.getElementById('callBtn').textContent='立即叫车 · '+p+' ¥'+o.dataset.f;
+  });
+  window.scrollTo(0,0);toast('已填入行程，点击「立即叫车」出发');
+}
+function useAddr(n,a){document.getElementById('toIn').value=a;toast('已设为目的地：'+n);}
+var SHEETS={
+ cp:{t:'可用优惠券',h:'<div class="rule">🎟 <b>快车立减券 ¥8</b><br>满30元可用，快车/优享通用<br>🎟 <b>专车尊享券 ¥15</b><br>满60元可用，仅限专车<br>🎟 <b>拼车尝鲜券 ¥6</b><br>满15元可用，仅限拼车</div><p style="margin-top:8px">叫车时自动选择最优券抵扣。</p>'},
+ cpAll:{t:'全部优惠券',h:'<div class="rule">可使用 <b>3</b> 张 · 已使用 <b>1</b> 张<br><br>¥8 快车立减券（2026-11-30到期）<br>¥15 专车尊享券（2026-12-31到期）<br>¥6 拼车尝鲜券（2026-11-15到期）</div>'},
+ cp1:{t:'快车立减券 ¥8',h:'<div class="rule">使用门槛：订单满 <b>30 元</b><br>适用车型：<b>快车 / 优享</b><br>有效期：至 2026-11-30<br>每单限用 1 张，不可叠加<br><br>使用方式：叫车时自动勾选最优券</div>'},
+ cp2:{t:'专车尊享券 ¥15',h:'<div class="rule">使用门槛：订单满 <b>60 元</b><br>适用车型：<b>专车</b><br>有效期：至 2026-12-31<br>每单限用 1 张，不可叠加</div>'},
+ help:{t:'联系客服',h:'<div class="rule">在线客服：<b>7×24 小时</b><br>客服热线：<b>400-810-6666</b><br>遗失物品：行程页 → 申请找回<br>投诉建议：平均 <b>2 小时</b>内回复</div>'},
+ safe:{t:'安全中心',h:'<div class="rule">🛡️ 行程分享：实时分享给紧急联系人<br>🛡️ 一键报警：行程中长按 SOS<br>🛡️ 夜间守护：23点后自动开启<br>🛡️ 录音保护：全程录音加密保存 7 天</div>'},
+ inv:{t:'邀请有礼',h:'<div class="rule">邀请好友首单立得 <b>¥20</b> 打车券<br>好友完成 3 单，你再得 <b>¥30</b><br>已邀请 <b>6</b> 位好友，累计获券 ¥150</div>'},
+ set:{t:'设置',h:'<div class="rule">🔔 新消息通知：已开启<br>🌙 夜间模式：跟随系统<br>📍 定位权限：使用期间允许<br>🗑 清除缓存：128 MB<br>ℹ️ 当前版本 v2.4.1</div>'}
+};
+function openSheet(k){var s=SHEETS[k];if(!s)return;
+  document.getElementById('sheetBox').innerHTML='<span class="close" onclick="closeSheet()">✕</span><h3>'+s.t+'</h3>'+s.h;
+  document.getElementById('mask').classList.add('on');
+}
+function closeSheet(){document.getElementById('mask').classList.remove('on');}
+</script>
+</body>
+</html>

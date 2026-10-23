@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>跷跷板</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;display:flex;align-items:center;justify-content:center;background:#0e0f13;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;color:#e8eaf0;padding:20px}
+body.freeze *{transition:none!important;animation:none!important}
+.stage{width:360px;max-width:100%;text-align:center}
+h2{font-size:17px;letter-spacing:3px;margin-bottom:4px}
+.sub{font-size:12px;color:#8a8fa3;margin-bottom:20px}
+.device{cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent}
+.park{width:340px;height:290px;margin:0 auto;position:relative;border-radius:20px;background:linear-gradient(180deg,#0d1526 0%,#16233d 75%,#101b12 100%);overflow:hidden;box-shadow:0 12px 32px rgba(0,0,0,.5)}
+.ground{position:absolute;bottom:0;left:0;right:0;height:34px;background:linear-gradient(180deg,#2e4a2e,#1c2f1c)}
+.ful{position:absolute;bottom:34px;left:50%;margin-left:-34px;width:0;height:0;border-left:34px solid transparent;border-right:34px solid transparent;border-bottom:78px solid #4a5162;filter:drop-shadow(0 4px 6px rgba(0,0,0,.5))}
+.axle{position:absolute;bottom:104px;left:50%;width:26px;height:26px;margin-left:-13px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#dfe4ee,#767e92);z-index:3;box-shadow:0 2px 6px rgba(0,0,0,.5)}
+.plank{position:absolute;bottom:100px;left:50%;width:300px;height:18px;margin-left:-150px;border-radius:9px;background:linear-gradient(180deg,#d29a55,#8a5a28);transform-origin:50% 50%;transform:rotate(-11deg);transition:transform .8s cubic-bezier(.3,1.5,.45,1);box-shadow:0 6px 14px rgba(0,0,0,.4)}
+.device.on .plank{transform:rotate(11deg)}
+.seat{position:absolute;top:-34px;width:44px;height:34px;border-radius:10px 10px 6px 6px;background:linear-gradient(180deg,#5a6274,#333949);transition:all .5s}
+.seat.l{left:14px}.seat.r{right:14px}
+.seat .kid{position:absolute;bottom:30px;left:50%;width:26px;height:30px;margin-left:-13px;border-radius:12px 12px 6px 6px}
+.seat.l .kid{background:linear-gradient(180deg,#6ec6ff,#2e86c1)}
+.seat.r .kid{background:linear-gradient(180deg,#ff9ab0,#d63d6e)}
+.seat.l{box-shadow:0 0 18px rgba(110,198,255,.0)}
+.device:not(.on) .seat.l{box-shadow:0 0 20px rgba(110,198,255,.75)}
+.device.on .seat.r{box-shadow:0 0 20px rgba(255,154,176,.75)}
+.handle{position:absolute;top:-58px;left:50%;width:6px;height:26px;margin-left:-3px;background:#8f97a9;border-radius:3px}
+.ball{position:absolute;top:30px;width:22px;height:22px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#ffe9a3,#f5a623);box-shadow:0 0 16px rgba(255,200,60,.6);transition:left .8s cubic-bezier(.3,1.4,.4,1)}
+.device:not(.on) .ball{left:36px}
+.device.on .ball{left:282px}
+.flag{position:absolute;top:56px;left:50%;font-size:11px;color:#8a8fa3;letter-spacing:2px;transform:translateX(-50%)}
+.status{margin-top:18px;font-size:14px;color:#9aa0b4}
+.status b{color:#ffd479}
+.hint{font-size:11px;color:#5c6172;margin-top:6px}
+</style>
+</head>
+<body>
+<div class="stage">
+<h2>跷跷板</h2>
+<div class="sub">点击把跷跷板翘到另一边</div>
+<div class="device" id="dev">
+<div class="park">
+<div class="ball"></div><div class="flag">重力球</div>
+<div class="ground"></div><div class="ful"></div>
+<div class="plank">
+<div class="seat l"><div class="handle"></div><div class="kid"></div></div>
+<div class="seat r"><div class="handle"></div><div class="kid"></div></div>
+</div>
+<div class="axle"></div>
+</div>
+</div>
+<div class="status">状态：<b id="st">关 · 左边着地</b></div>
+<div class="hint">点击跷跷板切换</div>
+</div>
+<script>
+var dev=document.getElementById('dev'),st=document.getElementById('st'),on=location.search.indexOf('s=1')>-1;
+function render(){dev.classList.toggle('on',on);st.textContent=on?'开 · 右边着地':'关 · 左边着地';}
+if(on)document.body.classList.add('freeze');
+dev.addEventListener('click',function(){on=!on;render();});
+render();
+</script>
+</body>
+</html>

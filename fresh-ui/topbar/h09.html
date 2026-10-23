@@ -1,0 +1,66 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>顶部栏 · 胶囊巡游</title><style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{background:#07090d;display:flex;justify-content:center;align-items:flex-start;
+font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sans-serif;
+color:#eef1f6;-webkit-font-smoothing:antialiased}
+.app{width:430px;height:900px;position:relative;overflow:hidden;background:#0d1117;flex-shrink:0}
+.feed{position:absolute;inset:0;overflow-y:auto;scrollbar-width:none;overscroll-behavior:contain}
+.feed::-webkit-scrollbar{display:none}
+.hero{height:300px;position:relative;overflow:hidden;flex-shrink:0}
+.card{background:#151b25;border:1px solid #232c3b;border-radius:16px;padding:14px;margin:12px 16px;
+display:flex;gap:12px;align-items:center;animation:cardIn .6s both}
+@keyframes cardIn{from{opacity:0;transform:translateY(14px)}}
+.thumb{width:56px;height:56px;border-radius:14px;flex-shrink:0;position:relative;overflow:hidden}
+.thumb::after{content:"";position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.35),transparent 60%)}
+.card h5{font-size:14px;margin-bottom:5px}
+.card p{font-size:12px;color:#8b95a7}
+.card .tag{margin-left:auto;font-size:10px;color:#0b0e14;background:#ffd479;border-radius:8px;padding:3px 8px;font-weight:700;flex-shrink:0}
+.sec{padding:20px 16px 4px;font-size:13px;color:#8b95a7;letter-spacing:2px}
+.hint{position:absolute;bottom:20px;left:50%;transform:translateX(-50%);z-index:30;
+background:rgba(20,26,36,.85);border:1px solid #2a3550;color:#9aa6bd;font-size:11px;
+padding:7px 14px;border-radius:20px;pointer-events:none;transition:opacity .4s;white-space:nowrap;
+animation:hintFloat 2.4s ease-in-out -1.2s infinite}
+@keyframes hintFloat{0%,100%{transform:translate(-50%,0)}50%{transform:translate(-50%,-6px)}}
+.hint.gone{opacity:0}
+.ic{width:22px;height:22px;display:inline-block;flex-shrink:0}
+
+.bar{position:absolute;top:0;left:0;right:0;z-index:20;padding:12px 0 12px 16px;
+background:rgba(13,17,23,.92);backdrop-filter:blur(14px);border-bottom:1px solid #232c3b}
+.pills{display:flex;gap:10px;overflow-x:auto;scrollbar-width:none;padding-right:16px}
+.pills::-webkit-scrollbar{display:none}
+.pill{flex-shrink:0;border:1px solid #2a3550;background:#151b25;color:#8b95a7;font-size:13px;
+border-radius:20px;padding:8px 18px;cursor:pointer;transition:all .3s;white-space:nowrap}
+.pill.on{background:linear-gradient(135deg,#7ab8ff,#d79bff);color:#0b0e14;border-color:transparent;
+font-weight:800;box-shadow:0 4px 16px rgba(122,184,255,.4);transform:scale(1.06)}
+.bar.scrolled{box-shadow:0 8px 24px rgba(0,0,0,.45)}
+.feed{padding-top:74px}
+</style></head><body><div class="app"><header class="bar" id="bar"><div class="pills" id="pills"><button class="pill on">推荐</button><button class="pill">视频</button><button class="pill">直播</button><button class="pill">附近</button><button class="pill">关注</button><button class="pill">榜单</button></div></header><div class="feed" id="feed"></div><div class="hint" id="hint">↓ 下滑体验顶栏动效</div></div><script>
+const DATA=[
+["晨跑路线 · 奥森南园","5.2km · 配速 5'30''","#7ab8ff","跑步"],
+["深夜食堂 · 豚骨拉面","评分 4.8 · 人均 68","#ffb86b","美食"],
+["城市骑行 · 沿江绿道","18km · 微风","#7dffa8","骑行"],
+["胶片展 · 光与尘","周末开展 · 免费","#d79bff","展览"],
+["爵士之夜 · 蓝调现场","21:00 开场","#ff8fa3","音乐"],
+["山野徒步 · 云雾线","12km · 中等难度","#8fe3ff","徒步"],
+["独立书店 · 深夜书房","营业至 24:00","#ffe28f","阅读"],
+["咖啡课 · 手冲入门","周六 14:00","#c8a97e","课程"],
+["观星营 · 流星雨","郊野公园集合","#a8b8ff","户外"],
+["陶艺体验 · 捏出春天","含烧制 · 2h","#ffb3c7","手工"],
+["滑板公园 · 新手局","免费教学","#9dffd9","运动"],
+["老城漫步 · 青石巷","Citywalk 3km","#ffd479","漫步"]];
+const feed=document.getElementById('feed');
+feed.insertAdjacentHTML('beforeend','<div class="sec">为 你 推 荐</div>');
+DATA.forEach((d,i)=>{
+feed.insertAdjacentHTML('beforeend',
+'<div class="card" style="animation-delay:'+(-i*0.06)+'s"><div class="thumb" style="background:linear-gradient(135deg,'+d[2]+',#1a2230)"></div><div><h5>'+d[0]+'</h5><p>'+d[1]+'</p></div><span class="tag">'+d[3]+'</span></div>');
+});
+const hint=document.getElementById('hint');
+feed.addEventListener('scroll',()=>{hint.classList.add('gone');onScroll(feed.scrollTop);},{passive:true});
+function onScroll(st){const bar=document.getElementById('bar');bar.classList.toggle('scrolled',st>60);extraScroll(st,bar);}
+function extraScroll(st,bar){}
+
+
+document.querySelectorAll('#pills .pill').forEach(p=>p.onclick=()=>{
+document.querySelectorAll('#pills .pill').forEach(x=>x.classList.remove('on'));p.classList.add('on');});
+</script></body></html>

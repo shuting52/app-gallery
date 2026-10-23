@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>墨水晕染 · 按钮特效</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body {
+    min-height: 100vh; background: linear-gradient(160deg, #e8e2d5 0%, #ded4c0 60%, #d3c8b2 100%);
+    color: #3a3226; font-family: "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+    display: flex; flex-direction: column; align-items: center; overflow: hidden; user-select: none;
+  }
+  .title { margin: 44px 0 6px; font-size: 22px; letter-spacing: 8px; font-weight: 700; color: #2c2517; }
+  .sub { font-size: 12px; letter-spacing: 3px; color: #8a7d63; margin-bottom: 26px; }
+  .stage {
+    width: 360px; max-width: 92vw; height: 420px; border-radius: 20px;
+    background: #f5f1e6; border: 1px solid rgba(60,50,35,.15);
+    display: flex; align-items: center; justify-content: center; position: relative;
+    box-shadow: 0 18px 44px rgba(80,65,40,.18), inset 0 0 0 1px rgba(255,255,255,.6);
+  }
+  .ink-btn {
+    position: relative; width: 240px; height: 88px; border-radius: 16px; cursor: pointer; overflow: hidden;
+    background: #faf7ef; border: 2px solid #3a3226;
+    box-shadow: 6px 6px 0 #3a3226;
+    font-size: 19px; letter-spacing: 6px; font-weight: 800; color: #3a3226;
+    transition: transform .12s ease, box-shadow .12s ease;
+  }
+  .ink-btn:active { transform: translate(3px, 3px); box-shadow: 3px 3px 0 #3a3226; }
+  .ink-btn canvas { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+  .ink-btn .label { position: relative; z-index: 2; }
+  .ink-btn.stained .label { color: #1a1626; }
+  .hint { margin-top: 22px; font-size: 12px; letter-spacing: 2px; color: #8a7d63; }
+</style>
+</head>
+<body>
+  <div class="title">墨水晕染</div>
+  <div class="sub">INK BLOOM · 落墨之处皆成画</div>
+  <div class="stage"><button class="ink-btn" id="btn"><canvas id="ink"></canvas><span class="label">落墨</span></button></div>
+  <div class="hint">点击按钮落下一滴墨 · 看它在纸面晕开</div>
+<script>
+  var btn = document.getElementById('btn');
+  var cv = document.getElementById('ink');
+  var ctx = cv.getContext('2d');
+  var W, H, drops = [], raf = null, t0 = 0;
+
+  function size() {
+    var r = btn.getBoundingClientRect();
+    W = cv.width = Math.max(2, Math.round(r.width));
+    H = cv.height = Math.max(2, Math.round(r.height));
+  }
+  size();
+  window.addEventListener('resize', size);
+
+  function rnd(a, b) { return a + Math.random() * (b - a); }
+
+  // 一滴墨 = 一组不规则墨斑（中心浓、边缘淡、多瓣随机）
+  function makeDrop(x, y) {
+    var blobs = [];
+    var n = 10 + (Math.random() * 6 | 0);
+    for (var i = 0; i < n; i++) {
+      var ang = (i / n) * Math.PI * 2 + rnd(-.4, .4);
+      var dist = rnd(0, 26);
+      blobs.push({
+        dx: Math.cos(ang) * dist, dy: Math.sin(ang) * dist,
+        r: rnd(6, 22), speed: rnd(.9, 1.7), delay: rnd(0, .25),
+        alpha: rnd(.5, .95)
+      });
+    }
+    return { x: x, y: y, blobs: blobs, born: performance.now() };
+  }
+
+  function draw(now) {
+    ctx.clearRect(0, 0, W, H);
+    var alive = false;
+    for (var d = 0; d < drops.length; d++) {
+      var drop = drops[d];
+      var age = (now - drop.born) / 1000; // 秒
+      var maxR = 0;
+      for (var i = 0; i < drop.blobs.length; i++) {
+        var b = drop.blobs[i];
+        var t = Math.min(1, Math.max(0, (age - b.delay) / 1.6));
+        if (t < 1) alive = true;
+        var eased = 1 - Math.pow(1 - t, 3);
+        var rr = b.r * (0.25 + 0.75 * eased) + eased * b.speed * 34;
+        maxR = Math.max(maxR, rr);
+        // 不规则边缘：多层叠加 + 锯齿扰动
+        for (var ring = 3; ring >= 1; ring--) {
+          var jitter = 1 + 0.22 * Math.sin(ring * 4.7 + i * 2.3 + age * 2);
+          ctx.beginPath();
+          ctx.arc(drop.x + b.dx * eased, drop.y + b.dy * eased, rr * jitter * (ring / 3), 0, Math.PI * 2);
+          var a = b.alpha * (1 - eased * .55) * (ring === 3 ? .55 : ring === 2 ? .75 : 1);
+          ctx.fillStyle = 'rgba(26,22,38,' + a.toFixed(3) + ')';
+          ctx.fill();
+        }
+      }
+      // 文字染色进度：墨斑覆盖过半即染墨
+      if (!drop.stained && age > .7) { btn.classList.add('stained'); drop.stained = true; }
+      if (age < 2.4) alive = true;
+    }
+    if (alive) { raf = requestAnimationFrame(draw); }
+    else { raf = null; }
+  }
+
+  btn.addEventListener('click', function (e) {
+    var r = btn.getBoundingClientRect();
+    var x = (e.clientX > 0 ? e.clientX : r.left + r.width / 2) - r.left;
+    var y = (e.clientY > 0 ? e.clientY : r.top + r.height / 2) - r.top;
+    drops.push(makeDrop(x, y));
+    if (drops.length > 4) drops.shift();
+    if (!raf) raf = requestAnimationFrame(draw);
+  });
+</script>
+</body>
+</html>

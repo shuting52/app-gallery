@@ -1,0 +1,35 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>剪纸迎春</title><style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{width:430px;height:900px;margin:0 auto;position:relative;overflow:hidden;
+font-family:-apple-system,"PingFang SC","Microsoft YaHei","Noto Sans CJK SC",sans-serif;
+background:#c0272d;color:#fff}
+.scene{position:absolute;inset:0}
+
+.trim{position:absolute;left:0;right:0;height:28px;background:repeating-linear-gradient(45deg,rgba(255,248,238,.95) 0 14px,transparent 14px 28px)}
+.trim.t{top:0}.trim.b{bottom:0}
+.win{position:absolute;left:50%;top:170px;width:300px;height:300px;margin-left:-150px;background:#fff8ee;border-radius:50%;box-shadow:0 0 0 16px rgba(255,248,238,.22),0 0 70px rgba(0,0,0,.3)}
+.chun{position:absolute;left:50%;top:212px;width:216px;height:216px;margin-left:-108px;background:#c0272d;border-radius:50%}
+.chun span{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:118px;font-weight:800;color:#fff8ee;animation:glow 2.6s ease-in-out infinite}
+@keyframes glow{50%{text-shadow:0 0 34px rgba(255,220,150,.95)}}
+.bl{position:absolute;width:20px;height:20px;border-radius:50%;background:radial-gradient(circle,#ffe4ec 30%,#f78fb8 75%);box-shadow:0 0 8px rgba(255,180,205,.8)}
+.fp{position:absolute;top:-24px;width:13px;height:13px;border-radius:80% 12% 80% 12%;background:#ffd9e4;animation:fpFall linear infinite;display:block}
+@keyframes fpFall{to{transform:translateY(950px) rotate(380deg)}}
+
+.brand{position:absolute;left:0;right:0;bottom:118px;text-align:center;z-index:5;
+color:#fff8ee;opacity:0;animation:brandIn 1s ease 2.2s both}
+.brand h1{font-size:34px;letter-spacing:8px;font-weight:800;text-shadow:0 2px 14px rgba(0,0,0,.35)}
+.brand p{font-size:13px;letter-spacing:3px;margin-top:10px;opacity:.85;text-shadow:0 1px 10px rgba(0,0,0,.35)}
+@keyframes brandIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.replay{position:absolute;left:50%;bottom:44px;transform:translateX(-50%);z-index:6;
+padding:10px 28px;border-radius:24px;border:1px solid rgba(255,255,255,.45);
+background:rgba(255,255,255,.14);color:#fff8ee;font-size:14px;letter-spacing:2px;cursor:pointer}
+</style></head><body>
+<div class="scene"><div class="trim t"></div><div class="trim b"></div>
+<div class="win"></div><div class="chun"><span>春</span></div>
+<i class="bl" style="left:70px;top:140px;transform:scale(0.9)"></i><i class="bl" style="left:330px;top:170px;transform:scale(1.1)"></i><i class="bl" style="left:50px;top:560px;transform:scale(1)"></i><i class="bl" style="left:360px;top:540px;transform:scale(0.8)"></i><i class="bl" style="left:110px;top:640px;transform:scale(1.2)"></i><i class="bl" style="left:300px;top:660px;transform:scale(0.9)"></i><i class="fp" style="left:60px;animation-duration:8s;animation-delay:-1s"></i><i class="fp" style="left:140px;animation-duration:9.5s;animation-delay:-4s"></i><i class="fp" style="left:220px;animation-duration:8s;animation-delay:-2.5s"></i><i class="fp" style="left:300px;animation-duration:10s;animation-delay:-6s"></i><i class="fp" style="left:370px;animation-duration:9s;animation-delay:-3.5s"></i><i class="fp" style="left:100px;animation-duration:8.5s;animation-delay:-5.5s"></i><i class="fp" style="left:260px;animation-duration:9s;animation-delay:-7s"></i><i class="fp" style="left:340px;animation-duration:8s;animation-delay:-2s"></i></div>
+<div class="brand"><h1>剪纸迎春</h1><p>剪出春光 迎来新岁</p></div>
+<button class="replay" onclick="location.reload()">重新播放</button>
+</body></html>

@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>多米诺更新 · DOMINO</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    min-height: 100vh; display: flex; align-items: center; justify-content: center;
+    background: linear-gradient(160deg, #2b1d12 0%, #1a120a 100%);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    padding: 20px 14px; color: #f5eedd;
+  }
+  .modal {
+    width: 340px; background: linear-gradient(170deg, #3a2a1a, #241a10);
+    border: 1px solid rgba(245,230,190,.16); border-radius: 26px;
+    padding: 24px 22px 20px; box-shadow: 0 24px 70px rgba(0,0,0,.6);
+    display: flex; flex-direction: column; align-items: center;
+  }
+  .modal.hidden { display: none; }
+  .m-head { width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+  .m-title { font-size: 18px; font-weight: 700; letter-spacing: 1px; }
+  .m-title .ver {
+    font-size: 11px; color: #f0d488; border: 1px solid rgba(240,212,136,.5);
+    border-radius: 99px; padding: 2px 9px; margin-left: 6px; vertical-align: 2px;
+  }
+  .x { background: none; border: none; color: rgba(245,238,221,.4); font-size: 24px; cursor: pointer; line-height: 1; }
+  .x:hover { color: #fff; }
+  .m-sub { width: 100%; font-size: 14px; color: rgba(245,238,221,.72); margin-bottom: 3px; text-align: left; }
+  .m-meta { width: 100%; font-size: 12px; color: rgba(245,238,221,.4); margin-bottom: 12px; text-align: left; font-variant-numeric: tabular-nums; }
+
+  /* 木桌舞台 */
+  .stage {
+    position: relative; width: 300px; height: 190px; border-radius: 16px;
+    background: linear-gradient(180deg, #4a3420 0%, #382a1b 100%);
+    overflow: hidden; margin-bottom: 8px;
+    box-shadow: inset 0 2px 12px rgba(0,0,0,.5);
+  }
+  .table-line {
+    position: absolute; left: 0; right: 0; bottom: 34px; height: 3px;
+    background: rgba(0,0,0,.35);
+  }
+  .big-check {
+    position: absolute; left: 50%; top: 44%; width: 110px; height: 110px;
+    margin: -55px 0 0 -55px; opacity: 0; transform: scale(.3);
+    transition: all .6s cubic-bezier(.2,1.5,.4,1);
+  }
+  .big-check.on { opacity: 1; transform: scale(1); }
+  .big-check svg { width: 110px; height: 110px; }
+  .big-check circle { fill: rgba(126,200,110,.14); stroke: #8fd07a; stroke-width: 5; }
+  .big-check path {
+    fill: none; stroke: #8fd07a; stroke-width: 9;
+    stroke-linecap: round; stroke-linejoin: round;
+    stroke-dasharray: 90; stroke-dashoffset: 90;
+  }
+  .big-check.on path { animation: draw 0.9s .2s ease forwards; }
+  @keyframes draw { to { stroke-dashoffset: 0; } }
+
+  .row {
+    position: absolute; left: 0; right: 0; bottom: 36px; height: 96px;
+    display: flex; justify-content: center; align-items: flex-end; gap: 5px;
+    perspective: 520px;
+  }
+  .tile {
+    width: 24px; height: 58px; background: linear-gradient(180deg, #fffdf6, #efe8d4);
+    border: 1px solid #c9bfa4; border-radius: 5px;
+    display: flex; flex-direction: column;
+    transform-origin: 50% 100%;
+    transition: transform .5s cubic-bezier(.3,1.3,.5,1), box-shadow .5s;
+    box-shadow: 0 3px 0 rgba(0,0,0,.25);
+    position: relative;
+  }
+  .tile .half { flex: 1; display: grid; grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr); padding: 3px; }
+  .tile .half + .half { border-top: 1px solid #c9bfa4; }
+  .pip { width: 4px; height: 4px; border-radius: 50%; background: #3a3a3a; place-self: center; }
+  .tile.down { transform: rotateX(66deg) translateY(10px); box-shadow: 0 10px 8px rgba(0,0,0,.3); }
+  .row.install .tile { animation: wob 0.9s ease-in-out infinite; }
+  .row.install .tile:nth-child(odd) { animation-delay: .15s; }
+  @keyframes wob { 0%,100% { transform: rotateX(66deg) translateY(10px); } 50% { transform: rotateX(58deg) translateY(12px); } }
+
+  .pct { font-size: 40px; font-weight: 800; font-variant-numeric: tabular-nums; letter-spacing: 1px; color: #f5eedd; }
+  .tile-count { font-size: 12px; color: rgba(240,212,136,.7); letter-spacing: 3px; margin-top: 2px; }
+
+  .main-btn {
+    width: 100%; margin-top: 16px; padding: 14px 0; border-radius: 99px; border: none;
+    font-size: 16px; font-weight: 600; letter-spacing: 2px; cursor: pointer;
+    background: rgba(245,238,221,.12); color: #f5eedd; border: 1px solid rgba(245,238,221,.2);
+    transition: all .25s;
+  }
+  .main-btn:hover { background: rgba(245,238,221,.2); }
+  .main-btn.gold { background: linear-gradient(135deg, #ffe9a8, #e8b93f); color: #3a2c07; border: none;
+    box-shadow: 0 8px 26px rgba(232,185,63,.35); }
+  .main-btn:disabled { opacity: .45; cursor: default; }
+  .replay { margin-top: 10px; background: none; border: none; color: rgba(245,238,221,.35);
+    font-size: 12.5px; cursor: pointer; letter-spacing: 1px; }
+  .replay:hover { color: #f0d488; }
+  .toast {
+    position: fixed; top: 24px; left: 50%; transform: translateX(-50%) translateY(-14px);
+    background: rgba(30,22,14,.95); border: 1px solid rgba(245,238,221,.16); color: #f5eedd;
+    padding: 10px 22px; border-radius: 99px; font-size: 14px; opacity: 0;
+    pointer-events: none; transition: all .25s; z-index: 60;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+
+<div class="modal" id="modal">
+  <div class="m-head">
+    <div class="m-title">🎲 多米诺更新<span class="ver">v4.0.0</span></div>
+    <button class="x" id="xBtn">×</button>
+  </div>
+  <div class="m-sub" id="statusText">正在下载 v4.0.0，第一张牌即将倒下</div>
+  <div class="m-meta" id="metaText">0.0MB / 156.8MB · -- MB/s</div>
+
+  <div class="stage">
+    <div class="big-check" id="bigCheck">
+      <svg viewBox="0 0 110 110"><circle cx="55" cy="55" r="48"/><path d="M34 57 L50 73 L78 38"/></svg>
+    </div>
+    <div class="table-line"></div>
+    <div class="row" id="row"></div>
+  </div>
+
+  <div class="pct" id="pctText">0%</div>
+  <div class="tile-count" id="tileCount">倒下 0 / 10</div>
+
+  <button class="main-btn" id="mainBtn">取消更新</button>
+  <button class="replay" id="replayBtn">↺ 重新演示</button>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+  const row = document.getElementById('row');
+  const bigCheck = document.getElementById('bigCheck');
+  const pctText = document.getElementById('pctText');
+  const tileCount = document.getElementById('tileCount');
+  const statusText = document.getElementById('statusText');
+  const metaText = document.getElementById('metaText');
+  const mainBtn = document.getElementById('mainBtn');
+  const modal = document.getElementById('modal');
+  const toast = document.getElementById('toast');
+
+  // 骰点布局（3x3 格序号）
+  const PIPS = { 1:[4], 2:[0,8], 3:[0,4,8], 4:[0,2,6,8], 5:[0,2,4,6,8], 6:[0,2,3,5,6,8] };
+  function halfEl(v) {
+    const h = document.createElement('div');
+    h.className = 'half';
+    for (let i = 0; i < 9; i++) {
+      const c = document.createElement('div');
+      c.style.display = 'flex'; c.style.alignItems = 'center'; c.style.justifyContent = 'center';
+      if (PIPS[v].includes(i)) { const p = document.createElement('div'); p.className = 'pip'; c.appendChild(p); }
+      h.appendChild(c);
+    }
+    return h;
+  }
+  const tiles = [];
+  for (let i = 0; i < 10; i++) {
+    const t = document.createElement('div');
+    t.className = 'tile';
+    t.appendChild(halfEl((i % 6) + 1));
+    t.appendChild(halfEl(((i + 3) % 6) + 1));
+    row.appendChild(t);
+    tiles.push(t);
+  }
+
+  const TOTAL_MB = 156.8;
+  let progress = 0, state = 'downloading', timer = null, showSpeed = 0, fast = false;
+
+  function downCount(p) { return Math.min(10, Math.floor(p / 10)); }
+
+  function render() {
+    const p = Math.min(Math.max(progress, 0), 100);
+    pctText.textContent = Math.floor(p) + '%';
+    const n = downCount(p);
+    tiles.forEach((t, i) => t.classList.toggle('down', i < n));
+    tileCount.textContent = `倒下 ${n} / 10`;
+    const mb = (p / 100 * TOTAL_MB).toFixed(1);
+    if (state === 'downloading') metaText.textContent = `${mb}MB / ${TOTAL_MB}MB · ${showSpeed.toFixed(1)} MB/s`;
+  }
+
+  function showToast(msg) {
+    toast.textContent = msg; toast.classList.add('show');
+    clearTimeout(showToast._t);
+    showToast._t = setTimeout(() => toast.classList.remove('show'), 1800);
+  }
+  function setMain(label, gold, disabled) {
+    mainBtn.textContent = label;
+    mainBtn.classList.toggle('gold', !!gold);
+    mainBtn.disabled = !!disabled;
+  }
+
+  function tick() {
+    if (state !== 'downloading') return;
+    const sp = 8 * (0.6 + Math.random() * 0.8);
+    showSpeed = showSpeed * 0.7 + sp * 0.3;
+    progress += sp * 0.1 / TOTAL_MB * 100;
+    if (progress >= 100) { progress = 100; render(); enterInstalling(); return; }
+    render();
+  }
+  function startTimer() { clearInterval(timer); timer = setInterval(tick, 100); }
+
+  function enterDownloading(reset) {
+    if (reset) {
+      progress = 0; showSpeed = 0;
+      row.classList.remove('install');
+      bigCheck.classList.remove('on');
+    }
+    state = 'downloading';
+    statusText.textContent = '正在下载 v4.0.0，第一张牌即将倒下';
+    setMain('取消更新', false, false);
+    startTimer(); render();
+  }
+  function enterCancelled() {
+    state = 'cancelled'; clearInterval(timer);
+    // 动画回退：骨牌从右往左逐张立起
+    const cur = tiles.filter(t => t.classList.contains('down')).length;
+    for (let k = 0; k < cur; k++) {
+      setTimeout(((idx) => () => {
+        tiles[idx].classList.remove('down');
+        tileCount.textContent = `倒下 ${idx} / 10`;
+      })(cur - 1 - k), k * 110);
+    }
+    progress = 0;
+    setTimeout(() => { pctText.textContent = '0%'; tileCount.textContent = '倒下 0 / 10'; }, cur * 110 + 80);
+    statusText.textContent = '已取消更新，骨牌重新立好了';
+    metaText.textContent = `0.0MB / ${TOTAL_MB}MB · 已停止`;
+    setMain('重新下载', false, false);
+    showToast('已取消更新');
+  }
+  function enterInstalling() {
+    state = 'installing'; clearInterval(timer);
+    row.classList.add('install');
+    statusText.textContent = '正在安装…最后一张牌落定';
+    metaText.textContent = `${TOTAL_MB}MB / ${TOTAL_MB}MB · 校验完成`;
+    setMain('安装中…', false, true);
+    setTimeout(() => bigCheck.classList.add('on'), fast ? 100 : 500);
+    setTimeout(() => { if (state === 'installing') enterDone(); }, fast ? 400 : 1900);
+    render();
+  }
+  function enterDone() {
+    state = 'done';
+    row.classList.remove('install');
+    bigCheck.classList.add('on');
+    statusText.textContent = '更新完成，全军覆没，大获成功';
+    tileCount.textContent = '倒下 10 / 10 · 一气呵成';
+    metaText.textContent = `v4.0.0 已安装 · 牌面完美`;
+    setMain('完成', true, false);
+    showToast('已更新到 v4.0.0');
+    render();
+  }
+
+  mainBtn.addEventListener('click', () => {
+    if (state === 'downloading') enterCancelled();
+    else if (state === 'cancelled') enterDownloading(true);
+    else if (state === 'done') { modal.classList.add('hidden'); showToast('已进入 v4.0.0'); }
+  });
+  document.getElementById('xBtn').addEventListener('click', () => {
+    if (state === 'downloading') enterCancelled();
+    else modal.classList.add('hidden');
+  });
+  document.getElementById('replayBtn').addEventListener('click', () => {
+    modal.classList.remove('hidden');
+    enterDownloading(true);
+    showToast('重新开始演示');
+  });
+
+  window.addEventListener('load', () => {
+    if (location.hash === '#done') { fast = true; progress = 100; render(); enterInstalling(); }
+    else if (location.hash === '#mid') { progress = 55; showSpeed = 8.2; enterDownloading(false); progress = 55; render(); }
+    else enterDownloading(false);
+  });
+</script>
+</body>
+</html>

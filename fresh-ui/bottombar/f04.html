@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>镜面倒影</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{display:flex;align-items:center;justify-content:center;background:#101018;
+font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans CJK SC",sans-serif}
+.phone{width:430px;height:900px;border-radius:48px;overflow:hidden;position:relative;
+display:flex;flex-direction:column;color:#eef4ff;
+background:linear-gradient(180deg,#14141f 0%,#0a0a12 40%,#06060b 100%);
+box-shadow:0 30px 80px rgba(0,0,0,.65)}
+.content{flex:1;padding:56px 28px 20px;position:relative;z-index:1}
+.content .tag{display:inline-block;font-size:12px;letter-spacing:4px;color:#7dd3fc;margin-bottom:14px}
+.content h1{font-size:44px;font-weight:800;letter-spacing:2px;margin-bottom:26px}
+.card{height:150px;border-radius:20px;margin-bottom:18px;position:relative;overflow:hidden;
+background:linear-gradient(135deg,rgba(125,211,252,.12),rgba(255,255,255,.04));
+border:1px solid rgba(255,255,255,.08)}
+.card::after{content:"";position:absolute;left:22px;right:60px;top:28px;height:14px;border-radius:7px;background:rgba(255,255,255,.15)}
+.card::before{content:"";position:absolute;left:22px;right:120px;top:58px;height:10px;border-radius:5px;background:rgba(255,255,255,.08)}
+/* glossy tabbar */
+.tabbar{position:relative;height:104px;display:flex;flex:0 0 auto;z-index:2;
+background:linear-gradient(180deg,rgba(60,60,90,.55) 0%,rgba(20,20,32,.92) 45%,rgba(8,8,14,.98) 100%);
+border-top:1px solid rgba(255,255,255,.14);
+box-shadow:inset 0 1px 0 rgba(255,255,255,.18)}
+.tab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;
+background:none;border:0;cursor:pointer;color:#7c7c95;padding-top:16px;position:relative}
+.tab .ic{display:block;height:26px}
+.tab .ic svg{width:26px;height:26px;transition:transform .3s,color .3s,filter .3s}
+.tab .mirror{display:block;height:20px;overflow:hidden;margin-top:-1px}
+.tab .mirror svg{width:26px;height:26px;transform:scaleY(-1);opacity:.22;
+-webkit-mask-image:linear-gradient(to bottom,rgba(0,0,0,.7),transparent 90%);
+mask-image:linear-gradient(to bottom,rgba(0,0,0,.7),transparent 90%);
+transition:opacity .3s,filter .3s}
+.tab .lb{font-size:11px;letter-spacing:1px;margin-top:4px;transition:color .3s}
+.tab.active{color:#bae6fd}
+.tab.active .ic svg{transform:scale(1.2);color:#fff;
+filter:drop-shadow(0 0 6px rgba(125,211,252,.95)) drop-shadow(0 0 18px rgba(125,211,252,.45))}
+.tab.active .mirror svg{opacity:.55;filter:drop-shadow(0 0 8px rgba(125,211,252,.7))}
+.tab.active .lb{color:#7dd3fc;font-weight:600}
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="content">
+    <span class="tag">MIRROR</span>
+    <h1 id="t">湖面</h1>
+    <div class="card"></div><div class="card"></div><div class="card"></div>
+  </div>
+  <nav class="tabbar" id="bar">
+    <button class="tab"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M10 21v-6h4v6"/></svg></span><span class="mirror"></span><span class="lb">湖面</span></button>
+    <button class="tab"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2 5-5 2 2-5z"/></svg></span><span class="mirror"></span><span class="lb">涟漪</span></button>
+    <button class="tab"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg></span><span class="mirror"></span><span class="lb">投石</span></button>
+    <button class="tab"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 8-3 8h18s-3-1-3-8"/><path d="M10.3 21a2 2 0 0 0 3.4 0"/></svg></span><span class="mirror"></span><span class="lb">回声</span></button>
+    <button class="tab"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/></svg></span><span class="mirror"></span><span class="lb">倒影</span></button>
+  </nav>
+</div>
+<script>
+var names=["湖面","涟漪","投石","回声","倒影"];
+var tabs=[].slice.call(document.querySelectorAll(".tab"));
+tabs.forEach(function(b){
+  var svg=b.querySelector(".ic svg");
+  b.querySelector(".mirror").innerHTML=svg.outerHTML;
+});
+function activate(k){
+  tabs.forEach(function(b,i){b.classList.toggle("active",i===k);});
+  document.getElementById("t").textContent=names[k];
+  try{history.replaceState(null,"","?tab="+k);}catch(e){}
+}
+var q=parseInt(new URLSearchParams(location.search).get("tab"),10);
+if(isNaN(q)||q<0||q>4)q=0;
+tabs.forEach(function(b,i){b.addEventListener("click",function(){activate(i);});});
+requestAnimationFrame(function(){activate(q);});
+</script>
+</body>
+</html>

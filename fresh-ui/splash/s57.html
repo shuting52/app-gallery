@@ -1,0 +1,32 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>雪夜</title><style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{width:430px;height:900px;margin:0 auto;position:relative;overflow:hidden;
+font-family:-apple-system,"PingFang SC","Microsoft YaHei","Noto Sans CJK SC",sans-serif;
+background:linear-gradient(180deg,#0b1230 0%,#1b2b5e 70%,#2c427f 100%);color:#fff}
+.scene{position:absolute;inset:0}
+
+.moon{position:absolute;top:80px;right:60px;width:92px;height:92px;border-radius:50%;background:radial-gradient(circle at 36% 34%,#fffbe8,#e8ecf5 70%,#c9d2e8);box-shadow:0 0 60px 20px rgba(230,236,250,.25)}
+.sn{position:absolute;top:-24px;border-radius:50%;background:#fff;animation:fall linear infinite}
+@keyframes fall{to{transform:translateY(950px)}}
+.pine{position:absolute;bottom:60px;width:0;height:0;border-left:58px solid transparent;border-right:58px solid transparent;border-bottom:150px solid #081230}
+.pine::after{content:"";position:absolute;left:-58px;top:96px;border-left:58px solid transparent;border-right:58px solid transparent;border-bottom:44px solid rgba(220,232,250,.85)}
+.gnd{position:absolute;bottom:-70px;left:-60px;width:550px;height:190px;background:#dfe8f5;border-radius:50%}
+
+.brand{position:absolute;left:0;right:0;bottom:118px;text-align:center;z-index:5;
+color:#fff;opacity:0;animation:brandIn 1s ease 2.2s both}
+.brand h1{font-size:34px;letter-spacing:8px;font-weight:800;text-shadow:0 2px 14px rgba(0,0,0,.35)}
+.brand p{font-size:13px;letter-spacing:3px;margin-top:10px;opacity:.85;text-shadow:0 1px 10px rgba(0,0,0,.35)}
+@keyframes brandIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.replay{position:absolute;left:50%;bottom:44px;transform:translateX(-50%);z-index:6;
+padding:10px 28px;border-radius:24px;border:1px solid rgba(255,255,255,.45);
+background:rgba(255,255,255,.14);color:#fff;font-size:14px;letter-spacing:2px;cursor:pointer}
+</style></head><body>
+<div class="scene"><div class="moon"></div><i class="sn" style="left:20px;width:7px;height:7px;animation-duration:9s;animation-delay:-2s;opacity:0.9"></i><i class="sn" style="left:60px;width:5px;height:5px;animation-duration:11s;animation-delay:-7s;opacity:0.7"></i><i class="sn" style="left:105px;width:8px;height:8px;animation-duration:8s;animation-delay:-4s;opacity:0.95"></i><i class="sn" style="left:150px;width:4px;height:4px;animation-duration:12s;animation-delay:-9s;opacity:0.6"></i><i class="sn" style="left:195px;width:6px;height:6px;animation-duration:10s;animation-delay:-1s;opacity:0.85"></i><i class="sn" style="left:240px;width:9px;height:9px;animation-duration:7.5s;animation-delay:-5s;opacity:1"></i><i class="sn" style="left:285px;width:5px;height:5px;animation-duration:11s;animation-delay:-3s;opacity:0.7"></i><i class="sn" style="left:330px;width:7px;height:7px;animation-duration:9.5s;animation-delay:-8s;opacity:0.9"></i><i class="sn" style="left:375px;width:4px;height:4px;animation-duration:12s;animation-delay:-6s;opacity:0.6"></i><i class="sn" style="left:410px;width:6px;height:6px;animation-duration:10s;animation-delay:-2s;opacity:0.8"></i><i class="sn" style="left:45px;width:6px;height:6px;animation-duration:10.5s;animation-delay:-5.5s;opacity:0.8"></i><i class="sn" style="left:130px;width:9px;height:9px;animation-duration:8.5s;animation-delay:-1.5s;opacity:0.95"></i><i class="sn" style="left:220px;width:5px;height:5px;animation-duration:11.5s;animation-delay:-7.5s;opacity:0.65"></i><i class="sn" style="left:310px;width:8px;height:8px;animation-duration:9s;animation-delay:-4.5s;opacity:0.9"></i><i class="sn" style="left:355px;width:6px;height:6px;animation-duration:10s;animation-delay:-9.5s;opacity:0.75"></i><i class="sn" style="left:90px;width:4px;height:4px;animation-duration:12s;animation-delay:-3.5s;opacity:0.6"></i><i class="sn" style="left:175px;width:7px;height:7px;animation-duration:9s;animation-delay:-6.5s;opacity:0.85"></i><i class="sn" style="left:265px;width:5px;height:5px;animation-duration:11s;animation-delay:-0.5s;opacity:0.7"></i>
+<div class="pine" style="left:36px"></div><div class="pine" style="left:150px;transform:scale(.72);transform-origin:bottom"></div><div class="pine" style="right:40px;transform:scale(1.15);transform-origin:bottom"></div>
+<div class="gnd"></div></div>
+<div class="brand"><h1>雪夜</h1><p>万籁俱寂 唯雪有声</p></div>
+<button class="replay" onclick="location.reload()">重新播放</button>
+</body></html>

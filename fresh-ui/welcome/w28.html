@@ -1,0 +1,73 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>w28 · 免费试用</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC",sans-serif;background:#05070c;display:flex;justify-content:center;color:#fff;overflow:hidden}
+.stage{width:430px;height:900px;position:relative;overflow:hidden;flex-shrink:0;background:radial-gradient(120% 90% at 50% 0%,#0e2f26 0%,#0a1e1a 55%,#0b0e16 100%)}
+.mock{position:absolute;inset:0;filter:blur(6px) brightness(.55)}
+.sb{height:46px;display:flex;justify-content:space-between;align-items:center;padding:0 26px;font-size:13px;font-weight:600}
+.sic{width:70px;height:12px;border-radius:6px;background:#2a3040}
+.mh{display:flex;align-items:center;gap:10px;padding:14px 20px}
+.mh i{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,#1c4a40,#123029);display:block}
+.mh em{width:110px;height:14px;border-radius:7px;background:#1c3833;display:block}
+.banner{height:150px;margin:6px 20px 14px;border-radius:18px;background:linear-gradient(135deg,#14443b,#0d2b26)}
+.row{display:flex;gap:12px;align-items:center;margin:0 20px 12px}
+.row i{width:52px;height:52px;border-radius:14px;background:#1c3833;display:block;flex-shrink:0}
+.row b{display:block;width:150px;height:13px;border-radius:6px;background:#25544b;margin-bottom:8px}
+.row s{display:block;width:100px;height:10px;border-radius:5px;background:#18332e;text-decoration:none}
+.tabbar{position:absolute;bottom:0;left:0;right:0;height:84px;background:rgba(10,30,26,.9);display:flex;justify-content:space-around;align-items:center;border-top:1px solid #1c3833}
+.tabbar i{width:26px;height:26px;border-radius:8px;background:#25544b;display:block}
+.ov{position:absolute;inset:0;z-index:10;display:flex;align-items:center;justify-content:center;background:rgba(4,16,13,.55);animation:fadeIn .4s both}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.modal{width:330px;border-radius:26px;padding:32px 26px 28px;text-align:center;position:relative;background:linear-gradient(165deg,#123b32,#0b2620);border:1px solid rgba(110,230,190,.3);box-shadow:0 30px 80px rgba(0,0,0,.55),0 0 50px rgba(60,220,170,.15);animation:pop .55s cubic-bezier(.2,1.4,.4,1) both;animation-delay:.12s}
+@keyframes pop{from{opacity:0;transform:scale(.7) translateY(30px)}to{opacity:1;transform:none}}
+.x{position:absolute;top:14px;right:14px;width:30px;height:30px;border-radius:50%;border:0;background:rgba(255,255,255,.12);color:#fff;font-size:15px;cursor:pointer;z-index:3}
+.ringbox{width:170px;height:170px;margin:4px auto;position:relative}
+.ringbox svg{transform:rotate(-90deg)}
+.bg{stroke:rgba(255,255,255,.09)}
+.fg{stroke:url(#gg);stroke-linecap:round;stroke-dasharray:440;stroke-dashoffset:440;animation:fill 1.4s cubic-bezier(.3,.8,.3,1) both;animation-delay:.4s;filter:drop-shadow(0 0 8px rgba(80,230,180,.6))}
+@keyframes fill{to{stroke-dashoffset:63}}
+.center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.center b{font-size:44px;color:#7df0c4}
+.center span{font-size:12px;color:#9fd8c4;margin-top:2px}
+h2{font-size:21px;margin:14px 0 6px}
+p.sub{font-size:13px;color:#a9cfc2;line-height:1.7}
+.feats{display:flex;gap:8px;margin-top:14px}
+.feats div{flex:1;font-size:11px;color:#bfe6d8;background:rgba(110,230,190,.08);border:1px solid rgba(110,230,190,.22);border-radius:12px;padding:9px 4px}
+.feats div b{display:block;font-size:16px;margin-bottom:2px}
+.tiny{margin-top:12px;font-size:11px;color:#7ba598}
+.btn{display:block;width:100%;border:0;border-radius:16px;padding:14px;font-size:16px;font-weight:700;cursor:pointer;margin-top:16px;background:linear-gradient(180deg,#6ee6b8,#22b07d);color:#06352a;box-shadow:0 8px 22px rgba(60,220,170,.4)}
+.btn:active{transform:scale(.97)}
+.replay{position:absolute;bottom:24px;left:50%;transform:translateX(-50%);z-index:20;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.1);color:#fff;border-radius:999px;padding:10px 22px;font-size:13px;cursor:pointer;backdrop-filter:blur(8px)}
+</style></head>
+<body><div class="stage">
+<div class="mock"><div class="sb"><span>9:41</span><span class="sic"></span></div>
+<div class="mh"><i></i><em></em></div><div class="banner"></div>
+<div class="row"><i></i><div><b></b><s></s></div></div>
+<div class="row"><i></i><div><b></b><s></s></div></div>
+<div class="tabbar"><i></i><i></i><i></i><i></i></div></div>
+<div class="ov" id="ov"><div class="modal">
+<button class="x" id="x">✕</button>
+<div class="ringbox">
+<svg width="170" height="170" viewBox="0 0 170 170"><defs>
+<linearGradient id="gg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6ee6b8"/><stop offset="1" stop-color="#22b07d"/></linearGradient></defs>
+<circle class="bg" cx="85" cy="85" r="70" fill="none" stroke-width="14"/>
+<circle class="fg" cx="85" cy="85" r="70" fill="none" stroke-width="14"/></svg>
+<div class="center"><b>7 天</b><span>免费试用</span></div></div>
+<h2>先体验，再决定</h2>
+<p class="sub">全部高级功能免费试用 7 天<br>到期前 1 天提醒，随时取消</p>
+<div class="feats"><div><b>⚡</b>极速版</div><div><b>☁️</b>云同步</div><div><b>🎨</b>主题库</div></div>
+<div class="tiny">无需绑定支付方式 · 到期自动停止</div>
+<button class="btn" id="go">开始免费试用</button>
+</div></div>
+<button class="replay" id="replay">重新弹出</button>
+</div>
+<script>
+const ov=document.getElementById('ov');
+document.getElementById('go').onclick=()=>ov.style.display='none';
+document.getElementById('x').onclick=()=>ov.style.display='none';
+document.getElementById('replay').onclick=()=>{ov.style.display='flex';
+const m=ov.querySelector('.modal');m.style.animation='none';void m.offsetWidth;m.style.animation='';};
+</script></body></html>

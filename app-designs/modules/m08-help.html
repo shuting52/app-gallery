@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>帮助与反馈 · 青柠服务</title>
+<style>
+/* ===== 青柠服务 · 清新薄荷风帮助中心 ===== */
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{margin:0;background:#E8F4F0;color:#1E3A32;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;display:flex;justify-content:center;font-size:15px}
+.phone{width:100%;max-width:430px;height:100dvh;background:#F6FBF9;position:relative;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 0 40px rgba(20,120,100,.12)}
+.topbar{padding:14px 18px 6px;display:flex;align-items:center;gap:10px}
+.topbar h1{margin:0;font-size:20px;font-weight:800;letter-spacing:1px;flex:1}
+.svc-dot{width:10px;height:10px;border-radius:50%;background:#22C55E;box-shadow:0 0 8px #22C55E}
+.svc-t{font-size:12px;color:#5E8A7D}
+.main{flex:1;overflow-y:auto;padding:6px 16px 90px;scrollbar-width:none}
+.main::-webkit-scrollbar{display:none}
+.screen{display:none}
+.screen.active{display:block;animation:fadeUp .3s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}}
+/* 搜索 */
+.search{display:flex;align-items:center;background:#fff;border-radius:16px;padding:12px 14px;gap:8px;border:1px solid #DDEEE7;box-shadow:0 3px 10px rgba(20,120,100,.07)}
+.search input{flex:1;border:0;outline:0;font-size:14px;background:none;color:#1E3A32}
+.search input::placeholder{color:#9DB8AE}
+/* 快捷服务 */
+.svc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:14px 0}
+.svc{background:#fff;border-radius:16px;border:1px solid #DDEEE7;padding:14px 4px;text-align:center;cursor:pointer}
+.svc:active{transform:scale(.95)}
+.svc .ic{width:44px;height:44px;border-radius:14px;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;font-size:20px;color:#fff}
+.svc span{font-size:12px;color:#3E5F55}
+.sec-t{font-size:16px;font-weight:800;margin:18px 4px 10px;display:flex;justify-content:space-between;align-items:center}
+.sec-t a{font-size:12px;color:#0E9F8A;font-weight:400;cursor:pointer}
+/* 问答手风琴 */
+.chips{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 10px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex-shrink:0;border:1px solid #CDE5DB;background:#fff;border-radius:20px;padding:7px 16px;font-size:13px;color:#5E8A7D;cursor:pointer}
+.chip.on{background:#0E9F8A;color:#fff;border-color:#0E9F8A}
+.faq{background:#fff;border-radius:14px;border:1px solid #DDEEE7;margin-bottom:10px;overflow:hidden}
+.faq-q{padding:14px 16px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;font-size:14.5px;font-weight:600}
+.faq-q .pl{color:#0E9F8A;font-size:18px;transition:transform .25s;flex-shrink:0;margin-left:8px}
+.faq.open .faq-q .pl{transform:rotate(45deg)}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .3s ease;font-size:13.5px;color:#5E7A6F;line-height:1.7}
+.faq-a div{padding:0 16px 14px}
+.faq.open{border-color:#0E9F8A}
+/* 客服聊天 */
+.chat{background:#fff;border-radius:18px;border:1px solid #DDEEE7;height:420px;display:flex;flex-direction:column;overflow:hidden}
+.chatlog{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px;scrollbar-width:none}
+.chatlog::-webkit-scrollbar{display:none}
+.msg{max-width:78%;padding:10px 14px;border-radius:16px;font-size:14px;line-height:1.6;animation:fadeUp .25s ease}
+.msg.bot{background:#EDF7F3;border:1px solid #DDEEE7;align-self:flex-start;border-bottom-left-radius:4px}
+.msg.me{background:#0E9F8A;color:#fff;align-self:flex-end;border-bottom-right-radius:4px}
+.msg .t{font-size:10px;opacity:.6;margin-top:4px}
+.quick{display:flex;gap:8px;overflow-x:auto;padding:0 14px 10px;scrollbar-width:none}
+.quick::-webkit-scrollbar{display:none}
+.quick button{flex-shrink:0;border:1px solid #0E9F8A;color:#0E9F8A;background:#fff;border-radius:16px;padding:6px 14px;font-size:12px;cursor:pointer}
+.chatinput{display:flex;gap:8px;padding:10px 12px;border-top:1px solid #DDEEE7}
+.chatinput input{flex:1;border:1px solid #DDEEE7;border-radius:20px;padding:10px 14px;font-size:14px;outline:0}
+.chatinput input:focus{border-color:#0E9F8A}
+.sendbtn{border:0;background:#0E9F8A;color:#fff;border-radius:20px;padding:0 20px;font-size:14px;cursor:pointer}
+.typing{align-self:flex-start;background:#EDF7F3;border-radius:16px;padding:12px 16px;font-size:13px;color:#5E8A7D}
+/* 反馈表单 */
+.form{background:#fff;border-radius:18px;border:1px solid #DDEEE7;padding:18px}
+.flabel{font-size:14px;font-weight:700;margin:0 0 10px}
+.types{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.types button{border:1px solid #CDE5DB;background:#fff;border-radius:14px;padding:8px 16px;font-size:13px;color:#5E8A7D;cursor:pointer}
+.types button.on{background:#0E9F8A;color:#fff;border-color:#0E9F8A}
+.stars{display:flex;gap:6px;margin-bottom:16px;font-size:28px;cursor:pointer}
+.stars span{color:#D8E8E2;transition:color .15s}
+.stars span.lit{color:#FFB800}
+textarea{width:100%;border:1px solid #DDEEE7;border-radius:14px;padding:12px;font-size:14px;min-height:110px;resize:vertical;outline:0;font-family:inherit;color:#1E3A32}
+textarea:focus{border-color:#0E9F8A}
+.count{text-align:right;font-size:11px;color:#9DB8AE;margin:4px 0 12px}
+.cinput{width:100%;border:1px solid #DDEEE7;border-radius:14px;padding:12px;font-size:14px;outline:0;margin-bottom:16px;font-family:inherit}
+.cinput:focus{border-color:#0E9F8A}
+.submit{width:100%;border:0;background:linear-gradient(135deg,#14B8A6,#0E9F8A);color:#fff;border-radius:16px;padding:14px;font-size:16px;font-weight:700;cursor:pointer;box-shadow:0 6px 16px rgba(14,159,138,.35)}
+.submit:active{transform:scale(.98)}
+.success{background:#fff;border-radius:18px;border:1px solid #DDEEE7;padding:40px 24px;text-align:center;display:none}
+.success .ok{width:72px;height:72px;border-radius:50%;background:#22C55E;color:#fff;font-size:34px;display:flex;align-items:center;justify-content:center;margin:0 auto 16px}
+.success h3{margin:0 0 8px}
+.success p{color:#5E8A7D;font-size:13px;line-height:1.7;margin:0 0 18px}
+.tlist{margin-top:6px}
+.titem{background:#fff;border-radius:14px;border:1px solid #DDEEE7;padding:14px 16px;margin-bottom:10px}
+.titem h4{margin:0;font-size:14px;display:flex;justify-content:space-between;align-items:center}
+.badge{font-size:11px;padding:3px 10px;border-radius:10px}
+.badge.done{background:#E0F5EC;color:#0E9F8A}
+.badge.ing{background:#FFF4D6;color:#B8860B}
+.titem p{margin:8px 0 0;font-size:12.5px;color:#5E8A7D;line-height:1.6}
+/* 底部 Tab */
+.tabbar{position:absolute;left:0;right:0;bottom:0;background:rgba(255,255,255,.96);backdrop-filter:blur(10px);border-top:1px solid #DDEEE7;display:flex;padding:8px 0 calc(10px + env(safe-area-inset-bottom))}
+.tab{flex:1;text-align:center;font-size:11px;color:#9DB8AE;cursor:pointer;padding:2px 0}
+.tab .ti{font-size:21px;display:block;margin-bottom:2px}
+.tab.on{color:#0E9F8A;font-weight:700}
+.toast{position:absolute;left:50%;bottom:110px;transform:translateX(-50%) translateY(20px);background:rgba(30,58,50,.92);color:#fff;padding:10px 22px;border-radius:24px;font-size:14px;opacity:0;transition:all .3s;pointer-events:none;z-index:99;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="topbar"><h1 id="pageTitle">帮助中心</h1><span class="svc-dot"></span><span class="svc-t">服务在线</span></div>
+  <div class="main">
+    <!-- 帮助首页 -->
+    <div class="screen active" id="s0">
+      <div class="search"><span>🔍</span><input id="q" placeholder="搜索问题：如 退款 / 密码 / 物流"></div>
+      <div class="svc-grid">
+        <div class="svc" data-goto="2"><div class="ic" style="background:#0E9F8A">◔</div><span>在线客服</span></div>
+        <div class="svc"><div class="ic" style="background:#3B82F6">☎</div><span>电话客服</span></div>
+        <div class="svc" data-goto="1"><div class="ic" style="background:#F59E0B">?</div><span>自助问答</span></div>
+        <div class="svc" data-goto="3"><div class="ic" style="background:#8B5CF6">✎</div><span>意见反馈</span></div>
+      </div>
+      <div class="sec-t">热门问题 <a data-goto="1">全部 ›</a></div>
+      <div id="hotFaq">
+        <div class="faq"><div class="faq-q">如何申请退款？<span class="pl">＋</span></div><div class="faq-a"><div>进入「我的订单」→ 选择订单 → 申请退款，按提示填写原因并提交，退款将在 1-3 个工作日内原路返回。</div></div></div>
+        <div class="faq"><div class="faq-q">忘记登录密码怎么办？<span class="pl">＋</span></div><div class="faq-a"><div>在登录页点击「忘记密码」，通过绑定手机接收验证码即可重设新密码，全程约 1 分钟。</div></div></div>
+        <div class="faq"><div class="faq-q">物流长时间未更新怎么处理？<span class="pl">＋</span></div><div class="faq-a"><div>可先在订单详情查看物流轨迹；若超过 48 小时无更新，请联系在线客服，我们将协助催件或补发。</div></div></div>
+        <div class="faq"><div class="faq-q">优惠券为什么无法使用？<span class="pl">＋</span></div><div class="faq-a"><div>请检查优惠券的使用门槛、有效期与适用品类；每单限用一张，不可叠加使用。</div></div></div>
+      </div>
+    </div>
+    <!-- 常见问题 -->
+    <div class="screen" id="s1">
+      <div class="chips" id="faqChips">
+        <button class="chip on" data-c="all">全部</button><button class="chip" data-c="acc">账户</button><button class="chip" data-c="order">订单</button><button class="chip" data-c="pay">支付</button><button class="chip" data-c="ship">物流</button>
+      </div>
+      <div id="faqList">
+        <div class="faq" data-c="acc"><div class="faq-q">如何修改绑定手机号？<span class="pl">＋</span></div><div class="faq-a"><div>进入「设置 → 账号安全 → 绑定手机」，先验证旧手机号，再绑定新手机号即可。</div></div></div>
+        <div class="faq" data-c="acc"><div class="faq-q">账号被锁定了怎么办？<span class="pl">＋</span></div><div class="faq-a"><div>多次输错密码会临时锁定 30 分钟；如需立即解锁，请联系在线客服进行身份核验。</div></div></div>
+        <div class="faq" data-c="order"><div class="faq-q">下单后可以修改地址吗？<span class="pl">＋</span></div><div class="faq-a"><div>商品未发货前可在订单详情中修改收货地址；已发货订单请联系客服拦截改址。</div></div></div>
+        <div class="faq" data-c="order"><div class="faq-q">如何申请开具发票？<span class="pl">＋</span></div><div class="faq-a"><div>下单时勾选「需要发票」并填写抬头；已完成的订单可在 30 天内于订单详情补开电子发票。</div></div></div>
+        <div class="faq" data-c="pay"><div class="faq-q">支持哪些支付方式？<span class="pl">＋</span></div><div class="faq-a"><div>支持微信支付、支付宝、银联云闪付及主流银行卡，单笔限额以各银行规定为准。</div></div></div>
+        <div class="faq" data-c="pay"><div class="faq-q">支付失败但扣款了怎么办？<span class="pl">＋</span></div><div class="faq-a"><div>请勿重复支付。款项通常在 24 小时内自动退回；超时未退请提供支付凭证联系客服。</div></div></div>
+        <div class="faq" data-c="ship"><div class="faq-q">一般多久能发货？<span class="pl">＋</span></div><div class="faq-a"><div>现货商品 48 小时内发出，预售商品以页面标注的发货时间为准，节假日可能顺延。</div></div></div>
+        <div class="faq" data-c="ship"><div class="faq-q">可以指定快递公司吗？<span class="pl">＋</span></div><div class="faq-a"><div>下单备注中可填写期望的快递，我们会尽量安排；偏远地区将自动匹配可达快递。</div></div></div>
+      </div>
+    </div>
+    <!-- 在线客服 -->
+    <div class="screen" id="s2">
+      <div class="chat">
+        <div class="chatlog" id="chatlog">
+          <div class="msg bot">您好，我是青柠小助手 🍋<br>请问有什么可以帮您？<div class="t">09:41</div></div>
+        </div>
+        <div class="quick" id="quickQ">
+          <button>查订单进度</button><button>退换货政策</button><button>转人工客服</button>
+        </div>
+        <div class="chatinput"><input id="chatIn" placeholder="输入您的问题…"><button class="sendbtn" id="sendBtn">发送</button></div>
+      </div>
+      <p style="font-size:12px;color:#9DB8AE;text-align:center;margin-top:10px">人工客服时间：每日 8:00 - 24:00 · 平均等待 2 分钟</p>
+    </div>
+    <!-- 意见反馈 -->
+    <div class="screen" id="s3">
+      <div class="form" id="fbForm">
+        <p class="flabel">反馈类型</p>
+        <div class="types" id="fbTypes">
+          <button class="on">功能建议</button><button>BUG 反馈</button><button>投诉</button><button>其他</button>
+        </div>
+        <p class="flabel">整体满意度</p>
+        <div class="stars" id="stars"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+        <p class="flabel">问题描述</p>
+        <textarea id="fbText" maxlength="500" placeholder="请详细描述您遇到的问题或建议（500字以内）"></textarea>
+        <div class="count"><span id="fbCount">0</span>/500</div>
+        <input class="cinput" id="fbContact" placeholder="联系方式：手机号 / 邮箱（选填，方便我们回复）">
+        <button class="submit" id="fbSubmit">提交反馈</button>
+      </div>
+      <div class="success" id="fbSuccess">
+        <div class="ok">✓</div><h3>反馈提交成功</h3>
+        <p>工单号 FB20261019042<br>我们将在 24 小时内处理并回复，请留意站内信通知。</p>
+        <button class="submit" id="fbAgain">继续反馈</button>
+      </div>
+      <div class="sec-t">我的反馈</div>
+      <div class="tlist">
+        <div class="titem"><h4>希望增加深色模式 <span class="badge done">已回复</span></h4><p>客服回复：该功能已在 v4.1 版本规划中，感谢您的建议！</p></div>
+        <div class="titem"><h4>订单页偶发加载缓慢 <span class="badge ing">处理中</span></h4><p>技术团队正在定位，预计本周内优化完成。</p></div>
+      </div>
+    </div>
+  </div>
+  <div class="tabbar">
+    <div class="tab on" data-t="0"><span class="ti">⌂</span>帮助</div>
+    <div class="tab" data-t="1"><span class="ti">?</span>问答</div>
+    <div class="tab" data-t="2"><span class="ti">◔</span>客服</div>
+    <div class="tab" data-t="3"><span class="ti">✎</span>反馈</div>
+  </div>
+  <div class="toast" id="toast"></div>
+</div>
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const titles=['帮助中心','常见问题','在线客服','意见反馈'];
+function goTab(i){$$('.tab').forEach(t=>t.classList.toggle('on',+t.dataset.t===i));
+$$('.screen').forEach(sc=>sc.classList.remove('active'));$('#s'+i).classList.add('active');
+$('#pageTitle').textContent=titles[i];$('.main').scrollTop=0;}
+$$('.tab').forEach(t=>t.onclick=()=>goTab(+t.dataset.t));
+$$('[data-goto]').forEach(el=>el.onclick=()=>goTab(+el.dataset.goto));
+let toastT;function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),1800);}
+// 手风琴
+document.addEventListener('click',e=>{const q=e.target.closest('.faq-q');if(!q)return;
+const f=q.parentElement,open=f.classList.contains('open');
+f.parentElement.querySelectorAll('.faq').forEach(x=>{x.classList.remove('open');x.querySelector('.faq-a').style.maxHeight=null;});
+if(!open){f.classList.add('open');const a=f.querySelector('.faq-a');a.style.maxHeight=a.scrollHeight+'px';}});
+// 首页搜索过滤热门问题
+$('#q').addEventListener('input',e=>{const k=e.target.value.trim();
+$$('#hotFaq .faq').forEach(f=>{f.style.display=f.textContent.includes(k)?'':'none';});});
+// 问答分类
+$('#faqChips').addEventListener('click',e=>{const b=e.target.closest('.chip');if(!b)return;
+$$('#faqChips .chip').forEach(x=>x.classList.remove('on'));b.classList.add('on');
+$$('#faqList .faq').forEach(f=>{f.style.display=(b.dataset.c==='all'||f.dataset.c===b.dataset.c)?'':'none';});});
+// 客服聊天
+const log=$('#chatlog');
+function nowT(){const d=new Date();return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');}
+function botSay(t){const tp=document.createElement('div');tp.className='typing';tp.textContent='对方正在输入…';log.appendChild(tp);log.scrollTop=log.scrollHeight;
+setTimeout(()=>{tp.remove();const m=document.createElement('div');m.className='msg bot';m.innerHTML=t+'<div class="t">'+nowT()+'</div>';log.appendChild(m);log.scrollTop=log.scrollHeight;},700);}
+function userSay(t){const m=document.createElement('div');m.className='msg me';m.innerHTML=t.replace(/</g,'&lt;')+'<div class="t">'+nowT()+'</div>';log.appendChild(m);log.scrollTop=log.scrollHeight;}
+function replyFor(t){
+if(/人工/.test(t))return '已为您转接人工客服，当前排队 2 人，请稍候…';
+if(/订单|物流|快递/.test(t))return '为您查到最近一单：陶土咖啡杯，物流显示「已到达杭州转运中心」，预计明日送达。';
+if(/退|换货/.test(t))return '退换货政策：7 天无理由（定制类除外），请在「我的订单」中申请，审核通过后上门取件。';
+if(/密码|登录/.test(t))return '登录问题可尝试：1. 检查手机号是否正确 2. 点击「忘记密码」重设 3. 仍不行请转人工核验身份。';
+return '收到您的问题：'+t.replace(/</g,'&lt;')+'。小助手已记录，常见问题也可在「问答」页自助查看哦。';}
+function sendMsg(t){t=(t||'').trim();if(!t)return;userSay(t);$('#chatIn').value='';botSay(replyFor(t));}
+$('#sendBtn').onclick=()=>sendMsg($('#chatIn').value);
+$('#chatIn').addEventListener('keydown',e=>{if(e.key==='Enter')sendMsg(e.target.value);});
+$('#quickQ').addEventListener('click',e=>{const b=e.target.closest('button');if(b)sendMsg(b.textContent);});
+// 反馈表单
+$('#fbTypes').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
+$$('#fbTypes button').forEach(x=>x.classList.remove('on'));b.classList.add('on');});
+$('#stars').addEventListener('click',e=>{const sp=e.target.closest('span');if(!sp)return;
+const idx=[...$('#stars').children].indexOf(sp);
+$$('#stars span').forEach((x,i)=>x.classList.toggle('lit',i<=idx));});
+$('#fbText').addEventListener('input',e=>{$('#fbCount').textContent=e.target.value.length;});
+$('#fbSubmit').onclick=()=>{const v=$('#fbText').value.trim();
+if(v.length<10){toast('请至少输入 10 个字的问题描述');return;}
+$('#fbForm').style.display='none';$('#fbSuccess').style.display='block';};
+$('#fbAgain').onclick=()=>{$('#fbForm').style.display='';$('#fbSuccess').style.display='none';$('#fbText').value='';$('#fbCount').textContent='0';};
+const q=new URLSearchParams(location.search).get('tab');
+if(q!==null&&!isNaN(+q)&&+q>=0&&+q<4)goTab(+q);
+</script>
+</body>
+</html>

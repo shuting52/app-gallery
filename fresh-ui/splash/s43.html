@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>飞絮逐风</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{background:#070a12;display:flex;align-items:center;justify-content:center;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;overflow:hidden}
+.stage{position:relative;width:430px;height:900px;flex:none;overflow:hidden}
+.stage i{display:block;position:absolute}
+.brand{position:absolute;left:0;right:0;bottom:104px;text-align:center;z-index:50;animation:brandIn 1s .9s both}
+.brand h1{font-size:32px;letter-spacing:10px;text-indent:10px;color:#fff;font-weight:700;text-shadow:0 2px 24px rgba(0,0,0,.45)}
+.brand p{margin-top:10px;font-size:11px;letter-spacing:5px;color:rgba(255,255,255,.62)}
+@keyframes brandIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.replay{position:absolute;bottom:30px;left:50%;transform:translateX(-50%);z-index:60;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.35);color:#fff;font-size:12px;letter-spacing:2px;padding:9px 24px;border-radius:20px;cursor:pointer;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.shade{position:absolute;left:0;right:0;bottom:0;height:360px;background:linear-gradient(transparent,rgba(8,6,18,.78));z-index:40;pointer-events:none}
+
+.stage{background:linear-gradient(#bfe0f2,#e9f6ee 68%,#cfe8d6)}
+
+.halo{width:280px;height:280px;left:75px;top:60px;border-radius:50%;background:radial-gradient(circle at 50% 50%,rgba(255,250,220,.95),rgba(255,250,220,0) 68%)}
+.plant{width:130px;height:420px;left:60px;bottom:150px;z-index:4}
+.plant .stem{width:8px;height:300px;left:61px;bottom:0;border-radius:4px;background:linear-gradient(90deg,#4a9e5f,#79c78d)}
+.plant .head{width:120px;height:120px;left:5px;top:0;border-radius:50%;
+background:repeating-conic-gradient(rgba(255,255,255,.9) 0 7deg,transparent 7deg 15deg);
+-webkit-mask:radial-gradient(circle at 50% 50%,#000 58%,transparent 64%);
+mask:radial-gradient(circle at 50% 50%,#000 58%,transparent 64%);
+animation:spinSlow 26s linear infinite}
+@keyframes spinSlow{to{transform:rotate(360deg)}}
+.seed{width:34px;height:14px;z-index:5;animation:fly 9s linear infinite;opacity:0}
+.seed::before{content:"";position:absolute;left:0;top:6px;width:22px;height:2px;background:rgba(255,255,255,.9)}
+.seed::after{content:"";position:absolute;right:0;top:4px;width:9px;height:9px;border-radius:50%;background:#fff;box-shadow:0 0 8px rgba(255,255,255,.9)}
+.sd1{left:110px;top:220px;animation-delay:-1s;--dx:260px}
+.sd2{left:110px;top:250px;animation-delay:-3.5s;--dx:300px;animation-duration:11s}
+.sd3{left:110px;top:200px;animation-delay:-6s;--dx:230px;animation-duration:8s}
+.sd4{left:110px;top:270px;animation-delay:-7.6s;--dx:330px;animation-duration:12s}
+@keyframes fly{0%{transform:translate(0,0) rotate(0);opacity:0}10%{opacity:1}100%{transform:translate(var(--dx),-140px) rotate(160deg);opacity:0}}
+.grass{width:200px;height:90px;border-radius:50%;background:linear-gradient(#5aa86e,#3a7d4e);z-index:3}
+.g1{left:-40px;bottom:120px}.g2{left:280px;bottom:100px}
+
+</style></head><body>
+<div class="stage" id="stage">
+
+<i class="halo"></i>
+<i class="plant"><i class="stem"></i><i class="head"></i></i>
+<i class="seed sd1"></i><i class="seed sd2"></i><i class="seed sd3"></i><i class="seed sd4"></i>
+<i class="grass g1"></i><i class="grass g2"></i>
+
+<div class="shade"></div>
+<div class="brand"><h1>飞絮逐风</h1><p>DANDELION</p></div>
+<button class="replay" onclick="var s=document.getElementById('stage');s.replaceWith(s.cloneNode(true))">重新播放</button>
+</div>
+</body></html>

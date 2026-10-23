@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>n14 · 抽屉 Toast</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;background:#141824;display:flex;flex-direction:column;align-items:center;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;color:#fff}
+.head{text-align:center;padding:20px 16px 12px}
+.head h1{font-size:17px;color:#9db8ff;letter-spacing:1px}
+.head p{font-size:12px;color:#8b93a7;margin-top:6px}
+.stage{width:360px;max-width:94vw;height:480px;border-radius:18px;position:relative;overflow:hidden;background:linear-gradient(160deg,#1d2438,#12172a 70%);border:1px solid #2c3550;box-shadow:0 12px 40px rgba(0,0,0,.4)}
+.slot{position:absolute;right:0;top:50%;transform:translateY(-50%);width:12px;height:180px;background:#0c0f1a;border-radius:8px 0 0 8px;box-shadow:inset 2px 0 6px #000}
+.drawer{position:absolute;right:0;top:50%;transform:translateY(-50%);height:150px;width:0;overflow:hidden}
+.drawer .inner{width:280px;height:150px;background:linear-gradient(180deg,#3a4a6e,#26314b);border-left:5px solid #6ea8ff;border-radius:14px 0 0 14px;box-shadow:-10px 0 26px rgba(0,0,0,.55);padding:20px 18px 20px 26px;position:relative}
+.drawer .knob{position:absolute;left:8px;top:50%;margin-top:-16px;width:10px;height:32px;border-radius:6px;background:linear-gradient(180deg,#8fb4ff,#4a6db3);box-shadow:0 2px 6px rgba(0,0,0,.5)}
+.drawer .t{font-size:15px;font-weight:700;color:#fff;white-space:nowrap}
+.drawer .d{font-size:12px;color:#a9b8d8;margin-top:8px;line-height:1.6;white-space:nowrap}
+.drawer.pull{animation:pull .55s cubic-bezier(.3,1.25,.4,1) forwards}
+.drawer.push{animation:push .45s ease-in forwards}
+@keyframes pull{from{width:0}70%{width:294px}100%{width:280px}}
+@keyframes push{from{width:280px}to{width:0}}
+.rail{position:absolute;right:34px;top:50%;transform:translateY(-50%);font-size:12px;color:#5c657d;writing-mode:vertical-rl;letter-spacing:4px}
+.hint{position:absolute;bottom:14px;width:100%;text-align:center;font-size:11px;color:#5c657d}
+</style>
+</head>
+<body>
+<div class="head"><h1>n14 · 抽屉</h1><p>通知像抽屉一样从右侧被拉出 → 停留 → 推进去</p></div>
+<div class="stage">
+  <div class="rail">通知柜</div>
+  <div class="slot"></div>
+  <div class="drawer" id="drawer"><div class="inner"><div class="knob"></div><div class="t" id="dt"></div><div class="d" id="dd"></div></div></div>
+  <div class="hint">自动循环播放中 · 3 条通知轮播</div>
+</div>
+<script>
+const msgs=[
+  ["系统通知","版本更新完成 · v2.3.1"],
+  ["优惠提醒","满 100 减 20 券今晚过期"],
+  ["好评消息","买家给了五星好评 ★★★★★"]
+];
+const drawer=document.getElementById('drawer'),dt=document.getElementById('dt'),dd=document.getElementById('dd');
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+async function show(i){
+  dt.textContent=msgs[i][0];dd.textContent=msgs[i][1];
+  drawer.classList.remove('push');void drawer.offsetWidth;drawer.classList.add('pull');
+  await sleep(600);
+  await sleep(2500);
+  drawer.classList.remove('pull');drawer.classList.add('push');
+  await sleep(500);
+  drawer.classList.remove('push');
+  await sleep(300);
+}
+(async()=>{let i=0;while(true){await show(i%msgs.length);i++;}})();
+</script>
+</body>
+</html>

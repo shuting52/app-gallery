@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>破土而出 · 更新 v4.0.0</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    min-height: 100vh; display: flex; align-items: center; justify-content: center;
+    font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: linear-gradient(170deg, #eefbef 0%, #e6f7e9 55%, #fdf6e3 100%);
+    padding: 20px;
+  }
+  .backdrop { position: fixed; inset: 0; background: rgba(46, 110, 60, 0.12); }
+  .modal {
+    position: relative; width: 330px;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 26px; padding: 22px;
+    box-shadow: 0 18px 50px rgba(46, 110, 60, 0.20);
+    border: 1px solid #dcefe0;
+  }
+  .modal.hidden { display: none; }
+  .m-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+  .m-title { font-size: 17px; font-weight: 700; color: #2c6e3c; display: flex; align-items: center; gap: 8px; }
+  .ver { font-size: 11px; font-weight: 600; color: #2c8a44; background: #ddf2e2; border-radius: 99px; padding: 3px 10px; }
+  .x { background: none; border: none; font-size: 24px; color: #a9c8b2; cursor: pointer; line-height: 1; padding: 2px 6px; }
+  .x:hover { color: #2c6e3c; }
+  .m-sub { font-size: 13.5px; color: #5d8a68; margin-bottom: 2px; }
+  .m-meta { font-size: 12px; color: #a9c8b2; margin-bottom: 10px; font-variant-numeric: tabular-nums; }
+  .stage { position: relative; height: 225px; display: flex; align-items: center; justify-content: center; }
+  .stage svg { width: 200px; height: 225px; overflow: visible; }
+  .pct { text-align: center; font-size: 34px; font-weight: 800; color: #2c6e3c; font-variant-numeric: tabular-nums; margin-top: 2px; }
+  .main-btn {
+    width: 100%; margin-top: 12px; padding: 14px 0; border: none; border-radius: 99px;
+    font-size: 16px; font-weight: 600; cursor: pointer; letter-spacing: 2px;
+    background: #ddf2e2; color: #2c8a44; transition: background .2s;
+  }
+  .main-btn:hover { background: #c9e8d2; }
+  .main-btn.gold { background: linear-gradient(135deg, #4ade80, #16a34a); color: #fff; box-shadow: 0 8px 22px rgba(34,197,94,.35); }
+  .main-btn:disabled { opacity: .5; cursor: default; }
+  .replay { display: block; margin: 10px auto 0; background: none; border: none; color: #a9c8b2; font-size: 12.5px; cursor: pointer; letter-spacing: 1px; }
+  .replay:hover { color: #2c8a44; }
+  .toast {
+    position: fixed; top: 26px; left: 50%; transform: translateX(-50%) translateY(-16px);
+    background: rgba(44, 110, 60, 0.94); color: #fff; padding: 10px 22px; border-radius: 99px;
+    font-size: 14px; opacity: 0; pointer-events: none; transition: opacity .25s, transform .25s; z-index: 60;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+<div class="backdrop"></div>
+<div class="modal" id="modal">
+  <div class="m-head">
+    <div class="m-title">破土而出 <span class="ver">v4.0.0</span></div>
+    <button class="x" id="xBtn">×</button>
+  </div>
+  <div class="m-sub" id="statusText">新版本正在发芽…</div>
+  <div class="m-meta" id="metaText">0.0MB / 156.8MB · -- MB/s</div>
+
+  <div class="stage">
+    <svg viewBox="0 0 200 225">
+      <ellipse cx="100" cy="212" rx="80" ry="12" fill="#e3cfa5" opacity="0.8"/>
+      <path d="M20,200 Q55,193 100,200 T180,200" fill="none" stroke="#a97c4f" stroke-width="5" stroke-linecap="round"/>
+      <circle cx="45" cy="192" r="3" fill="#c9a878"/>
+      <circle cx="158" cy="194" r="2.5" fill="#c9a878"/>
+      <circle cx="128" cy="190" r="2" fill="#d9bd8d"/>
+      <path id="stem" d="M100,200 C100,168 94,142 100,102" fill="none" stroke="#3d9e52" stroke-width="6" stroke-linecap="round"/>
+      <g id="leaf1" opacity="0"><path d="M0,0 Q-22,-4 -38,-24 Q-18,-28 0,0 Z" fill="#57b96c" stroke="#3d9e52" stroke-width="1.5"/></g>
+      <g id="leaf2" opacity="0"><path d="M0,0 Q22,-4 38,-24 Q18,-28 0,0 Z" fill="#57b96c" stroke="#3d9e52" stroke-width="1.5"/></g>
+      <g id="leaf3" opacity="0"><path d="M0,0 Q-20,-6 -32,-26 Q-14,-28 0,0 Z" fill="#6cc47f" stroke="#3d9e52" stroke-width="1.5"/></g>
+      <g id="flower" opacity="0">
+        <g id="petals"></g>
+        <circle cx="100" cy="86" r="9" fill="#ffd94d" stroke="#f5b93f" stroke-width="2"/>
+        <circle cx="100" cy="86" r="3.5" fill="#f59e0b"/>
+      </g>
+    </svg>
+  </div>
+
+  <div class="pct" id="pctText">0%</div>
+  <button class="main-btn" id="mainBtn">取消更新</button>
+  <button class="replay" id="replayBtn">↺ 重新演示</button>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+  const modal = document.getElementById('modal');
+  const statusText = document.getElementById('statusText');
+  const metaText = document.getElementById('metaText');
+  const pctText = document.getElementById('pctText');
+  const mainBtn = document.getElementById('mainBtn');
+  const toast = document.getElementById('toast');
+  const stem = document.getElementById('stem');
+  const flower = document.getElementById('flower');
+  const petalsG = document.getElementById('petals');
+  const leaves = [
+    { el: document.getElementById('leaf1'), at: [100, 172], th: 25, t: 0 },
+    { el: document.getElementById('leaf2'), at: [100, 146], th: 50, t: 0 },
+    { el: document.getElementById('leaf3'), at: [100, 122], th: 75, t: 0 }
+  ];
+
+  const stemLen = stem.getTotalLength();
+  stem.style.strokeDasharray = stemLen;
+  stem.style.strokeDashoffset = stemLen;
+
+  // 生成 6 花瓣
+  const PETALS = 6, petalEls = [];
+  for (let i = 0; i < PETALS; i++) {
+    const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    const e = document.createElementNS('http://www.w3.org/2000/svg', 'ellipse');
+    e.setAttribute('cx', 100); e.setAttribute('cy', 64);
+    e.setAttribute('rx', 10); e.setAttribute('ry', 20);
+    e.setAttribute('fill', i % 2 ? '#ffb3c7' : '#ff8fab');
+    e.setAttribute('stroke', '#f0618f'); e.setAttribute('stroke-width', 1.5);
+    g.setAttribute('transform', 'rotate(' + (i * 60) + ' 100 86) scale(0)');
+    g.appendChild(e); petalsG.appendChild(g); petalEls.push(g);
+  }
+
+  const TOTAL = 156.8;
+  let progress = 0, state = 'downloading', timer = null, showSpeed = 0, bloomT = 0;
+
+  function easeOutBack(t) {
+    const c1 = 1.70158, c3 = c1 + 1;
+    return 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2);
+  }
+  function showToast(m) {
+    toast.textContent = m; toast.classList.add('show');
+    clearTimeout(showToast._t);
+    showToast._t = setTimeout(() => toast.classList.remove('show'), 1800);
+  }
+  function setMain(t, gold, dis) {
+    mainBtn.textContent = t;
+    mainBtn.classList.toggle('gold', !!gold);
+    mainBtn.disabled = !!dis;
+  }
+  function render(p) {
+    const gp = Math.min(p / 80, 1);   // 茎在 80% 长满
+    stem.style.strokeDashoffset = (stemLen * (1 - gp)).toFixed(1);
+    leaves.forEach(L => {
+      if (p >= L.th && L.t < 1) L.t = Math.min(L.t + 0.2, 1);
+      const s = L.t <= 0 ? 0 : easeOutBack(Math.min(L.t, 1));
+      L.el.setAttribute('opacity', L.t > 0 ? 1 : 0);
+      L.el.setAttribute('transform', 'translate(' + L.at[0] + ',' + L.at[1] + ') scale(' + Math.max(s, 0.001).toFixed(3) + ')');
+    });
+    pctText.textContent = Math.floor(p) + '%';
+    const mb = (p / 100 * TOTAL).toFixed(1);
+    metaText.textContent = mb + 'MB / ' + TOTAL + 'MB · ' + (state === 'downloading' ? showSpeed.toFixed(1) + ' MB/s' : '-- MB/s');
+  }
+  function setBloom(t) {
+    flower.setAttribute('opacity', t > 0 ? 1 : 0);
+    petalEls.forEach((g, i) => {
+      const lt = Math.min(Math.max((t - i * 0.07) / 0.5, 0), 1);
+      const s = lt <= 0 ? 0 : easeOutBack(lt);
+      g.setAttribute('transform', 'rotate(' + (i * 60) + ' 100 86) scale(' + Math.max(s, 0.001).toFixed(3) + ')');
+    });
+  }
+  function resetConcept() {
+    bloomT = 0; setBloom(0);
+    leaves.forEach(L => { L.t = 0; });
+    stem.style.strokeDashoffset = stemLen;
+  }
+
+  function tick() {
+    if (state !== 'downloading') return;
+    const sp = 8 * (0.6 + Math.random() * 0.8);
+    showSpeed = showSpeed * 0.7 + sp * 0.3;
+    progress += sp * 0.1 / TOTAL * 100;
+    if (progress >= 100) { progress = 100; render(progress); enterInstalling(); return; }
+    render(progress);
+  }
+  function startTimer() { clearInterval(timer); timer = setInterval(tick, 100); }
+
+  function enterDownloading() {
+    state = 'downloading';
+    statusText.textContent = '新版本正在发芽…';
+    setMain('取消更新', false, false);
+    startTimer(); render(progress);
+  }
+  function enterCancelled() {
+    state = 'cancelled'; clearInterval(timer);
+    statusText.textContent = '生长已暂停';
+    metaText.textContent = (progress / 100 * TOTAL).toFixed(1) + 'MB / ' + TOTAL + 'MB · 已停止';
+    setMain('重新下载', false, false);
+    showToast('已取消更新');
+  }
+  function enterInstalling() {
+    state = 'installing'; clearInterval(timer);
+    statusText.textContent = '正在开花…';
+    setMain('开花中…', false, true);
+    bloomT = 0;
+    timer = setInterval(() => {
+      bloomT += 1 / 16;
+      setBloom(Math.min(bloomT, 1));
+      if (bloomT >= 1) { clearInterval(timer); enterDone(); }
+    }, 100);
+  }
+  function enterDone() {
+    state = 'done'; clearInterval(timer);
+    setBloom(1);
+    leaves.forEach(L => { L.t = 1; });
+    render(100);
+    statusText.textContent = '破土而出，欢迎回来';
+    metaText.textContent = 'v4.0.0 · 开花完成';
+    pctText.textContent = '100%';
+    setMain('立即体验', true, false);
+    showToast('已更新到 v4.0.0');
+  }
+
+  mainBtn.addEventListener('click', () => {
+    if (state === 'downloading') enterCancelled();
+    else if (state === 'cancelled') { progress = 0; showSpeed = 0; resetConcept(); enterDownloading(); }
+    else if (state === 'done') { modal.classList.add('hidden'); showToast('已进入 v4.0.0'); }
+  });
+  document.getElementById('xBtn').addEventListener('click', () => {
+    if (state === 'downloading') enterCancelled();
+    else modal.classList.add('hidden');
+  });
+  document.getElementById('replayBtn').addEventListener('click', () => {
+    modal.classList.remove('hidden');
+    progress = 0; showSpeed = 0; resetConcept(); enterDownloading();
+    showToast('重新开始演示');
+  });
+
+  window.addEventListener('load', () => {
+    if (location.hash === '#done') {
+      progress = 100;
+      leaves.forEach(L => { L.t = 1; });
+      render(100); enterDone();
+    } else enterDownloading();
+  });
+</script>
+</body>
+</html>

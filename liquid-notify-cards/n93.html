@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>印泥朱砂</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{min-height:100%}
+body{
+  position:relative;
+  padding:48px 18px 64px;
+  color:#ffffff;
+  font:15px/1.45 -apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sans-serif;
+  background:linear-gradient(150deg,#160d0d,#241414 60%,#120b0e);
+  background-attachment:fixed;
+  overflow-x:hidden;
+}
+.bg{
+  position:fixed;inset:-6%;z-index:0;pointer-events:none;
+  background:radial-gradient(ellipse 42% 32% at 20% 24%, rgba(190,60,45,.5), transparent 70%),radial-gradient(ellipse 38% 30% at 82% 32%, rgba(120,50,60,.4), transparent 70%),radial-gradient(ellipse 52% 38% at 55% 86%, rgba(60,25,25,.85), transparent 70%);
+  animation:drift 30s ease-in-out infinite alternate;
+  animation-delay:-15s;
+}
+@keyframes drift{
+  from{transform:translate3d(-1.5%,-1%,0) scale(1.03) rotate(0deg)}
+  to{transform:translate3d(1.5%,1.5%,0) scale(1.07) rotate(1.5deg)}
+}
+main{position:relative;z-index:1;width:min(440px,100%);margin:0 auto;display:grid;gap:18px}
+.heading{padding:4px 6px 8px}
+.eyebrow{margin:0 0 8px;color:rgba(255,255,255,.68);font-size:11px;letter-spacing:.18em}
+h1{margin:0;font-size:30px;letter-spacing:-.02em;color:#ffffff}
+.hint{margin:7px 0 0;color:rgba(255,255,255,.68)}
+.card{
+  position:relative;isolation:isolate;overflow:hidden;
+  padding:18px;border-radius:28px;
+  border:1px solid rgba(255,255,255,.28);
+  background:none,linear-gradient(135deg, rgba(255,255,255,.13), rgba(255,255,255,.05) 48%, rgba(200,90,70,.10));
+  -webkit-backdrop-filter:blur(24px) saturate(175%);
+  backdrop-filter:blur(24px) saturate(175%);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.42),
+    inset 0 -1px 0 rgba(0,0,0,.06),
+    0 20px 48px rgba(10,4,4,.45);
+  transition:transform .25s ease,border-color .25s ease;
+}
+.card::before{
+  content:"";position:absolute;z-index:0;inset:0;border-radius:inherit;pointer-events:none;
+  background:
+    linear-gradient(118deg,
+      rgba(255,235,225,.32) 0%,
+      rgba(255,235,225,.07) 18%,
+      transparent 42%,
+      transparent 72%,
+      rgba(220,110,90,.16) 100%);
+  opacity:.8;
+  animation:sheen 9s ease-in-out infinite alternate;
+  animation-delay:-4s;
+}
+@keyframes sheen{from{opacity:.55}to{opacity:.95}}
+.card::after{
+  content:"";position:absolute;z-index:0;
+  top:-60px;right:-48px;width:200px;height:140px;
+  border:1px solid rgba(255,255,255,.22);border-radius:50%;
+  background:radial-gradient(ellipse,rgba(220,100,80,.22),transparent 68%);
+  filter:blur(2px);transform:rotate(-48pxot);pointer-events:none;
+}
+.card>*{position:relative;z-index:1}
+.card:hover{transform:translateY(-3px);border-color:rgba(255,255,255,.46)}
+.top,.title-line{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.top{margin-bottom:15px}
+.pill{
+  padding:6px 12px;border:1px solid rgba(255,255,255,.30);border-radius:999px;
+  background:rgba(255,255,255,.10);color:rgba(255,255,255,.94);font-size:12px;
+  box-shadow:inset 0 1px rgba(255,255,255,.42);white-space:nowrap;
+}
+.avatars{display:flex;align-items:center;padding-left:8px}
+.avatar{
+  display:grid;width:29px;height:29px;margin-left:-8px;place-items:center;
+  border:1px solid rgba(255,255,255,.55);border-radius:50%;
+  background:linear-gradient(135deg,#8a7a6a,#5d5a72 70%,#3f4456);
+  color:#fff;font-size:11px;font-style:normal;
+  box-shadow:0 3px 10px rgba(10,8,18,.25);
+}
+.more{margin-left:7px;color:rgba(255,255,255,.68);font-size:12px}
+.row{display:flex;align-items:center;gap:12px;min-width:0}
+.face{
+  display:grid;flex:0 0 48px;height:48px;place-items:center;
+  border:1px solid rgba(255,255,255,.45);border-radius:50%;
+  background:#6a7285;color:#fff;font-size:19px;font-weight:650;
+  box-shadow:inset 0 1px 5px rgba(255,255,255,.45),0 5px 15px rgba(10,8,20,.22);
+}
+.copy{flex:1;min-width:0}
+.title-line{margin-bottom:5px}
+.title-line strong{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#ffffff}
+time,.preview{color:rgba(255,255,255,.68);font-size:12px}
+.preview{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.unread{flex:0 0 auto;color:#e6dcff;font-size:12px;font-weight:600;white-space:nowrap}
+.dot{flex:0 0 auto;width:9px;height:9px;border-radius:50%;background:#ff7a5c;box-shadow:0 0 8px #ff7a5c}
+.actions{display:flex;gap:10px;margin-top:14px}
+.btn{
+  flex:1;padding:10px 0;text-align:center;border-radius:14px;font-size:13px;cursor:pointer;
+  border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.08);color:rgba(255,255,255,.92);
+  box-shadow:inset 0 1px rgba(255,255,255,.42);
+}
+.btn.pri{background:linear-gradient(135deg,#b03a26,#7e2418);border-color:rgba(220,110,90,.55);color:#fff}
+.prog{height:8px;border-radius:5px;background:rgba(255,255,255,.12);margin-top:12px;overflow:hidden}
+.prog i{display:block;height:100%;width:0%;border-radius:5px;background:linear-gradient(90deg,#d86a50,#a83a26)}
+.pmeta{display:flex;justify-content:space-between;margin-top:6px;font-size:11px;color:rgba(255,255,255,.68)}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+  .card{background:rgba(30,26,44,.92)}
+}
+@media (prefers-reduced-motion:reduce){.card,.bg,.card::before{animation:none;transition:none}}
+</style>
+</head>
+<body>
+<div class="bg"></div>
+<main>
+<header class="heading">
+<p class="eyebrow">LIQUID GLASS · 印</p>
+<h1>印泥朱砂</h1>
+<p class="hint">一枚朱砂，落款每一条到账。</p>
+</header>
+
+<section class="card">
+  <div class="top">
+    <span class="pill">验证码</span>
+    <div class="avatars" aria-label="members"><i class="avatar">付</i></div>
+  </div>
+  <div class="row">
+    <div class="face" style="background:linear-gradient(145deg,#8e4a3a,#5e2f26 60%,#40201a)">付</div>
+    <div class="copy">
+      <div class="title-line"><strong>微信支付</strong><time>刚刚</time></div>
+      <div class="preview">验证码 739182，请勿泄露给他人</div>
+    </div>
+    <span class="unread"></span>
+  </div>
+  
+</section>
+
+<section class="card">
+  <div class="top">
+    <span class="pill">支付</span>
+    <div class="avatars" aria-label="members"><i class="avatar">张</i></div>
+  </div>
+  <div class="row">
+    <div class="face" style="background:linear-gradient(145deg,#a85a3a,#70402a 60%,#4e2c1c)">张</div>
+    <div class="copy">
+      <div class="title-line"><strong>转账到账</strong><time>18:44</time></div>
+      <div class="preview">张刻石向您转账 ¥880.00</div>
+    </div>
+    <span class="unread"></span>
+  </div>
+  <div class="actions"><span class="btn pri">查看账单</span></div>
+</section>
+
+<section class="card">
+  <div class="top">
+    <span class="pill">社交</span>
+    <div class="avatars" aria-label="members"><i class="avatar">白</i></div>
+  </div>
+  <div class="row">
+    <div class="face" style="background:linear-gradient(145deg,#7a5a6a,#4e3a46 60%,#362832)">白</div>
+    <div class="copy">
+      <div class="title-line"><strong>新关注</strong><time>17:20</time></div>
+      <div class="preview">篆刻家白石山关注了你</div>
+    </div>
+    <span class="unread"></span>
+  </div>
+  <div class="actions"><span class="btn pri">回关</span><span class="btn">忽略</span></div>
+</section>
+</main>
+</body>
+</html>

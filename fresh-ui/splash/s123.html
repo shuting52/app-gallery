@@ -1,0 +1,23 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>樱花雨</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:430px;height:900px}
+body{overflow:hidden;position:relative;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(#ffd9e8,#ffeef4 60%,#fff);color:#fff}
+.stage{position:absolute;inset:0;overflow:hidden}
+.brand{position:absolute;left:0;right:0;top:648px;text-align:center;z-index:5;animation:brandIn 1s ease 2s both}
+.brand h1{font-size:36px;letter-spacing:10px;font-weight:800}
+.brand p{font-size:13px;letter-spacing:6px;opacity:.65;margin-top:10px}
+@keyframes brandIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.replay{position:absolute;bottom:36px;left:50%;transform:translateX(-50%);z-index:9;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.35);color:#fff;font-size:13px;padding:9px 26px;border-radius:24px;cursor:pointer;backdrop-filter:blur(6px)}
+.petal{position:absolute;top:-30px;width:18px;height:24px;background:radial-gradient(circle at 35% 30%,#ffc2d9,#f78fb3);border-radius:60% 60% 60% 0;opacity:.95;animation:petalF linear infinite}
+@keyframes petalF{to{transform:translateY(960px) translateX(-70px) rotate(340deg)}}
+.branch{position:absolute;top:0;right:0;width:230px;height:300px}
+.ground{position:absolute;bottom:0;width:100%;height:120px;background:linear-gradient(#f7c9da,#f2aec9);border-radius:50% 50% 0 0}
+</style></head><body>
+<div class="stage"><svg class="branch" viewBox="0 0 230 300"><path d="M230 0 C 170 60, 150 120, 90 170 C 60 195, 40 220, 30 260" stroke="#6b4a3a" stroke-width="16" fill="none" stroke-linecap="round"/><path d="M150 105 C 130 100, 110 105, 95 120" stroke="#6b4a3a" stroke-width="9" fill="none" stroke-linecap="round"/><g fill="#f8a8c4"><circle cx="90" cy="170" r="14"/><circle cx="70" cy="185" r="11"/><circle cx="105" cy="188" r="10"/><circle cx="30" cy="258" r="12"/><circle cx="95" cy="118" r="10"/></g></svg>
+<div class="ground"></div><div class="petal" style="left:0px;animation-duration:6s;animation-delay:-0.00s"></div><div class="petal" style="left:61px;animation-duration:7s;animation-delay:-0.55s"></div><div class="petal" style="left:122px;animation-duration:8s;animation-delay:-1.10s"></div><div class="petal" style="left:183px;animation-duration:9s;animation-delay:-1.65s"></div><div class="petal" style="left:244px;animation-duration:10s;animation-delay:-2.20s"></div><div class="petal" style="left:305px;animation-duration:6s;animation-delay:-2.75s"></div><div class="petal" style="left:366px;animation-duration:7s;animation-delay:-3.30s"></div><div class="petal" style="left:7px;animation-duration:8s;animation-delay:-3.85s"></div><div class="petal" style="left:68px;animation-duration:9s;animation-delay:-4.40s"></div><div class="petal" style="left:129px;animation-duration:10s;animation-delay:-4.95s"></div><div class="petal" style="left:190px;animation-duration:6s;animation-delay:-5.50s"></div><div class="petal" style="left:251px;animation-duration:7s;animation-delay:-6.05s"></div><div class="petal" style="left:312px;animation-duration:8s;animation-delay:-6.60s"></div><div class="petal" style="left:373px;animation-duration:9s;animation-delay:-7.15s"></div><div class="petal" style="left:14px;animation-duration:10s;animation-delay:-7.70s"></div><div class="petal" style="left:75px;animation-duration:6s;animation-delay:-8.25s"></div><div class="petal" style="left:136px;animation-duration:7s;animation-delay:-8.80s"></div><div class="petal" style="left:197px;animation-duration:8s;animation-delay:-9.35s"></div><div class="petal" style="left:258px;animation-duration:9s;animation-delay:-9.90s"></div><div class="petal" style="left:319px;animation-duration:10s;animation-delay:-10.45s"></div><div class="petal" style="left:380px;animation-duration:6s;animation-delay:-11.00s"></div><div class="petal" style="left:21px;animation-duration:7s;animation-delay:-11.55s"></div></div>
+<div class="brand"><h1>花信</h1><p>SAKURA · 花期</p></div>
+<button class="replay" onclick="location.reload()">&#8635; 重新播放</button>
+</body></html>

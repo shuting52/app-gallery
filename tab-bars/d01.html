@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>d01 · 液态玻璃底栏</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{background:#10141c;display:flex;justify-content:center;align-items:center;min-height:100vh;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif}
+.phone{width:430px;height:900px;max-height:100vh;background:#f2f3f5;position:relative;overflow:hidden}
+.status{height:40px;display:flex;align-items:center;justify-content:space-between;padding:0 22px;font-size:12px;font-weight:600;color:#111;background:transparent;position:relative;z-index:2}
+.nav{height:50px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:#111;position:relative;z-index:2}
+.feed{position:absolute;top:90px;bottom:0;left:0;right:0;overflow:hidden}
+.card{margin:10px 12px;border-radius:14px;padding:14px;background:#fff;box-shadow:0 2px 10px rgba(0,0,0,.05);display:flex;gap:12px;align-items:center}
+.av{width:52px;height:52px;border-radius:14px;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:#fff;font-size:20px;font-weight:700}
+.tt{font-size:14px;font-weight:600;color:#222}
+.dd{font-size:12px;color:#999;margin-top:4px}
+.tag{font-size:10px;color:#fff;border-radius:8px;padding:2px 8px;margin-left:auto;flex-shrink:0}
+/* ---- 液态玻璃底栏 ---- */
+.tabbar{position:absolute;left:12px;right:12px;bottom:14px;height:76px;border-radius:24px;z-index:5;display:flex;overflow:hidden;
+background:linear-gradient(135deg,rgba(255,255,255,.34),rgba(255,255,255,.10) 55%,rgba(255,255,255,.24));
+-webkit-backdrop-filter:blur(20px) saturate(1.9);backdrop-filter:blur(20px) saturate(1.9);
+border:1px solid rgba(255,255,255,.5);
+box-shadow:inset 0 1px 1px rgba(255,255,255,.7),inset 0 -10px 18px rgba(255,255,255,.14),0 12px 32px rgba(20,30,60,.28)}
+.tabbar::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+background:radial-gradient(130px 44px at 50% 0%,rgba(255,255,255,.8),transparent 70%);mix-blend-mode:screen}
+.tabbar::after{content:"";position:absolute;left:10%;right:10%;bottom:5px;height:20px;border-radius:10px;pointer-events:none;
+background:radial-gradient(closest-side,rgba(120,190,255,.4),transparent);filter:blur(6px)}
+.tab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:#5a6270;font-size:11px;position:relative;z-index:1;cursor:pointer;transition:color .25s,transform .25s}
+.tab .ic{font-size:24px;transition:transform .25s;filter:drop-shadow(0 1px 1px rgba(255,255,255,.7))}
+.tab.on{color:#0a84ff;font-weight:700}
+.tab.on .ic{transform:translateY(-2px) scale(1.12)}
+.tab .pip{position:absolute;top:9px;width:5px;height:5px;border-radius:50%;background:#0a84ff;opacity:0;transition:opacity .25s;box-shadow:0 0 8px #0a84ff}
+.tab.on .pip{opacity:1}
+</style>
+</head>
+<body>
+<div class="phone">
+<div class="status"><span>21:56</span><span>5G 🔋</span></div>
+<div class="nav">液态玻璃 · 底栏演示</div>
+<div class="feed" id="feed"></div>
+<div class="tabbar" id="bar">
+<div class="tab on" data-i="0"><span class="pip"></span><span class="ic">🏠</span>首页</div>
+<div class="tab" data-i="1"><span class="pip"></span><span class="ic">🧭</span>发现</div>
+<div class="tab" data-i="2"><span class="pip"></span><span class="ic">✉️</span>消息</div>
+<div class="tab" data-i="3"><span class="pip"></span><span class="ic">👤</span>我</div>
+</div>
+</div>
+<script>
+var rows=[["果园直供","新鲜车厘子今日采摘","#ff7a59","果",2],["城市骑行","周末环湖路线合集","#3fa7ff","骑",0],["深夜食堂","一人食菜谱更新","#b07df5","食",5],["旧物改造","牛仔裤改托特包","#2fd48f","改",0],["观星指南","今晚流星雨方位","#f5b942","星",1],["手账日常","九月拼贴分享","#ff7ab8","账",0],["阳台菜园","小番茄红了","#34c98e","菜",3]];
+var h="";
+for(var i=0;i<rows.length;i++){h+='<div class="card"><div class="av" style="background:linear-gradient(135deg,'+rows[i][2]+','+rows[i][2]+'99)">'+rows[i][3]+'</div><div><div class="tt">'+rows[i][0]+'</div><div class="dd">'+rows[i][1]+'</div></div>'+(rows[i][4]?'<span class="tag" style="background:'+rows[i][2]+'">'+rows[i][4]+'条新</span>':'')+'</div>';}
+document.getElementById('feed').innerHTML=h;
+var tabs=document.querySelectorAll('.tab');
+function go(n){for(var i=0;i<tabs.length;i++){tabs[i].classList.toggle('on',i===n);}}
+for(var i=0;i<tabs.length;i++){(function(k){tabs[k].addEventListener('click',function(){go(k);});})(i);}
+try{var q=new URLSearchParams(location.search).get('tab');if(q!==null&&+q>=0&&+q<4){go(+q);}}catch(e){}
+</script>
+</body>
+</html>

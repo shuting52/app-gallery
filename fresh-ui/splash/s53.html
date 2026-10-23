@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>枫叶纷飞</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{background:#070a12;display:flex;align-items:center;justify-content:center;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;overflow:hidden}
+.stage{position:relative;width:430px;height:900px;flex:none;overflow:hidden}
+.stage i{display:block;position:absolute}
+.brand{position:absolute;left:0;right:0;bottom:104px;text-align:center;z-index:50;animation:brandIn 1s .9s both}
+.brand h1{font-size:32px;letter-spacing:10px;text-indent:10px;color:#fff;font-weight:700;text-shadow:0 2px 24px rgba(0,0,0,.45)}
+.brand p{margin-top:10px;font-size:11px;letter-spacing:5px;color:rgba(255,255,255,.62)}
+@keyframes brandIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.replay{position:absolute;bottom:30px;left:50%;transform:translateX(-50%);z-index:60;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.35);color:#fff;font-size:12px;letter-spacing:2px;padding:9px 24px;border-radius:20px;cursor:pointer;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.shade{position:absolute;left:0;right:0;bottom:0;height:360px;background:linear-gradient(transparent,rgba(8,6,18,.78));z-index:40;pointer-events:none}
+
+.stage{background:linear-gradient(#f9e0ae,#f2b26e 62%,#d98a4e)}
+
+.branch{width:280px;height:26px;left:-40px;top:120px;border-radius:13px;background:linear-gradient(#5a3a24,#3c2415);transform:rotate(14deg);z-index:4}
+.tw{width:120px;height:14px;border-radius:7px;background:#4a2e1a;z-index:4}
+.tw1{left:120px;top:150px;transform:rotate(-24deg)}.tw2{left:40px;top:200px;transform:rotate(38deg)}
+.leaf{width:30px;height:30px;background:linear-gradient(135deg,#ef6a4d,#b03224);clip-path:polygon(50% 0,63% 34%,98% 34%,70% 56%,83% 90%,50% 69%,17% 90%,30% 56%,2% 34%,37% 34%);z-index:5;animation:fall 8s linear infinite;opacity:0}
+@keyframes fall{0%{transform:translate(0,-70px) rotate(0);opacity:0}8%{opacity:1}100%{transform:translate(var(--sx),980px) rotate(620deg);opacity:.9}}
+.ground3{position:absolute;left:0;right:0;bottom:0;height:190px;background:linear-gradient(#a8642f,#7c4a20);z-index:3}
+.pile{width:200px;height:60px;border-radius:50%;background:#b34a28;z-index:4}
+.pl1{left:40px;bottom:90px}.pl2{left:220px;bottom:70px;transform:scale(.75)}
+
+</style></head><body>
+<div class="stage" id="stage">
+<i class="leaf" style="left:30px;top:-40px;--sx:90px;animation-duration:7s;animation-delay:-1s"></i><i class="leaf" style="left:90px;top:-40px;--sx:-70px;animation-duration:8.5s;animation-delay:-3s"></i><i class="leaf" style="left:150px;top:-40px;--sx:60px;animation-duration:7.6s;animation-delay:-5.4s"></i><i class="leaf" style="left:210px;top:-40px;--sx:-90px;animation-duration:9s;animation-delay:-2.2s"></i><i class="leaf" style="left:270px;top:-40px;--sx:80px;animation-duration:7.2s;animation-delay:-6.8s"></i><i class="leaf" style="left:330px;top:-40px;--sx:-60px;animation-duration:8.8s;animation-delay:-4.4s"></i><i class="leaf" style="left:60px;top:-40px;--sx:110px;animation-duration:9.4s;animation-delay:-7.9s"></i><i class="leaf" style="left:120px;top:-40px;--sx:-110px;animation-duration:7.8s;animation-delay:-0.6s"></i><i class="leaf" style="left:240px;top:-40px;--sx:40px;animation-duration:8.2s;animation-delay:-5.9s"></i><i class="leaf" style="left:300px;top:-40px;--sx:100px;animation-duration:7.4s;animation-delay:-3.3s"></i><i class="leaf" style="left:180px;top:-40px;--sx:-40px;animation-duration:9.8s;animation-delay:-8.6s"></i><i class="leaf" style="left:360px;top:-40px;--sx:70px;animation-duration:8s;animation-delay:-6.2s"></i>
+<i class="branch"></i><i class="tw tw1"></i><i class="tw tw2"></i>
+<i class="ground3"></i><i class="pile pl1"></i><i class="pile pl2"></i>
+
+<div class="shade"></div>
+<div class="brand"><h1>枫叶</h1><p>MAPLE</p></div>
+<button class="replay" onclick="var s=document.getElementById('stage');s.replaceWith(s.cloneNode(true))">重新播放</button>
+</div>
+</body></html>

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>毛球星球</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{background:#241d16;display:flex;align-items:center;justify-content:center;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sans-serif;color:#5a4a3a;min-height:100vh}
+.phone{width:430px;height:900px;border-radius:44px;overflow:hidden;position:relative;background:linear-gradient(180deg,#fdf3e3 0%,#fbeed9 45%,#f7e4cd 100%);box-shadow:0 30px 80px rgba(0,0,0,.55),0 0 0 10px #241d16,0 0 0 12px #5a4a3a}
+.paws{position:absolute;inset:0;pointer-events:none;opacity:.1;font-size:34px}
+.screen{position:absolute;inset:0;display:flex;flex-direction:column;padding:24px 20px 0;z-index:2}
+@keyframes rise{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+.rise{animation:rise .8s cubic-bezier(.2,.8,.25,1) both}
+.topbar{display:flex;align-items:center;justify-content:space-between}
+.topbar .t{font-size:17px;font-weight:800;letter-spacing:3px;color:#8a6a4a}
+.topbar .t small{display:block;font-size:10px;letter-spacing:4px;color:#c4a882;font-weight:400;margin-top:2px}
+.msg{width:40px;height:40px;border-radius:50%;border:none;background:#fff;box-shadow:0 6px 14px rgba(160,120,80,.2);font-size:18px;cursor:pointer;font-family:inherit}
+.petcard{margin-top:16px;background:#fffdf8;border:1px solid #f0ddc0;border-radius:24px;padding:20px;display:flex;gap:18px;align-items:center;box-shadow:0 14px 30px rgba(190,150,100,.18);position:relative;overflow:hidden}
+.petcard::after{content:"🐾";position:absolute;right:14px;bottom:6px;font-size:44px;opacity:.08;transform:rotate(-18deg)}
+.cat{width:110px;height:110px;position:relative;flex-shrink:0}
+.ear{display:block;width:44px;height:44px;background:#f5c98a;border-radius:10px 26px 10px 10px;position:absolute;top:2px}
+.ear.l{left:8px;transform:rotate(-12deg)}
+.ear.r{right:8px;transform:rotate(12deg) scaleX(-1)}
+.ear i{display:block;width:22px;height:22px;background:#f0a8a0;border-radius:6px 14px 6px 6px;margin:11px}
+.head{display:block;width:104px;height:96px;background:#f9dcae;border-radius:50%;position:absolute;left:3px;top:16px;box-shadow:inset -8px -10px 0 rgba(230,180,120,.35)}
+.eye{display:block;width:14px;height:18px;background:#4a3a2a;border-radius:50%;position:absolute;top:44px}
+.eye::after{content:"";display:block;width:5px;height:7px;background:#fff;border-radius:50%;margin:3px 0 0 3px}
+.eye.l{left:26px}.eye.r{right:26px}
+.nose{display:block;width:14px;height:10px;background:#e08a7a;border-radius:4px 4px 8px 8px;position:absolute;left:48px;top:64px}
+.whisk{display:block;width:34px;height:2px;background:#c9a878;border-radius:2px;position:absolute;top:66px}
+.whisk.l1{left:-6px;transform:rotate(8deg)}.whisk.l2{left:-6px;top:74px;transform:rotate(-4deg)}
+.whisk.r1{right:-6px;transform:rotate(-8deg)}.whisk.r2{right:-6px;top:74px;transform:rotate(4deg)}
+.petinfo b{font-size:19px;color:#5a4a3a}
+.petinfo .tag{display:inline-block;font-size:11px;color:#fff;background:#e8a86a;border-radius:10px;padding:3px 10px;margin-left:8px;vertical-align:2px}
+.petinfo .row{font-size:12px;color:#a88f6e;margin-top:8px;line-height:1.9}
+.petinfo .row i{display:inline-block;font-style:normal;background:#fdf0dd;border-radius:8px;padding:1px 8px;margin-right:6px}
+.chartbox{margin-top:16px;background:#fffdf8;border:1px solid #f0ddc0;border-radius:20px;padding:16px;box-shadow:0 10px 24px rgba(190,150,100,.14)}
+.chartbox .h{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.chartbox .h b{font-size:14px;color:#8a6a4a}
+.chartbox .h span{font-size:12px;color:#e08a5a;font-weight:700}
+.chartbox svg{display:block;width:100%;height:150px}
+.line{stroke-dasharray:560;stroke-dashoffset:560;animation:draw 3s ease-out -2.4s forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+.feedzone{margin-top:16px;background:#fffdf8;border:1px solid #f0ddc0;border-radius:20px;padding:16px;box-shadow:0 10px 24px rgba(190,150,100,.14);position:relative;overflow:hidden;min-height:150px}
+.feedzone .h{font-size:14px;font-weight:700;color:#8a6a4a;margin-bottom:10px}
+.bowl{width:110px;height:52px;background:linear-gradient(180deg,#e8a86a,#c9824a);border-radius:0 0 60px 60px;margin:6px auto 0;position:relative;box-shadow:inset 0 -8px 0 rgba(120,70,30,.25)}
+.bowl::before{content:"";display:block;width:124px;height:20px;background:#f5c98a;border-radius:50%;position:absolute;top:-10px;left:-7px;box-shadow:inset 0 -4px 8px rgba(160,100,50,.3)}
+.kibble{position:absolute;width:12px;height:12px;background:#b3763a;border-radius:50%;box-shadow:inset -2px -2px 0 rgba(90,50,20,.4);top:-26px;left:50%;margin-left:-6px;opacity:0;pointer-events:none}
+.kibble.fly{animation:kfly .8s cubic-bezier(.3,.6,.5,1) forwards}
+@keyframes kfly{0%{opacity:1;transform:translateY(0) scale(1)}70%{opacity:1}100%{opacity:0;transform:translateY(58px) scale(.7)}}
+.pawprint{position:absolute;font-size:26px;opacity:0;transform:scale(.5) rotate(-14deg);pointer-events:none}
+.pawprint.show{animation:paw .5s ease-out forwards}
+@keyframes paw{to{opacity:.75;transform:scale(1) rotate(-14deg)}}
+.actions{display:flex;gap:12px;margin-top:14px}
+.abtn{flex:1;height:58px;border:none;border-radius:18px;font-size:16px;font-weight:700;letter-spacing:2px;cursor:pointer;font-family:inherit;transition:transform .15s;color:#fff}
+.abtn:active{transform:scale(.96)}
+.feed{background:linear-gradient(120deg,#f0b26a,#e08a4a);box-shadow:0 10px 22px rgba(224,138,74,.4)}
+.walk{background:linear-gradient(120deg,#9ecfae,#6fae86);box-shadow:0 10px 22px rgba(111,174,134,.4)}
+.count{display:flex;justify-content:space-around;margin-top:12px;font-size:12px;color:#a88f6e}
+.count b{color:#e08a4a;font-size:15px}
+.tabbar{margin-top:auto;height:86px;background:rgba(255,253,248,.92);backdrop-filter:blur(12px);border-top:1px solid #f0ddc0;display:flex;margin-left:-20px;margin-right:-20px;padding:0 10px}
+.tab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:11px;color:#c4a882;cursor:pointer;border:none;background:none;font-family:inherit}
+.tab .ic{display:block;width:26px;height:26px;font-size:21px;line-height:26px;text-align:center;transition:transform .2s}
+.tab.on{color:#c97b3a;font-weight:700}
+.tab.on .ic{transform:translateY(-2px) scale(1.12)}
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="paws">🐾<br><br>　🐾<br><br>🐾</div>
+  <div class="screen">
+    <div class="topbar rise" style="animation-delay:-.7s">
+      <div class="t">毛球星球<small>陪伴第 328 天</small></div>
+      <button class="msg" onclick="this.style.transform='scale(.88)';setTimeout(()=>this.style.transform='',160)">💬</button>
+    </div>
+    <div class="petcard rise" style="animation-delay:-.55s">
+      <div class="cat">
+        <span class="ear l"><i></i></span><span class="ear r"><i></i></span>
+        <span class="head"></span>
+        <span class="eye l"></span><span class="eye r"></span>
+        <span class="nose"></span>
+        <span class="whisk l1"></span><span class="whisk l2"></span>
+        <span class="whisk r1"></span><span class="whisk r2"></span>
+      </div>
+      <div class="petinfo">
+        <b>汤圆</b><span class="tag">英短 · 2岁</span>
+        <div class="row"><i>体重 4.2kg</i><i>已绝育</i><br><i>疫苗齐全</i><i>性格 黏人</i></div>
+      </div>
+    </div>
+    <div class="chartbox rise" style="animation-delay:-.42s">
+      <div class="h"><b>体重曲线 · 近 8 周</b><span>▼ 0.1kg 健康</span></div>
+      <svg viewBox="0 0 380 150">
+        <defs><linearGradient id="wg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e8a86a" stop-opacity=".45"/><stop offset="1" stop-color="#e8a86a" stop-opacity="0"/></linearGradient></defs>
+        <g stroke="#f0ddc0" stroke-width="1"><line x1="0" y1="40" x2="380" y2="40"/><line x1="0" y1="80" x2="380" y2="80"/><line x1="0" y1="120" x2="380" y2="120"/></g>
+        <path d="M10 60 C60 55 90 70 130 66 C170 62 200 78 240 74 C280 70 320 82 370 78 L370 150 L10 150 Z" fill="url(#wg)"/>
+        <path class="line" d="M10 60 C60 55 90 70 130 66 C170 62 200 78 240 74 C280 70 320 82 370 78" fill="none" stroke="#e08a4a" stroke-width="4" stroke-linecap="round"/>
+        <circle cx="370" cy="78" r="7" fill="#e08a4a" stroke="#fff" stroke-width="3"/>
+        <text x="336" y="60" font-size="12" fill="#e08a4a" font-weight="700">4.2kg</text>
+      </svg>
+    </div>
+    <div class="feedzone rise" style="animation-delay:-.3s" id="feedzone">
+      <div class="h">今日投喂 <span style="font-size:11px;color:#c4a882">还差 1 餐达标</span></div>
+      <div class="bowl" id="bowl"><span class="kibble" id="kibble">　</span></div>
+      <div class="count"><span>已喂 <b id="cFeed">2</b> 餐</span><span>遛弯 <b id="cWalk">1</b> 次</span></div>
+    </div>
+    <div class="actions rise" style="animation-delay:-.2s">
+      <button class="abtn feed" onclick="doFeed()">🍖 喂食</button>
+      <button class="abtn walk" onclick="doWalk()">🦮 遛弯</button>
+    </div>
+    <div class="tabbar">
+      <button class="tab on" onclick="setTab(this)"><span class="ic">🐱</span>档案</button>
+      <button class="tab" onclick="setTab(this)"><span class="ic">📊</span>健康</button>
+      <button class="tab" onclick="setTab(this)"><span class="ic">🛒</span>商城</button>
+      <button class="tab" onclick="setTab(this)"><span class="ic">👤</span>我的</button>
+    </div>
+  </div>
+</div>
+<script>
+var nFeed=2,nWalk=1;
+function doFeed(){
+  var k=document.getElementById('kibble');
+  k.classList.remove('fly');void k.offsetWidth;k.classList.add('fly');
+  nFeed++;document.getElementById('cFeed').textContent=nFeed;
+  var bowl=document.getElementById('bowl');
+  bowl.style.transform='scale(1.12)';setTimeout(function(){bowl.style.transform='';},250);
+}
+var pawPos=[[40,30],[90,52],[150,36],[210,58],[270,40],[320,60]];
+var pawI=0;
+function doWalk(){
+  if(pawI>=pawPos.length)return;
+  var z=document.getElementById('feedzone');
+  var p=document.createElement('span');p.className='pawprint';p.textContent='🐾';
+  p.style.left=pawPos[pawI][0]+'px';p.style.top=pawPos[pawI][1]+'px';
+  z.appendChild(p);requestAnimationFrame(function(){p.classList.add('show');});
+  pawI++;nWalk++;document.getElementById('cWalk').textContent=nWalk;
+}
+function setTab(el){document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('on')});el.classList.add('on');}
+</script>
+</body>
+</html>

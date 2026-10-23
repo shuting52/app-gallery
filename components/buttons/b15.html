@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>闪电 · 按钮特效</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;display:flex;flex-direction:column;align-items:center;
+ background:radial-gradient(120% 90% at 50% 0%,#101b3a 0%,#070d20 55%,#03060f 100%);
+ font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;color:#dceaff;padding:30px 16px 40px}
+h1{font-size:15px;letter-spacing:8px;color:#9fc4ff;font-weight:600;margin-bottom:6px}
+.sub{font-size:12px;color:#55688f;letter-spacing:2px;margin-bottom:26px}
+.stage{width:360px;max-width:100%;height:440px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:26px;
+ background:rgba(120,160,255,.04);border:1px solid rgba(159,196,255,.16);border-radius:22px;
+ box-shadow:inset 0 0 60px rgba(50,100,220,.12);position:relative;overflow:hidden}
+.btn{position:relative;width:210px;height:66px;border:1px solid rgba(159,196,255,.4);border-radius:34px;cursor:pointer;
+ background:linear-gradient(160deg,#1c2c52,#0d1730);color:#cfe2ff;font-size:17px;letter-spacing:6px;font-weight:700;z-index:2}
+.btn.go{animation:boltHit .8s linear}
+@keyframes boltHit{
+ 0%{filter:brightness(1);box-shadow:none;transform:translate(0,0)}
+ 8%{filter:brightness(3);box-shadow:0 0 70px 18px rgba(150,200,255,.95);transform:translate(-3px,2px)}
+ 16%{filter:brightness(1.6);transform:translate(3px,-2px)}
+ 26%{filter:brightness(2.8);box-shadow:0 0 50px 10px rgba(150,200,255,.8);transform:translate(-2px,-1px)}
+ 40%{filter:brightness(1.2);box-shadow:none;transform:translate(0,0)}
+ 100%{filter:brightness(1);box-shadow:none;transform:translate(0,0)}}
+svg.boltlayer{position:absolute;inset:0;z-index:4;pointer-events:none;opacity:0;
+ filter:drop-shadow(0 0 8px rgba(160,210,255,.95)) drop-shadow(0 0 22px rgba(90,150,255,.7))}
+svg.boltlayer path{fill:none;stroke:#dff1ff;stroke-linecap:round;stroke-linejoin:round}
+svg.boltlayer .main{stroke-width:6}
+svg.boltlayer .branch{stroke-width:3}
+.stage.go svg.boltlayer{opacity:1;animation:boltFade 1s ease-out .35s forwards}
+.stage.go svg.boltlayer path{animation:strike .32s linear forwards}
+@keyframes strike{from{stroke-dashoffset:var(--len)}to{stroke-dashoffset:0}}
+@keyframes boltFade{to{opacity:0}}
+.flash{position:absolute;inset:0;background:#eaf4ff;opacity:0;z-index:3;pointer-events:none}
+.stage.go .flash{animation:flashop .8s linear}
+@keyframes flashop{0%{opacity:0}7%{opacity:.9}22%{opacity:0}36%{opacity:.35}55%{opacity:0}100%{opacity:0}}
+.sparks{position:absolute;left:50%;top:50%;width:0;height:0;z-index:5;pointer-events:none}
+.spark{position:absolute;left:-2px;top:-8px;width:4px;height:16px;border-radius:2px;
+ background:linear-gradient(180deg,#fff,#7db4ff);opacity:0}
+.stage.go .spark{animation:sparkfly .6s ease-out .3s forwards}
+@keyframes sparkfly{0%{opacity:1;transform:rotate(var(--rot)) translate(0,0)}
+ 100%{opacity:0;transform:rotate(var(--rot)) translate(var(--dist),0)}}
+.hint{font-size:12px;color:#55688f;letter-spacing:3px;z-index:2}
+</style>
+</head>
+<body>
+<h1>闪电</h1>
+<div class="sub">b15 · 点击按钮触发</div>
+<div class="stage" id="stage">
+  <button class="btn" id="btn" type="button">引 雷</button>
+  <svg class="boltlayer" viewBox="0 0 360 440" preserveAspectRatio="none">
+    <path class="main" d="M196 6 L160 108 L184 116 L146 208 L172 216 L152 262"/>
+    <path class="branch" d="M172 150 L128 178 L108 232"/>
+    <path class="branch" d="M160 208 L206 236 L224 288"/>
+  </svg>
+  <div class="flash"></div>
+  <div class="sparks" id="sparks"></div>
+  <div class="hint">点 击 按 钮 引 雷 劈 中</div>
+</div>
+<script>
+var stage=document.getElementById('stage');
+var btn=document.getElementById('btn');
+var sparks=document.getElementById('sparks');
+document.querySelectorAll('svg.boltlayer path').forEach(function(p){
+  var len=p.getTotalLength();
+  p.style.setProperty('--len',len);
+  p.style.strokeDasharray=len;
+  p.style.strokeDashoffset=len;
+});
+function buildSparks(){
+  sparks.innerHTML='';
+  for(var i=0;i<12;i++){
+    var s=document.createElement('span');
+    s.className='spark';
+    var a=(i/12)*360+((i*53)%24);
+    var d=55+((i*41)%60);
+    s.style.setProperty('--rot',a+'deg');
+    s.style.setProperty('--dist',d+'px');
+    sparks.appendChild(s);
+  }
+}
+buildSparks();
+btn.addEventListener('click',function(){
+  buildSparks();
+  stage.classList.remove('go');
+  btn.classList.remove('go');
+  void stage.offsetWidth;
+  stage.classList.add('go');
+  btn.classList.add('go');
+});
+</script>
+</body>
+</html>

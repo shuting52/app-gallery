@@ -1,0 +1,69 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>w27 · 早安问候</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC",sans-serif;background:#05070c;display:flex;justify-content:center;color:#fff;overflow:hidden}
+.stage{width:430px;height:900px;position:relative;overflow:hidden;flex-shrink:0;background:radial-gradient(120% 90% at 50% 0%,#3a2a4f 0%,#1a1430 55%,#0b0e16 100%)}
+.mock{position:absolute;inset:0;filter:blur(6px) brightness(.55)}
+.sb{height:46px;display:flex;justify-content:space-between;align-items:center;padding:0 26px;font-size:13px;font-weight:600}
+.sic{width:70px;height:12px;border-radius:6px;background:#2a3040}
+.mh{display:flex;align-items:center;gap:10px;padding:14px 20px}
+.mh i{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,#4a3a6e,#2c2348);display:block}
+.mh em{width:110px;height:14px;border-radius:7px;background:#342c52;display:block}
+.banner{height:150px;margin:6px 20px 14px;border-radius:18px;background:linear-gradient(135deg,#3c2c62,#261c44)}
+.row{display:flex;gap:12px;align-items:center;margin:0 20px 12px}
+.row i{width:52px;height:52px;border-radius:14px;background:#342c52;display:block;flex-shrink:0}
+.row b{display:block;width:150px;height:13px;border-radius:6px;background:#403664;margin-bottom:8px}
+.row s{display:block;width:100px;height:10px;border-radius:5px;background:#2b2447;text-decoration:none}
+.tabbar{position:absolute;bottom:0;left:0;right:0;height:84px;background:rgba(26,20,48,.9);display:flex;justify-content:space-around;align-items:center;border-top:1px solid #342c52}
+.tabbar i{width:26px;height:26px;border-radius:8px;background:#403664;display:block}
+.ov{position:absolute;inset:0;z-index:10;display:flex;align-items:center;justify-content:center;background:rgba(12,8,24,.5);animation:fadeIn .4s both}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.modal{width:330px;border-radius:26px;padding:0 0 28px;text-align:center;position:relative;overflow:hidden;background:linear-gradient(180deg,#2b1e4e 0%,#4a2c5e 60%,#7a3f5e 100%);border:1px solid rgba(255,190,150,.3);box-shadow:0 30px 80px rgba(0,0,0,.55);animation:pop .55s cubic-bezier(.2,1.4,.4,1) both;animation-delay:.12s}
+@keyframes pop{from{opacity:0;transform:scale(.7) translateY(30px)}to{opacity:1;transform:none}}
+.x{position:absolute;top:14px;right:14px;width:30px;height:30px;border-radius:50%;border:0;background:rgba(255,255,255,.16);color:#fff;font-size:15px;cursor:pointer;z-index:3}
+.sky{height:190px;position:relative;overflow:hidden}
+.sun{position:absolute;left:50%;bottom:6px;width:110px;height:110px;margin-left:-55px;border-radius:50%;background:radial-gradient(circle at 40% 35%,#ffe9a8,#ffb347 60%,#ff8c42);box-shadow:0 0 60px 18px rgba(255,180,90,.55);animation:rise 1.6s cubic-bezier(.3,.9,.4,1) both;animation-delay:.3s}
+@keyframes rise{from{transform:translateY(130px)}to{transform:translateY(0)}}
+.cloud{position:absolute;background:rgba(255,255,255,.28);border-radius:999px;display:block;animation:drift 9s ease-in-out infinite}
+.cloud.c1{width:90px;height:24px;top:52px;left:36px;animation-delay:-2s}
+.cloud.c2{width:70px;height:20px;top:96px;right:44px;animation-delay:-5s}
+@keyframes drift{50%{transform:translateX(26px)}}
+.birds{position:absolute;top:44px;right:60px;font-size:15px;color:rgba(255,255,255,.7);animation:drift 7s ease-in-out infinite;animation-delay:-3s}
+.body{padding:24px 26px 0}
+h2{font-size:24px;margin-bottom:6px;letter-spacing:1px}
+.date{font-size:12px;color:#ffd9b8;background:rgba(255,255,255,.12);border-radius:999px;padding:5px 14px;display:inline-block;margin-bottom:10px}
+p.sub{font-size:13px;color:#f2d7c4;line-height:1.8}
+.quote{margin-top:14px;font-size:13px;color:#ffe9c9;background:rgba(255,255,255,.1);border-left:3px solid #ffb347;border-radius:0 12px 12px 0;padding:10px 14px;text-align:left;line-height:1.7}
+.btn{display:block;width:calc(100% - 52px);margin:20px auto 0;border:0;border-radius:16px;padding:14px;font-size:16px;font-weight:700;cursor:pointer;background:linear-gradient(180deg,#ffd98a,#ff9a4d);color:#5e2f10;box-shadow:0 8px 22px rgba(255,160,80,.4)}
+.btn:active{transform:scale(.97)}
+.replay{position:absolute;bottom:24px;left:50%;transform:translateX(-50%);z-index:20;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.1);color:#fff;border-radius:999px;padding:10px 22px;font-size:13px;cursor:pointer;backdrop-filter:blur(8px)}
+</style></head>
+<body><div class="stage">
+<div class="mock"><div class="sb"><span>9:41</span><span class="sic"></span></div>
+<div class="mh"><i></i><em></em></div><div class="banner"></div>
+<div class="row"><i></i><div><b></b><s></s></div></div>
+<div class="row"><i></i><div><b></b><s></s></div></div>
+<div class="tabbar"><i></i><i></i><i></i><i></i></div></div>
+<div class="ov" id="ov"><div class="modal">
+<button class="x" id="x">✕</button>
+<div class="sky"><div class="sun"></div><span class="cloud c1"></span><span class="cloud c2"></span><span class="birds">～ ～</span></div>
+<div class="body">
+<span class="date">10月19日 星期一 · 晴</span>
+<h2>早安 ☀️</h2>
+<p class="sub">新的一天，新的开始<br>愿你今天也有小确幸</p>
+<div class="quote">「把每一个平凡的日子，过成值得期待的样子。」</div>
+<button class="btn" id="go">开始新的一天</button>
+</div>
+</div></div>
+<button class="replay" id="replay">重新弹出</button>
+</div>
+<script>
+const ov=document.getElementById('ov');
+document.getElementById('go').onclick=()=>ov.style.display='none';
+document.getElementById('x').onclick=()=>ov.style.display='none';
+document.getElementById('replay').onclick=()=>{ov.style.display='flex';
+const m=ov.querySelector('.modal');m.style.animation='none';void m.offsetWidth;m.style.animation='';};
+</script></body></html>

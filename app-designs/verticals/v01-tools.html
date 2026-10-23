@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>去水印Pro · 一键去除视频水印</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{background:#05070d;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;color:#e6ecf5;display:flex;justify-content:center;min-height:100vh}
+.phone{width:100%;max-width:430px;min-height:100vh;background:#0b0f1a;position:relative;padding-bottom:78px}
+.page{display:none;padding:16px 16px 24px;animation:fin .25s ease}
+.page.active{display:block}
+@keyframes fin{from{opacity:0;transform:translateY(8px)}}
+.hd{display:flex;align-items:center;justify-content:space-between;margin:6px 2px 14px}
+.logo{font-size:20px;font-weight:800;letter-spacing:1px}
+.logo b{color:#22d3ee}
+.vip{font-size:11px;background:linear-gradient(135deg,#f59e0b,#ef4444);padding:4px 10px;border-radius:20px;font-weight:700}
+.hero{background:linear-gradient(135deg,#0e2a3a,#1a1040);border:1px solid #1e3a52;border-radius:18px;padding:20px 16px;margin-bottom:14px;position:relative;overflow:hidden}
+.hero::after{content:"";position:absolute;right:-40px;top:-40px;width:160px;height:160px;background:radial-gradient(circle,#22d3ee55,transparent 70%)}
+.hero h2{font-size:19px;margin-bottom:6px}
+.hero p{font-size:12px;color:#8fa3bf;margin-bottom:14px}
+.linkbox{display:flex;gap:8px}
+.linkbox input{flex:1;background:#0b0f1a;border:1px solid #23405e;border-radius:12px;color:#e6ecf5;padding:12px;font-size:13px;outline:none;min-width:0}
+.linkbox input:focus{border-color:#22d3ee}
+.btn{background:linear-gradient(135deg,#22d3ee,#0ea5e9);border:0;color:#04121a;font-weight:800;padding:12px 18px;border-radius:12px;font-size:14px;cursor:pointer;white-space:nowrap}
+.btn:active{transform:scale(.96)}
+.sec{font-size:15px;font-weight:700;margin:16px 2px 10px}
+.plats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.plat{background:#111827;border:1px solid #1e293b;border-radius:14px;padding:14px 6px;text-align:center;font-size:12px;color:#aebbce}
+.plat .ic{width:40px;height:40px;border-radius:12px;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;color:#fff}
+.feats{display:flex;gap:10px}
+.feat{flex:1;background:#111827;border:1px solid #1e293b;border-radius:14px;padding:14px 8px;text-align:center;font-size:12px;color:#aebbce}
+.feat .n{font-size:22px;margin-bottom:6px}
+.steps{background:#111827;border:1px solid #1e293b;border-radius:14px;padding:6px 16px}
+.step{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid #1e293b;font-size:13px;color:#aebbce;align-items:center}
+.step:last-child{border:0}
+.step .k{width:26px;height:26px;border-radius:50%;background:#22d3ee22;color:#22d3ee;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;flex-shrink:0}
+/* 解析页 */
+.pbar{height:10px;background:#1e293b;border-radius:6px;overflow:hidden;margin:12px 0}
+.pbar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#22d3ee,#8b5cf6);border-radius:6px;transition:width .2s}
+.pstatus{font-size:13px;color:#8fa3bf;text-align:center;margin-bottom:6px}
+.result{background:#111827;border:1px solid #1e293b;border-radius:16px;padding:14px;display:none}
+.result.show{display:block}
+.thumb{height:150px;border-radius:12px;background:linear-gradient(135deg,#312e81,#0e7490);display:flex;align-items:center;justify-content:center;font-size:44px;margin-bottom:12px;position:relative}
+.thumb .dur{position:absolute;right:8px;bottom:8px;background:#000a;font-size:11px;padding:3px 8px;border-radius:8px}
+.rt{font-size:15px;font-weight:700;margin-bottom:4px}
+.ra{font-size:12px;color:#8fa3bf;margin-bottom:10px}
+.rinfo{display:flex;gap:8px;margin-bottom:12px}
+.rinfo span{flex:1;background:#0b0f1a;border:1px solid #1e293b;border-radius:10px;padding:8px 4px;font-size:11px;color:#8fa3bf;text-align:center}
+.rinfo b{display:block;color:#e6ecf5;font-size:13px;margin-bottom:2px}
+.rbtns{display:flex;gap:8px}
+.rbtns .btn{flex:1;font-size:13px;padding:11px 0;text-align:center}
+.ghost{background:#1e293b;color:#e6ecf5}
+/* 历史 */
+.hitem{display:flex;gap:12px;background:#111827;border:1px solid #1e293b;border-radius:14px;padding:12px;margin-bottom:10px;align-items:center}
+.hthumb{width:64px;height:64px;border-radius:10px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:26px}
+.hinfo{flex:1;min-width:0}
+.hinfo .t{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:6px}
+.ptag{font-size:10px;padding:2px 8px;border-radius:6px;font-weight:700}
+.ptime{font-size:11px;color:#64748b;margin-top:6px}
+.del{background:none;border:0;color:#64748b;font-size:18px;cursor:pointer;padding:6px}
+/* 我的 */
+.me{display:flex;gap:14px;align-items:center;background:#111827;border:1px solid #1e293b;border-radius:16px;padding:16px;margin-bottom:14px}
+.avatar{width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#22d3ee,#8b5cf6);display:flex;align-items:center;justify-content:center;font-size:28px}
+.me .nm{font-size:16px;font-weight:700}
+.me .sub{font-size:12px;color:#8fa3bf;margin-top:4px}
+.vipcard{background:linear-gradient(135deg,#b45309,#dc2626);border-radius:16px;padding:16px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center}
+.vipcard .t{font-size:15px;font-weight:800}
+.vipcard .d{font-size:11px;opacity:.85;margin-top:4px}
+.vipcard button{background:#fff;color:#b45309;border:0;font-weight:800;padding:9px 16px;border-radius:20px;font-size:13px;cursor:pointer}
+.menu{background:#111827;border:1px solid #1e293b;border-radius:16px;overflow:hidden;margin-bottom:14px}
+.mi{display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid #1e293b;font-size:14px;cursor:pointer}
+.mi:last-child{border:0}
+.mi .e{font-size:18px}
+.mi .a{margin-left:auto;color:#475569}
+.logout{width:100%;background:#1e293b;color:#f87171;border:0;padding:13px;border-radius:14px;font-size:14px;font-weight:700;cursor:pointer}
+/* tabbar */
+.tabbar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:#0d1322f2;backdrop-filter:blur(10px);border-top:1px solid #1e293b;display:flex;padding:8px 0 calc(8px + env(safe-area-inset-bottom));z-index:50}
+.tab{flex:1;background:none;border:0;color:#64748b;font-size:11px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px}
+.tab .i{font-size:21px}
+.tab.on{color:#22d3ee}
+.toast{position:fixed;bottom:96px;left:50%;transform:translateX(-50%);background:#1e293b;color:#e6ecf5;padding:10px 22px;border-radius:24px;font-size:13px;opacity:0;transition:opacity .3s;z-index:99;pointer-events:none;max-width:86%;text-align:center}
+</style>
+</head>
+<body>
+<div class="phone">
+  <!-- 首页 -->
+  <section class="page active" id="p-home">
+    <div class="hd"><div class="logo">💧 去水印<b>Pro</b></div><div class="vip">VIP</div></div>
+    <div class="hero">
+      <h2>粘贴链接，一键去水印</h2>
+      <p>支持 20+ 短视频平台 · 原画质导出 · 完全免费试用</p>
+      <div class="linkbox"><input id="homeLink" placeholder="粘贴视频分享链接…"><button class="btn" onclick="goParse()">解析</button></div>
+    </div>
+    <div class="sec">支持平台</div>
+    <div class="plats">
+      <div class="plat"><div class="ic" style="background:#000">抖</div>抖音</div>
+      <div class="plat"><div class="ic" style="background:#ff4906">快</div>快手</div>
+      <div class="plat"><div class="ic" style="background:#ff2442">书</div>小红书</div>
+      <div class="plat"><div class="ic" style="background:#00a1d6">哔</div>哔哩哔哩</div>
+      <div class="plat"><div class="ic" style="background:#e6162d">微</div>微博</div>
+      <div class="plat"><div class="ic" style="background:#ff7a1a">瓜</div>西瓜视频</div>
+    </div>
+    <div class="sec">核心功能</div>
+    <div class="feats">
+      <div class="feat"><div class="n">🚫</div>无水印下载</div>
+      <div class="feat"><div class="n">⚡</div>批量解析</div>
+      <div class="feat"><div class="n">🎞️</div>原画导出</div>
+    </div>
+    <div class="sec">使用教程</div>
+    <div class="steps">
+      <div class="step"><div class="k">1</div>在短视频 App 点击「分享」复制链接</div>
+      <div class="step"><div class="k">2</div>回到本应用粘贴链接并点击解析</div>
+      <div class="step"><div class="k">3</div>解析成功后保存无水印视频到相册</div>
+    </div>
+  </section>
+  <!-- 解析 -->
+  <section class="page" id="p-parse">
+    <div class="hd"><div class="logo">🔍 视频<b>解析</b></div></div>
+    <div class="linkbox" style="margin-bottom:14px"><input id="parseLink" value="https://v.douyin.com/abc123/"><button class="btn" onclick="startParse()">重新解析</button></div>
+    <div class="pstatus" id="pstatus">点击「重新解析」开始</div>
+    <div class="pbar"><i id="pfill"></i></div>
+    <div class="result" id="result">
+      <div class="thumb">▶<span class="dur">00:42</span></div>
+      <div class="rt">街头采访：路人挑战 10 秒答对拿走 500 元</div>
+      <div class="ra">@街头小记 · 2026-10-18 发布</div>
+      <div class="rinfo">
+        <span><b>1080P</b>清晰度</span><span><b>8.6MB</b>大小</span><span><b>无水印</b>状态</span>
+      </div>
+      <div class="rbtns">
+        <button class="btn" onclick="toast('开始下载无水印视频…')">下载视频</button>
+        <button class="btn ghost" onclick="toast('文案已复制到剪贴板')">复制文案</button>
+        <button class="btn ghost" onclick="toast('封面已保存到相册')">保存封面</button>
+      </div>
+    </div>
+  </section>
+  <!-- 历史 -->
+  <section class="page" id="p-hist">
+    <div class="hd"><div class="logo">🕘 解析<b>历史</b></div><span style="font-size:12px;color:#64748b" onclick="toast('已按时间倒序排列')">管理</span></div>
+    <div id="hlist">
+      <div class="hitem"><div class="hthumb" style="background:#1a1033">🎬</div><div class="hinfo"><div class="t">美食探店：城中村 15 元吃到扶墙走</div><span class="ptag" style="background:#000;color:#fff">抖音</span><div class="ptime">今天 14:32 · 已下载</div></div><button class="del" onclick="delItem(this)">×</button></div>
+      <div class="hitem"><div class="hthumb" style="background:#2a0f14">🎵</div><div class="hinfo"><div class="t">翻唱《夜曲》开口跪现场版</div><span class="ptag" style="background:#ff4906;color:#fff">快手</span><div class="ptime">今天 11:05 · 已下载</div></div><button class="del" onclick="delItem(this)">×</button></div>
+      <div class="hitem"><div class="hthumb" style="background:#0f2a1a">📚</div><div class="hinfo"><div class="t">考研英语长难句拆解第 23 集</div><span class="ptag" style="background:#00a1d6;color:#fff">B站</span><div class="ptime">昨天 21:47 · 已下载</div></div><button class="del" onclick="delItem(this)">×</button></div>
+      <div class="hitem"><div class="hthumb" style="background:#2a1a0f">🍜</div><div class="hinfo"><div class="t">三分钟学会兰州拉面抻面手法</div><span class="ptag" style="background:#ff2442;color:#fff">小红书</span><div class="ptime">昨天 09:12 · 解析失败</div></div><button class="del" onclick="delItem(this)">×</button></div>
+      <div class="hitem"><div class="hthumb" style="background:#101a2a">⚽</div><div class="hinfo"><div class="t">世界杯预选赛五佳球集锦</div><span class="ptag" style="background:#e6162d;color:#fff">微博</span><div class="ptime">10-16 · 已下载</div></div><button class="del" onclick="delItem(this)">×</button></div>
+    </div>
+  </section>
+  <!-- 我的 -->
+  <section class="page" id="p-mine">
+    <div class="hd"><div class="logo">👤 我<b>的</b></div></div>
+    <div class="me"><div class="avatar">🧑‍💻</div><div><div class="nm">叮叮当</div><div class="sub">ID 882134 · 累计解析 128 次</div></div></div>
+    <div class="vipcard"><div><div class="t">👑 开通 VIP 会员</div><div class="d">无限次解析 · 4K 原画 · 去广告</div></div><button onclick="toast('VIP 购买页演示：已选择连续包月 ¥12/月')">开通</button></div>
+    <div class="menu">
+      <div class="mi" onclick="toast('我的收藏：共 12 个视频')"><span class="e">⭐</span>我的收藏<span class="a">›</span></div>
+      <div class="mi" onclick="toast('下载设置：仅 Wi-Fi 下下载 · 保存到相册')"><span class="e">⚙️</span>下载设置<span class="a">›</span></div>
+      <div class="mi" onclick="toast('已清理缓存 86MB')"><span class="e">🧹</span>清理缓存<span class="a">›</span></div>
+      <div class="mi" onclick="toast('意见反馈已提交，感谢支持！')"><span class="e">💬</span>意见反馈<span class="a">›</span></div>
+      <div class="mi" onclick="toast('去水印Pro v2.3.1 · 保持最新')"><span class="e">ℹ️</span>关于我们<span class="a">›</span></div>
+    </div>
+    <button class="logout" onclick="toast('已退出登录（演示）')">退出登录</button>
+  </section>
+  <nav class="tabbar">
+    <button class="tab on" data-t="p-home"><span class="i">🏠</span>首页</button>
+    <button class="tab" data-t="p-parse"><span class="i">🔍</span>解析</button>
+    <button class="tab" data-t="p-hist"><span class="i">🕘</span>历史</button>
+    <button class="tab" data-t="p-mine"><span class="i">👤</span>我的</button>
+  </nav>
+  <div class="toast" id="toast"></div>
+</div>
+<script>
+let tt;
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.style.opacity=1;clearTimeout(tt);tt=setTimeout(()=>t.style.opacity=0,1800);}
+function switchTab(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('on',b.dataset.t===id));window.scrollTo(0,0);}
+document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>switchTab(b.dataset.t));
+const qtab=new URLSearchParams(location.search).get('tab');if(qtab&&document.getElementById(qtab))switchTab(qtab);
+function goParse(){const v=document.getElementById('homeLink').value.trim();if(!v){toast('请先粘贴视频分享链接');return;}document.getElementById('parseLink').value=v;switchTab('p-parse');startParse();}
+function startParse(){const v=document.getElementById('parseLink').value.trim();if(!v){toast('链接不能为空');return;}
+const f=document.getElementById('pfill'),s=document.getElementById('pstatus'),r=document.getElementById('result');
+r.classList.remove('show');let p=0;s.textContent='正在连接服务器…';
+const steps=['正在连接服务器…','正在解析视频地址…','正在去除水印…','正在获取清晰度…','解析完成'];
+const iv=setInterval(()=>{p+=Math.random()*16+6;if(p>=100){p=100;clearInterval(iv);s.textContent='解析完成';r.classList.add('show');toast('解析成功，已去除水印');}else{s.textContent=steps[Math.min(steps.length-1,Math.floor(p/22))];}f.style.width=p+'%';},320);}
+function delItem(btn){btn.closest('.hitem').remove();toast('已删除该条记录');}
+</script>
+</body>
+</html>

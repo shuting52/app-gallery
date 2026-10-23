@@ -1,0 +1,22 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>魔方归位</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:430px;height:900px}
+body{overflow:hidden;position:relative;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(#101024,#1e1e40);color:#fff}
+.stage{position:absolute;inset:0;overflow:hidden}
+.brand{position:absolute;left:0;right:0;top:648px;text-align:center;z-index:5;animation:brandIn 1s ease 2s both}
+.brand h1{font-size:36px;letter-spacing:10px;font-weight:800}
+.brand p{font-size:13px;letter-spacing:6px;opacity:.65;margin-top:10px}
+@keyframes brandIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.replay{position:absolute;bottom:36px;left:50%;transform:translateX(-50%);z-index:9;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.35);color:#fff;font-size:13px;padding:9px 26px;border-radius:24px;cursor:pointer;backdrop-filter:blur(6px)}
+.cube{position:absolute;left:50%;top:330px;transform:translate(-50%,-50%);display:grid;grid-template-columns:repeat(3,64px);gap:8px}
+.cell{width:64px;height:64px;border-radius:12px;transform:rotateY(90deg) scale(.4);opacity:0;animation:place .7s cubic-bezier(.2,.9,.3,1.3) both}
+@keyframes place{to{transform:none;opacity:1}}
+.c0{background:#ff5d5d}.c1{background:#4dd2ff}.c2{background:#ffe14d}.c3{background:#6bff9e}.c4{background:#fff}.c5{background:#b14dff}.c6{background:#ff9f43}.c7{background:#4dd2ff}.c8{background:#ff5d7e}
+</style></head><body>
+<div class="stage"><div class="cube"><div class="cell c0" style="animation-delay:0.50s"></div><div class="cell c1" style="animation-delay:0.64s"></div><div class="cell c2" style="animation-delay:0.78s"></div><div class="cell c3" style="animation-delay:0.92s"></div><div class="cell c4" style="animation-delay:1.06s"></div><div class="cell c5" style="animation-delay:1.20s"></div><div class="cell c6" style="animation-delay:1.34s"></div><div class="cell c7" style="animation-delay:1.48s"></div><div class="cell c8" style="animation-delay:1.62s"></div></div></div>
+<div class="brand"><h1>方块</h1><p>CUBE · 复原</p></div>
+<button class="replay" onclick="location.reload()">&#8635; 重新播放</button>
+</body></html>

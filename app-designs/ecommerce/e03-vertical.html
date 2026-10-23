@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>粉黛美妆 · 垂直美妆电商</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{--bg:#fff7f9;--pink:#f7a8b8;--deep:#d94f70;--ink:#4a3540;--muted:#a78a94;--card:#ffffff;--line:#fbe7ec;--radius:18px}
+html{scroll-behavior:smooth}
+body{background:#f3e8ec;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;color:var(--ink)}
+.phone{max-width:430px;margin:0 auto;min-height:100dvh;position:relative;background:var(--bg);box-shadow:0 0 40px rgba(217,79,112,.12)}
+.page{display:none;padding:14px 14px 96px}
+.page.on{display:block}
+/* 顶部标题栏 */
+.topbar{display:flex;align-items:center;justify-content:space-between;margin:4px 2px 12px}
+.brand{display:flex;align-items:center;gap:8px;font-weight:800;font-size:19px;color:var(--deep)}
+.brand .logo{width:36px;height:36px;border-radius:14px;background:linear-gradient(135deg,var(--pink),var(--deep));display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:0 6px 14px rgba(217,79,112,.35)}
+.topbar .icons{display:flex;gap:14px;font-size:21px;cursor:pointer}
+/* 搜索栏 */
+.search{display:flex;align-items:center;background:var(--card);border-radius:999px;padding:11px 16px;box-shadow:0 4px 14px rgba(217,79,112,.10);color:var(--muted);font-size:14px;margin-bottom:14px}
+.search span{margin-right:8px;font-size:16px}
+/* banner */
+.banner{border-radius:var(--radius);padding:26px 20px;background:linear-gradient(120deg,#ffd9e2 0%,#f7a8b8 45%,#d94f70 100%);color:#fff;position:relative;overflow:hidden;box-shadow:0 10px 24px rgba(217,79,112,.28);margin-bottom:14px}
+.banner::after{content:"💄";position:absolute;right:14px;bottom:-6px;font-size:96px;opacity:.28;transform:rotate(-12deg)}
+.banner .tag{display:inline-block;background:rgba(255,255,255,.9);color:var(--deep);font-size:12px;font-weight:700;border-radius:999px;padding:4px 12px;margin-bottom:10px}
+.banner h2{font-size:22px;margin-bottom:6px}
+.banner p{font-size:13px;opacity:.92;margin-bottom:12px}
+.banner .btn{background:#fff;color:var(--deep);border:none;border-radius:999px;padding:9px 22px;font-size:14px;font-weight:700;cursor:pointer}
+/* 功效 icon */
+.sec{margin:18px 2px 10px;display:flex;justify-content:space-between;align-items:center}
+.sec h3{font-size:16px;font-weight:800}
+.sec a{font-size:12px;color:var(--muted);text-decoration:none}
+.eff{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.eff .e{background:var(--card);border-radius:16px;padding:12px 4px;text-align:center;box-shadow:0 4px 12px rgba(217,79,112,.08);font-size:12px;color:var(--ink)}
+.eff .e i{font-style:normal;font-size:22px;display:block;margin-bottom:5px}
+/* 特卖 */
+.sale{background:linear-gradient(135deg,#fff,#ffeef2);border:1.5px solid var(--line);border-radius:var(--radius);padding:16px;box-shadow:0 6px 18px rgba(217,79,112,.10)}
+.sale .row{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.sale .ttl{font-weight:800;color:var(--deep);font-size:16px}
+.cd{display:flex;gap:5px;font-size:13px;font-weight:700;color:var(--deep)}
+.cd b{background:var(--deep);color:#fff;border-radius:8px;padding:3px 7px;font-variant-numeric:tabular-nums}
+.sale .prod{display:flex;gap:12px;background:#fff;border-radius:14px;padding:12px;box-shadow:0 4px 10px rgba(217,79,112,.07)}
+.pimg{width:84px;height:84px;border-radius:14px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:38px;color:#fff;font-weight:800}
+.sale .info{flex:1;display:flex;flex-direction:column;justify-content:center;gap:4px}
+.sale .name{font-size:14px;font-weight:700}
+.price{color:var(--deep);font-weight:800;font-size:17px}
+.price s{color:var(--muted);font-size:12px;font-weight:400;margin-left:6px}
+.progress{height:6px;background:#fbe7ec;border-radius:99px;overflow:hidden}
+.progress i{display:block;height:100%;width:72%;background:linear-gradient(90deg,var(--pink),var(--deep));border-radius:99px}
+.stock{font-size:11px;color:var(--muted)}
+/* 达人 feed */
+.feedcard{background:var(--card);border-radius:var(--radius);padding:14px;margin-bottom:12px;box-shadow:0 4px 14px rgba(217,79,112,.08)}
+.feedcard .user{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.avatar{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;color:#fff;font-weight:700;flex-shrink:0}
+.feedcard .uname{font-size:14px;font-weight:700}
+.feedcard .utag{font-size:11px;color:var(--muted)}
+.feedcard .ftitle{font-size:14px;font-weight:700;margin-bottom:6px}
+.feedcard .ftext{font-size:13px;color:#6d5560;line-height:1.6;margin-bottom:10px}
+.fimg{height:110px;border-radius:14px;margin-bottom:10px;display:flex;align-items:center;justify-content:center;font-size:44px;color:#fff}
+.fact{display:flex;gap:18px;font-size:13px;color:var(--muted)}
+.fact span{cursor:pointer;user-select:none}
+.fact .on{color:var(--deep)}
+/* 商品双列 */
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.gcard{background:var(--card);border-radius:var(--radius);overflow:hidden;box-shadow:0 4px 12px rgba(217,79,112,.08);position:relative}
+.gcard .gimg{height:120px;display:flex;align-items:center;justify-content:center;font-size:52px;color:#fff}
+.gcard .gbody{padding:10px 12px 12px}
+.gcard .gname{font-size:13px;font-weight:700;line-height:1.4;height:36px;overflow:hidden;margin-bottom:4px}
+.gcard .gfoot{display:flex;justify-content:space-between;align-items:center}
+.heart{font-size:18px;cursor:pointer;color:#e7b7c2;user-select:none}
+.heart.liked{color:var(--deep)}
+/* 口红卡 */
+.shades{display:flex;gap:7px;margin:8px 0}
+.shade{width:22px;height:22px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:.15s}
+.shade.cur{border-color:var(--deep);transform:scale(1.15)}
+.lipimg{height:120px;display:flex;align-items:center;justify-content:center;font-size:52px;transition:background .3s;border-radius:0}
+/* 分类页 */
+.catwrap{display:flex;gap:12px}
+.catside{width:88px;background:#fff;border-radius:16px;padding:8px 0;box-shadow:0 4px 12px rgba(217,79,112,.08);align-self:flex-start;position:sticky;top:10px}
+.catside div{padding:13px 4px;text-align:center;font-size:14px;color:var(--muted);cursor:pointer;border-radius:12px;margin:0 6px}
+.catside div.cur{background:linear-gradient(135deg,#ffd9e2,#f7a8b8);color:#fff;font-weight:800;box-shadow:0 4px 10px rgba(217,79,112,.25)}
+.catmain{flex:1}
+.subgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
+.subgrid .s{background:#fff;border-radius:14px;padding:12px 4px;text-align:center;font-size:12px;box-shadow:0 3px 10px rgba(217,79,112,.07)}
+.subgrid .s i{font-style:normal;font-size:24px;display:block;margin-bottom:5px}
+.hotrow{display:flex;gap:10px;background:#fff;border-radius:16px;padding:12px;margin-bottom:10px;box-shadow:0 4px 12px rgba(217,79,112,.07);align-items:center}
+/* 种草页 */
+.postcard{background:var(--card);border-radius:var(--radius);margin-bottom:12px;overflow:hidden;box-shadow:0 4px 14px rgba(217,79,112,.08)}
+.postcard .pimg2{height:170px;display:flex;align-items:center;justify-content:center;font-size:64px;color:#fff}
+.postcard .pbody{padding:12px 14px}
+.postcard .ptitle{font-size:14px;font-weight:700;margin-bottom:4px}
+.postcard .ptext{font-size:12px;color:#6d5560;line-height:1.6;margin-bottom:8px}
+/* 购物车 */
+.cartitem{background:var(--card);border-radius:var(--radius);padding:12px;margin-bottom:10px;display:flex;gap:12px;align-items:center;box-shadow:0 4px 12px rgba(217,79,112,.08)}
+.chk{width:22px;height:22px;border-radius:50%;border:2px solid #e7b7c2;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px}
+.chk.on{background:var(--deep);border-color:var(--deep)}
+.cartitem .cimg{width:70px;height:70px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:30px;color:#fff;flex-shrink:0}
+.cartitem .cinfo{flex:1}
+.cartitem .cname{font-size:13px;font-weight:700;margin-bottom:2px}
+.cartitem .csub{font-size:11px;color:var(--muted);margin-bottom:6px}
+.crow{display:flex;justify-content:space-between;align-items:center}
+.qty{display:flex;align-items:center;gap:10px}
+.qty button{width:26px;height:26px;border-radius:50%;border:1px solid var(--line);background:#fff;color:var(--deep);font-size:15px;cursor:pointer}
+.qty b{min-width:18px;text-align:center}
+.cartbar{background:#fff;border-radius:20px 20px 0 0;box-shadow:0 -6px 20px rgba(217,79,112,.12);padding:14px 16px;display:flex;justify-content:space-between;align-items:center;position:sticky;bottom:84px}
+.cartbar .total{font-size:15px}
+.cartbar .total b{color:var(--deep);font-size:20px}
+.paybtn{background:linear-gradient(135deg,var(--pink),var(--deep));color:#fff;border:none;border-radius:999px;padding:12px 34px;font-size:15px;font-weight:800;cursor:pointer;box-shadow:0 6px 14px rgba(217,79,112,.35)}
+.empty{text-align:center;color:var(--muted);padding:60px 0;font-size:14px}
+/* 我的 */
+.minehead{background:linear-gradient(135deg,#ffd9e2,#f7a8b8 60%,#d94f70);border-radius:var(--radius);padding:22px 18px;color:#fff;display:flex;gap:14px;align-items:center;box-shadow:0 8px 20px rgba(217,79,112,.25);margin-bottom:14px}
+.minehead .avatar{width:58px;height:58px;font-size:26px;background:rgba(255,255,255,.35)}
+.minehead .mname{font-size:18px;font-weight:800}
+.minehead .mlv{font-size:12px;background:rgba(255,255,255,.3);border-radius:99px;padding:3px 10px;display:inline-block;margin-top:5px}
+.skintest{background:#fff;border-radius:var(--radius);padding:16px;margin-bottom:12px;box-shadow:0 4px 12px rgba(217,79,112,.08);display:flex;align-items:center;gap:12px}
+.skintest .st{width:48px;height:48px;border-radius:16px;background:linear-gradient(135deg,var(--pink),var(--deep));display:flex;align-items:center;justify-content:center;font-size:24px}
+.skintest b{font-size:15px;display:block}
+.skintest small{color:var(--muted);font-size:12px}
+.skintest .go{margin-left:auto;background:var(--deep);color:#fff;border:none;border-radius:999px;padding:8px 18px;font-size:13px;font-weight:700;cursor:pointer}
+.mgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}
+.mgrid .mi{background:#fff;border-radius:16px;padding:14px 4px;text-align:center;font-size:12px;box-shadow:0 4px 12px rgba(217,79,112,.08)}
+.mgrid .mi i{font-style:normal;font-size:22px;display:block;margin-bottom:5px}
+.mgrid .mi b{color:var(--deep);display:block;font-size:14px}
+.mlist{background:#fff;border-radius:var(--radius);box-shadow:0 4px 12px rgba(217,79,112,.08);margin-bottom:12px}
+.mlist .row{display:flex;align-items:center;padding:14px 16px;font-size:14px;border-bottom:1px solid var(--line);cursor:pointer}
+.mlist .row:last-child{border:none}
+.mlist .row i{font-style:normal;margin-right:10px;font-size:18px}
+.mlist .row .arr{margin-left:auto;color:#d8bcc5}
+/* 底部 Tab */
+.tabbar{position:fixed;left:50%;transform:translateX(-50%);width:100%;max-width:430px;bottom:0;background:#fff;border-radius:22px 22px 0 0;box-shadow:0 -6px 24px rgba(217,79,112,.14);display:flex;padding:10px 4px calc(10px + env(safe-area-inset-bottom));z-index:50}
+.tab{flex:1;text-align:center;font-size:11px;color:var(--muted);cursor:pointer;padding:2px 0}
+.tab .ti{font-size:22px;display:block;margin-bottom:2px;transition:.2s}
+.tab.cur{color:var(--deep);font-weight:700}
+.tab.cur .ti{transform:scale(1.15)}
+/* toast */
+.toast{position:fixed;left:50%;transform:translateX(-50%) translateY(20px);bottom:110px;background:rgba(74,53,64,.92);color:#fff;font-size:13px;padding:10px 22px;border-radius:999px;opacity:0;transition:.3s;z-index:99;pointer-events:none;max-width:86%;text-align:center}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.badge{display:inline-block;background:var(--deep);color:#fff;font-size:10px;border-radius:99px;padding:2px 8px;margin-left:6px;vertical-align:2px}
+.coupon{background:linear-gradient(135deg,#fff,#ffeef2);border:1.5px dashed var(--pink);border-radius:14px;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.coupon .amt{color:var(--deep);font-weight:800;font-size:20px}
+.coupon small{color:var(--muted);font-size:11px}
+.coupon button{background:var(--deep);color:#fff;border:none;border-radius:999px;padding:7px 16px;font-size:12px;cursor:pointer}
+</style>
+</head>
+<body>
+<div class="phone">
+
+<!-- ============ ① 首页 ============ -->
+<section class="page" id="p0">
+  <div class="topbar">
+    <div class="brand"><span class="logo">💋</span>粉黛美妆</div>
+    <div class="icons"><span id="msgBtn">💌</span><span>🛎️</span></div>
+  </div>
+  <div class="search"><span>🔍</span>搜索：玻尿酸精华 / 口红 / 气垫…</div>
+
+  <div class="banner">
+    <span class="tag">新品首发</span>
+    <h2>轻透水光粉底液</h2>
+    <p>12 小时持妆 · 养肤级底妆 · 首发立减 ¥40</p>
+    <button class="btn" data-toast="已加入购物车：轻透水光粉底液">立即抢购</button>
+  </div>
+
+  <div class="sec"><h3>按功效选</h3><a href="#">全部功效 ›</a></div>
+  <div class="eff">
+    <div class="e"><i>💧</i>保湿</div>
+    <div class="e"><i>✨</i>美白</div>
+    <div class="e"><i>⏳</i>抗老</div>
+    <div class="e"><i>☀️</i>防晒</div>
+    <div class="e"><i>🧊</i>控油</div>
+  </div>
+
+  <div class="sec"><h3>今日特卖</h3><a href="#">更多 ›</a></div>
+  <div class="sale">
+    <div class="row"><span class="ttl">🔥 限时 5 折起</span>
+      <span class="cd">剩 <b id="cdh">05</b>:<b id="cdm">23</b>:<b id="cds">41</b></span></div>
+    <div class="prod">
+      <div class="pimg" style="background:linear-gradient(135deg,#ffd9e2,#f7a8b8)">🧴</div>
+      <div class="info">
+        <div class="name">玻尿酸深层保湿精华 30ml</div>
+        <div class="price">¥129 <s>¥259</s></div>
+        <div class="progress"><i></i></div>
+        <div class="stock">已抢 72% · 仅剩 168 件</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec"><h3>达人种草</h3><a href="javascript:go(2)">去种草区 ›</a></div>
+  <div class="feedcard">
+    <div class="user">
+      <div class="avatar" style="background:linear-gradient(135deg,#f7a8b8,#d94f70)">林</div>
+      <div><div class="uname">美妆林小黛 <span class="badge">达人</span></div><div class="utag">2 小时前 · 干皮亲妈</div></div>
+    </div>
+    <div class="ftitle">干皮秋冬救星！这瓶精华我回购 3 次了</div>
+    <div class="ftext">质地像水一样好吸收，上脸 3 秒渗透，早上起来脸还是嫩的。搭配面霜锁水，起皮直接说拜拜～</div>
+    <div class="fimg" style="background:linear-gradient(135deg,#ffe3ec,#f7a8b8)">🧴✨</div>
+    <div class="fact"><span class="like" data-n="2384">❤️ 2384</span><span>💬 312</span><span>📤 分享</span></div>
+  </div>
+  <div class="feedcard">
+    <div class="user">
+      <div class="avatar" style="background:linear-gradient(135deg,#ffb3c6,#d94f70)">桃</div>
+      <div><div class="uname">桃子不吃桃 <span class="badge">达人</span></div><div class="utag">5 小时前 · 黄皮一白</div></div>
+    </div>
+    <div class="ftitle">黄皮闭眼入！这支口红显白 10 度</div>
+    <div class="ftext">薄涂是温柔豆沙，厚涂气场全开，一天下来不拔干不掉色，吃饭都还在！</div>
+    <div class="fimg" style="background:linear-gradient(135deg,#f9b4c4,#d94f70)">💄</div>
+    <div class="fact"><span class="like" data-n="1967">❤️ 1967</span><span>💬 208</span><span>📤 分享</span></div>
+  </div>
+
+  <div class="sec"><h3>新品上市</h3><a href="javascript:go(1)">全部分类 ›</a></div>
+  <div class="grid" id="newGrid"></div>
+</section>
+
+<!-- ============ ② 分类 ============ -->
+<section class="page" id="p1">
+  <div class="topbar"><div class="brand"><span class="logo">💋</span>全部分类</div></div>
+  <div class="search"><span>🔍</span>在当前分类中搜索…</div>
+  <div class="catwrap">
+    <div class="catside" id="catside">
+      <div class="cur">护肤</div><div>彩妆</div><div>香氛</div><div>个护</div><div>工具</div>
+    </div>
+    <div class="catmain">
+      <div id="subArea"></div>
+      <div class="sec"><h3>热门商品</h3></div>
+      <div id="hotArea"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ③ 种草 ============ -->
+<section class="page" id="p2">
+  <div class="topbar"><div class="brand"><span class="logo">🌱</span>种草社区</div><div class="icons"><span>➕</span></div></div>
+  <div class="search"><span>🔍</span>搜索种草笔记：粉底液测评…</div>
+  <div id="postList"></div>
+</section>
+
+<!-- ============ ④ 购物车 ============ -->
+<section class="page" id="p3">
+  <div class="topbar"><div class="brand"><span class="logo">🛒</span>购物车</div><div class="icons"><span id="editBtn" style="font-size:15px">管理</span></div></div>
+  <div id="cartList"></div>
+  <div class="cartbar">
+    <div><span class="chk on" id="allChk">✓</span> 全选 <span class="total">合计 <b id="totalAmt">¥0</b></span></div>
+    <button class="paybtn" id="payBtn">结算</button>
+  </div>
+</section>
+
+<!-- ============ ⑤ 我的 ============ -->
+<section class="page" id="p4">
+  <div class="minehead">
+    <div class="avatar">🌸</div>
+    <div><div class="mname">小粉黛</div><span class="mlv">💎 铂金会员 · 1280 积分</span></div>
+  </div>
+  <div class="skintest">
+    <div class="st">🔬</div>
+    <div><b>AI 肤质测试</b><small>30 秒测出你的肤质与护肤方案</small></div>
+    <button class="go" data-toast="肤质测试即将开始，请对准面部光线充足处">去测试</button>
+  </div>
+  <div class="mgrid">
+    <div class="mi"><i>📦</i><b>3</b>待收货</div>
+    <div class="mi"><i>💰</i><b>5</b>待付款</div>
+    <div class="mi"><i>↩️</i><b>1</b>退款</div>
+    <div class="mi"><i>⭐</i><b>28</b>收藏</div>
+  </div>
+  <div class="sec"><h3>我的优惠券</h3></div>
+  <div class="coupon"><div><div class="amt">¥20 <small>满 199 可用</small></div><small>美妆全场券 · 10月31日到期</small></div><button data-toast="已领取 ¥20 美妆券">领取</button></div>
+  <div class="coupon"><div><div class="amt">¥50 <small>满 399 可用</small></div><small>护肤专享券 · 11月15日到期</small></div><button data-toast="已领取 ¥50 护肤券">领取</button></div>
+  <div class="mlist">
+    <div class="row"><i>📍</i>收货地址<span class="arr">›</span></div>
+    <div class="row"><i>💳</i>支付管理<span class="arr">›</span></div>
+    <div class="row"><i>🔔</i>消息通知<span class="arr">›</span></div>
+    <div class="row"><i>🛡️</i>隐私与安全<span class="arr">›</span></div>
+    <div class="row"><i>⚙️</i>设置<span class="arr">›</span></div>
+  </div>
+</section>
+
+<nav class="tabbar">
+  <div class="tab cur" data-t="0"><span class="ti">🏠</span>首页</div>
+  <div class="tab" data-t="1"><span class="ti">🗂️</span>分类</div>
+  <div class="tab" data-t="2"><span class="ti">🌱</span>种草</div>
+  <div class="tab" data-t="3"><span class="ti">🛒</span>购物车</div>
+  <div class="tab" data-t="4"><span class="ti">👤</span>我的</div>
+</nav>
+<div class="toast" id="toast"></div>
+</div>
+
+<script>
+/* ---------- toast ---------- */
+let toastTimer=null;
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),1800);}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-toast]');if(b)toast(b.getAttribute('data-toast'));});
+
+/* ---------- tab 切换 + ?tab 深链 ---------- */
+function go(n){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
+  document.getElementById('p'+n).classList.add('on');
+  document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('cur',+t.dataset.t===n));
+  window.scrollTo(0,0);
+}
+document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>go(+t.dataset.t)));
+(function(){const m=new URLSearchParams(location.search).get('tab');const n=parseInt(m,10);go(!isNaN(n)&&n>=0&&n<=4?n:0);})();
+
+/* ---------- 爱心收藏 ---------- */
+document.addEventListener('click',e=>{
+  const h=e.target.closest('.heart');if(!h)return;
+  h.classList.toggle('liked');
+  const liked=h.classList.contains('liked');
+  h.textContent=liked?'❤️':'🤍';
+  toast(liked?'已加入收藏 ♡':'已取消收藏');
+});
+
+/* ---------- 种草点赞 ---------- */
+document.addEventListener('click',e=>{
+  const l=e.target.closest('.like');if(!l)return;
+  if(l.dataset.done)return;
+  l.dataset.done='1';
+  const n=+l.dataset.n+1;l.dataset.n=n;
+  l.innerHTML='❤️ '+n.toLocaleString();l.classList.add('on');
+  toast('点赞成功，感谢你的喜欢！');
+});
+
+/* ---------- 首页新品双列 ---------- */
+const newGoods=[
+ {n:'丝绒哑光口红 #豆沙红',p:89,emoji:'💄',bg:'linear-gradient(135deg,#f9b4c4,#d94f70)',lip:true},
+ {n:'烟酰胺美白精华 30ml',p:159,emoji:'🧪',bg:'linear-gradient(135deg,#ffe3ec,#f7a8b8)'},
+ {n:'轻透水光粉底液 自然色',p:139,emoji:'🫧',bg:'linear-gradient(135deg,#ffd9e2,#ffb3c6)'},
+ {n:'胶原蛋白紧致面霜 50g',p:199,emoji:'🍦',bg:'linear-gradient(135deg,#fff0f4,#f7a8b8)'},
+ {n:'九色大地眼影盘',p:99,emoji:'🎨',bg:'linear-gradient(135deg,#f5d0dc,#d94f70)'},
+ {n:'氨基酸温和洁面乳 120g',p:59,emoji:'🧼',bg:'linear-gradient(135deg,#ffeef3,#ffc9d6)'}
+];
+const shades=[['豆沙红','#b6506a'],['正宫红','#c81e3a'],['奶茶色','#c98a6b'],['橘调红','#e05240'],['梅子色','#8e2f52']];
+const ng=document.getElementById('newGrid');
+newGoods.forEach((g,i)=>{
+  const d=document.createElement('div');d.className='gcard';
+  let extra='';
+  if(g.lip){
+    extra='<div class="shades">'+shades.map((s,j)=>'<span class="shade'+(j===0?' cur':'')+'" data-c="'+s[1]+'" data-n="'+s[0]+'" style="background:'+s[1]+'"></span>').join('')+'</div>';
+  }
+  d.innerHTML='<div class="gimg lipimg" style="background:'+g.bg+'">'+g.emoji+'</div><div class="gbody"><div class="gname">'+g.n+'</div>'+extra+'<div class="gfoot"><span class="price">¥'+g.p+'</span><span class="heart">🤍</span></div></div>';
+  ng.appendChild(d);
+});
+/* 口红色号选择器 */
+document.addEventListener('click',e=>{
+  const s=e.target.closest('.shade');if(!s)return;
+  const card=s.closest('.gcard');
+  card.querySelectorAll('.shade').forEach(x=>x.classList.remove('cur'));
+  s.classList.add('cur');
+  const img=card.querySelector('.lipimg');
+  img.style.background='linear-gradient(135deg,'+s.dataset.c+'cc,'+s.dataset.c+')';
+  card.querySelector('.gname').textContent='丝绒哑光口红 #'+s.dataset.n;
+  toast('已切换色号：'+s.dataset.n);
+});
+
+/* ---------- 分类数据 ---------- */
+const catData={
+ '护肤':{subs:[['💧','精华'],['🍦','面霜'],['🧴','乳液'],['🧼','洁面'],['💦','爽肤水'],['👁️','眼霜']],hot:[
+   {n:'玻尿酸深层保湿精华 30ml',p:129,e:'🧴',bg:'linear-gradient(135deg,#ffd9e2,#f7a8b8)'},
+   {n:'神经酰胺修护面霜 50g',p:189,e:'🍦',bg:'linear-gradient(135deg,#fff0f4,#f7a8b8)'}]},
+ '彩妆':{subs:[['💄','口红'],['🫧','粉底'],['🎨','眼影'],['🖌️','腮红'],['✏️','眉笔'],['👁️','睫毛膏']],hot:[
+   {n:'丝绒哑光口红 #正宫红',p:89,e:'💄',bg:'linear-gradient(135deg,#f9b4c4,#d94f70)'},
+   {n:'轻透水光粉底液 象牙白',p:139,e:'🫧',bg:'linear-gradient(135deg,#ffd9e2,#ffb3c6)'}]},
+ '香氛':{subs:[['🌸','女士香水'],['🌿','男士香水'],['🕯️','香薰'],['🧴','身体乳'],['🚿','沐浴露'],['💨','发香喷雾']],hot:[
+   {n:'樱花微风女士香水 50ml',p:259,e:'🌸',bg:'linear-gradient(135deg,#ffe3ec,#ffc9d6)'},
+   {n:'雪松木质男士香水 50ml',p:279,e:'🌿',bg:'linear-gradient(135deg,#f5d0dc,#c9a0b0)'}]},
+ '个护':{subs:[['🦷','口腔'],['💇','护发'],['🧴','身体护理'],['🧤','手足护理'],['🪒','脱毛'],['🧻','卫生巾']],hot:[
+   {n:'氨基酸护发精油 80ml',p:79,e:'💇',bg:'linear-gradient(135deg,#ffeef3,#f7a8b8)'},
+   {n:'美白牙膏套装 3支',p:69,e:'🦷',bg:'linear-gradient(135deg,#fff,#ffd9e2)'}]},
+ '工具':{subs:[['🖌️','化妆刷'],['🥚','美妆蛋'],['💆','美容仪'],['🪞','镜子'],['💅','美甲'],['🧽','粉扑']],hot:[
+   {n:'12支专业化妆刷套装',p:129,e:'🖌️',bg:'linear-gradient(135deg,#f9b4c4,#ffb3c6)'},
+   {n:'射频紧致美容仪',p:899,e:'💆',bg:'linear-gradient(135deg,#ffd9e2,#d94f70)'}]}
+};
+function renderCat(name){
+  const d=catData[name];
+  document.getElementById('subArea').innerHTML='<div class="subgrid">'+d.subs.map(s=>'<div class="s"><i>'+s[0]+'</i>'+s[1]+'</div>').join('')+'</div>';
+  document.getElementById('hotArea').innerHTML=d.hot.map(h=>'<div class="hotrow"><div class="pimg" style="background:'+h.bg+'">'+h.e+'</div><div class="info" style="flex:1"><div class="name" style="font-size:13px;font-weight:700">'+h.n+'</div><div class="price">¥'+h.p+'</div></div><span class="heart">🤍</span></div>').join('');
+}
+document.querySelectorAll('#catside div').forEach(c=>c.addEventListener('click',()=>{
+  document.querySelectorAll('#catside div').forEach(x=>x.classList.remove('cur'));
+  c.classList.add('cur');renderCat(c.textContent);
+}));
+renderCat('护肤');
+
+/* ---------- 种草 feed ---------- */
+const posts=[
+ {u:'林',bg:'linear-gradient(135deg,#f7a8b8,#d94f70)',n:'美妆林小黛',t:'干皮党集合！保湿精华空瓶第 3 瓶',x:'成分党狂喜：5 重玻尿酸 + 神经酰胺，换季烂脸期全靠它维稳。早晚各一泵，底妆再也不卡粉了。',img:'🧴✨',g:'linear-gradient(135deg,#ffe3ec,#f7a8b8)',like:3241,c:486},
+ {u:'桃',bg:'linear-gradient(135deg,#ffb3c6,#d94f70)',n:'桃子不吃桃',t:'黄皮显白口红天花板，豆沙色绝了',x:'薄涂通勤温柔，厚涂约会气场拉满。丝绒质地不拔干，沾杯程度可接受，吃饭前补一次就行。',img:'💄',g:'linear-gradient(135deg,#f9b4c4,#d94f70)',like:2876,c:352},
+ {u:'柚',bg:'linear-gradient(135deg,#ffc9d6,#f7a8b8)',n:'熬夜柚子茶',t:'油皮亲妈粉底液！8 小时不脱妆实测',x:'夏天出油也不暗沉，控油力 max。遮瑕中等，痘印需要再叠一层，持妆一整天没问题。',img:'🫧',g:'linear-gradient(135deg,#ffd9e2,#ffb3c6)',like:1983,c:274}
+];
+document.getElementById('postList').innerHTML=posts.map(p=>
+ '<div class="postcard"><div class="pimg2" style="background:'+p.g+'">'+p.img+'</div><div class="pbody">'+
+ '<div class="user"><div class="avatar" style="background:'+p.bg+'">'+p.u+'</div><div><div class="uname">'+p.n+'</div><div class="utag">美妆爱好者</div></div></div>'+
+ '<div class="ptitle">'+p.t+'</div><div class="ptext">'+p.x+'</div>'+
+ '<div class="fact"><span class="like" data-n="'+p.like+'">❤️ '+p.like.toLocaleString()+'</span><span>💬 '+p.c+'</span><span>📤 分享</span><span class="heart" style="margin-left:auto">🤍</span></div></div></div>'
+).join('');
+
+/* ---------- 购物车 ---------- */
+const cart=[
+ {n:'玻尿酸深层保湿精华 30ml',s:'补水保湿 · 30ml',p:129,q:1,e:'🧴',bg:'linear-gradient(135deg,#ffd9e2,#f7a8b8)',on:true},
+ {n:'丝绒哑光口红',s:'色号 #豆沙红',p:89,q:2,e:'💄',bg:'linear-gradient(135deg,#f9b4c4,#d94f70)',on:true},
+ {n:'轻透水光粉底液',s:'色号 自然色 · 30ml',p:139,q:1,e:'🫧',bg:'linear-gradient(135deg,#ffd9e2,#ffb3c6)',on:false}
+];
+function renderCart(){
+  const box=document.getElementById('cartList');
+  box.innerHTML=cart.map((c,i)=>
+   '<div class="cartitem"><span class="chk'+(c.on?' on':'')+'" data-i="'+i+'">'+(c.on?'✓':'')+'</span>'+
+   '<div class="cimg" style="background:'+c.bg+'">'+c.e+'</div><div class="cinfo">'+
+   '<div class="cname">'+c.n+'</div><div class="csub">'+c.s+'</div>'+
+   '<div class="crow"><span class="price">¥'+c.p+'</span><span class="qty"><button data-a="-" data-i="'+i+'">−</button><b>'+c.q+'</b><button data-a="+" data-i="'+i+'">＋</button></span></div>'+
+   '</div></div>').join('');
+  calc();
+}
+function calc(){
+  let t=0;cart.forEach(c=>{if(c.on)t+=c.p*c.q;});
+  document.getElementById('totalAmt').textContent='¥'+t;
+  document.getElementById('allChk').className='chk'+(cart.every(c=>c.on)?' on':'');
+  document.getElementById('allChk').textContent=cart.every(c=>c.on)?'✓':'';
+}
+document.getElementById('cartList').addEventListener('click',e=>{
+  const chk=e.target.closest('.chk');
+  if(chk){const c=cart[+chk.dataset.i];c.on=!c.on;renderCart();return;}
+  const b=e.target.closest('button[data-a]');
+  if(b){const c=cart[+b.dataset.i];c.q+=b.dataset.a==='+'?1:-1;if(c.q<1)c.q=1;renderCart();toast('数量已更新');}
+});
+document.getElementById('allChk').addEventListener('click',()=>{
+  const all=cart.every(c=>c.on);cart.forEach(c=>c.on=!all);renderCart();
+});
+document.getElementById('payBtn').addEventListener('click',()=>{
+  const n=cart.filter(c=>c.on).length;
+  if(!n){toast('请先勾选要结算的商品');return;}
+  toast('已提交订单，共 '+n+' 件商品，合计 '+document.getElementById('totalAmt').textContent);
+});
+renderCart();
+
+/* ---------- 特卖倒计时 ---------- */
+let sec=5*3600+23*60+41;
+setInterval(()=>{
+  if(sec<=0)return;sec--;
+  const h=String(Math.floor(sec/3600)).padStart(2,'0'),m=String(Math.floor(sec%3600/60)).padStart(2,'0'),s=String(sec%60).padStart(2,'0');
+  document.getElementById('cdh').textContent=h;document.getElementById('cdm').textContent=m;document.getElementById('cds').textContent=s;
+},1000);
+</script>
+</body>
+</html>

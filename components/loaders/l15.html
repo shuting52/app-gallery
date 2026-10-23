@@ -1,0 +1,20 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>牛顿钟摆 · 加载动画</title><style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;background:radial-gradient(600px 400px at 50% 40%,#1a2233,#090c14 70%);display:flex;flex-direction:column;align-items:center;justify-content:center;
+font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;color:#e8eaf0;padding:24px 12px}
+h1{font-size:15px;font-weight:600;letter-spacing:4px;color:#cbd5e1;margin-bottom:6px}
+.sub{font-size:11px;color:#8a90a6;margin-bottom:30px;letter-spacing:3px}
+.stage{width:360px;max-width:94vw;height:300px;position:relative;display:flex;align-items:center;justify-content:center}
+.cr{width:340px;height:280px;position:relative}
+.bar{position:absolute;top:30px;left:40px;right:40px;height:10px;border-radius:5px;background:linear-gradient(180deg,#64748b,#334155)}
+.piv{position:absolute;top:40px;width:0;transform-origin:top center}
+.p1{animation:sw1 2s ease-in-out infinite}.p5{animation:sw5 2s ease-in-out infinite}
+.str{display:block;width:3px;height:120px;background:rgba(226,232,240,.7);margin:0 auto}
+.bl{display:block;width:30px;height:30px;margin:-2px 0 0 -15px;border-radius:50%;
+background:radial-gradient(circle at 35% 30%,#f1f5f9,#94a3b8 70%);box-shadow:0 6px 12px rgba(0,0,0,.45)}
+@keyframes sw1{0%,50%,100%{transform:rotate(0)}18%{transform:rotate(38deg)}36%{transform:rotate(0)}}
+@keyframes sw5{0%,50%,100%{transform:rotate(0)}68%{transform:rotate(-38deg)}86%{transform:rotate(0)}}
+.shd{position:absolute;bottom:38px;left:60px;right:60px;height:14px;border-radius:50%;background:rgba(0,0,0,.4);filter:blur(6px)}
+</style></head><body><h1>牛顿钟摆</h1><div class="sub">LOADING · 加载中</div><div class="stage"><div class="cr"><div class="bar"></div><div class="piv p1" style="left:70px"><i class="str"></i><i class="bl"></i></div><div class="piv pm" style="left:126px"><i class="str"></i><i class="bl"></i></div><div class="piv pm" style="left:182px"><i class="str"></i><i class="bl"></i></div><div class="piv pm" style="left:238px"><i class="str"></i><i class="bl"></i></div><div class="piv p5" style="left:294px"><i class="str"></i><i class="bl"></i></div><div class="shd"></div></div></div></body></html>

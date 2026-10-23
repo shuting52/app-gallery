@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>FROST UI · 冰晶液态</title>
+<style>
+/* ============ FROST UI · 设计语言（冰晶液态：冰蓝 + 霜纹玻璃 + 冷冽通透） ============ */
+:root{
+  --bg0:#f4f9ff;
+  --bg1:#dcebf9;
+  --bg2:#c9def3;
+  --ink:#16324c;            /* 深冰蓝墨 */
+  --muted:#5f7f9c;          /* 雾蓝灰 */
+  --aqua:#4fb2ec;           /* 冰湖蓝 */
+  --aqua-d:#2b8fd4;         /* 深冰蓝（主色深） */
+  --ice:#bfe3fa;            /* 浅冰晶 */
+  --ice-l:#e3f2fd;          /* 近白冰 */
+  --danger:#e0657a;         /* 霜红 */
+  --ok:#2fbf9b;             /* 冰薄荷 */
+  --glass:rgba(255,255,255,.58);
+  --glass2:rgba(255,255,255,.38);
+  --line:rgba(110,158,200,.32);
+  --line-w:rgba(255,255,255,.85);
+  --r:1rem;
+  --shadow:0 10px 26px rgba(70,130,180,.18),inset 0 1px 0 rgba(255,255,255,.75);
+  --shadow-sm:0 5px 14px rgba(70,130,180,.14),inset 0 1px 0 rgba(255,255,255,.7);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{
+  margin:0;color:var(--ink);
+  background:linear-gradient(155deg,#cfe3f5,#a9c8e8 60%,#8fb6dd);
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sans-serif;
+  display:flex;align-items:center;justify-content:center;
+}
+/* App 外壳：移动端全屏，桌面端手机框 */
+.phone{
+  position:relative;width:100%;max-width:430px;height:100dvh;overflow:hidden;
+  display:flex;flex-direction:column;
+  background:linear-gradient(168deg,var(--bg0) 0%,var(--bg1) 46%,var(--bg2) 100%);
+}
+@media(min-width:520px){
+  body{padding:24px}
+  .phone{height:min(880px,94dvh);border:1px solid rgba(255,255,255,.7);border-radius:2.2rem;
+    box-shadow:0 0 0 5px rgba(255,255,255,.25),0 30px 80px rgba(20,60,100,.45)}
+}
+/* 漂移的冰雾与雪点（液态氛围层） */
+.mist{position:absolute;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.mist i{position:absolute;border-radius:50%;filter:blur(26px);opacity:.55}
+.mist i:nth-child(1){width:230px;height:230px;left:-70px;top:-60px;background:#a9d8f8;animation:drift 13s ease-in-out infinite alternate}
+.mist i:nth-child(2){width:190px;height:190px;right:-60px;top:26%;background:#cdeafd;animation:drift 16s ease-in-out -5s infinite alternate-reverse}
+.mist i:nth-child(3){width:260px;height:260px;left:-40px;bottom:-90px;background:#9ecdf2;animation:drift 18s ease-in-out -9s infinite alternate}
+@keyframes drift{to{transform:translate(26px,34px) scale(1.12)}}
+.mist b{position:absolute;width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.85);
+  box-shadow:0 0 6px rgba(255,255,255,.9);animation:fall linear infinite}
+@keyframes fall{0%{transform:translateY(-16px);opacity:0}12%{opacity:.9}88%{opacity:.7}100%{transform:translateY(920px);opacity:0}}
+/* 顶部栏 */
+.appbar{
+  position:relative;flex:0 0 auto;display:flex;align-items:center;gap:.7rem;z-index:5;
+  padding:calc(.9rem + env(safe-area-inset-top)) 1.1rem .9rem;
+  background:rgba(255,255,255,.42);backdrop-filter:blur(16px) saturate(1.5);-webkit-backdrop-filter:blur(16px) saturate(1.5);
+  border-bottom:1px solid var(--line-w);
+  box-shadow:0 1px 0 rgba(110,158,200,.18);
+}
+.appbar .logo{position:relative;width:36px;height:36px;flex:0 0 auto;border-radius:50%;
+  background:linear-gradient(145deg,#8fd0f7,#3f9fe0);box-shadow:inset 0 1px 0 rgba(255,255,255,.8),0 4px 10px rgba(60,140,200,.35);
+  display:flex;align-items:center;justify-content:center}
+.appbar .logo svg{width:22px;height:22px;color:#fff;animation:spin 14s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.appbar h1{margin:0;font-size:1.05rem;letter-spacing:.02em}
+.appbar h1 small{display:block;font-size:.68rem;font-weight:400;color:var(--muted);letter-spacing:.1em}
+.appbar .sp{flex:1}
+/* 页面滚动区 */
+.screens{flex:1;position:relative;overflow:hidden;z-index:1}
+.screen{position:absolute;inset:0;overflow-y:auto;padding:1.1rem 1.1rem 1.4rem;display:none;scrollbar-width:none}
+.screen::-webkit-scrollbar{display:none}
+.screen.active{display:block;animation:screen-in .25s ease}
+@keyframes screen-in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.sec{margin:0 0 1.6rem}
+.sec-t{display:flex;align-items:center;gap:.5rem;margin:0 0 .8rem;font-size:.82rem;letter-spacing:.12em;color:var(--muted);font-weight:700}
+.sec-t::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--line),transparent)}
+.sec-t .n{background:linear-gradient(135deg,#7cc7f5,#3d9fe0);color:#fff;font-size:.68rem;min-width:1.35rem;height:1.35rem;border-radius:.55rem;display:inline-flex;align-items:center;justify-content:center;padding:0 .3rem;box-shadow:0 3px 8px rgba(70,150,215,.4)}
+/* 底部 Tab 栏 · 悬浮玻璃胶囊 + 滑动指示 */
+.tabbar{
+  position:relative;flex:0 0 auto;display:flex;z-index:5;
+  background:rgba(255,255,255,.5);backdrop-filter:blur(18px) saturate(1.6);-webkit-backdrop-filter:blur(18px) saturate(1.6);
+  border:1px solid var(--line-w);border-radius:2rem;
+  margin:.55rem .9rem calc(.75rem + env(safe-area-inset-bottom));
+  padding:.35rem;box-shadow:0 12px 28px rgba(70,130,180,.22),inset 0 1px 0 rgba(255,255,255,.8);
+}
+.tab-pill{
+  position:absolute;top:.35rem;bottom:.35rem;left:.35rem;width:60px;border-radius:1.4rem;
+  background:linear-gradient(135deg,#7cc7f5,#3d9fe0);
+  box-shadow:0 6px 16px rgba(60,140,210,.45),inset 0 1px 0 rgba(255,255,255,.65);
+  transition:left .32s cubic-bezier(.55,1.45,.45,1),width .32s ease;z-index:0;
+}
+.tab{flex:1;border:0;background:none;color:var(--muted);font-family:inherit;cursor:pointer;
+  display:flex;flex-direction:column;align-items:center;gap:.15rem;
+  font-size:.62rem;font-weight:500;padding:.45rem 0 .3rem;border-radius:1.2rem;position:relative;z-index:1;transition:color .2s}
+.tab svg{width:22px;height:22px}
+.tab.on{color:#fff;font-weight:700}
+.tab:not(.on):active{transform:translateY(1px)}
+/* ============ 通用：玻璃 / 霜纹 / 按压 ============ */
+.glass{background:var(--glass);backdrop-filter:blur(14px) saturate(1.4);-webkit-backdrop-filter:blur(14px) saturate(1.4);
+  border:1px solid var(--line-w);border-radius:var(--r);box-shadow:var(--shadow);position:relative}
+.frost{position:relative;overflow:hidden}
+.frost::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:.5;
+  background:
+    radial-gradient(120px 60px at 12% 0%,rgba(255,255,255,.55),transparent 70%),
+    radial-gradient(90px 50px at 88% 100%,rgba(180,225,255,.4),transparent 70%),
+    repeating-linear-gradient(115deg,rgba(255,255,255,.10) 0 2px,transparent 2px 9px);}
+.press{transition:transform .15s ease,box-shadow .15s ease}
+.press:active{transform:scale(.97)}
+code.k{font-family:ui-monospace,monospace;font-size:.72rem;background:rgba(22,50,76,.85);color:#a8dcff;
+  padding:.15rem .45rem;border-radius:.4rem}
+.note{font-size:.75rem;color:var(--muted);line-height:1.6}
+.demo-row{display:flex;flex-wrap:wrap;gap:.8rem;align-items:center;margin-bottom:1rem}
+.demo-row.center{justify-content:center;padding:1.2rem .5rem;border-radius:var(--r);
+  background:rgba(255,255,255,.34);border:1px dashed rgba(110,158,200,.45)}
+/* ============ 按钮 ============ */
+.btn-frost{
+  position:relative;overflow:hidden;cursor:pointer;border:1px solid rgba(255,255,255,.65);
+  display:inline-flex;align-items:center;justify-content:center;gap:.45rem;
+  font-family:inherit;font-weight:700;line-height:1;font-size:.95rem;color:#fff;
+  padding:.8rem 1.35rem;border-radius:1rem;
+  background:linear-gradient(135deg,#82cdf8 0%,#47abec 55%,#2f8fd6 100%);
+  box-shadow:0 10px 22px rgba(60,140,210,.38),inset 0 1px 0 rgba(255,255,255,.7),inset 0 -8px 14px rgba(20,90,160,.18);
+  transition:transform .15s ease,box-shadow .15s ease,filter .15s ease;
+}
+.btn-frost::after{content:"";position:absolute;top:0;bottom:0;left:-70%;width:45%;pointer-events:none;
+  background:linear-gradient(100deg,transparent,rgba(255,255,255,.55),transparent);transform:skewX(-18deg);
+  transition:left .55s ease}
+.btn-frost:hover::after{left:115%}
+.btn-frost:hover{filter:brightness(1.05)}
+.btn-frost:active{transform:scale(.96);box-shadow:0 4px 12px rgba(60,140,210,.35),inset 0 1px 0 rgba(255,255,255,.6)}
+.btn-frost .ripple{position:absolute;border-radius:50%;background:rgba(255,255,255,.55);pointer-events:none;
+  transform:scale(0);animation:rip .55s ease-out forwards}
+@keyframes rip{to{transform:scale(3.2);opacity:0}}
+.btn-frost.sec{background:rgba(255,255,255,.62);color:var(--aqua-d);border-color:var(--line-w);
+  box-shadow:var(--shadow-sm);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.btn-frost.ghost{background:rgba(255,255,255,.14);color:var(--aqua-d);border:1.5px solid var(--aqua);
+  box-shadow:none;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.btn-frost.danger{background:linear-gradient(135deg,#f6a3b4,#e0657a 60%,#cf4a63);
+  box-shadow:0 10px 22px rgba(210,90,110,.35),inset 0 1px 0 rgba(255,255,255,.65),inset 0 -8px 14px rgba(150,40,60,.18)}
+.btn-frost.sm{padding:.55rem 1rem;font-size:.82rem;border-radius:.8rem}
+.btn-frost.lg{padding:1rem 1.8rem;font-size:1.12rem;border-radius:1.15rem}
+.btn-frost.block{width:100%}
+.btn-frost[disabled]{cursor:not-allowed;filter:grayscale(.55) brightness(1.06);opacity:.65;box-shadow:none}
+.btn-frost.loading{pointer-events:none}
+.btn-frost .spin-dot{width:16px;height:16px;flex:0 0 auto;border-radius:50%;
+  border:2.5px solid rgba(255,255,255,.4);border-top-color:#fff;animation:spin .7s linear infinite}
+/* 冰滴按钮（招牌）：水滴形 + 点击落滴 */
+.btn-drop{
+  position:relative;cursor:pointer;border:1px solid rgba(255,255,255,.7);color:#fff;
+  width:64px;height:64px;font-family:inherit;font-size:1.3rem;
+  border-radius:62% 38% 58% 42%/52% 58% 42% 48%;
+  background:radial-gradient(circle at 32% 28%,#b9e4fc 0%,#5fb6ef 48%,#2b8fd4 100%);
+  box-shadow:0 12px 24px rgba(60,140,210,.4),inset 0 -8px 16px rgba(20,90,160,.25),inset 4px 6px 10px rgba(255,255,255,.55);
+  transition:transform .18s cubic-bezier(.5,1.8,.5,1);
+}
+.btn-drop:hover{transform:scale(1.07) rotate(-3deg)}
+.btn-drop:active{transform:scale(.9)}
+.btn-drop .drip{position:absolute;left:50%;bottom:-4px;width:9px;height:13px;margin-left:-4.5px;pointer-events:none;
+  border-radius:50% 50% 60% 60%/70% 70% 40% 40%;background:#5fb6ef;opacity:0}
+.btn-drop.go .drip{animation:drip 0.7s ease-in forwards}
+@keyframes drip{0%{opacity:0;transform:translateY(-6px) scale(.6)}25%{opacity:1}100%{opacity:0;transform:translateY(34px) scale(1)}}
+/* 图标按钮 */
+.icobtn{
+  width:46px;height:46px;border-radius:1rem;border:1px solid var(--line-w);cursor:pointer;
+  background:rgba(255,255,255,.6);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  color:var(--aqua-d);display:inline-flex;align-items:center;justify-content:center;
+  box-shadow:var(--shadow-sm);font-family:inherit;transition:transform .15s,box-shadow .15s;
+}
+.icobtn svg{width:20px;height:20px}
+.icobtn:active{transform:scale(.92)}
+.icobtn.fill{background:linear-gradient(135deg,#7cc7f5,#3d9fe0);color:#fff}
+.icobtn.round{border-radius:50%}
+</style>
+<style>
+/* ============ 卡片 ============ */
+.card{background:var(--glass);backdrop-filter:blur(14px) saturate(1.4);-webkit-backdrop-filter:blur(14px) saturate(1.4);
+  border:1px solid var(--line-w);border-radius:var(--r);padding:1rem;box-shadow:var(--shadow);position:relative}
+.card h3{margin:.2rem 0 .4rem;font-size:1rem}
+.card p{margin:0;color:var(--muted);font-size:.85rem;line-height:1.55}
+.card .media{height:110px;border-radius:.7rem;margin:-.2rem -.2rem .8rem;position:relative;overflow:hidden;
+  background:linear-gradient(130deg,#a8dcf9,#5fb6ef 45%,#2b6fb8);border:1px solid rgba(255,255,255,.6)}
+.card .media::before{content:"";position:absolute;inset:0;
+  background:radial-gradient(90px 46px at 18% 12%,rgba(255,255,255,.75),transparent 70%),
+             radial-gradient(140px 70px at 85% 100%,rgba(255,255,255,.28),transparent 70%)}
+.card .media .flake{position:absolute;right:10px;top:8px;color:rgba(255,255,255,.9);animation:spin 16s linear infinite}
+.card .media .flake svg{width:34px;height:34px;display:block}
+.card .badge-ice{position:absolute;left:.7rem;top:.7rem;background:rgba(255,255,255,.85);color:var(--aqua-d);
+  font-size:.68rem;font-weight:700;padding:.25rem .6rem;border-radius:2rem;border:1px solid rgba(255,255,255,.9);z-index:1}
+/* ============ 芯片 / 徽标 / 标签 ============ */
+.chip{
+  border:1px solid var(--line-w);background:rgba(255,255,255,.5);color:var(--ink);font-family:inherit;font-weight:500;
+  font-size:.78rem;padding:.42rem .85rem;border-radius:2rem;cursor:pointer;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  box-shadow:var(--shadow-sm);transition:all .15s;
+}
+.chip.on{background:linear-gradient(135deg,#7cc7f5,#3d9fe0);color:#fff;font-weight:700;border-color:rgba(255,255,255,.6)}
+.chip:active{transform:scale(.95)}
+.tag{display:inline-flex;align-items:center;gap:.35rem;font-size:.7rem;font-weight:700;
+  padding:.28rem .65rem;border-radius:2rem;border:1px solid var(--line-w)}
+.tag.ice{background:linear-gradient(135deg,#7cc7f5,#3d9fe0);color:#fff}
+.tag.soft{background:rgba(255,255,255,.65);color:var(--aqua-d)}
+.tag.danger{background:rgba(224,101,122,.14);color:#c24358;border-color:rgba(224,101,122,.35)}
+.tag .dot{width:.5rem;height:.5rem;border-radius:50%;background:currentColor}
+/* ============ 头像 ============ */
+.avatar{width:52px;height:52px;border-radius:50%;border:2px solid rgba(255,255,255,.9);flex:0 0 auto;
+  display:inline-flex;align-items:center;justify-content:center;font-weight:700;color:#fff;font-size:1.05rem;
+  box-shadow:0 5px 12px rgba(70,130,180,.3)}
+.avatar.stack{margin-left:-14px;box-shadow:0 0 0 2px rgba(235,245,253,.9),0 5px 12px rgba(70,130,180,.25)}
+/* ============ 表单 ============ */
+.field{margin-bottom:1rem}
+.field label{display:block;font-size:.78rem;font-weight:700;margin-bottom:.45rem;letter-spacing:.04em}
+.field label small{color:var(--muted);font-weight:400}
+.inp,textarea.inp{
+  width:100%;background:rgba(255,255,255,.62);border:1.5px solid var(--line);border-radius:.8rem;
+  color:var(--ink);font-family:inherit;font-size:.92rem;padding:.75rem .9rem;outline:none;
+  box-shadow:inset 0 2px 5px rgba(90,140,190,.1);transition:border-color .15s,box-shadow .15s;
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+}
+.inp::placeholder{color:#93aec4}
+.inp:focus{border-color:var(--aqua);box-shadow:0 0 0 4px rgba(79,178,236,.22),inset 0 2px 5px rgba(90,140,190,.08)}
+textarea.inp{min-height:84px;resize:vertical}
+.searchbar{display:flex;align-items:center;gap:.6rem;background:rgba(255,255,255,.62);
+  border:1.5px solid var(--line);border-radius:2rem;padding:.7rem 1rem;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  transition:border-color .15s,box-shadow .15s}
+.searchbar:focus-within{border-color:var(--aqua);box-shadow:0 0 0 4px rgba(79,178,236,.2)}
+.searchbar svg{width:18px;height:18px;color:var(--muted);flex:0 0 auto}
+.searchbar input{flex:1;background:none;border:0;outline:none;color:var(--ink);font-family:inherit;font-size:.9rem}
+.searchbar input::placeholder{color:#93aec4}
+/* 自定义下拉 */
+.sel{position:relative}
+.sel>button{width:100%;display:flex;align-items:center;gap:.6rem;background:rgba(255,255,255,.62);
+  border:1.5px solid var(--line);border-radius:.8rem;color:var(--ink);font-family:inherit;font-size:.92rem;
+  padding:.75rem .9rem;cursor:pointer;text-align:left;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.sel>button svg{margin-left:auto;width:16px;height:16px;color:var(--muted);transition:transform .2s}
+.sel.open>button svg{transform:rotate(180deg)}
+.sel .menu{position:absolute;left:0;right:0;top:calc(100% + 6px);z-index:15;padding:.35rem;display:none;
+  background:rgba(255,255,255,.82);backdrop-filter:blur(18px) saturate(1.5);-webkit-backdrop-filter:blur(18px) saturate(1.5);
+  border:1px solid var(--line-w);border-radius:.8rem;box-shadow:0 16px 34px rgba(70,130,180,.28)}
+.sel.open .menu{display:block;animation:screen-in .18s ease}
+.sel .menu button{display:flex;width:100%;align-items:center;gap:.5rem;padding:.6rem .6rem;border:0;background:none;
+  color:var(--ink);font-family:inherit;font-size:.88rem;border-radius:.55rem;cursor:pointer;text-align:left}
+.sel .menu button:active,.sel .menu button:hover{background:rgba(127,199,245,.25)}
+.sel .menu button.on{color:var(--aqua-d);font-weight:700}
+/* 开关 */
+.switch{position:relative;display:inline-flex;align-items:center;cursor:pointer}
+.switch input{position:absolute;opacity:0;inset:0;cursor:pointer}
+.switch .tr{position:relative;flex:0 0 auto;width:58px;height:32px;border-radius:2rem;
+  background:rgba(160,195,225,.55);border:1px solid var(--line-w);
+  box-shadow:inset 0 2px 5px rgba(70,120,170,.28);transition:background .2s}
+.switch .tr::after{content:"";position:absolute;top:2px;left:3px;width:26px;height:26px;border-radius:50%;
+  background:linear-gradient(145deg,#fff,#dceefc);border:1px solid rgba(255,255,255,.9);
+  box-shadow:0 3px 7px rgba(70,120,170,.35),inset 0 1px 0 #fff;transition:left .2s cubic-bezier(.6,1.6,.4,1)}
+.switch input:checked+.tr{background:linear-gradient(135deg,#7cc7f5,#3d9fe0)}
+.switch input:checked+.tr::after{left:27px}
+.switch input:focus-visible+.tr{outline:2px solid var(--aqua);outline-offset:3px}
+.switch.lb{gap:.7rem;font-size:.9rem;font-weight:500}
+/* 复选 / 单选 */
+.check{display:flex;align-items:center;gap:.7rem;padding:.6rem .2rem;cursor:pointer;font-size:.9rem}
+.check input{position:absolute;opacity:0}
+.check .box{width:26px;height:26px;border-radius:.55rem;border:1.5px solid var(--line);background:rgba(255,255,255,.6);
+  display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;transition:all .15s}
+.check .box svg{width:15px;height:15px;color:#fff;opacity:0;transform:scale(.4);transition:all .15s}
+.check input:checked+.box{background:linear-gradient(135deg,#7cc7f5,#3d9fe0);border-color:rgba(255,255,255,.6)}
+.check input:checked+.box svg{opacity:1;transform:scale(1)}
+.check input:focus-visible+.box{outline:2px solid var(--aqua);outline-offset:3px}
+.check .box.radio{border-radius:50%}
+.check .box.radio::before{content:"";width:11px;height:11px;border-radius:50%;background:#fff;opacity:0;transform:scale(.4);transition:all .15s}
+.check input:checked+.box.radio::before{opacity:1;transform:scale(1)}
+/* 滑杆 */
+.slider-row{display:flex;align-items:center;gap:.8rem}
+input[type=range].slider{flex:1;-webkit-appearance:none;appearance:none;height:12px;border-radius:1rem;
+  border:1px solid var(--line-w);background:linear-gradient(to right,#5fb6ef var(--v,50%),rgba(190,215,240,.7) var(--v,50%));
+  box-shadow:inset 0 2px 4px rgba(70,120,170,.2);outline-offset:4px}
+input[type=range].slider::-webkit-slider-thumb{-webkit-appearance:none;width:27px;height:27px;border-radius:50%;
+  background:radial-gradient(circle at 35% 30%,#fff,#cfe9fc);border:1.5px solid rgba(120,180,225,.8);
+  box-shadow:0 4px 10px rgba(70,130,180,.4);cursor:pointer}
+input[type=range].slider::-moz-range-thumb{width:25px;height:25px;border-radius:50%;background:#eaf5fd;border:1.5px solid rgba(120,180,225,.8);cursor:pointer}
+.slider-val{min-width:3.2rem;text-align:center;font-weight:700;background:linear-gradient(135deg,#7cc7f5,#3d9fe0);color:#fff;
+  border:1px solid rgba(255,255,255,.6);border-radius:.6rem;padding:.3rem .4rem;font-size:.82rem;box-shadow:var(--shadow-sm)}
+/* 步进器 */
+.stepper{display:inline-flex;align-items:center;gap:.15rem;background:rgba(255,255,255,.55);
+  border:1px solid var(--line-w);border-radius:1rem;padding:.25rem;box-shadow:var(--shadow-sm);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.stepper button{width:38px;height:38px;border-radius:.75rem;border:1px solid rgba(255,255,255,.6);cursor:pointer;
+  background:linear-gradient(135deg,#7cc7f5,#3d9fe0);color:#fff;font-size:1.15rem;font-weight:700;font-family:inherit;line-height:1}
+.stepper button:active{transform:scale(.92)}
+.stepper b{min-width:2.6rem;text-align:center;font-size:1rem}
+/* 分段选择 */
+.segmented{display:flex;background:rgba(255,255,255,.5);border:1px solid var(--line-w);border-radius:1rem;
+  padding:.25rem;box-shadow:var(--shadow-sm);gap:.25rem;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.segmented button{flex:1;border:0;background:none;color:var(--muted);font-family:inherit;font-weight:500;
+  font-size:.85rem;padding:.6rem 0;border-radius:.75rem;cursor:pointer;transition:all .15s}
+.segmented button.on{background:linear-gradient(135deg,#7cc7f5,#3d9fe0);color:#fff;font-weight:700;box-shadow:0 4px 10px rgba(70,150,215,.35)}
+/* 评分（冰晶） */
+.rating{display:flex;gap:.45rem}
+.rating button{border:0;background:none;cursor:pointer;padding:0;width:42px;height:42px;color:#b9d2e8;transition:transform .12s,color .15s}
+.rating button svg{width:100%;height:100%;display:block}
+.rating button.lit{color:var(--aqua-d)}
+.rating button.lit svg{filter:drop-shadow(0 3px 6px rgba(70,150,215,.45))}
+.rating button:active{transform:scale(1.18)}
+/* 上传 */
+.upload{display:flex;flex-direction:column;align-items:center;gap:.45rem;text-align:center;cursor:pointer;
+  border:1.5px dashed rgba(110,158,200,.55);border-radius:1rem;padding:1.3rem 1rem;
+  background:rgba(255,255,255,.4);transition:border-color .15s,background .15s}
+.upload:active{background:rgba(255,255,255,.6)}
+.upload svg{width:30px;height:30px;color:var(--aqua-d)}
+.upload b{font-size:.88rem}
+.upload small{color:var(--muted);font-size:.72rem}
+.upload input{display:none}
+/* ============ 进度条（冰流填充 + 光泽气泡） ============ */
+.progress{height:18px;border:1px solid var(--line-w);border-radius:1rem;background:rgba(190,215,240,.55);
+  box-shadow:inset 0 2px 5px rgba(70,120,170,.22);overflow:hidden;position:relative}
+.progress i{display:block;height:100%;border-radius:1rem;position:relative;
+  background:linear-gradient(90deg,#7cc7f5,#3d9fe0);
+  transition:width .4s ease}
+.progress i::before{content:"";position:absolute;inset:0;
+  background:repeating-linear-gradient(-55deg,rgba(255,255,255,.28) 0 9px,transparent 9px 18px);
+  background-size:26px 100%;animation:flow 1s linear infinite}
+.progress i::after{content:"";position:absolute;right:3px;top:50%;width:9px;height:9px;margin-top:-4.5px;border-radius:50%;
+  background:radial-gradient(circle at 32% 30%,#fff,rgba(255,255,255,.25));box-shadow:0 0 6px rgba(255,255,255,.7)}
+@keyframes flow{to{background-position:26px 0}}
+.progress.mint i{background:linear-gradient(90deg,#5fe0c3,#2fbf9b)}
+/* ============ 列表行 ============ */
+.rows{background:var(--glass);backdrop-filter:blur(14px) saturate(1.4);-webkit-backdrop-filter:blur(14px) saturate(1.4);
+  border:1px solid var(--line-w);border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow)}
+.row-it{display:flex;align-items:center;gap:.85rem;padding:.85rem 1rem;border:0;width:100%;
+  background:none;color:var(--ink);font-family:inherit;text-align:left;cursor:pointer;font-size:.92rem}
+.row-it+.row-it{border-top:1px solid var(--line)}
+.row-it .ri{width:40px;height:40px;border-radius:.8rem;flex:0 0 auto;color:#fff;
+  display:flex;align-items:center;justify-content:center;box-shadow:inset 0 1px 0 rgba(255,255,255,.55)}
+.row-it .ri svg{width:19px;height:19px}
+.row-it .tx{flex:1;min-width:0}
+.row-it .tx b{display:block;font-size:.9rem}
+.row-it .tx small{color:var(--muted);font-size:.74rem}
+.row-it>svg{width:18px;height:18px;color:var(--muted);flex:0 0 auto}
+.row-it:active{background:rgba(255,255,255,.45)}
+/* 手风琴 */
+.acc{background:var(--glass);backdrop-filter:blur(14px) saturate(1.4);-webkit-backdrop-filter:blur(14px) saturate(1.4);
+  border:1px solid var(--line-w);border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow-sm);margin-bottom:.7rem}
+.acc>button{width:100%;display:flex;align-items:center;gap:.6rem;padding:.9rem 1rem;background:none;border:0;
+  color:var(--ink);font-family:inherit;font-size:.92rem;font-weight:700;cursor:pointer;text-align:left}
+.acc>button svg{margin-left:auto;width:18px;height:18px;transition:transform .2s;color:var(--aqua-d)}
+.acc.open>button svg{transform:rotate(180deg)}
+.acc .body{max-height:0;overflow:hidden;transition:max-height .25s ease}
+.acc .body p{margin:0;padding:0 1rem 1rem;color:var(--muted);font-size:.85rem;line-height:1.6}
+/* 顶部页签 */
+.ttabs{display:flex;gap:.5rem;margin-bottom:.9rem}
+.ttabs button{flex:1;border:1px solid var(--line-w);background:rgba(255,255,255,.5);color:var(--muted);font-family:inherit;
+  font-weight:700;font-size:.82rem;padding:.6rem 0;border-radius:.8rem;cursor:pointer;box-shadow:var(--shadow-sm)}
+.ttabs button.on{background:linear-gradient(135deg,#7cc7f5,#3d9fe0);color:#fff}
+/* 轮播 */
+.car{position:relative;border-radius:var(--r);overflow:hidden;border:1px solid var(--line-w);box-shadow:var(--shadow)}
+.car .track{display:flex;transition:transform .35s ease}
+.car .slide{flex:0 0 100%;height:150px;padding:1rem;color:#fff;position:relative;overflow:hidden}
+.car .slide h3{margin:.2rem 0 .3rem;font-size:1.05rem;position:relative}
+.car .slide p{margin:0;font-size:.8rem;opacity:.85;position:relative}
+.car .slide::before{content:"";position:absolute;inset:0;background:radial-gradient(120px 60px at 15% 10%,rgba(255,255,255,.5),transparent 70%)}
+.car .dots{position:absolute;left:0;right:0;bottom:.55rem;display:flex;justify-content:center;gap:.4rem}
+.car .dots i{display:block;width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.55);cursor:pointer;transition:all .2s}
+.car .dots i.on{width:18px;border-radius:4px;background:#fff}
+/* 表格 */
+.tbl{width:100%;border-collapse:collapse;font-size:.83rem}
+.tbl th,.tbl td{padding:.6rem .5rem;text-align:left;border-bottom:1px solid var(--line)}
+.tbl th{color:var(--muted);font-size:.72rem;letter-spacing:.06em;font-weight:700}
+.tbl tr:last-child td{border-bottom:0}
+.tbl td b{color:var(--aqua-d)}
+/* 骨架屏 */
+.skel{border-radius:.6rem;background:linear-gradient(90deg,rgba(255,255,255,.35) 25%,rgba(255,255,255,.75) 50%,rgba(255,255,255,.35) 75%);
+  background-size:200% 100%;animation:sk 1.2s infinite}
+@keyframes sk{to{background-position:-200% 0}}
+/* 空状态 */
+.empty{text-align:center;padding:2rem 1rem}
+.empty .fl{width:92px;height:92px;margin:0 auto .8rem;color:var(--aqua);opacity:.9}
+.empty .fl svg{width:100%;height:100%;animation:spin 18s linear infinite}
+.empty p{color:var(--muted);font-size:.85rem;margin:.3rem 0 1.1rem}
+/* ============ 反馈层 ============ */
+.scrim{position:absolute;inset:0;background:rgba(18,45,72,.34);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);
+  opacity:0;pointer-events:none;transition:opacity .22s;z-index:20}
+.scrim.show{opacity:1;pointer-events:auto}
+.modal{position:absolute;left:1.1rem;right:1.1rem;top:50%;z-index:21;padding:1.3rem;
+  background:rgba(255,255,255,.78);backdrop-filter:blur(20px) saturate(1.5);-webkit-backdrop-filter:blur(20px) saturate(1.5);
+  border:1px solid var(--line-w);border-radius:1.2rem;box-shadow:0 24px 50px rgba(30,80,130,.3);
+  transform:translateY(-50%) scale(.92);opacity:0;pointer-events:none;transition:all .22s cubic-bezier(.5,1.5,.5,1)}
+.modal.show{transform:translateY(-50%) scale(1);opacity:1;pointer-events:auto}
+.modal .mflake{width:58px;height:58px;margin:-2.4rem auto .5rem;border-radius:50%;color:#fff;
+  background:linear-gradient(145deg,#8fd0f7,#3f9fe0);display:flex;align-items:center;justify-content:center;
+  box-shadow:0 10px 22px rgba(60,140,210,.4),inset 0 1px 0 rgba(255,255,255,.7)}
+.modal .mflake svg{width:30px;height:30px;animation:spin 12s linear infinite}
+.modal h3{margin:.2rem 0 .5rem;text-align:center}
+.modal p{text-align:center;color:var(--muted);font-size:.85rem;line-height:1.6;margin:0 0 1.1rem}
+.modal .mrow{display:flex;gap:.7rem}
+.modal .mrow .btn-frost{flex:1}
+.sheet{position:absolute;left:0;right:0;bottom:0;z-index:21;padding:.7rem 1.1rem calc(1.2rem + env(safe-area-inset-bottom));
+  background:rgba(255,255,255,.82);backdrop-filter:blur(20px) saturate(1.5);-webkit-backdrop-filter:blur(20px) saturate(1.5);
+  border-top:1px solid var(--line-w);border-radius:1.4rem 1.4rem 0 0;box-shadow:0 -14px 34px rgba(30,80,130,.22);
+  transform:translateY(105%);transition:transform .28s cubic-bezier(.5,1.2,.4,1)}
+.sheet.show{transform:none}
+.sheet .grab{width:44px;height:5px;border-radius:3px;background:rgba(110,158,200,.5);margin:0 auto .8rem}
+.sheet .opt{display:flex;align-items:center;gap:.8rem;width:100%;padding:.85rem .4rem;background:none;border:0;
+  color:var(--ink);font-family:inherit;font-size:.92rem;cursor:pointer;border-radius:.7rem;text-align:left}
+.sheet .opt:active{background:rgba(127,199,245,.22)}
+.sheet .opt svg{width:20px;height:20px;color:var(--aqua-d)}
+.toast{position:absolute;left:50%;bottom:6.2rem;transform:translate(-50%,20px);z-index:22;
+  background:rgba(255,255,255,.78);backdrop-filter:blur(16px) saturate(1.5);-webkit-backdrop-filter:blur(16px) saturate(1.5);
+  color:var(--ink);border:1px solid var(--line-w);border-radius:2rem;
+  padding:.65rem 1.2rem;font-size:.85rem;font-weight:500;display:flex;align-items:center;gap:.5rem;
+  box-shadow:0 14px 30px rgba(30,80,130,.25);opacity:0;pointer-events:none;transition:all .25s;white-space:nowrap;max-width:92%}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.toast .dot{width:.55rem;height:.55rem;border-radius:50%;background:var(--aqua);flex:0 0 auto;box-shadow:0 0 8px rgba(79,178,236,.8)}
+.banner{display:flex;gap:.7rem;align-items:flex-start;border:1px solid var(--line-w);border-radius:.9rem;
+  padding:.8rem .9rem;font-size:.83rem;line-height:1.5;margin-bottom:.7rem;box-shadow:var(--shadow-sm);
+  background:rgba(255,255,255,.55);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.banner svg{width:18px;height:18px;flex:0 0 auto;margin-top:.1rem}
+.banner.ok{border-color:rgba(47,191,155,.45)}
+.banner.ok svg{color:var(--ok)}
+.banner.warn{border-color:rgba(224,101,122,.4)}
+.banner.warn svg{color:var(--danger)}
+.banner b{display:block;margin-bottom:.15rem}
+.banner p{margin:0;color:var(--muted)}
+/* 加载动画（冰晶旋转 + 呼吸点） */
+.loader{display:flex;flex-direction:column;align-items:center;gap:.7rem;padding:1rem 0}
+.loader .fl{width:52px;height:52px;color:var(--aqua-d)}
+.loader .fl svg{width:100%;height:100%;animation:spin 2.6s linear infinite}
+.loader small{color:var(--muted);font-size:.75rem;letter-spacing:.14em}
+.dots-load{display:flex;gap:.45rem;justify-content:center;padding:.6rem 0}
+.dots-load i{display:block;width:10px;height:10px;border-radius:50%;background:var(--aqua);
+  animation:db 1s ease-in-out infinite}
+.dots-load i:nth-child(2){animation-delay:-.33s;background:#7cc7f5}
+.dots-load i:nth-child(3){animation-delay:-.66s;background:#2f8fd6}
+@keyframes db{0%,100%{transform:translateY(0);opacity:.55}50%{transform:translateY(-8px);opacity:1}}
+/* 气泡提示 */
+.tip{position:relative;display:inline-flex}
+.tip .bub{position:absolute;left:50%;bottom:calc(100% + 9px);transform:translate(-50%,4px);white-space:nowrap;
+  background:rgba(22,50,76,.92);color:#eaf5ff;font-size:.72rem;padding:.42rem .7rem;border-radius:.6rem;
+  opacity:0;pointer-events:none;transition:all .18s;z-index:8}
+.tip .bub::after{content:"";position:absolute;left:50%;top:100%;margin-left:-5px;border:5px solid transparent;border-top-color:rgba(22,50,76,.92)}
+.tip:hover .bub,.tip:focus-within .bub{opacity:1;transform:translate(-50%,0)}
+/* 结果页 */
+.result{text-align:center;padding:1.6rem 1rem 1.2rem}
+.result .okring{width:86px;height:86px;margin:0 auto 1rem;border-radius:50%;color:#fff;position:relative;
+  background:linear-gradient(145deg,#6fe3c6,#2fbf9b);display:flex;align-items:center;justify-content:center;
+  box-shadow:0 14px 30px rgba(47,191,155,.35),inset 0 1px 0 rgba(255,255,255,.6)}
+.result .okring svg{width:40px;height:40px}
+.result h3{margin:.2rem 0 .4rem}
+.result p{color:var(--muted);font-size:.85rem;margin:0 0 1.2rem;line-height:1.6}
+/* 总览页 */
+.hero{position:relative;overflow:hidden;text-align:center;padding:2.1rem 1.2rem 1.7rem;margin-bottom:1.4rem;
+  background:linear-gradient(150deg,rgba(255,255,255,.72),rgba(255,255,255,.4));
+  backdrop-filter:blur(16px) saturate(1.5);-webkit-backdrop-filter:blur(16px) saturate(1.5);
+  border:1px solid var(--line-w);border-radius:1.2rem;box-shadow:var(--shadow)}
+.hero .bigflake{position:absolute;right:-34px;top:-34px;width:170px;height:170px;color:rgba(79,178,236,.16);animation:spin 30s linear infinite;pointer-events:none}
+.hero .bigflake svg{width:100%;height:100%}
+.hero h2{position:relative;margin:0 0 .3rem;font-size:1.75rem;letter-spacing:.03em}
+.hero h2 em{font-style:normal;background:linear-gradient(120deg,#3d9fe0,#7cc7f5);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{position:relative;color:var(--muted);font-size:.85rem;margin:0 0 1.2rem;line-height:1.6}
+.swatches{display:grid;grid-template-columns:repeat(3,1fr);gap:.7rem}
+.sw{border:1px solid var(--line-w);border-radius:.8rem;overflow:hidden;box-shadow:var(--shadow-sm);cursor:pointer;background:rgba(255,255,255,.6)}
+.sw i{display:block;height:52px}
+.sw span{display:block;font-size:.66rem;padding:.4rem .5rem 0;color:var(--muted);font-weight:500}
+.sw b{display:block;font-size:.72rem;color:var(--ink);padding:0 .5rem .45rem;font-weight:700}
+.type-row{padding:.55rem 0;border-bottom:1px dashed var(--line)}
+.type-row:last-child{border:0}
+.type-row small{display:block;color:var(--muted);font-size:.68rem;margin-bottom:.15rem;letter-spacing:.06em}
+.idx{display:flex;align-items:center;gap:.85rem;width:100%;padding:.85rem .4rem;background:none;border:0;
+  color:var(--ink);font-family:inherit;cursor:pointer;text-align:left;border-bottom:1px solid var(--line);font-size:.9rem}
+.idx:last-child{border-bottom:0}
+.idx .n{width:34px;height:34px;border-radius:.7rem;flex:0 0 auto;color:#fff;
+  display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.85rem;box-shadow:inset 0 1px 0 rgba(255,255,255,.55)}
+.idx small{display:block;color:var(--muted);font-size:.72rem;font-weight:400}
+.idx>svg{margin-left:auto;width:18px;height:18px;color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="mist" aria-hidden="true">
+    <i></i><i></i><i></i>
+    <b style="left:12%;animation-duration:9s;animation-delay:-2s"></b>
+    <b style="left:28%;animation-duration:12s;animation-delay:-7s;width:4px;height:4px"></b>
+    <b style="left:47%;animation-duration:10s;animation-delay:-4s"></b>
+    <b style="left:63%;animation-duration:13s;animation-delay:-9s;width:4px;height:4px"></b>
+    <b style="left:78%;animation-duration:9.5s;animation-delay:-1s"></b>
+    <b style="left:90%;animation-duration:11s;animation-delay:-6s;width:4px;height:4px"></b>
+  </div>
+  <header class="appbar">
+    <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 3v18M5 7.5l14 9M19 7.5l-14 9M12 3l-2 2M12 3l2 2M12 21l-2-2M12 21l2-2"/></svg></span>
+    <h1>FROST UI<small>冰晶液态 · 组件库 v1.0</small></h1>
+    <span class="sp"></span>
+    <button class="icobtn round" style="width:38px;height:38px" onclick="toast('v1.0 · 纯手写 CSS，无框架')" aria-label="关于">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M12 11v5"/></svg>
+    </button>
+  </header>
+
+  <main class="screens">
+    <!-- ============ 总览 ============ -->
+    <section class="screen active" data-screen="home">
+      <div class="hero frost">
+        <div class="bigflake"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"><path d="M12 2v20M3.5 7l17 10M20.5 7l-17 10M12 2l-2.5 2.5M12 2l2.5 2.5M12 22l-2.5-2.5M12 22l2.5-2.5M3.5 7l3.5.5M3.5 7l.5 3.5M20.5 17l-3.5-.5M20.5 17l-.5-3.5M20.5 7l-3.5.5M20.5 7l-.5 3.5M3.5 17l3.5-.5M3.5 17l.5-3.5"/></svg></div>
+        <h2>FROST <em>UI</em></h2>
+        <p>一套「冰晶液态」App 组件库<br>霜纹玻璃 · 冰湖渐变 · 折射高光 · 漂雪氛围</p>
+        <button class="btn-frost" data-goto="buttons"><span>开始浏览组件</span></button>
+      </div>
+
+      <div class="sec">
+        <h4 class="sec-t">设计 TOKENS</h4>
+        <div class="swatches">
+          <div class="sw" data-hex="#4FB2EC"><i style="background:linear-gradient(135deg,#6fc0f2,#4fb2ec)"></i><span>冰湖蓝</span><b>#4FB2EC</b></div>
+          <div class="sw" data-hex="#2B8FD4"><i style="background:linear-gradient(135deg,#4aa3de,#2b8fd4)"></i><span>深冰蓝</span><b>#2B8FD4</b></div>
+          <div class="sw" data-hex="#BFE3FA"><i style="background:linear-gradient(135deg,#d8efff,#bfe3fa)"></i><span>浅冰晶</span><b>#BFE3FA</b></div>
+          <div class="sw" data-hex="#16324C"><i style="background:linear-gradient(135deg,#2a4f74,#16324c)"></i><span>深冰墨</span><b>#16324C</b></div>
+          <div class="sw" data-hex="#E0657A"><i style="background:linear-gradient(135deg,#ef8b9d,#e0657a)"></i><span>霜红</span><b>#E0657A</b></div>
+          <div class="sw" data-hex="#2FBF9B"><i style="background:linear-gradient(135deg,#54d4b4,#2fbf9b)"></i><span>冰薄荷</span><b>#2FBF9B</b></div>
+        </div>
+        <p class="note" style="margin-top:.6rem">点色卡可复制色值 · 玻璃面 = 白 58% + 毛玻璃 14px / 圆角 1rem / 高光为顶部内嵌 1px 白线</p>
+      </div>
+
+      <div class="sec">
+        <h4 class="sec-t">字阶</h4>
+        <div class="card">
+          <div class="type-row"><small>DISPLAY / 700</small><span style="font-size:1.7rem;font-weight:700">冰面初凝时分</span></div>
+          <div class="type-row"><small>TITLE / 700</small><span style="font-size:1.15rem;font-weight:700">组件全览 Demo</span></div>
+          <div class="type-row"><small>BODY / 400</small><span style="font-size:.9rem">所有玻璃面都留着一层霜，手指划过会留下水痕。</span></div>
+          <div class="type-row"><small>CAPTION / 500</small><span style="font-size:.72rem;color:var(--muted)">毛玻璃 14px · 圆角 1rem · 内高光 1px</span></div>
+        </div>
+      </div>
+
+      <div class="sec">
+        <h4 class="sec-t">组件索引</h4>
+        <div class="rows">
+          <button class="idx" data-goto="buttons"><span class="n" style="background:linear-gradient(135deg,#7cc7f5,#3d9fe0)">按</span><span>按钮 Buttons<small>主按钮 · 变体 · 冰滴 · 波纹 · 图标按钮</small></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></button>
+          <button class="idx" data-goto="forms"><span class="n" style="background:linear-gradient(135deg,#6fd3ba,#2fbf9b)">表</span><span>表单 Forms<small>输入 · 下拉 · 开关 · 滑杆 · 评分 · 上传</small></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></button>
+          <button class="idx" data-goto="showcase"><span class="n" style="background:linear-gradient(135deg,#a5c8f5,#5b8fd6)">展</span><span>展示 Display<small>卡片 · 轮播 · 列表 · 表格 · 折叠面板</small></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></button>
+          <button class="idx" data-goto="feedback"><span class="n" style="background:linear-gradient(135deg,#f2a0ae,#e0657a)">馈</span><span>反馈 Feedback<small>Toast · 弹窗 · 抽屉 · 进度 · 结果页</small></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 按钮 ============ -->
+    <section class="screen" data-screen="buttons">
+      <div class="sec">
+        <h4 class="sec-t"><span class="n">7</span>主按钮 · 冰湖渐变</h4>
+        <div class="demo-row center">
+          <button class="btn-frost"><span>冰晶主按钮</span></button>
+        </div>
+        <p class="note">悬停：高光自左向右扫过 · 点击：涟漪自指尖扩散（JS 注入 <code class="k">.ripple</code>）· 按下：轻微回缩像踩进薄冰</p>
+      </div>
+      <div class="sec">
+        <h4 class="sec-t">变体</h4>
+        <div class="demo-row">
+          <button class="btn-frost sec"><span>次按钮 · 霜面</span></button>
+          <button class="btn-frost ghost"><span>幽灵按钮</span></button>
+        </div>
+        <div class="demo-row">
+          <button class="btn-frost danger"><span>危险 · 霜红</span></button>
+          <button class="btn-frost" disabled><span>禁用态</span></button>
+        </div>
+      </div>
+      <div class="sec">
+        <h4 class="sec-t">液态特效 · 招牌</h4>
+        <div class="demo-row center" style="flex-direction:column;gap:1rem">
+          <button class="btn-drop" id="dropBtn" aria-label="冰滴按钮">滴<span class="drip"></span></button>
+          <p class="note" style="text-align:center">冰滴按钮：点击时一滴水自底部坠落<br>主按钮自带点击涟漪，点任意主按钮试试</p>
+        </div>
+        <div class="demo-row">
+          <button class="btn-frost loading"><span class="spin-dot"></span><span>凝水中…</span></button>
+          <button class="btn-frost sec" id="loadDemo"><span>点我模拟加载</span></button>
+        </div>
+      </div>
+      <div class="sec">
+        <h4 class="sec-t">尺寸</h4>
+        <div class="demo-row">
+          <button class="btn-frost sm"><span>小号 Small</span></button>
+          <button class="btn-frost"><span>中号</span></button>
+          <button class="btn-frost lg"><span>大号 Large</span></button>
+        </div>
+        <button class="btn-frost block"><span>通栏按钮 Block</span></button>
+      </div>
+      <div class="sec">
+        <h4 class="sec-t">图标按钮</h4>
+        <div class="demo-row">
+          <button class="icobtn" aria-label="搜索" onclick="toast('打开搜索')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></button>
+          <button class="icobtn fill" aria-label="收藏" onclick="toast('已收藏')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-4.5-9.5-9C.8 8.6 2.6 5 6 5c2 0 3.4 1.1 4 2.2C10.6 6.1 12 5 14 5c3.4 0 5.2 3.6 3.5 7-2.5 4.5-9.5 9-9.5 9z"/></svg></button>
+          <button class="icobtn round" aria-label="播放" onclick="toast('开始播放')"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></button>
+          <button class="icobtn round fill" aria-label="雪花" onclick="toast('降雪模式已开')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 3v18M5 7.5l14 9M19 7.5l-14 9M12 3l-2 2M12 3l2 2M12 21l-2-2M12 21l2-2"/></svg></button>
+        </div>
+        <p class="note">用法：<code class="k">.btn-frost</code> 变体 <code class="k">.sec</code> <code class="k">.ghost</code> <code class="k">.danger</code> <code class="k">.sm</code> <code class="k">.lg</code> <code class="k">.block</code>；招牌冰滴为 <code class="k">.btn-drop</code></p>
+      </div>
+    </section>
+    <!-- ============ 表单 ============ -->
+    <section class="screen" data-screen="forms">
+      <div class="sec">
+        <h4 class="sec-t">输入</h4>
+        <div class="field">
+          <label>冰屋名称 <small>· 聚焦试试冰光环</small></label>
+          <input class="inp" placeholder="给你的冰屋起个名字">
+        </div>
+        <div class="field">
+          <label>搜索</label>
+          <div class="searchbar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+            <input placeholder="搜索组件、颜色、用法…">
+          </div>
+        </div>
+        <div class="field">
+          <label>备注</label>
+          <textarea class="inp" placeholder="多行文本，霜面之下有微微的蓝…"></textarea>
+        </div>
+        <div class="field">
+          <label>冰晶系列</label>
+          <div class="sel" id="selDemo">
+            <button type="button"><span id="selVal">极光蓝</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></button>
+            <div class="menu">
+              <button class="on">极光蓝</button>
+              <button>霜白</button>
+              <button>薄荷绿</button>
+              <button>暮色紫</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="sec">
+        <h4 class="sec-t">开关 · 复选 · 单选</h4>
+        <div class="demo-row">
+          <label class="switch lb"><input type="checkbox" checked><span class="tr"></span>降雪氛围</label>
+        </div>
+        <div class="demo-row">
+          <label class="switch lb"><input type="checkbox"><span class="tr"></span>夜间冰面</label>
+        </div>
+        <div class="card" style="margin-top:.4rem">
+          <label class="check"><input type="checkbox" checked><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span>记住我的冰屋</label>
+          <label class="check"><input type="checkbox"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span>接收融冰预警</label>
+          <label class="check"><input type="radio" name="pack" checked><span class="box radio"></span>冰晶标准装</label>
+          <label class="check"><input type="radio" name="pack"><span class="box radio"></span>冰晶 Pro 装</label>
+        </div>
+      </div>
+      <div class="sec">
+        <h4 class="sec-t">滑杆 · 步进器 · 分段</h4>
+        <div class="field">
+          <label>降雪强度 <small id="speedLabel">· 50%</small></label>
+          <div class="slider-row">
+            <input type="range" class="slider" min="0" max="100" value="50" id="speed">
+            <span class="slider-val" id="speedVal">50%</span>
+          </div>
+        </div>
+        <div class="field">
+          <label>数量</label>
+          <div class="stepper">
+            <button id="stepMinus" aria-label="减少">−</button><b id="stepNum">1</b><button id="stepPlus" aria-label="增加">＋</button>
+          </div>
+        </div>
+        <div class="segmented" id="segDemo">
+          <button class="on">按热度</button><button>按时间</button><button>按名称</button>
+        </div>
+      </div>
+      <div class="sec">
+        <h4 class="sec-t">评分 · 冰晶</h4>
+        <div class="demo-row center">
+          <div class="rating" id="ratingDemo" role="radiogroup" aria-label="评分">
+            <button aria-label="1分"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.8 5.6 5.9.2-4.6 3.7 1.6 5.7-4.7-3.5-4.7 3.5 1.6-5.7L4.3 7.8l5.9-.2z"/></svg></button>
+            <button aria-label="2分"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.8 5.6 5.9.2-4.6 3.7 1.6 5.7-4.7-3.5-4.7 3.5 1.6-5.7L4.3 7.8l5.9-.2z"/></svg></button>
+            <button aria-label="3分"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.8 5.6 5.9.2-4.6 3.7 1.6 5.7-4.7-3.5-4.7 3.5 1.6-5.7L4.3 7.8l5.9-.2z"/></svg></button>
+            <button aria-label="4分"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.8 5.6 5.9.2-4.6 3.7 1.6 5.7-4.7-3.5-4.7 3.5 1.6-5.7L4.3 7.8l5.9-.2z"/></svg></button>
+            <button aria-label="5分"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.8 5.6 5.9.2-4.6 3.7 1.6 5.7-4.7-3.5-4.7 3.5 1.6-5.7L4.3 7.8l5.9-.2z"/></svg></button>
+          </div>
+        </div>
+        <p class="note" style="text-align:center" id="ratingTip">点一点冰晶试试</p>
+      </div>
+      <div class="sec">
+        <h4 class="sec-t">上传</h4>
+        <label class="upload">
+          <input type="file" id="fileInp">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 16V4m0 0l-4 4m4-4l4 4"/><path d="M4 17v2a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-2"/></svg>
+          <b id="fileName">点击上传冰面照片</b>
+          <small>JPG / PNG，不超过 5MB</small>
+        </label>
+      </div>
+    </section>
+    <!-- ============ 展示 ============ -->
+    <section class="screen" data-screen="showcase">
+      <div class="sec">
+        <h4 class="sec-t">卡片</h4>
+        <div class="card frost" style="margin-bottom:.9rem">
+          <span class="tag ice" style="margin-bottom:.5rem"><span class="dot"></span>NEW</span>
+          <h3>霜纹卡片</h3>
+          <p>玻璃面 + 霜纹斜线 + 顶部折射高光，悬停可加 <code class="k">.press</code> 获得按压回弹。</p>
+        </div>
+        <div class="card press" style="margin-bottom:.9rem" onclick="toast('你按了一张冰卡')">
+          <div class="media"><span class="badge-ice">❄ HOT</span><span class="flake"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M12 3v18M5 7.5l14 9M19 7.5l-14 9M12 3l-2 2M12 3l2 2M12 21l-2-2M12 21l2-2"/></svg></span></div>
+          <h3>极光冰湖 · 可按压</h3>
+          <p>封面右上角雪花缓缓旋转，点我试试按压效果。</p>
+        </div>
+      </div>
+      <div class="sec">
+        <h4 class="sec-t">轮播</h4>
+        <div class="car" id="carDemo">
+          <div class="track" id="carTrack">
+            <div class="slide" style="background:linear-gradient(130deg,#7cc7f5,#2f8fd4)"><h3>冰湖蓝</h3><p>主色 · 用于强调与行动</p></div>
+            <div class="slide" style="background:linear-gradient(130deg,#9fbdf0,#5b7fd6)"><h3>雾紫冰</h3><p>辅助 · 用于标签与插画</p></div>
+            <div class="slide" style="background:linear-gradient(130deg,#6fd3ba,#2a9f88)"><h3>冰薄荷</h3><p>成功态 · 用于正向反馈</p></div>
+          </div>
+          <div class="dots" id="carDots"><i class="on"></i><i></i><i></i></div>
+        </div>
+        <p class="note" style="margin-top:.5rem">点圆点切换，3 秒自动轮播</p>
+      </div>
+      <div class="sec">
+        <h4 class="sec-t">芯片 · 徽标 · 头像</h4>
+        <div class="demo-row" id="chipRow">
+          <button class="chip on">全部</button><button class="chip">按钮</button><button class="chip">表单</button><button class="chip">反馈</button>
+        </div>
+        <div class="demo-row">
+          <span class="tag ice"><span class="dot"></span>在线</span>
+          <span class="tag soft">v1.0</span>
+          <span class="tag danger">将过期</span>
+        </div>
+        <div class="demo-row">
+          <span class="avatar" style="background:linear-gradient(135deg,#7cc7f5,#3d9fe0)">陈</span>
+          <span class="avatar stack" style="background:linear-gradient(135deg,#9fbdf0,#5b7fd6)">淑</span>
+          <span class="avatar stack" style="background:linear-gradient(135deg,#6fd3ba,#2fbf9b)">婷</span>
+          <span class="avatar stack" style="background:rgba(255,255,255,.7);color:var(--aqua-d)">+9</span>
+        </div>
+      </div>
+      <div class="sec">
+        <h4 class="sec-t">列表行</h4>
+        <div class="rows">
+          <button class="row-it" onclick="toast('打开：我的收藏')"><span class="ri" style="background:linear-gradient(135deg,#7cc7f5,#3d9fe0)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-4.5-9.5-9C.8 8.6 2.6 5 6 5c2 0 3.4 1.1 4 2.2C10.6 6.1 12 5 14 5c3.4 0 5.2 3.6 3.5 7-2.5 4.5-9.5 9-9.5 9z"/></svg></span><span class="tx"><b>我的收藏</b><small>128 个组件已收藏</small></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></button>
+          <button class="row-it" onclick="toast('打开：更新日志')"><span class="ri" style="background:linear-gradient(135deg,#9fbdf0,#5b7fd6)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v5l3 2"/><circle cx="12" cy="12" r="9"/></svg></span><span class="tx"><b>更新日志</b><small>v1.0 首发 · 30+ 组件</small></span><span class="tag ice">NEW</span></button>
+          <button class="row-it" onclick="toast('打开：设置')"><span class="ri" style="background:linear-gradient(135deg,#b9d2e8,#7a9cc4)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9L17 7M7 17l-2.1 2.1"/></svg></span><span class="tx"><b>设置</b><small>主题 · 字体 · 关于</small></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></button>
+        </div>
+      </div>
+      <div class="sec">
+        <h4 class="sec-t">手风琴 · 顶部页签</h4>
+        <div class="acc open">
+          <button>霜纹玻璃是怎么做的？<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></button>
+          <div class="body"><p>白 58% 底 + <code class="k">backdrop-filter: blur(14px)</code> + 1px 顶部内高光，再叠一层斜向霜纹渐变，就是这块冰。</p></div>
+        </div>
+        <div class="acc">
+          <button>按钮上的高光扫过是什么？<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></button>
+          <div class="body"><p>一个 45% 宽的白色渐变条，悬停时用 <code class="k">left</code> 过渡扫过去，模拟冰面折射。</p></div>
+        </div>
+        <div class="ttabs" id="ttabsDemo" style="margin-top:1rem">
+          <button class="on">说明</button><button>参数</button><button>代码</button>
+        </div>
+        <div class="card" id="ttabPanel"><p>页签内容面板：点上面切换。这里是「说明」。</p></div>
+      </div>
+      <div class="sec">
+        <h4 class="sec-t">表格</h4>
+        <div class="card" style="padding:.4rem .8rem">
+          <table class="tbl">
+            <tr><th>组件</th><th>状态</th><th>版本</th></tr>
+            <tr><td>冰晶按钮</td><td><b>稳定</b></td><td>v1.0</td></tr>
+            <tr><td>霜纹卡片</td><td><b>稳定</b></td><td>v1.0</td></tr>
+            <tr><td>冰滴动效</td><td>内测中</td><td>v0.9</td></tr>
+          </table>
+        </div>
+      </div>
+      <div class="sec">
+        <h4 class="sec-t">骨架屏 · 空状态</h4>
+        <div class="card" style="margin-bottom:.9rem">
+          <div class="skel" style="height:18px;width:55%;margin-bottom:.7rem"></div>
+          <div class="skel" style="height:14px;width:90%;margin-bottom:.5rem"></div>
+          <div class="skel" style="height:14px;width:75%"></div>
+        </div>
+        <div class="card">
+          <div class="empty">
+            <div class="fl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M12 2v20M3.5 7l17 10M20.5 7l-17 10M12 2l-2.5 2.5M12 2l2.5 2.5M12 22l-2.5-2.5M12 22l2.5-2.5"/></svg></div>
+            <h3 style="margin:.2rem 0">冰面空空如也</h3>
+            <p>去按钮页凝一颗，带回你的第一片冰晶</p>
+            <button class="btn-frost sm" data-goto="buttons"><span>去逛逛</span></button>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- ============ 反馈 ============ -->
+    <section class="screen" data-screen="feedback">
+      <div class="sec">
+        <h4 class="sec-t">内联横幅</h4>
+        <div class="banner ok">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5L16 9.5"/></svg>
+          <div><b>凝固成功</b><p>30+ 个组件全部渲染通过，玻璃面无错位。</p></div>
+        </div>
+        <div class="banner warn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l10 17H2z"/><path d="M12 10v4M12 17.5h.01"/></svg>
+          <div><b>融冰提醒</b><p>气温回升，冰面承重下降，请轻拿轻放。</p></div>
+        </div>
+      </div>
+      <div class="sec">
+        <h4 class="sec-t">进度条 · 冰流填充</h4>
+        <div class="field"><label>凝水进度 · 72%</label><div class="progress"><i style="width:72%"></i></div></div>
+        <div class="field"><label>融化进度 · 45%</label><div class="progress mint"><i style="width:45%"></i></div></div>
+        <div class="demo-row">
+          <button class="btn-frost sm sec" id="progBtn"><span>进度 +10%</span></button>
+          <span class="note" id="progVal">当前 72%</span>
+        </div>
+        <div class="field"><div class="progress"><i id="progBar" style="width:72%"></i></div></div>
+      </div>
+      <div class="sec">
+        <h4 class="sec-t">加载动画</h4>
+        <div class="card">
+          <div class="loader">
+            <span class="fl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M12 3v18M5 7.5l14 9M19 7.5l-14 9M12 3l-2 2M12 3l2 2M12 21l-2-2M12 21l2-2"/></svg></span>
+            <small>正在凝结 ICE…</small>
+          </div>
+          <div class="dots-load"><i></i><i></i><i></i></div>
+        </div>
+      </div>
+      <div class="sec">
+        <h4 class="sec-t">气泡提示</h4>
+        <div class="demo-row center">
+          <span class="tip" tabindex="0"><button class="btn-frost sec sm"><span>悬停看气泡</span></button><span class="bub">冰晶会呼吸，点它试试</span></span>
+        </div>
+      </div>
+      <div class="sec">
+        <h4 class="sec-t">弹层演示</h4>
+        <div class="demo-row">
+          <button class="btn-frost sm" id="openModal"><span>打开弹窗</span></button>
+          <button class="btn-frost sm danger" id="openConfirm"><span>确认对话框</span></button>
+        </div>
+        <div class="demo-row">
+          <button class="btn-frost sm ghost" id="openSheet"><span>底部抽屉</span></button>
+          <button class="btn-frost sm" id="showToast"><span>显示 Toast</span></button>
+        </div>
+        <p class="note">弹窗带雪花顶饰，确认框双按钮，抽屉从底部滑入，Toast 2 秒自动消失。</p>
+      </div>
+      <div class="sec">
+        <h4 class="sec-t">结果页</h4>
+        <div class="card">
+          <div class="result">
+            <div class="okring"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 13l4 4L19 7"/></svg></div>
+            <h3>冰屋搭建完成</h3>
+            <p>你的第一间冰屋已凝固成型，<br>共用时 3 分 12 秒，消耗冰晶 36 颗。</p>
+            <button class="btn-frost" data-goto="home"><span>回到总览</span></button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- 底部 Tab -->
+  <nav class="tabbar" id="tabbar">
+    <span class="tab-pill" id="tabPill"></span>
+    <button class="tab on" data-tab="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>总览</button>
+    <button class="tab" data-tab="buttons"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11.5V5.5a1.5 1.5 0 0 1 3 0v5m0-2a1.5 1.5 0 0 1 3 0v2m0-1a1.5 1.5 0 0 1 3 0v4c0 3-2 5.5-5.5 5.5S7 18 6 15.5l-1.2-3.2a1.5 1.5 0 0 1 2.6-1.4L9 13.5"/></svg>按钮</button>
+    <button class="tab" data-tab="forms"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 8h10M18 8h2M4 16h2M10 16h10"/><circle cx="16" cy="8" r="2.2"/><circle cx="8" cy="16" r="2.2"/></svg>表单</button>
+    <button class="tab" data-tab="showcase"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.2 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8z"/></svg>展示</button>
+    <button class="tab" data-tab="feedback"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 8-3 8h18s-3-1-3-8"/><path d="M10.3 21a2 2 0 0 0 3.4 0"/></svg>反馈</button>
+  </nav>
+
+  <!-- 弹层 -->
+  <div class="scrim" id="scrim"></div>
+  <div class="modal" id="modal" role="dialog" aria-modal="true">
+    <div class="mflake"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 3v18M5 7.5l14 9M19 7.5l-14 9M12 3l-2 2M12 3l2 2M12 21l-2-2M12 21l2-2"/></svg></div>
+    <h3 id="modalTitle">冰晶弹窗</h3>
+    <p id="modalMsg">这是一个标准弹窗：雪花顶饰、标题、描述、双按钮。点遮罩或取消可关闭。</p>
+    <div class="mrow">
+      <button class="btn-frost ghost sm" data-close><span>取消</span></button>
+      <button class="btn-frost sm" data-close onclick="toast('已确认！')"><span>确认</span></button>
+    </div>
+  </div>
+  <div class="sheet" id="sheet">
+    <div class="grab"></div>
+    <button class="opt" data-close onclick="toast('已分享')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 10.5l6.8-4M8.6 13.5l6.8 4"/></svg>分享给朋友</button>
+    <button class="opt" data-close onclick="toast('已收藏')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-4.5-9.5-9C.8 8.6 2.6 5 6 5c2 0 3.4 1.1 4 2.2C10.6 6.1 12 5 14 5c3.4 0 5.2 3.6 3.5 7-2.5 4.5-9.5 9-9.5 9z"/></svg>加入收藏</button>
+    <button class="opt" data-close onclick="toast('已删除')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2m3 0l-.8 12.2a1 1 0 0 1-1 .8H7.8a1 1 0 0 1-1-.8L6 7"/></svg>删除</button>
+  </div>
+  <div class="toast" id="toast"><span class="dot"></span><span id="toastMsg"></span></div>
+</div>
+
+<script>
+/* Tab 切换 + ?tab= 深链 */
+const tabs=[...document.querySelectorAll('#tabbar .tab')];
+const screens=[...document.querySelectorAll('.screen')];
+const tabPill=document.getElementById('tabPill');
+function movePill(){
+  const t=document.querySelector('#tabbar .tab.on');if(!t||!tabPill)return;
+  tabPill.style.left=t.offsetLeft+'px';tabPill.style.width=t.offsetWidth+'px';
+}
+function goto(name){
+  tabs.forEach(t=>t.classList.toggle('on',t.dataset.tab===name));
+  screens.forEach(s=>s.classList.toggle('active',s.dataset.screen===name));
+  document.querySelector('.screens').scrollTop=0;
+  const sc=document.querySelector('.screen.active'); if(sc) sc.scrollTop=0;
+  movePill();
+}
+tabs.forEach(t=>t.addEventListener('click',()=>goto(t.dataset.tab)));
+document.querySelectorAll('[data-goto]').forEach(b=>b.addEventListener('click',()=>goto(b.dataset.goto)));
+const qtab=new URLSearchParams(location.search).get('tab');
+if(qtab&&document.querySelector(`[data-tab="${qtab}"]`)) goto(qtab);
+movePill();
+window.addEventListener('resize',movePill);
+window.addEventListener('load',movePill);
+
+/* Toast */
+let toastTimer;
+function toast(msg){
+  const el=document.getElementById('toast');
+  document.getElementById('toastMsg').textContent=msg;
+  el.classList.add('show');clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>el.classList.remove('show'),2000);
+}
+/* 弹层 */
+const scrim=document.getElementById('scrim'),
+      modal=document.getElementById('modal'),
+      sheet=document.getElementById('sheet');
+function openLayer(el){scrim.classList.add('show');el.classList.add('show')}
+function closeLayers(){scrim.classList.remove('show');modal.classList.remove('show');sheet.classList.remove('show')}
+document.getElementById('openModal').onclick=()=>{
+  document.getElementById('modalTitle').textContent='冰晶弹窗';
+  document.getElementById('modalMsg').textContent='这是一个标准弹窗：雪花顶饰、标题、描述、双按钮。点遮罩或取消可关闭。';
+  openLayer(modal)};
+document.getElementById('openConfirm').onclick=()=>{
+  document.getElementById('modalTitle').textContent='确定融化吗？';
+  document.getElementById('modalMsg').textContent='这片冰晶将化作一滴水，此操作不可撤销。';
+  openLayer(modal)};
+document.getElementById('openSheet').onclick=()=>openLayer(sheet);
+document.getElementById('showToast').onclick=()=>toast('这是一条 Toast，2 秒后消失');
+scrim.onclick=closeLayers;
+document.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click',closeLayers));
+
+/* 主按钮点击涟漪 */
+document.querySelectorAll('.btn-frost').forEach(b=>b.addEventListener('click',e=>{
+  if(b.disabled)return;
+  const r=b.getBoundingClientRect(),d=Math.max(r.width,r.height);
+  const rip=document.createElement('span');rip.className='ripple';
+  rip.style.width=rip.style.height=d+'px';
+  rip.style.left=(e.clientX-r.left-d/2)+'px';rip.style.top=(e.clientY-r.top-d/2)+'px';
+  b.appendChild(rip);setTimeout(()=>rip.remove(),600);
+}));
+/* 冰滴按钮 */
+const dropBtn=document.getElementById('dropBtn');
+dropBtn.addEventListener('click',()=>{
+  dropBtn.classList.remove('go');void dropBtn.offsetWidth;
+  dropBtn.classList.add('go');toast('一滴冰水落下');
+});
+/* 模拟加载按钮 */
+const loadDemo=document.getElementById('loadDemo');
+loadDemo.addEventListener('click',()=>{
+  const old=loadDemo.innerHTML;
+  loadDemo.classList.add('loading');loadDemo.innerHTML='<span class="spin-dot"></span><span>凝水中…</span>';
+  setTimeout(()=>{loadDemo.classList.remove('loading');loadDemo.innerHTML=old;toast('加载完成');},1400);
+});
+/* 自定义下拉 */
+const selDemo=document.getElementById('selDemo');
+selDemo.querySelector('button').addEventListener('click',()=>selDemo.classList.toggle('open'));
+selDemo.querySelectorAll('.menu button').forEach(b=>b.addEventListener('click',()=>{
+  selDemo.querySelectorAll('.menu button').forEach(x=>x.classList.remove('on'));
+  b.classList.add('on');document.getElementById('selVal').textContent=b.textContent;
+  selDemo.classList.remove('open');toast('已选择：'+b.textContent);
+}));
+document.addEventListener('click',e=>{if(!selDemo.contains(e.target))selDemo.classList.remove('open')});
+/* 芯片单选 */
+document.getElementById('chipRow').addEventListener('click',e=>{
+  const c=e.target.closest('.chip');if(!c)return;
+  document.querySelectorAll('#chipRow .chip').forEach(x=>x.classList.remove('on'));
+  c.classList.add('on');toast('筛选：'+c.textContent);
+});
+/* 分段 */
+document.getElementById('segDemo').addEventListener('click',e=>{
+  const b=e.target.closest('button');if(!b)return;
+  document.querySelectorAll('#segDemo button').forEach(x=>x.classList.remove('on'));
+  b.classList.add('on');
+});
+/* 顶部页签 */
+const tpanels={0:'页签内容面板：点上面切换。这里是「说明」。',1:'参数：--aqua #4FB2EC · --aqua-d #2B8FD4 · --ice #BFE3FA · 圆角 1rem。',2:'代码：<code class="k">backdrop-filter: blur(14px)</code> 一行即得霜纹玻璃。'};
+document.getElementById('ttabsDemo').addEventListener('click',e=>{
+  const b=e.target.closest('button');if(!b)return;
+  const bs=[...document.querySelectorAll('#ttabsDemo button')];
+  bs.forEach(x=>x.classList.remove('on'));b.classList.add('on');
+  document.getElementById('ttabPanel').innerHTML='<p>'+tpanels[bs.indexOf(b)]+'</p>';
+});
+/* 轮播 */
+const carTrack=document.getElementById('carTrack'),carDots=[...document.querySelectorAll('#carDots i')];
+let carIdx=0,carTimer;
+function carGo(i){
+  carIdx=(i+carDots.length)%carDots.length;
+  carTrack.style.transform='translateX(-'+(carIdx*100)+'%)';
+  carDots.forEach((d,j)=>d.classList.toggle('on',j===carIdx));
+}
+function carAuto(){clearInterval(carTimer);carTimer=setInterval(()=>carGo(carIdx+1),3000)}
+carDots.forEach((d,i)=>d.addEventListener('click',()=>{carGo(i);carAuto()}));
+carAuto();
+/* 滑杆 */
+const speed=document.getElementById('speed');
+speed.addEventListener('input',()=>{
+  speed.style.setProperty('--v',speed.value+'%');
+  document.getElementById('speedVal').textContent=speed.value+'%';
+  document.getElementById('speedLabel').textContent='· '+speed.value+'%';
+});
+speed.style.setProperty('--v','50%');
+/* 步进器 */
+let stepN=1;const stepNum=document.getElementById('stepNum');
+document.getElementById('stepPlus').onclick=()=>{stepN=Math.min(99,stepN+1);stepNum.textContent=stepN};
+document.getElementById('stepMinus').onclick=()=>{stepN=Math.max(0,stepN-1);stepNum.textContent=stepN};
+/* 评分 */
+const rbs=[...document.querySelectorAll('#ratingDemo button')];
+rbs.forEach((b,i)=>b.addEventListener('click',()=>{
+  rbs.forEach((x,j)=>x.classList.toggle('lit',j<=i));
+  document.getElementById('ratingTip').textContent='你给了 '+(i+1)+' 颗冰晶 ❄';
+}));
+/* 上传 */
+document.getElementById('fileInp').addEventListener('change',e=>{
+  const f=e.target.files[0];
+  if(f){document.getElementById('fileName').textContent='已选择：'+f.name;toast('上传成功')}
+});
+/* 进度演示 */
+let prog=72;const progBar=document.getElementById('progBar'),progVal=document.getElementById('progVal');
+document.getElementById('progBtn').onclick=()=>{
+  prog=prog>=100?20:Math.min(100,prog+10);
+  progBar.style.width=prog+'%';progVal.textContent='当前 '+prog+'%';
+};
+/* 手风琴 */
+document.querySelectorAll('.acc>button').forEach(btn=>btn.addEventListener('click',()=>{
+  const acc=btn.parentElement,body=acc.querySelector('.body'),open=acc.classList.toggle('open');
+  body.style.maxHeight=open?body.scrollHeight+'px':'0';
+}));
+const firstAcc=document.querySelector('.acc.open .body');
+if(firstAcc) firstAcc.style.maxHeight=firstAcc.scrollHeight+'px';
+/* 色卡复制 */
+document.querySelectorAll('.sw').forEach(sw=>sw.addEventListener('click',()=>{
+  const hex=sw.dataset.hex;
+  (navigator.clipboard?navigator.clipboard.writeText(hex):Promise.reject()).then(
+    ()=>toast('已复制 '+hex),()=>toast(hex));
+}));
+</script>
+</body>
+</html>

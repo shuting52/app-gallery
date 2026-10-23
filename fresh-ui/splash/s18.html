@@ -1,0 +1,57 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>月相盈亏 · 启动页</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{background:#020409;display:flex;justify-content:center;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif}
+.stage{width:430px;height:900px;max-width:100vw;max-height:100vh;position:relative;overflow:hidden;
+background:linear-gradient(180deg,#070c1e 0%,#04060f 60%,#020409 100%)}
+.stars i{position:absolute;width:3px;height:3px;border-radius:50%;background:#cfe0ff;display:block;opacity:.8;
+animation:tw 3s ease-in-out infinite;animation-delay:var(--dl)}
+.stars i:nth-child(1){left:50px;top:100px;--dl:0s}.stars i:nth-child(2){left:130px;top:60px;--dl:.7s}
+.stars i:nth-child(3){left:230px;top:110px;--dl:1.3s}.stars i:nth-child(4){left:320px;top:70px;--dl:.4s}
+.stars i:nth-child(5){left:380px;top:160px;--dl:1.8s}.stars i:nth-child(6){left:90px;top:200px;--dl:2.2s}
+.stars i:nth-child(7){left:280px;top:200px;--dl:1s}.stars i:nth-child(8){left:180px;top:150px;--dl:2.6s}
+@keyframes tw{0%,100%{opacity:.25}50%{opacity:.9}}
+.moonwrap{position:absolute;left:50%;top:280px;width:150px;height:150px;margin:-75px 0 0 -75px;z-index:3}
+.moon{position:absolute;inset:0;border-radius:50%;
+background:radial-gradient(circle at 38% 32%,#fffbe8,#f0e3b8 60%,#d8c48e);
+box-shadow:0 0 60px 16px rgba(255,246,210,.28)}
+.shadow{position:absolute;inset:0;border-radius:50%;background:#070c1e;
+animation:eclipse 3s ease-in-out both}
+@keyframes eclipse{0%{transform:translateX(-130px);opacity:1}82%{opacity:1}100%{transform:translateX(130px);opacity:0}}
+.phases{position:absolute;left:0;right:0;top:470px;display:flex;justify-content:center;gap:14px;z-index:4}
+.phases i{width:16px;height:16px;border-radius:50%;display:block;border:1px solid rgba(240,227,184,.5);
+opacity:.35;animation:phIn .5s ease-out both;animation-delay:calc(.3s + var(--i)*.32s)}
+@keyframes phIn{0%{opacity:.35;transform:scale(.8)}100%{opacity:1;transform:scale(1);background:#f0e3b8;box-shadow:0 0 10px rgba(240,227,184,.8)}}
+.mark{position:absolute;left:50%;top:280px;width:150px;height:150px;margin:-75px 0 0 -75px;z-index:5;
+display:flex;align-items:center;justify-content:center;font-size:52px;color:#fff8e2;font-weight:700;
+text-shadow:0 0 24px rgba(255,240,190,.9);opacity:0;animation:markIn 1.2s ease-out both;animation-delay:2.6s}
+@keyframes markIn{0%{opacity:0;transform:scale(.8)}100%{opacity:1;transform:scale(1)}}
+.brand{position:absolute;left:0;right:0;top:600px;text-align:center;z-index:6;
+opacity:0;animation:fadeUp 1s ease-out both;animation-delay:2.9s}
+.brand h1{font-size:36px;font-weight:700;letter-spacing:14px;color:#f2ead0;text-indent:14px}
+.brand p{font-size:13px;letter-spacing:6px;color:#8f86b8;margin-top:12px;text-indent:6px}
+@keyframes fadeUp{0%{opacity:0;transform:translateY(18px)}100%{opacity:1;transform:translateY(0)}}
+.replay{position:absolute;left:50%;bottom:36px;transform:translateX(-50%);z-index:50;
+border:1px solid rgba(200,190,230,.4);background:rgba(200,190,230,.07);color:#d8d0f0;
+font-size:13px;letter-spacing:3px;padding:10px 26px;border-radius:24px;cursor:pointer}
+.replay:active{transform:translateX(-50%) scale(.94)}
+</style></head><body>
+<div class="stage">
+  <div class="stars"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+  <div class="moonwrap"><div class="moon"></div><div class="shadow"></div></div>
+  <div class="phases" id="phases"></div>
+  <div class="mark">望</div>
+  <div class="brand"><h1>望舒</h1><p>守得月圆时</p></div>
+  <button class="replay">重新播放</button>
+</div>
+<script>
+(function(){const p=document.getElementById('phases');
+for(let i=0;i<8;i++){const d=document.createElement('i');d.style.setProperty('--i',i);p.appendChild(d);}})();
+function bind(){document.querySelector('.replay').addEventListener('click',()=>{
+const s=document.querySelector('.stage');const n=s.cloneNode(true);s.replaceWith(n);bind();});}
+bind();
+</script>
+</body></html>

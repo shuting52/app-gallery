@@ -1,0 +1,70 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>w35 · 小助手</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC",sans-serif;background:#05070c;display:flex;justify-content:center;color:#fff;overflow:hidden}
+.stage{width:430px;height:900px;position:relative;overflow:hidden;flex-shrink:0;background:radial-gradient(120% 90% at 50% 0%,#16283a 0%,#0f1a2a 55%,#0b0e16 100%)}
+.mock{position:absolute;inset:0;filter:blur(6px) brightness(.55)}
+.sb{height:46px;display:flex;justify-content:space-between;align-items:center;padding:0 26px;font-size:13px;font-weight:600}
+.sic{width:70px;height:12px;border-radius:6px;background:#2a3040}
+.mh{display:flex;align-items:center;gap:10px;padding:14px 20px}
+.mh i{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,#2b3f58,#1c2a3e);display:block}
+.mh em{width:110px;height:14px;border-radius:7px;background:#26344a;display:block}
+.banner{height:150px;margin:6px 20px 14px;border-radius:18px;background:linear-gradient(135deg,#1e3048,#14202f)}
+.row{display:flex;gap:12px;align-items:center;margin:0 20px 12px}
+.row i{width:52px;height:52px;border-radius:14px;background:#26344a;display:block;flex-shrink:0}
+.row b{display:block;width:150px;height:13px;border-radius:6px;background:#30405c;margin-bottom:8px}
+.row s{display:block;width:100px;height:10px;border-radius:5px;background:#1f2a40;text-decoration:none}
+.tabbar{position:absolute;bottom:0;left:0;right:0;height:84px;background:rgba(15,26,42,.9);display:flex;justify-content:space-around;align-items:center;border-top:1px solid #26344a}
+.tabbar i{width:26px;height:26px;border-radius:8px;background:#30405c;display:block}
+.ov{position:absolute;inset:0;z-index:10;display:flex;align-items:center;justify-content:center;background:rgba(8,12,22,.55);animation:fadeIn .4s both}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.modal{width:340px;border-radius:26px;padding:28px 22px 24px;position:relative;background:linear-gradient(165deg,#1e2c48,#121a2e);border:1px solid rgba(120,170,255,.3);box-shadow:0 30px 80px rgba(0,0,0,.55);animation:pop .55s cubic-bezier(.2,1.4,.4,1) both;animation-delay:.12s}
+@keyframes pop{from{opacity:0;transform:scale(.7) translateY(30px)}to{opacity:1;transform:none}}
+.x{position:absolute;top:14px;right:14px;width:30px;height:30px;border-radius:50%;border:0;background:rgba(255,255,255,.12);color:#fff;font-size:15px;cursor:pointer;z-index:2}
+.agent{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+.avatar{width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#7ea2ff,#4a6fe0);display:flex;align-items:center;justify-content:center;font-size:26px;box-shadow:0 6px 16px rgba(90,120,240,.45);flex-shrink:0;animation:pop2 .5s cubic-bezier(.2,1.6,.4,1) both;animation-delay:.3s}
+@keyframes pop2{from{transform:scale(.3);opacity:0}to{transform:scale(1);opacity:1}}
+.agent b{font-size:16px;display:block}
+.agent span{font-size:11px;color:#7ee2a8}
+.agent span::before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;background:#2fbf71;margin-right:5px}
+.chat{display:flex;flex-direction:column;gap:10px;min-height:190px}
+.msg{max-width:85%;background:rgba(126,162,255,.14);border:1px solid rgba(126,162,255,.25);border-radius:4px 16px 16px 16px;padding:11px 14px;font-size:13.5px;line-height:1.7;color:#d9e4ff;text-align:left;opacity:0;animation:msgin .45s ease-out both}
+.msg.m1{animation-delay:.55s}.msg.m2{animation-delay:1.05s}.msg.m3{animation-delay:1.55s}
+@keyframes msgin{from{opacity:0;transform:translateY(14px) scale(.96)}to{opacity:1;transform:none}}
+.typing{display:inline-flex;gap:4px;padding:4px 0}
+.typing i{width:7px;height:7px;border-radius:50%;background:#8ba4e8;display:block;animation:tp 1s infinite}
+.typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}
+@keyframes tp{40%{transform:translateY(-6px);opacity:1}0%,80%,100%{opacity:.4}}
+.quick{display:flex;gap:8px;margin-top:16px}
+.quick button{flex:1;border:1px solid rgba(126,162,255,.4);background:rgba(126,162,255,.1);color:#cdd9ff;border-radius:999px;padding:10px 4px;font-size:12.5px;cursor:pointer;transition:all .2s}
+.quick button:active{transform:scale(.95);background:rgba(126,162,255,.25)}
+.replay{position:absolute;bottom:24px;left:50%;transform:translateX(-50%);z-index:20;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.1);color:#fff;border-radius:999px;padding:10px 22px;font-size:13px;cursor:pointer;backdrop-filter:blur(8px)}
+</style></head>
+<body><div class="stage">
+<div class="mock"><div class="sb"><span>9:41</span><span class="sic"></span></div>
+<div class="mh"><i></i><em></em></div><div class="banner"></div>
+<div class="row"><i></i><div><b></b><s></s></div></div>
+<div class="row"><i></i><div><b></b><s></s></div></div>
+<div class="tabbar"><i></i><i></i><i></i><i></i></div></div>
+<div class="ov" id="ov"><div class="modal">
+<button class="x" id="x">✕</button>
+<div class="agent"><div class="avatar">🤖</div><div><b>小助手兜兜</b><span>在线，随时为你服务</span></div></div>
+<div class="chat">
+<div class="msg m1">👋 你好呀！我是你的专属小助手兜兜～</div>
+<div class="msg m2">我可以帮你找功能、答疑问，还能每天给你推一条小灵感 ✨</div>
+<div class="msg m3">想先从哪里开始逛？点下面告诉我 👇</div>
+</div>
+<div class="quick"><button data-q="逛逛首页">逛逛首页</button><button data-q="看看福利">看看福利</button><button data-q="随便看看">随便看看</button></div>
+</div></div>
+<button class="replay" id="replay">重新弹出</button>
+</div>
+<script>
+const ov=document.getElementById('ov');
+document.querySelectorAll('.quick button').forEach(b=>b.onclick=()=>{ov.style.display='none';});
+document.getElementById('x').onclick=()=>ov.style.display='none';
+document.getElementById('replay').onclick=()=>{ov.style.display='flex';
+const m=ov.querySelector('.modal');m.style.animation='none';void m.offsetWidth;m.style.animation='';};
+</script></body></html>

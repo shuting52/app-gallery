@@ -1,0 +1,25 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>陀螺之舞</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:430px;height:900px}
+body{overflow:hidden;position:relative;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(#141428,#23234d);color:#fff}
+.stage{position:absolute;inset:0;overflow:hidden}
+.brand{position:absolute;left:0;right:0;top:648px;text-align:center;z-index:5;animation:brandIn 1s ease 2s both}
+.brand h1{font-size:36px;letter-spacing:10px;font-weight:800}
+.brand p{font-size:13px;letter-spacing:6px;opacity:.65;margin-top:10px}
+@keyframes brandIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.replay{position:absolute;bottom:36px;left:50%;transform:translateX(-50%);z-index:9;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.35);color:#fff;font-size:13px;padding:9px 26px;border-radius:24px;cursor:pointer;backdrop-filter:blur(6px)}
+.floor{position:absolute;left:50%;top:520px;width:280px;height:40px;transform:translateX(-50%);border-radius:50%;background:radial-gradient(circle at 50% 50%,#00000088,transparent 70%);animation:shdw 1.2s ease-in-out infinite}
+@keyframes shdw{50%{transform:translateX(-50%) scale(.82);opacity:.7}}
+.top{position:absolute;left:50%;top:330px;width:150px;height:190px;transform:translate(-50%,0);animation:wob 1.2s ease-in-out infinite}
+@keyframes wob{0%,100%{transform:translate(-50%,0) rotate(-9deg)}50%{transform:translate(-50%,-14px) rotate(9deg)}}
+.top .body{width:150px;height:120px;background:conic-gradient(#ff5d7e,#ffb84d,#ffe14d,#6bff9e,#4dd2ff,#b14dff,#ff5d7e);clip-path:polygon(50% 100%,0 20%,100% 20%);animation:spin2 .5s linear infinite}
+@keyframes spin2{to{filter:hue-rotate(360deg)}}
+.top .stem{width:10px;height:60px;background:#fff;margin:-6px auto 0;border-radius:5px}
+</style></head><body>
+<div class="stage"><div class="floor"></div><div class="top"><div class="body"></div><div class="stem"></div></div></div>
+<div class="brand"><h1>旋子</h1><p>SPIN · 不停</p></div>
+<button class="replay" onclick="location.reload()">&#8635; 重新播放</button>
+</body></html>

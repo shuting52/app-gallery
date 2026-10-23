@@ -1,0 +1,60 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>棱镜折射 · 启动页</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{background:#030509;display:flex;justify-content:center;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif}
+.stage{width:430px;height:900px;max-width:100vw;max-height:100vh;position:relative;overflow:hidden;background:
+radial-gradient(100% 70% at 50% 30%,#0a0f1e 0%,#030509 65%)}
+.beam-in{position:absolute;left:-20px;top:326px;width:170px;height:9px;z-index:2;
+background:linear-gradient(90deg,transparent,#fff 70%);box-shadow:0 0 18px #fff;
+transform:translateX(-180px);animation:beamIn 1.1s ease-out both}
+@keyframes beamIn{0%{transform:translateX(-180px)}100%{transform:translateX(0)}}
+.prism{position:absolute;left:150px;top:260px;width:130px;height:150px;z-index:3;
+background:linear-gradient(135deg,rgba(180,220,255,.5),rgba(120,170,255,.18));
+clip-path:polygon(50% 0,100% 100%,0 100%);opacity:0;animation:prismIn 1s ease-out both;animation-delay:.5s}
+.prism::after{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 40%,rgba(255,255,255,.55) 48%,transparent 56%)}
+@keyframes prismIn{0%{opacity:0;transform:translateY(20px)}100%{opacity:1;transform:translateY(0)}}
+.rays{position:absolute;left:238px;top:335px;width:0;height:0;z-index:2}
+.ray{position:absolute;left:0;top:-5px;width:170px;height:10px;border-radius:5px;display:block;
+transform-origin:0 50%;transform:rotate(var(--r));opacity:0;
+background:linear-gradient(90deg,var(--c),transparent);
+animation:rayIn 1.2s ease-out both;animation-delay:calc(1.2s + var(--i)*.14s)}
+.ray:nth-child(1){--r:-26deg;--c:#ff5f6e;--i:0}
+.ray:nth-child(2){--r:-13deg;--c:#ffb35f;--i:1}
+.ray:nth-child(3){--r:0deg;--c:#fff35f;--i:2}
+.ray:nth-child(4){--r:13deg;--c:#5fff8f;--i:3}
+.ray:nth-child(5){--r:26deg;--c:#5fb8ff;--i:4}
+@keyframes rayIn{0%{opacity:0;transform:rotate(var(--r)) scaleX(.2)}100%{opacity:.95;transform:rotate(var(--r)) scaleX(1)}}
+.target{position:absolute;left:50%;top:520px;width:120px;height:120px;margin-left:-60px;z-index:5;border-radius:50%;
+background:radial-gradient(circle at 35% 30%,#ffffff,#cfd8ff 55%,#8f9fd8);
+display:flex;align-items:center;justify-content:center;font-size:46px;color:#3a4670;font-weight:700;
+opacity:0;box-shadow:0 0 0 rgba(255,255,255,0);animation:targetIn 1.2s ease-out both;animation-delay:2s}
+@keyframes targetIn{0%{opacity:0;transform:scale(.5);box-shadow:0 0 0 rgba(255,255,255,0)}
+60%{opacity:1;box-shadow:0 0 60px 18px rgba(255,255,255,.5)}
+100%{opacity:1;transform:scale(1);box-shadow:0 0 34px 8px rgba(255,255,255,.35)}}
+.brand{position:absolute;left:0;right:0;top:690px;text-align:center;z-index:6;
+opacity:0;animation:fadeUp 1s ease-out both;animation-delay:2.4s}
+.brand h1{font-size:36px;font-weight:700;letter-spacing:14px;color:#eef1ff;text-indent:14px}
+.brand p{font-size:13px;letter-spacing:6px;color:#8f9fd8;margin-top:12px;text-indent:6px}
+@keyframes fadeUp{0%{opacity:0;transform:translateY(18px)}100%{opacity:1;transform:translateY(0)}}
+.replay{position:absolute;left:50%;bottom:36px;transform:translateX(-50%);z-index:50;
+border:1px solid rgba(160,180,255,.4);background:rgba(160,180,255,.08);color:#ccd6ff;
+font-size:13px;letter-spacing:3px;padding:10px 26px;border-radius:24px;cursor:pointer}
+.replay:active{transform:translateX(-50%) scale(.94)}
+</style></head><body>
+<div class="stage">
+  <div class="beam-in"></div>
+  <div class="prism"></div>
+  <div class="rays"><i class="ray"></i><i class="ray"></i><i class="ray"></i><i class="ray"></i><i class="ray"></i></div>
+  <div class="target">虹</div>
+  <div class="brand"><h1>虹</h1><p>一束光的七种可能</p></div>
+  <button class="replay">重新播放</button>
+</div>
+<script>
+function bind(){document.querySelector('.replay').addEventListener('click',()=>{
+const s=document.querySelector('.stage');const n=s.cloneNode(true);s.replaceWith(n);bind();});}
+bind();
+</script>
+</body></html>

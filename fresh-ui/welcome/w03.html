@@ -1,0 +1,80 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>开定位</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sans-serif;background:#04060a;color:#eef2f7;display:flex;justify-content:center;min-height:100vh}
+.phone{width:430px;height:900px;position:relative;overflow:hidden;background:linear-gradient(160deg,#08131f,#0a0f16)}
+/* ---- mock app ---- */
+.mk{padding:54px 20px 0;opacity:.85}
+.sb{display:flex;justify-content:space-between;font-size:13px;color:#cfd6e2;margin-bottom:14px}
+.mknav{font-size:22px;font-weight:800;margin:2px 0 16px}
+.mkbanner{height:110px;border-radius:16px;background:linear-gradient(120deg,#2a3350,#3c2a50);margin-bottom:14px}
+.mkrow{display:flex;gap:12px;align-items:center;background:rgba(255,255,255,.05);border-radius:14px;padding:12px;margin-bottom:10px}
+.mkav{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#4a5a80,#2c3650);flex-shrink:0}
+.mkln{height:10px;border-radius:5px;background:rgba(255,255,255,.12);margin:5px 0}
+.mkgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.mkcard{border-radius:14px;background:rgba(255,255,255,.05);padding:10px}
+.mkph{height:80px;border-radius:10px;background:linear-gradient(135deg,#33405e,#232c46);margin-bottom:8px}
+.mksearch{height:42px;border-radius:21px;background:rgba(255,255,255,.08);margin-bottom:16px}
+.mkalbum{height:230px;border-radius:18px;background:linear-gradient(135deg,#3b2a5e,#1f2a4e);margin-bottom:14px}
+.mkbar{height:6px;border-radius:3px;background:rgba(255,255,255,.12);margin:14px 0 6px;position:relative}
+.mkbar i{display:block;position:absolute;left:0;top:0;bottom:0;width:38%;border-radius:3px;background:#7ab8ff}
+.mkctl{display:flex;justify-content:center;gap:26px;margin-top:14px}
+.mkctl i{display:block;width:46px;height:46px;border-radius:50%;background:rgba(255,255,255,.1)}
+/* ---- overlay / modal ---- */
+.ov{position:absolute;inset:0;z-index:30;display:flex;align-items:center;justify-content:center;background:rgba(5,8,13,.52);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.ov.hide{display:none}
+.modal{position:relative;width:340px;border-radius:24px;padding:28px 24px 22px;text-align:center;background:linear-gradient(165deg,#0f2a22,#0b1d18);--ac:#3ddc84;--ds:#a8d4c2;--tc:#f2fff8;border:1px solid rgba(61,220,132,.25);animation:ePop .6s cubic-bezier(.2,.9,.28,1.18) both;box-shadow:0 24px 70px rgba(0,0,0,.5)}
+.x{position:absolute;top:10px;right:12px;width:30px;height:30px;border-radius:50%;border:0;background:rgba(255,255,255,.14);color:#fff;font-size:17px;cursor:pointer;line-height:30px;padding:0}
+.btn{display:block;width:100%;border:0;border-radius:14px;padding:14px;font-size:16px;font-weight:700;cursor:pointer;margin-top:18px;background:var(--ac,#ffd479);color:#1a1405;transition:transform .15s}
+.btn:active{transform:scale(.96)}
+.btn.off{opacity:.35;pointer-events:none}
+.ghost{background:none;border:0;color:var(--ds,#9aa3b2);font-size:13px;margin-top:12px;cursor:pointer;width:100%}
+.rp{position:absolute;left:50%;bottom:22px;transform:translateX(-50%);z-index:40;border:1px solid rgba(255,255,255,.28);background:rgba(8,12,18,.72);color:#fff;border-radius:999px;padding:10px 24px;font-size:13px;cursor:pointer;backdrop-filter:blur(6px);white-space:nowrap}
+h2.tt{font-size:21px;margin:12px 0 8px;letter-spacing:2px;color:var(--tc,#fff)}
+p.ds{font-size:13.5px;line-height:1.75;color:var(--ds,#aeb6c2)}
+@keyframes ePop{from{opacity:0;transform:scale(.62) translateY(46px)}to{opacity:1;transform:none}}
+@keyframes eUp{from{opacity:0;transform:translateY(130px)}to{opacity:1;transform:none}}
+@keyframes eFlip{from{opacity:0;transform:perspective(700px) rotateX(-72deg)}to{opacity:1;transform:none}}
+@keyframes eLeft{from{opacity:0;transform:translateX(-170px) rotate(-7deg)}to{opacity:1;transform:none}}
+@keyframes eBlur{from{opacity:0;transform:scale(1.16);filter:blur(16px)}to{opacity:1;transform:none;filter:blur(0)}}
+@keyframes eDrop{0%{opacity:0;transform:translateY(-280px)}62%{opacity:1;transform:translateY(14px)}80%{transform:translateY(-7px)}100%{opacity:1;transform:none}}
+.radar{width:130px;height:130px;margin:0 auto;border-radius:50%;position:relative;background:radial-gradient(circle,rgba(61,220,132,.16) 0 32%,transparent 33%),repeating-radial-gradient(circle,rgba(61,220,132,.35) 0 2px,transparent 2px 42px);border:1px solid rgba(61,220,132,.4)}
+.sweep{position:absolute;inset:0;border-radius:50%;background:conic-gradient(from 0deg,rgba(61,220,132,.55),transparent 26%);animation:spin 2.6s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.pin{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:#3ddc84;font-size:26px;text-shadow:0 0 14px #3ddc84}
+.prow{display:flex;justify-content:space-between;align-items:center;background:rgba(255,255,255,.05);border-radius:12px;padding:11px 14px;margin-top:10px;font-size:14px}
+.sw{position:relative;display:inline-block;width:48px;height:28px;border-radius:14px;background:rgba(255,255,255,.16);cursor:pointer;transition:background .25s;flex-shrink:0}
+.sw i{display:block;position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;transition:left .25s}
+.sw.on{background:#3ddc84}.sw.on i{left:23px}
+</style></head><body>
+<div class="phone">
+<div class="mk"><div class="sb"><span>9:41</span><span>●●●</span></div>
+<div class="mknav">首页</div><div class="mkbanner"></div>
+<div class="mkrow"><div class="mkav" style="border-radius:12px"></div><div style="flex:1"><div class="mkln" style="width:60%"></div></div></div>
+<div class="mkrow"><div class="mkav" style="border-radius:12px"></div><div style="flex:1"><div class="mkln" style="width:45%"></div></div></div>
+<div class="mkrow"><div class="mkav" style="border-radius:12px"></div><div style="flex:1"><div class="mkln" style="width:70%"></div></div></div>
+<div class="mkrow"><div class="mkav" style="border-radius:12px"></div><div style="flex:1"><div class="mkln" style="width:50%"></div></div></div></div>
+<div class="ov" id="ov"><div class="modal" id="md">
+<button class="x" id="cx" aria-label="关闭">×</button>
+<div class="radar"><div class="sweep"></div><div class="pin">◈</div></div>
+<h2 class="tt">开启定位服务</h2><p class="ds">为你推荐附近的美食、优惠<br>与同城新鲜事</p>
+<div class="prow"><span>📍 定位权限</span><span class="sw on" data-k="0"><i></i></span></div>
+<div class="prow"><span>🔔 消息通知</span><span class="sw" data-k="1"><i></i></span></div>
+<div class="prow"><span>📷 相机权限</span><span class="sw" data-k="2"><i></i></span></div>
+<button class="btn" id="go">一键全部开启</button><button class="ghost" id="no">暂不需要</button>
+</div></div>
+<button class="rp" id="rp">↻ 重新弹出</button>
+</div>
+<script>
+var ov=document.getElementById('ov'),md=document.getElementById('md');
+document.getElementById('cx').onclick=function(){ov.classList.add('hide')};
+ov.addEventListener('click',function(e){if(e.target===ov)ov.classList.add('hide')});
+document.getElementById('rp').onclick=function(){ov.classList.remove('hide');md.style.animation='none';void md.offsetWidth;md.style.animation=''};
+var sws=document.querySelectorAll('.sw');
+sws.forEach(function(s){s.onclick=function(){s.classList.toggle('on')}});
+document.getElementById('go').onclick=function(){sws.forEach(function(s){s.classList.add('on')});this.textContent='已全部开启 ✓';this.classList.add('off')};
+document.getElementById('no').onclick=function(){ov.classList.add('hide')};
+</script>
+</body></html>

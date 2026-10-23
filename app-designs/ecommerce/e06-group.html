@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>拼拼购 · 团购拼团</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{--green:#00b578;--green-d:#009763;--yellow:#ffbe0b;--red:#ff4d4f;--bg:#f4f7f5;--txt:#222;--sub:#8a8f8c}
+html,body{background:#dfe8e3;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;color:var(--txt)}
+.phone{max-width:430px;margin:0 auto;min-height:100dvh;position:relative;background:#fff;overflow:hidden}
+/* ---------- 顶部 ---------- */
+.topbar{background:linear-gradient(135deg,#00b578 0%,#00d086 100%);padding:14px 14px 18px;color:#fff;position:relative}
+.toploc{display:flex;align-items:center;justify-content:space-between;font-size:13px;margin-bottom:10px}
+.toploc b{font-size:16px}
+.search{display:flex;align-items:center;background:#fff;border-radius:20px;padding:9px 14px;font-size:14px;color:#999}
+.search span{margin-right:8px}
+/* ---------- banner ---------- */
+.banner{margin:-6px 14px 0;background:linear-gradient(120deg,#ffbe0b,#ff8a3d);border-radius:16px;padding:18px 16px;color:#fff;position:relative;overflow:hidden;box-shadow:0 6px 16px rgba(255,150,30,.35)}
+.banner::after{content:"🎉🧧🎊";position:absolute;right:10px;top:8px;font-size:30px;opacity:.35}
+.banner .b-t{font-size:21px;font-weight:900}
+.banner .b-s{font-size:13px;margin-top:6px;opacity:.95}
+.banner .b-tag{display:inline-block;background:#fff;color:#e8590c;font-size:12px;font-weight:700;border-radius:11px;padding:3px 10px;margin-top:10px}
+/* ---------- page/tab ---------- */
+.page{display:none;padding-bottom:78px;background:var(--bg);min-height:100dvh}
+.page.active{display:block}
+.tabbar{position:fixed;left:50%;transform:translateX(-50%);width:100%;max-width:430px;bottom:0;background:#fff;border-top:1px solid #eee;display:flex;z-index:99}
+.tab{flex:1;text-align:center;padding:9px 0 8px;font-size:11px;color:#999;cursor:pointer}
+.tab .ic{font-size:22px;display:block;margin-bottom:2px}
+.tab.on{color:var(--green);font-weight:700}
+/* ---------- 通用 ---------- */
+.sec-title{display:flex;align-items:center;justify-content:space-between;margin:18px 14px 10px;font-size:16px;font-weight:800}
+.sec-title .more{font-size:12px;color:#999;font-weight:400}
+.card{background:#fff;border-radius:14px}
+/* ---------- 拼团横滑 ---------- */
+.hscroll{display:flex;gap:12px;overflow-x:auto;padding:2px 14px 10px;scrollbar-width:none}
+.hscroll::-webkit-scrollbar{display:none}
+.gcard{flex:0 0 240px;background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 4px 14px rgba(0,0,0,.07)}
+.gimg{height:120px;display:flex;align-items:center;justify-content:center;font-size:64px;position:relative}
+.gimg .pt-tag{position:absolute;left:8px;top:8px;background:var(--yellow);color:#5b3b00;font-size:12px;font-weight:800;border-radius:10px;padding:3px 10px}
+.gbody{padding:10px 12px 12px}
+.gname{font-size:14px;font-weight:700;height:40px;overflow:hidden;line-height:20px}
+.gneed{font-size:12px;color:var(--red);font-weight:700;margin:6px 0}
+.count{display:flex;align-items:center;gap:4px;margin:6px 0}
+.count .cd{background:#222;color:#fff;font-size:16px;font-weight:900;border-radius:6px;padding:3px 7px;min-width:30px;text-align:center;font-variant-numeric:tabular-nums}
+.count .colon{font-weight:900;font-size:14px}
+.gprice{display:flex;align-items:baseline;gap:6px;margin:4px 0 8px}
+.gprice .now{color:var(--red);font-size:20px;font-weight:900}
+.gprice .old{color:#aaa;font-size:12px;text-decoration:line-through}
+.btn-join{width:100%;border:none;border-radius:20px;background:linear-gradient(90deg,var(--green),#00d086);color:#fff;font-size:15px;font-weight:800;padding:10px 0;cursor:pointer}
+.btn-join:active{transform:scale(.97)}
+.btn-join.done{background:#c9cfcd}
+/* ---------- 万人团榜单 ---------- */
+.rank{background:#fff;margin:0 14px;border-radius:14px;overflow:hidden}
+.rank-row{display:flex;align-items:center;padding:12px 14px;border-bottom:1px solid #f2f2f2;cursor:pointer}
+.rank-row:last-child{border-bottom:none}
+.rank-n{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;margin-right:10px;background:#eef0ef;color:#888}
+.rank-row:nth-child(1) .rank-n{background:linear-gradient(135deg,#ffd43b,#ff922b);color:#fff}
+.rank-row:nth-child(2) .rank-n{background:linear-gradient(135deg,#ced4da,#a9b4bd);color:#fff}
+.rank-row:nth-child(3) .rank-n{background:linear-gradient(135deg,#e5b07e,#c98d4b);color:#fff}
+.rank-info{flex:1}
+.rank-info .n{font-size:14px;font-weight:700}
+.rank-info .d{font-size:12px;color:var(--sub);margin-top:2px}
+.rank-p{text-align:right}
+.rank-p .p{color:var(--red);font-weight:900;font-size:15px}
+.rank-p .j{font-size:11px;color:var(--green);font-weight:700}
+/* ---------- 今日必拼双列 ---------- */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:0 14px}
+.pcard{background:#fff;border-radius:14px;overflow:hidden}
+.pimg{height:110px;display:flex;align-items:center;justify-content:center;font-size:52px}
+.pbody{padding:8px 10px 12px}
+.pname{font-size:13px;font-weight:700;height:36px;overflow:hidden;line-height:18px}
+.pprice{display:flex;align-items:baseline;gap:5px;margin:6px 0}
+.pprice .gp{color:var(--red);font-size:17px;font-weight:900}
+.pprice .sp{color:#aaa;font-size:11px;text-decoration:line-through}
+.pstat{display:flex;align-items:center;justify-content:space-between;margin-top:2px}
+.pstat .sold{font-size:11px;color:var(--sub)}
+.btn-open{border:none;border-radius:14px;background:var(--yellow);color:#5b3b00;font-size:12px;font-weight:800;padding:6px 14px;cursor:pointer}
+/* ---------- 分类 ---------- */
+.catwrap{display:flex;height:calc(100dvh - 130px)}
+.catleft{width:96px;background:#fff;overflow-y:auto;flex-shrink:0}
+.catitem{padding:14px 6px;font-size:14px;text-align:center;color:#555;cursor:pointer;border-left:4px solid transparent}
+.catitem.on{color:var(--green);font-weight:800;background:var(--bg);border-left-color:var(--green)}
+.catright{flex:1;overflow-y:auto;padding:12px}
+.catgood{display:flex;background:#fff;border-radius:12px;padding:10px;margin-bottom:10px}
+.catgood .ci{width:72px;height:72px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:40px;flex-shrink:0;margin-right:10px}
+.catgood .cn{font-size:13px;font-weight:700;height:34px;overflow:hidden}
+.catgood .cp{color:var(--red);font-weight:900;font-size:16px;margin-top:6px}
+.catgood .cp small{color:#aaa;font-size:11px;text-decoration:line-through;font-weight:400;margin-left:4px}
+/* ---------- 购物车 ---------- */
+.cart{background:#fff;margin:14px;border-radius:14px}
+.cart-row{display:flex;align-items:center;padding:12px;border-bottom:1px solid #f2f2f2}
+.cart-row:last-child{border-bottom:none}
+.ck{width:22px;height:22px;border-radius:50%;border:2px solid #cfd4d2;display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;cursor:pointer;margin-right:10px;flex-shrink:0}
+.ck.on{background:var(--green);border-color:var(--green)}
+.cart-row .ci{width:64px;height:64px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:34px;margin-right:10px;flex-shrink:0}
+.cart-info{flex:1}
+.cart-info .n{font-size:13px;font-weight:700}
+.cart-info .p{color:var(--red);font-weight:900;margin-top:6px}
+.qty{display:flex;align-items:center;gap:8px}
+.qty button{width:24px;height:24px;border-radius:50%;border:1px solid #ddd;background:#fff;font-size:14px;cursor:pointer}
+.qty b{min-width:18px;text-align:center;font-size:14px}
+.cartbar{position:fixed;left:50%;transform:translateX(-50%);width:100%;max-width:430px;bottom:62px;background:#fff;border-top:1px solid #eee;display:flex;align-items:center;padding:10px 14px;z-index:98}
+.cartbar .tot{flex:1;font-size:14px}
+.cartbar .tot b{color:var(--red);font-size:20px}
+.btn-pay{border:none;border-radius:22px;background:linear-gradient(90deg,var(--green),#00d086);color:#fff;font-size:16px;font-weight:800;padding:11px 34px;cursor:pointer}
+/* ---------- 我的拼团 ---------- */
+.mg-sec{background:#fff;margin:14px 14px 0;border-radius:14px;overflow:hidden}
+.mg-head{padding:12px 14px;font-size:15px;font-weight:800;border-bottom:1px solid #f2f2f2}
+.mg-row{display:flex;padding:12px 14px;border-bottom:1px solid #f2f2f2}
+.mg-row:last-child{border-bottom:none}
+.mg-row .ci{width:66px;height:66px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:36px;margin-right:12px;flex-shrink:0}
+.mg-info{flex:1}
+.mg-info .n{font-size:14px;font-weight:700}
+.prog{height:8px;background:#eef0ef;border-radius:4px;margin:8px 0 6px;overflow:hidden}
+.prog i{display:block;height:100%;background:linear-gradient(90deg,var(--yellow),var(--green));border-radius:4px}
+.mg-meta{display:flex;justify-content:space-between;font-size:12px;color:var(--sub)}
+.mg-meta .t{color:var(--red);font-weight:800}
+.badge{display:inline-block;font-size:11px;font-weight:800;border-radius:8px;padding:2px 8px;margin-left:6px}
+.badge.ing{background:#fff4d6;color:#b8860b}
+.badge.ok{background:#d8f5e3;color:#00854a}
+.badge.wait{background:#e7f0ff;color:#1c6dd9}
+/* ---------- 我的 ---------- */
+.mehead{background:linear-gradient(135deg,#00b578,#00d086);padding:22px 18px 26px;color:#fff}
+.merow{display:flex;align-items:center}
+.avatar{width:60px;height:60px;border-radius:50%;background:rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;font-size:34px;margin-right:12px;border:2px solid rgba(255,255,255,.6)}
+.merow .nm{font-size:18px;font-weight:900}
+.merow .lv{font-size:12px;background:rgba(255,255,255,.25);border-radius:10px;padding:2px 10px;margin-top:4px;display:inline-block}
+.mestats{display:flex;background:#fff;margin:-16px 14px 0;border-radius:14px;box-shadow:0 4px 12px rgba(0,0,0,.08);padding:14px 0}
+.mestats div{flex:1;text-align:center}
+.mestats b{font-size:17px;display:block}
+.mestats span{font-size:11px;color:var(--sub)}
+.melist{background:#fff;margin:14px;border-radius:14px}
+.melist .mi{display:flex;align-items:center;padding:14px;border-bottom:1px solid #f2f2f2;font-size:14px;cursor:pointer}
+.melist .mi:last-child{border-bottom:none}
+.melist .mi .ic{font-size:20px;margin-right:12px}
+.melist .mi .rt{margin-left:auto;color:#bbb}
+/* ---------- toast ---------- */
+#toast{position:fixed;left:50%;transform:translateX(-50%) translateY(20px);bottom:130px;background:rgba(0,0,0,.82);color:#fff;font-size:14px;padding:11px 22px;border-radius:22px;opacity:0;pointer-events:none;transition:all .3s;z-index:999;max-width:80%;text-align:center}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+/* 优惠券 */
+.coupon{background:#fff;margin:12px 14px;border-radius:14px;padding:14px;display:flex;align-items:center;overflow:hidden;position:relative}
+.coupon::before,.coupon::after{content:"";position:absolute;width:22px;height:22px;background:var(--bg);border-radius:50%;top:50%;margin-top:-11px}
+.coupon::before{left:-11px}.coupon::after{right:-11px}
+.coupon .amt{color:var(--red);font-size:30px;font-weight:900;margin-right:12px}
+.coupon .cd2{flex:1;font-size:13px}
+.coupon .cd2 b{display:block;font-size:14px}
+.coupon .cd2 span{color:var(--sub);font-size:12px}
+</style>
+</head>
+<body>
+<div class="phone">
+
+<!-- ============ TAB1 拼团 ============ -->
+<div class="page active" id="page-0">
+  <div class="topbar">
+    <div class="toploc"><span>📍 上海市 <b>拼拼购</b></span><span>签到领红包 🧧</span></div>
+    <div class="search"><span>🔍</span>搜索拼团商品 / 品牌 / 品类</div>
+  </div>
+  <div class="banner">
+    <div class="b-t">百亿补贴 · 拼团狂欢节</div>
+    <div class="b-s">万人团低至 1 折 · 拉好友一起拼更省</div>
+    <span class="b-tag">今日已有 128,436 人拼团成功</span>
+  </div>
+
+  <div class="sec-title">🔥 正在拼团 <span class="more">差人就差你了 ›</span></div>
+  <div class="hscroll" id="glist">
+    <div class="gcard" data-gid="g1" data-need="1" data-cur="1">
+      <div class="gimg" style="background:linear-gradient(135deg,#fff3bf,#ffe066)"><span class="pt-tag">2人团</span>🥛</div>
+      <div class="gbody">
+        <div class="gname">伊利纯牛奶 250ml×16盒 家庭装</div>
+        <div class="gneed">⚡ 差1人成团</div>
+        <div class="count" data-cd="7540"><span class="cd">02</span><span class="colon">:</span><span class="cd">05</span><span class="colon">:</span><span class="cd">40</span></div>
+        <div class="gprice"><span class="now">¥39.9</span><span class="old">¥58.0</span></div>
+        <button class="btn-join" onclick="joinGroup('g1',this)">去参团</button>
+      </div>
+    </div>
+    <div class="gcard" data-gid="g2" data-need="2" data-cur="2">
+      <div class="gimg" style="background:linear-gradient(135deg,#ffe3ec,#ffc4d6)"><span class="pt-tag">3人团</span>🧴</div>
+      <div class="gbody">
+        <div class="gname">珀莱雅水乳套装 保湿补水两件套</div>
+        <div class="gneed">⚡ 差1人成团</div>
+        <div class="count" data-cd="45020"><span class="cd">12</span><span class="colon">:</span><span class="cd">30</span><span class="colon">:</span><span class="cd">20</span></div>
+        <div class="gprice"><span class="now">¥129</span><span class="old">¥189</span></div>
+        <button class="btn-join" onclick="joinGroup('g2',this)">去参团</button>
+      </div>
+    </div>
+    <div class="gcard" data-gid="g3" data-need="1" data-cur="1">
+      <div class="gimg" style="background:linear-gradient(135deg,#d8f5e3,#a9e5c4)"><span class="pt-tag">2人团</span>🍎</div>
+      <div class="gbody">
+        <div class="gname">烟台红富士苹果 5斤装 脆甜多汁</div>
+        <div class="gneed">⚡ 差1人成团</div>
+        <div class="count" data-cd="18300"><span class="cd">05</span><span class="colon">:</span><span class="cd">05</span><span class="colon">:</span><span class="cd">00</span></div>
+        <div class="gprice"><span class="now">¥19.9</span><span class="old">¥35.9</span></div>
+        <button class="btn-join" onclick="joinGroup('g3',this)">去参团</button>
+      </div>
+    </div>
+    <div class="gcard" data-gid="g4" data-need="4" data-cur="3">
+      <div class="gimg" style="background:linear-gradient(135deg,#e7f0ff,#c4d8ff)"><span class="pt-tag">5人团</span>🎧</div>
+      <div class="gbody">
+        <div class="gname">漫步者蓝牙耳机 真无线降噪</div>
+        <div class="gneed">⚡ 差2人成团</div>
+        <div class="count" data-cd="64200"><span class="cd">17</span><span class="colon">:</span><span class="cd">50</span><span class="colon">:</span><span class="cd">00</span></div>
+        <div class="gprice"><span class="now">¥99</span><span class="old">¥169</span></div>
+        <button class="btn-join" onclick="joinGroup('g4',this)">去参团</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec-title">🏆 万人团榜单 <span class="more">实时更新 ›</span></div>
+  <div class="rank">
+    <div class="rank-row"><div class="rank-n">1</div><div class="rank-info"><div class="n">抽纸整箱 24包 柔韧亲肤</div><div class="d">🔥 52,318 人已拼 · 好评率 98%</div></div><div class="rank-p"><div class="p">¥29.9</div><div class="j">3人团</div></div></div>
+    <div class="rank-row"><div class="rank-n">2</div><div class="rank-info"><div class="n">泰国香米 10斤 真空装</div><div class="d">🔥 38,902 人已拼 · 好评率 99%</div></div><div class="rank-p"><div class="p">¥49.9</div><div class="j">2人团</div></div></div>
+    <div class="rank-row"><div class="rank-n">3</div><div class="rank-info"><div class="n">洗衣液 4kg 持久留香</div><div class="d">🔥 31,475 人已拼 · 好评率 97%</div></div><div class="rank-p"><div class="p">¥25.9</div><div class="j">3人团</div></div></div>
+    <div class="rank-row"><div class="rank-n">4</div><div class="rank-info"><div class="n">婴儿纸尿裤 NB码 64片</div><div class="d">🔥 27,631 人已拼 · 好评率 99%</div></div><div class="rank-p"><div class="p">¥59</div><div class="j">2人团</div></div></div>
+    <div class="rank-row"><div class="rank-n">5</div><div class="rank-info"><div class="n">电动牙刷 成人声波款</div><div class="d">🔥 21,908 人已拼 · 好评率 96%</div></div><div class="rank-p"><div class="p">¥39.9</div><div class="j">5人团</div></div></div>
+  </div>
+
+  <div class="sec-title">📌 今日必拼 <span class="more">全部 ›</span></div>
+  <div class="grid2">
+    <div class="pcard"><div class="pimg" style="background:linear-gradient(135deg,#fff3bf,#ffe066)">🍜</div><div class="pbody"><div class="pname">康师傅红烧牛肉面 24连包</div><div class="pprice"><span class="gp">¥45.9</span><span class="sp">单买¥62</span></div><div class="pstat"><span class="sold">已拼 8.2万件</span><button class="btn-open" onclick="openGroup('康师傅方便面',this)">我要开团</button></div></div></div>
+    <div class="pcard"><div class="pimg" style="background:linear-gradient(135deg,#ffe3ec,#ffc4d6)">💄</div><div class="pbody"><div class="pname">完美日记口红 哑光丝绒</div><div class="pprice"><span class="gp">¥59.9</span><span class="sp">单买¥89.9</span></div><div class="pstat"><span class="sold">已拼 5.6万件</span><button class="btn-open" onclick="openGroup('完美日记口红',this)">我要开团</button></div></div></div>
+    <div class="pcard"><div class="pimg" style="background:linear-gradient(135deg,#d8f5e3,#a9e5c4)">🧻</div><div class="pbody"><div class="pname">维达抽纸 3层 120抽×12包</div><div class="pprice"><span class="gp">¥32.9</span><span class="sp">单买¥49.9</span></div><div class="pstat"><span class="sold">已拼 12万件</span><button class="btn-open" onclick="openGroup('维达抽纸',this)">我要开团</button></div></div></div>
+    <div class="pcard"><div class="pimg" style="background:linear-gradient(135deg,#e7f0ff,#c4d8ff)">🔋</div><div class="pbody"><div class="pname">罗马仕充电宝 20000mAh</div><div class="pprice"><span class="gp">¥79</span><span class="sp">单买¥129</span></div><div class="pstat"><span class="sold">已拼 3.9万件</span><button class="btn-open" onclick="openGroup('罗马仕充电宝',this)">我要开团</button></div></div></div>
+    <div class="pcard"><div class="pimg" style="background:linear-gradient(135deg,#fde8ff,#f5c2f7)">🍼</div><div class="pbody"><div class="pname">贝亲奶瓶 新生儿防胀气</div><div class="pprice"><span class="gp">¥69</span><span class="sp">单买¥98</span></div><div class="pstat"><span class="sold">已拼 2.1万件</span><button class="btn-open" onclick="openGroup('贝亲奶瓶',this)">我要开团</button></div></div></div>
+    <div class="pcard"><div class="pimg" style="background:linear-gradient(135deg,#fff0d6,#ffd9a0)">☕</div><div class="pbody"><div class="pname">三顿半速溶咖啡 24颗装</div><div class="pprice"><span class="gp">¥99</span><span class="sp">单买¥149</span></div><div class="pstat"><span class="sold">已拼 6.7万件</span><button class="btn-open" onclick="openGroup('三顿半咖啡',this)">我要开团</button></div></div></div>
+  </div>
+</div>
+
+<!-- ============ TAB2 分类 ============ -->
+<div class="page" id="page-1">
+  <div class="topbar"><div class="toploc"><span>📍 上海市 <b>拼拼购</b></span><span>🧧</span></div><div class="search"><span>🔍</span>搜索分类商品</div></div>
+  <div class="catwrap">
+    <div class="catleft" id="catleft">
+      <div class="catitem on" onclick="switchCat(0,this)">🍎 食品</div>
+      <div class="catitem" onclick="switchCat(1,this)">🧹 日用</div>
+      <div class="catitem" onclick="switchCat(2,this)">👶 母婴</div>
+      <div class="catitem" onclick="switchCat(3,this)">💅 美妆</div>
+      <div class="catitem" onclick="switchCat(4,this)">📱 数码</div>
+    </div>
+    <div class="catright" id="catright"></div>
+  </div>
+</div>
+
+<!-- ============ TAB3 购物车 ============ -->
+<div class="page" id="page-2">
+  <div class="topbar"><div class="toploc"><span><b>购物车</b></span><span>编辑</span></div></div>
+  <div class="cart" id="cartlist">
+    <div class="cart-row" data-price="39.9"><div class="ck on" onclick="toggleCk(this)">✓</div><div class="ci" style="background:linear-gradient(135deg,#fff3bf,#ffe066)">🥛</div><div class="cart-info"><div class="n">伊利纯牛奶 250ml×16盒（2人拼团价）</div><div class="p">¥39.9</div></div><div class="qty"><button onclick="chQty(this,-1)">−</button><b>1</b><button onclick="chQty(this,1)">＋</button></div></div>
+    <div class="cart-row" data-price="19.9"><div class="ck on" onclick="toggleCk(this)">✓</div><div class="ci" style="background:linear-gradient(135deg,#d8f5e3,#a9e5c4)">🍎</div><div class="cart-info"><div class="n">烟台红富士苹果 5斤装（2人拼团价）</div><div class="p">¥19.9</div></div><div class="qty"><button onclick="chQty(this,-1)">−</button><b>2</b><button onclick="chQty(this,1)">＋</button></div></div>
+    <div class="cart-row" data-price="32.9"><div class="ck" onclick="toggleCk(this)">✓</div><div class="ci" style="background:linear-gradient(135deg,#d8f5e3,#a9e5c4)">🧻</div><div class="cart-info"><div class="n">维达抽纸 120抽×12包（3人拼团价）</div><div class="p">¥32.9</div></div><div class="qty"><button onclick="chQty(this,-1)">−</button><b>1</b><button onclick="chQty(this,1)">＋</button></div></div>
+  </div>
+  <div class="cartbar"><div class="tot">合计 <b id="total">¥79.7</b><div style="font-size:11px;color:#999">拼团共省 ¥38.2</div></div><button class="btn-pay" onclick="checkout()">去结算</button></div>
+</div>
+
+<!-- ============ TAB4 我的拼团 ============ -->
+<div class="page" id="page-3">
+  <div class="topbar"><div class="toploc"><span><b>我的拼团</b></span><span>拼团记录 ›</span></div></div>
+  <div class="mg-sec"><div class="mg-head">⏳ 拼团中 <span class="badge ing">进行中</span></div>
+    <div class="mg-row"><div class="ci" style="background:linear-gradient(135deg,#ffe3ec,#ffc4d6)">🧴</div><div class="mg-info"><div class="n">珀莱雅水乳套装 保湿两件套</div><div class="prog"><i style="width:66%"></i></div><div class="mg-meta"><span>已拼 2/3</span><span class="t" data-cd="45020">剩 12:30:20</span></div></div></div>
+    <div class="mg-row"><div class="ci" style="background:linear-gradient(135deg,#e7f0ff,#c4d8ff)">🎧</div><div class="mg-info"><div class="n">漫步者蓝牙耳机 真无线降噪</div><div class="prog"><i style="width:60%"></i></div><div class="mg-meta"><span>已拼 3/5</span><span class="t" data-cd="64200">剩 17:50:00</span></div></div></div>
+  </div>
+  <div class="mg-sec"><div class="mg-head">✅ 已成功 <span class="badge ok">已成团</span></div>
+    <div class="mg-row"><div class="ci" style="background:linear-gradient(135deg,#fff3bf,#ffe066)">🥛</div><div class="mg-info"><div class="n">伊利纯牛奶 250ml×16盒</div><div class="mg-meta"><span>2人团 · 10-18 成团</span><span>待发货</span></div></div></div>
+    <div class="mg-row"><div class="ci" style="background:linear-gradient(135deg,#fff0d6,#ffd9a0)">🍜</div><div class="mg-info"><div class="n">康师傅红烧牛肉面 24连包</div><div class="mg-meta"><span>3人团 · 10-16 成团</span><span>已签收</span></div></div></div>
+  </div>
+  <div class="mg-sec"><div class="mg-head">🕐 待成团 <span class="badge wait">差人</span></div>
+    <div class="mg-row"><div class="ci" style="background:linear-gradient(135deg,#d8f5e3,#a9e5c4)">🍎</div><div class="mg-info"><div class="n">烟台红富士苹果 5斤装</div><div class="mg-meta"><span>2人团 · 差1人</span><span class="t" data-cd="18300">剩 05:05:00</span></div></div></div>
+  </div>
+</div>
+
+<!-- ============ TAB5 我的 ============ -->
+<div class="page" id="page-4">
+  <div class="mehead"><div class="merow"><div class="avatar">🐰</div><div><div class="nm">拼团达人小兔</div><div class="lv">🏅 黄金团长 · V3</div></div></div></div>
+  <div class="mestats"><div><b>8</b><span>待付款</span></div><div><b>12</b><span>待成团</span></div><div><b>36</b><span>已拼单</span></div><div><b>5</b><span>优惠券</span></div></div>
+  <div class="melist">
+    <div class="mi" onclick="toast('我的订单：待付款2 / 待发货3 / 待收货1')"><span class="ic">📦</span>我的订单<span class="rt">›</span></div>
+    <div class="mi" onclick="toast('优惠券：满30减5、满99减20 等5张可用')"><span class="ic">🎫</span>优惠券<span class="rt">5张 ›</span></div>
+    <div class="mi" onclick="toast('已收藏 18 件拼团好物')"><span class="ic">❤️</span>我的收藏<span class="rt">›</span></div>
+    <div class="mi" onclick="toast('收货地址：上海市浦东新区 芳甸路 88号')"><span class="ic">📍</span>收货地址<span class="rt">›</span></div>
+    <div class="mi" onclick="toast('设置：消息推送已开 / 自动拼团已关')"><span class="ic">⚙️</span>设置<span class="rt">›</span></div>
+  </div>
+  <div class="coupon"><div class="amt">¥20</div><div class="cd2"><b>拼团专享券 · 满99可用</b><span>有效期至 2026-10-31 · 全场拼团通用</span></div></div>
+</div>
+
+<div class="tabbar">
+  <div class="tab on" data-t="0" onclick="goTab(0)"><span class="ic">🤝</span>拼团</div>
+  <div class="tab" data-t="1" onclick="goTab(1)"><span class="ic">🗂️</span>分类</div>
+  <div class="tab" data-t="2" onclick="goTab(2)"><span class="ic">🛒</span>购物车</div>
+  <div class="tab" data-t="3" onclick="goTab(3)"><span class="ic">👥</span>我的拼团</div>
+  <div class="tab" data-t="4" onclick="goTab(4)"><span class="ic">🙋</span>我的</div>
+</div>
+<div id="toast"></div>
+</div>
+
+<script>
+// ---------- tab 切换 + 深链 ----------
+function goTab(n){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+n).classList.add('active');
+  document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('on',+t.dataset.t===n));
+  window.scrollTo(0,0);
+}
+(function(){
+  var m=/[?&]tab=(\d)/.exec(location.search)||/#tab=(\d)/.exec(location.hash);
+  if(m&&+m[1]>=0&&+m[1]<=4) goTab(+m[1]);
+})();
+// ---------- toast ----------
+var toastTimer=null;
+function toast(msg){
+  var el=document.getElementById('toast');
+  el.textContent=msg; el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(function(){el.classList.remove('show')},2200);
+}
+// ---------- 倒计时 ----------
+function pad(n){return (n<10?'0':'')+n}
+function tick(){
+  document.querySelectorAll('[data-cd]').forEach(function(el){
+    var s=Math.max(0,+el.getAttribute('data-cd')-1);
+    el.setAttribute('data-cd',s);
+    var h=Math.floor(s/3600),m=Math.floor(s%3600/60),ss=s%60;
+    if(el.classList.contains('count')){
+      var c=el.querySelectorAll('.cd');
+      c[0].textContent=pad(h);c[1].textContent=pad(m);c[2].textContent=pad(ss);
+    }else{
+      el.textContent='剩 '+pad(h)+':'+pad(m)+':'+pad(ss);
+    }
+  });
+}
+setInterval(tick,1000);
+// ---------- 参团 ----------
+function joinGroup(gid,btn){
+  if(btn.classList.contains('done')){toast('您已参团，邀请好友来拼吧');return}
+  var card=btn.closest('.gcard');
+  var need=+card.getAttribute('data-need'),cur=+card.getAttribute('data-cur')+1;
+  card.setAttribute('data-cur',cur);
+  var needEl=card.querySelector('.gneed');
+  if(cur>=need){
+    needEl.textContent='🎉 成团成功！';
+    btn.textContent='已成团';btn.classList.add('done');
+    toast('参团成功，恭喜成团！');
+  }else{
+    needEl.textContent='⚡ 差'+(need-cur)+'人成团';
+    btn.textContent='已参团 · 邀好友';btn.classList.add('done');
+    toast('参团成功，还差 '+(need-cur)+' 人，快邀请好友！');
+  }
+}
+// ---------- 开团 ----------
+function openGroup(name,btn){
+  if(btn.dataset.opened){toast('您已开团：'+name+'，分享给好友拼团吧');return}
+  btn.dataset.opened='1';
+  btn.textContent='已开团 ✓';
+  btn.style.background='#00b578';btn.style.color='#fff';
+  toast('开团成功：'+name+'，快分享给好友一起拼！');
+}
+// ---------- 分类 ----------
+var cats=[
+  [['🍎','烟台红富士苹果 5斤装','¥19.9','¥35.9','linear-gradient(135deg,#d8f5e3,#a9e5c4)'],['🍜','康师傅红烧牛肉面 24连包','¥45.9','¥62','linear-gradient(135deg,#fff3bf,#ffe066)'],['🥛','伊利纯牛奶 250ml×16盒','¥39.9','¥58','linear-gradient(135deg,#fff3bf,#ffe066)'],['🍚','泰国香米 10斤 真空装','¥49.9','¥69','linear-gradient(135deg,#fff0d6,#ffd9a0)'],['☕','三顿半速溶咖啡 24颗装','¥99','¥149','linear-gradient(135deg,#fff0d6,#ffd9a0)']],
+  [['🧻','维达抽纸 120抽×12包','¥32.9','¥49.9','linear-gradient(135deg,#d8f5e3,#a9e5c4)'],['🧴','蓝月亮洗衣液 4kg','¥25.9','¥42','linear-gradient(135deg,#e7f0ff,#c4d8ff)'],['🧹','大卫拖把 免手洗旋转','¥39.9','¥69','linear-gradient(135deg,#e7f0ff,#c4d8ff)'],['🧼','舒肤佳香皂 3块装','¥15.9','¥24','linear-gradient(135deg,#fff3bf,#ffe066)']],
+  [['🍼','贝亲奶瓶 防胀气','¥69','¥98','linear-gradient(135deg,#fde8ff,#f5c2f7)'],['👶','帮宝适纸尿裤 NB64','¥59','¥89','linear-gradient(135deg,#fde8ff,#f5c2f7)'],['🧸','费雪婴儿安抚玩具','¥45','¥69','linear-gradient(135deg,#ffe3ec,#ffc4d6)'],['🥣','世喜辅食碗 硅胶','¥29.9','¥45','linear-gradient(135deg,#ffe3ec,#ffc4d6)']],
+  [['💄','完美日记哑光口红','¥59.9','¥89.9','linear-gradient(135deg,#ffe3ec,#ffc4d6)'],['🧴','珀莱雅水乳套装','¥129','¥189','linear-gradient(135deg,#ffe3ec,#ffc4d6)'],['💅','蔻斯琪指甲油套装','¥35.9','¥59','linear-gradient(135deg,#fde8ff,#f5c2f7)'],['🧖','膜法世家面膜 21片','¥49.9','¥79','linear-gradient(135deg,#fde8ff,#f5c2f7)']],
+  [['🎧','漫步者蓝牙耳机','¥99','¥169','linear-gradient(135deg,#e7f0ff,#c4d8ff)'],['🔋','罗马仕充电宝 20000mAh','¥79','¥129','linear-gradient(135deg,#e7f0ff,#c4d8ff)'],['⌚','小米手环 9 NFC版','¥229','¥299','linear-gradient(135deg,#d8f5e3,#a9e5c4)'],['💡','米家智能台灯','¥89','¥149','linear-gradient(135deg,#fff3bf,#ffe066)']]
+];
+function renderCat(i){
+  document.getElementById('catright').innerHTML=cats[i].map(function(g){
+    return '<div class="catgood"><div class="ci" style="background:'+g[4]+'">'+g[0]+'</div><div style="flex:1"><div class="cn">'+g[1]+'</div><div class="cp">'+g[2]+'<small>'+g[3]+'</small></div></div></div>';
+  }).join('');
+}
+function switchCat(i,el){
+  document.querySelectorAll('.catitem').forEach(c=>c.classList.remove('on'));
+  el.classList.add('on');renderCat(i);
+}
+renderCat(0);
+// ---------- 购物车 ----------
+function toggleCk(el){el.classList.toggle('on');calc()}
+function chQty(btn,d){
+  var b=btn.parentElement.querySelector('b');
+  var v=Math.max(1,+b.textContent+d);b.textContent=v;calc();
+}
+function calc(){
+  var t=0;
+  document.querySelectorAll('.cart-row').forEach(function(r){
+    if(r.querySelector('.ck').classList.contains('on')){
+      t+=+r.getAttribute('data-price')*(+r.querySelector('.qty b').textContent);
+    }
+  });
+  document.getElementById('total').textContent='¥'+t.toFixed(1);
+}
+function checkout(){
+  var n=document.querySelectorAll('.cart-row .ck.on').length;
+  if(!n){toast('请先勾选要结算的商品');return}
+  toast('拼团订单提交成功，共 '+n+' 件商品待支付');
+}
+</script>
+</body>
+</html>

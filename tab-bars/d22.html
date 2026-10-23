@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>底部Tab · 标签抽屉</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;background:#141210;display:flex;justify-content:center}
+.phone{width:430px;max-width:100%;height:900px;max-height:100vh;background:#f5f1e8;position:relative;overflow:hidden;display:flex;flex-direction:column;color:#3a3226}
+.status{height:44px;flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding:0 26px;font-size:13px;font-weight:600;color:#6a5f4c}
+.nav{padding:8px 18px 12px;flex-shrink:0}
+.nav h1{font-size:22px;color:#2e2620}
+.nav p{font-size:12px;color:#9a8c74;margin-top:4px}
+.feed{flex:1;overflow:hidden;padding:4px 14px}
+.todo{background:#fffdf6;border:1px solid #e8e0cf;border-radius:12px;padding:12px 14px;margin-bottom:10px;display:flex;gap:12px;align-items:center;box-shadow:0 1px 3px rgba(90,70,40,.08)}
+.chk{width:22px;height:22px;border-radius:50%;border:2px solid #c9bfa8;flex-shrink:0}
+.chk.done{background:#7fb069;border-color:#7fb069}
+.txt{flex:1;min-width:0}
+.txt .t{font-size:14px;font-weight:600}
+.txt .t.done{color:#b3a88f;text-decoration:line-through}
+.txt .d{font-size:12px;color:#9a8c74;margin-top:3px}
+.pri{font-size:10px;flex-shrink:0;padding:3px 8px;border-radius:10px;background:#f0e6d2;color:#8a6f4d}
+/* ---- 抽屉区 ---- */
+.drawerzone{position:relative;flex-shrink:0;height:118px}
+/* 标签卡片：平时藏在底栏下方 */
+.tagcard{position:absolute;left:50%;bottom:8px;transform:translate(-50%,120%);background:#2e2620;color:#f5f1e8;border-radius:14px;padding:12px 22px 14px;text-align:center;min-width:190px;z-index:4;transition:transform .38s cubic-bezier(.34,1.4,.44,1);box-shadow:0 -6px 20px rgba(46,38,32,.3)}
+.tagcard::before{content:"";position:absolute;top:-7px;left:50%;transform:translateX(-50%);width:44px;height:14px;background:#c9bfa8;border-radius:4px}
+.tagcard.show{transform:translate(-50%,0)}
+.tagcard .n{font-size:16px;font-weight:700;letter-spacing:2px}
+.tagcard .s{font-size:11px;color:#b3a88f;margin-top:4px}
+/* 底栏 */
+.dock{position:absolute;left:0;right:0;bottom:0;height:92px;background:#2e2620;display:flex;z-index:5;border-top:3px solid #c9bfa8}
+.tab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;color:#8a7c66;font-size:11px;cursor:pointer;position:relative}
+.tab .ic{font-size:26px;line-height:1;transition:transform .25s}
+.tab.on{color:#ffd98a}
+.tab.on .ic{transform:translateY(-3px)}
+</style>
+</head>
+<body>
+<div class="phone">
+<div class="status"><span>21:56</span><span>5G ▂▄▆ 🔋</span></div>
+<div class="nav"><h1>今日待办</h1><p>还剩 4 件事，加油收尾</p></div>
+<div class="feed">
+<div class="todo"><div class="chk done"></div><div class="txt"><div class="t done">晨跑 5 公里</div><div class="d">滨江步道，配速 6'30"</div></div><span class="pri">已完成</span></div>
+<div class="todo"><div class="chk"></div><div class="txt"><div class="t">交季度报销单</div><div class="d">发票贴好，下午三点前</div></div><span class="pri">紧急</span></div>
+<div class="todo"><div class="chk"></div><div class="txt"><div class="t">给阳台绿植换盆</div><div class="d">买了新土和陶盆</div></div><span class="pri">生活</span></div>
+<div class="todo"><div class="chk"></div><div class="txt"><div class="t">读完《设计心理学》第三章</div><div class="d">做 5 条笔记</div></div><span class="pri">学习</span></div>
+<div class="todo"><div class="chk"></div><div class="txt"><div class="t">预约周末洗车</div><div class="d">团购券周日到期</div></div><span class="pri">生活</span></div>
+<div class="todo"><div class="chk"></div><div class="txt"><div class="t">备份手机照片</div><div class="d">上个月的有 3 个 G</div></div><span class="pri">琐事</span></div>
+</div>
+<div class="drawerzone">
+<div class="tagcard" id="tagcard"><div class="n" id="tagN">首页</div><div class="s" id="tagS">看看今天有什么新鲜事</div></div>
+<div class="dock" id="dock">
+<div class="tab" data-i="0"><span class="ic">📋</span>首页</div>
+<div class="tab" data-i="1"><span class="ic">📊</span>统计</div>
+<div class="tab" data-i="2"><span class="ic">🔔</span>提醒</div>
+<div class="tab" data-i="3"><span class="ic">👤</span>我的</div>
+</div>
+</div>
+</div>
+<script>
+const tabs=[...document.querySelectorAll('.tab')];
+const card=document.getElementById('tagcard');
+const tagN=document.getElementById('tagN'), tagS=document.getElementById('tagS');
+const names=[['首页','看看今天有什么新鲜事'],['统计','本周完成了 18 件事'],['提醒','3 条提醒待查看'],['我的','连续打卡 12 天']];
+let timer=null;
+function activate(i){
+  tabs.forEach((t,j)=>t.classList.toggle('on',i===j));
+  tagN.textContent=names[i][0];
+  tagS.textContent=names[i][1];
+  card.classList.add('show');
+  clearTimeout(timer);
+  timer=setTimeout(()=>card.classList.remove('show'),1500);
+}
+tabs.forEach((t,i)=>t.addEventListener('click',()=>activate(i)));
+const q=new URLSearchParams(location.search);
+const n=parseInt(q.get('tab'),10);
+activate(!isNaN(n)&&n>=0&&n<4?n:0);
+</script>
+</body>
+</html>

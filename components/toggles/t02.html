@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>拉链开关</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;display:flex;align-items:center;justify-content:center;background:#0e0f13;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;color:#e8eaf0;padding:20px}
+body.freeze *{transition:none!important;animation:none!important}
+.stage{width:360px;max-width:100%;text-align:center}
+h2{font-size:17px;letter-spacing:3px;margin-bottom:4px}
+.sub{font-size:12px;color:#8a8fa3;margin-bottom:20px}
+.device{cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent}
+.pouch{width:320px;height:210px;margin:0 auto;position:relative;border-radius:18px;overflow:hidden;background:linear-gradient(180deg,#3d4354,#252a38);box-shadow:0 12px 32px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.08)}
+.inside{position:absolute;inset:16px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:6px;background:radial-gradient(circle at 50% 40%,#fff3c4,#ffcf5e 55%,#e09b1f);opacity:0;transform:scale(.92);transition:opacity .7s ease .25s,transform .7s ease .25s}
+.device.on .inside{opacity:1;transform:scale(1)}
+.inside .k{font-size:64px;font-weight:900;color:#7a4d00}
+.inside .t{font-size:13px;color:#7a4d00;letter-spacing:4px}
+.tape{position:absolute;top:0;bottom:0;width:50%;background:linear-gradient(180deg,#4a5165,#333949);transition:transform .8s cubic-bezier(.5,0,.3,1)}
+.tape.L{left:0;border-right:1px solid rgba(0,0,0,.4)}
+.tape.R{right:0;border-left:1px solid rgba(0,0,0,.4)}
+.device.on .tape.L{transform:translateX(-30px)}
+.device.on .tape.R{transform:translateX(30px)}
+.teeth{position:absolute;top:8px;bottom:8px;width:13px;background:repeating-linear-gradient(180deg,#d6dae4 0 7px,#7e8494 7px 14px);border-radius:3px;box-shadow:0 0 4px rgba(0,0,0,.5)}
+.tape.L .teeth{right:-7px}
+.tape.R .teeth{left:-7px}
+.stitch{position:absolute;top:0;bottom:0;width:26px;background:repeating-linear-gradient(180deg,transparent 0 10px,rgba(255,255,255,.14) 10px 12px)}
+.tape.L .stitch{left:14px}
+.tape.R .stitch{right:14px}
+.pull{position:absolute;top:50%;left:50%;width:36px;height:60px;margin:-30px 0 0 -18px;z-index:5;background:linear-gradient(180deg,#f0f3f8,#a7aec0);border-radius:9px;box-shadow:0 4px 10px rgba(0,0,0,.55),inset 0 1px 0 #fff;transition:transform .8s cubic-bezier(.45,1.5,.4,1)}
+.pull::after{content:'';position:absolute;top:8px;left:50%;width:14px;height:20px;margin-left:-7px;border-radius:7px;background:#252a38;box-shadow:inset 0 2px 4px #000}
+.pull::before{content:'';position:absolute;bottom:6px;left:8px;right:8px;height:4px;border-radius:2px;background:#7e8494}
+.device.on .pull{transform:translateX(104px) rotate(10deg)}
+.status{margin-top:18px;font-size:14px;color:#9aa0b4}
+.status b{color:#ffd479}
+.hint{font-size:11px;color:#5c6172;margin-top:6px}
+</style>
+</head>
+<body>
+<div class="stage">
+<h2>拉链开关</h2>
+<div class="sub">点击拉开 / 拉上拉链</div>
+<div class="device" id="dev">
+<div class="pouch">
+<div class="inside"><div class="k">开</div><div class="t">已拉开</div></div>
+<div class="tape L"><div class="stitch"></div><div class="teeth"></div></div>
+<div class="tape R"><div class="stitch"></div><div class="teeth"></div></div>
+<div class="pull"></div>
+</div>
+</div>
+<div class="status">状态：<b id="st">关 · 已拉上</b></div>
+<div class="hint">点击拉链切换</div>
+</div>
+<script>
+var dev=document.getElementById('dev'),st=document.getElementById('st'),on=location.search.indexOf('s=1')>-1;
+function render(){dev.classList.toggle('on',on);st.textContent=on?'开 · 已拉开':'关 · 已拉上';}
+if(on)document.body.classList.add('freeze');
+dev.addEventListener('click',function(){on=!on;render();});
+render();
+</script>
+</body>
+</html>

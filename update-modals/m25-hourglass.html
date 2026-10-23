@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>沙漏更新 · v4.0.0</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    min-height: 100vh; display: flex; align-items: center; justify-content: center;
+    background: radial-gradient(120% 100% at 50% 0%, #1a2340 0%, #0b0f22 60%, #060913 100%);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    padding: 20px; color: #fff;
+  }
+  .modal {
+    width: 340px; background: rgba(18,24,48,.82);
+    backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+    border: 1px solid rgba(232,182,76,.22); border-radius: 26px;
+    padding: 24px 24px 22px; display: flex; flex-direction: column; align-items: center;
+    box-shadow: 0 24px 60px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.08);
+    position: relative;
+  }
+  .modal.hidden { display: none; }
+  .m-head { width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+  .m-title { font-size: 18px; font-weight: 700; letter-spacing: 1px; display: flex; align-items: center; gap: 8px; }
+  .m-title .hg-ico { color: #e8b64c; }
+  .ver { font-size: 11px; color: #e8b64c; border: 1px solid rgba(232,182,76,.5); border-radius: 99px; padding: 3px 10px; background: rgba(232,182,76,.08); }
+  .x { background: none; border: none; color: rgba(255,255,255,.4); font-size: 24px; cursor: pointer; line-height: 1; }
+  .x:hover { color: #fff; }
+  .m-sub { width: 100%; font-size: 14px; color: rgba(255,255,255,.78); margin-bottom: 4px; text-align: left; }
+  .m-meta { width: 100%; font-size: 12px; color: rgba(255,255,255,.38); margin-bottom: 10px; text-align: left; font-variant-numeric: tabular-nums; }
+
+  .stage { position: relative; width: 200px; height: 280px; margin: 4px 0 2px; transition: opacity .4s; }
+  .stage.dim { opacity: .45; }
+  .stage svg.glass { position: absolute; inset: 0; }
+  .stage canvas { position: absolute; inset: 0; }
+  .hg-flip { animation: hgflip 1.2s cubic-bezier(.6,.05,.3,1) forwards; transform-origin: 50% 50%; }
+  @keyframes hgflip { to { transform: rotate(180deg); } }
+
+  .pct-row { display: flex; align-items: baseline; gap: 8px; margin-top: 6px; }
+  .pct { font-size: 40px; font-weight: 800; color: #f3cd7a; font-variant-numeric: tabular-nums; text-shadow: 0 0 22px rgba(232,182,76,.35); }
+  .pct-lbl { font-size: 12px; color: rgba(255,255,255,.45); letter-spacing: 2px; }
+
+  .done-badge {
+    display: none; align-items: center; gap: 8px; margin-top: 8px;
+    color: #f3cd7a; font-size: 15px; font-weight: 700; letter-spacing: 2px;
+  }
+  .done-badge.show { display: flex; animation: pop .5s cubic-bezier(.2,1.5,.4,1); }
+  .done-badge .ck {
+    width: 30px; height: 30px; border-radius: 50%;
+    background: linear-gradient(135deg, #ffe9a8, #e8a83c);
+    color: #3a2a08; font-weight: 900; display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 4px 16px rgba(232,182,76,.5);
+  }
+  @keyframes pop { from { transform: scale(.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+  .main-btn {
+    width: 100%; margin-top: 16px; padding: 14px 0; border-radius: 99px; border: 1px solid rgba(255,255,255,.16);
+    background: rgba(255,255,255,.08); color: rgba(255,255,255,.9);
+    font-size: 16px; font-weight: 600; letter-spacing: 2px; cursor: pointer; transition: all .25s;
+  }
+  .main-btn:hover { background: rgba(255,255,255,.14); }
+  .main-btn.gold { background: linear-gradient(135deg, #ffe9a8, #e8a83c); color: #3a2a08; border: none; box-shadow: 0 8px 26px rgba(232,168,60,.35); }
+  .main-btn:disabled { opacity: .45; cursor: default; }
+  .replay { margin-top: 12px; background: none; border: none; color: rgba(255,255,255,.35); font-size: 12.5px; cursor: pointer; letter-spacing: 1px; }
+  .replay:hover { color: #e8b64c; }
+  .toast {
+    position: fixed; top: 26px; left: 50%; transform: translateX(-50%) translateY(-16px);
+    background: rgba(16,20,38,.95); border: 1px solid rgba(232,182,76,.3); color: #fff;
+    padding: 10px 22px; border-radius: 99px; font-size: 14px; opacity: 0; pointer-events: none; z-index: 60;
+    transition: opacity .25s, transform .25s;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+
+<div class="modal" id="modal">
+  <div class="m-head">
+    <div class="m-title"><span class="hg-ico">⏳</span> 沙漏更新 <span class="ver">v4.0.0</span></div>
+    <button class="x" id="xBtn">×</button>
+  </div>
+  <div class="m-sub" id="statusText">细沙正在流下，新版本正在接近</div>
+  <div class="m-meta" id="metaText">0.0MB / 156.8MB · -- MB/s</div>
+
+  <div class="stage" id="stage">
+    <svg class="glass" width="200" height="280" viewBox="0 0 200 280">
+      <rect x="42" y="6" width="116" height="16" rx="6" fill="#5a3d20"/>
+      <rect x="42" y="6" width="116" height="6" rx="3" fill="#7a552e"/>
+      <path d="M62,22 C62,80 96,108 96,140 C96,172 62,200 62,258 L138,258 C138,200 104,172 104,140 C104,108 138,80 138,22 Z"
+            fill="rgba(150,180,230,.07)" stroke="rgba(190,210,245,.55)" stroke-width="3"/>
+      <rect x="42" y="258" width="116" height="16" rx="6" fill="#5a3d20"/>
+      <rect x="42" y="266" width="116" height="6" rx="3" fill="#3d2812"/>
+    </svg>
+    <canvas id="cv" width="200" height="280"></canvas>
+  </div>
+
+  <div class="pct-row"><div class="pct" id="pctText">0%</div><div class="pct-lbl" id="stageLabel">下载中</div></div>
+  <div class="done-badge" id="doneBadge"><span class="ck">✓</span> 时间到 · 安装成功</div>
+
+  <button class="main-btn" id="mainBtn">取消更新</button>
+  <button class="replay" id="replayBtn">↺ 重新演示</button>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  const cv = document.getElementById('cv'), ctx = cv.getContext('2d');
+  const pctText = document.getElementById('pctText'), stageLabel = document.getElementById('stageLabel');
+  const statusText = document.getElementById('statusText'), metaText = document.getElementById('metaText');
+  const mainBtn = document.getElementById('mainBtn'), modal = document.getElementById('modal');
+  const stage = document.getElementById('stage'), doneBadge = document.getElementById('doneBadge');
+  const toast = document.getElementById('toast');
+
+  const TOTAL = 156.8;
+  let progress = 0, state = 'downloading', timer = null, showSpeed = 0, dimOn = false;
+  const grains = [];
+  for (let i = 0; i < 42; i++) grains.push({ x: 100 + (Math.random() - .5) * 5, y: 140 + Math.random() * 110, v: 90 + Math.random() * 70, r: 1 + Math.random() * 1.4 });
+
+  function drawSand(p, t) {
+    ctx.clearRect(0, 0, 200, 280);
+    const flowing = (state === 'downloading');
+    // 顶部沙堆：随进度排空
+    const topY = 36 + p * 0.78;
+    if (topY < 132) {
+      const grd = ctx.createLinearGradient(0, topY, 0, 140);
+      grd.addColorStop(0, '#f3cd7a'); grd.addColorStop(1, '#d99f3e');
+      ctx.fillStyle = grd;
+      ctx.beginPath();
+      ctx.moveTo(64, topY); ctx.lineTo(136, topY); ctx.lineTo(106, 138); ctx.lineTo(94, 138);
+      ctx.closePath(); ctx.fill();
+    }
+    // 底部沙堆：随进度增高
+    const peakY = 254 - p * 0.72;
+    const grd2 = ctx.createLinearGradient(0, peakY, 0, 256);
+    grd2.addColorStop(0, '#f3cd7a'); grd2.addColorStop(1, '#c98f34');
+    ctx.fillStyle = grd2;
+    ctx.beginPath();
+    ctx.moveTo(62, 256); ctx.lineTo(138, 256); ctx.lineTo(100, peakY);
+    ctx.closePath(); ctx.fill();
+    ctx.fillStyle = 'rgba(243,205,122,.5)';
+    ctx.beginPath(); ctx.ellipse(100, 256, 38, 5, 0, 0, 7); ctx.fill();
+    // 下落沙粒
+    if (flowing && p < 99.5) {
+      ctx.fillStyle = '#ffe6a3';
+      for (const g of grains) {
+        g.y += g.v * 0.016;
+        if (g.y > peakY + 4) { g.y = 141; g.x = 100 + (Math.random() - .5) * 5; }
+        ctx.beginPath(); ctx.arc(g.x, g.y, g.r, 0, 7); ctx.fill();
+      }
+      // 细流
+      ctx.strokeStyle = 'rgba(255,230,163,.85)'; ctx.lineWidth = 2.4; ctx.lineCap = 'round';
+      ctx.beginPath(); ctx.moveTo(100, 138); ctx.lineTo(100, peakY); ctx.stroke();
+    }
+  }
+
+  function showToast(m) { toast.textContent = m; toast.classList.add('show'); clearTimeout(showToast._t); showToast._t = setTimeout(() => toast.classList.remove('show'), 1800); }
+  function render() {
+    pctText.textContent = Math.floor(progress) + '%';
+    const mb = (progress / 100 * TOTAL).toFixed(1);
+    metaText.textContent = mb + 'MB / ' + TOTAL + 'MB · ' + (state === 'downloading' ? showSpeed.toFixed(1) + ' MB/s' : '-- MB/s');
+  }
+  function setMain(t, gold, dis) { mainBtn.textContent = t; mainBtn.classList.toggle('gold', !!gold); mainBtn.disabled = !!dis; }
+
+  function tick() {
+    if (state !== 'downloading') return;
+    const sp = 8 * (0.6 + Math.random() * 0.8);
+    showSpeed = showSpeed * 0.7 + sp * 0.3;
+    progress += sp * 0.1 / TOTAL * 100;
+    if (progress >= 100) { progress = 100; render(); enterInstalling(); return; }
+    render();
+  }
+  function startTimer() { clearInterval(timer); timer = setInterval(tick, 100); }
+
+  function enterDownloading(reset) {
+    if (reset) { progress = 0; showSpeed = 0; stage.classList.remove('dim', 'hg-flip'); doneBadge.classList.remove('show'); stageLabel.textContent = '下载中'; }
+    state = 'downloading';
+    statusText.textContent = '细沙正在流下，新版本正在接近';
+    setMain('取消更新', false, false);
+    startTimer(); render();
+  }
+  function enterCancelled() {
+    state = 'cancelled'; clearInterval(timer); stage.classList.add('dim');
+    statusText.textContent = '沙漏已停下'; stageLabel.textContent = '已取消';
+    metaText.textContent = (progress / 100 * TOTAL).toFixed(1) + 'MB / ' + TOTAL + 'MB · 已停止';
+    setMain('重新下载', false, false);
+    showToast('已取消更新');
+  }
+  function enterInstalling() {
+    state = 'installing'; clearInterval(timer);
+    statusText.textContent = '时间到，正在翻转沙漏…'; stageLabel.textContent = '安装中';
+    metaText.textContent = TOTAL + 'MB / ' + TOTAL + 'MB · 校验完成';
+    setMain('安装中…', false, true);
+    stage.classList.add('hg-flip');
+    setTimeout(() => { if (state === 'installing') enterDone(); }, 1600);
+  }
+  function enterDone() {
+    state = 'done';
+    statusText.textContent = '新的一轮开始，欢迎 v4.0.0'; stageLabel.textContent = '已完成';
+    metaText.textContent = 'v4.0.0 已安装 · 沙漏已翻转';
+    doneBadge.classList.add('show');
+    setMain('立即体验', true, false);
+    showToast('已更新到 v4.0.0');
+    render();
+  }
+
+  mainBtn.addEventListener('click', () => {
+    if (state === 'downloading') enterCancelled();
+    else if (state === 'cancelled') enterDownloading(true);
+    else if (state === 'done') { modal.classList.add('hidden'); showToast('已进入 v4.0.0'); }
+  });
+  document.getElementById('xBtn').addEventListener('click', () => {
+    if (state === 'downloading') enterCancelled();
+    else modal.classList.add('hidden');
+  });
+  document.getElementById('replayBtn').addEventListener('click', () => { modal.classList.remove('hidden'); enterDownloading(true); });
+
+  // 沙粒渲染循环（与下载 tick 解耦，保证 headless 下也可见）
+  (function sandLoop() { drawSand(progress, performance.now()); requestAnimationFrame(sandLoop); })();
+
+  window.addEventListener('load', () => {
+    if (location.hash === '#mid') { progress = 55; showSpeed = 8.2; render(); startTimer(); }
+    else if (location.hash === '#done') { progress = 100; render(); enterInstalling(); setTimeout(() => enterDone(), 400); }
+    else enterDownloading(false);
+    render();
+  });
+</script>
+</body>
+</html>

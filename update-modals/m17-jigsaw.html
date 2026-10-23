@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>版本更新 · 拼图拼合</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    min-height: 100vh; display: flex; align-items: center; justify-content: center;
+    font-family: -apple-system, "PingFang SC", "Microsoft YaHei", "Segoe UI", Roboto, sans-serif;
+    background: #1c1a26;
+    background-image: radial-gradient(90% 90% at 50% 10%, #2b2740 0%, #16141f 75%);
+    padding: 24px 16px;
+  }
+  .scrim { position: fixed; inset: 0; background: rgba(0,0,0,.4); pointer-events: none; }
+  .modal {
+    position: relative; z-index: 2; width: 340px; max-width: 100%;
+    background: #232032; border: 1px solid rgba(255,255,255,.1); border-radius: 18px;
+    box-shadow: 0 24px 60px rgba(0,0,0,.55);
+    padding: 24px 22px; color: #efeaff;
+  }
+  .modal.hidden { display: none; }
+  .header { display: flex; justify-content: space-between; align-items: center; }
+  .title { font-size: 16px; font-weight: 700; letter-spacing: .14em; }
+  .title em { font-style: normal; color: #f5b93f; }
+  .close { background: none; border: none; font-size: 20px; color: #8a86a0; cursor: pointer; line-height: 1; padding: 4px; }
+  .close:hover { color: #fff; }
+  .status { font-size: 13px; color: #b9b4d6; margin: 10px 0 4px; letter-spacing: .08em; }
+  .meta { font-size: 12px; color: #8a86a0; margin-bottom: 14px; font-variant-numeric: tabular-nums; }
+  .board {
+    position: relative; width: 246px; height: 246px; margin: 0 auto;
+    border-radius: 14px; background: rgba(0,0,0,.28);
+    border: 1px dashed rgba(255,255,255,.18);
+    transition: box-shadow .5s, border-color .5s;
+  }
+  .board.done { border-color: rgba(245,185,63,.7); animation: glowpulse 1.6s ease-in-out infinite; }
+  @keyframes glowpulse {
+    0%,100% { box-shadow: 0 0 0 rgba(245,185,63,0); }
+    50% { box-shadow: 0 0 34px rgba(245,185,63,.45); }
+  }
+  .tile {
+    position: absolute; left: 0; top: 0; width: 78px; height: 78px; border-radius: 10px;
+    transition: transform .55s cubic-bezier(.3,1.25,.4,1), box-shadow .3s;
+    box-shadow: 0 6px 16px rgba(0,0,0,.4);
+  }
+  .board.installing .tile { animation: tbounce .7s ease-in-out infinite; }
+  @keyframes tbounce { 0%,100% { margin-top: 0; } 50% { margin-top: -9px; } }
+  .bignum { font-size: 40px; font-weight: 800; color: #fff; font-variant-numeric: tabular-nums; margin: 14px 0 2px; text-align: center; }
+  .bignum small { font-size: 18px; font-weight: 400; color: #b9b4d6; }
+  .mainbtn { width: 100%; padding: 13px; border-radius: 12px; font-size: 15px; letter-spacing: .28em; text-indent: .28em;
+    background: linear-gradient(135deg, #ffe9a8, #f5b93f); color: #3a2a08; border: none; font-weight: 700;
+    cursor: pointer; margin-top: 12px; }
+  .mainbtn:disabled { opacity: .45; cursor: default; }
+  .mainbtn.ghost { background: transparent; color: #efeaff; border: 1px solid rgba(255,255,255,.3); }
+  .replay { display: block; margin: 12px auto 0; background: none; border: none; color: #8a86a0; font-size: 12px; letter-spacing: .12em; cursor: pointer; }
+  .replay:hover { color: #f5b93f; }
+  .toast { position: fixed; top: 24px; left: 50%; transform: translateX(-50%) translateY(-12px);
+    background: #2b2740; border: 1px solid rgba(245,185,63,.5); color: #efeaff;
+    font-size: 13px; letter-spacing: .1em; padding: 10px 22px; border-radius: 99px;
+    opacity: 0; pointer-events: none; transition: opacity .25s, transform .25s; z-index: 10; }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+<div class="scrim"></div>
+<div class="modal" id="modal">
+  <div class="header">
+    <div class="title">版本更新 · <em>拼图拼合</em></div>
+    <button class="close" id="closeBtn">×</button>
+  </div>
+  <div class="status" id="statusText">正在拼合 v4.0.0（<span id="pieceCount">0</span>/9）</div>
+  <div class="meta" id="metaText">0.0MB / 156.8MB · -- MB/s</div>
+  <div class="board" id="board"></div>
+  <div class="bignum"><span id="pctText">0</span><small>%</small></div>
+  <button class="mainbtn ghost" id="mainBtn">取消更新</button>
+  <button class="replay" id="replayBtn">↺ 重新演示</button>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+  const TOTAL_MB = 156.8;
+  let progress = 0, state = 'downloading', timer = null, showSpeed = 0, placedN = 0, tilesLocked = false;
+  const modal = document.getElementById('modal');
+  const board = document.getElementById('board');
+  const statusText = document.getElementById('statusText');
+  const pieceCount = document.getElementById('pieceCount');
+  const metaText = document.getElementById('metaText');
+  const pctText = document.getElementById('pctText');
+  const mainBtn = document.getElementById('mainBtn');
+  const toast = document.getElementById('toast');
+
+  // 3×3：索引 6,4,2 组成金色对勾，其余深 slate
+  const CHECK = { 6: 1, 4: 1, 2: 1 };
+  const ORDER = [4, 0, 8, 2, 6, 1, 3, 5, 7]; // 拼入顺序：中心→角→边
+  const CELL = 81, SIZE = 78;
+  const tiles = [];
+  const darks = ['#2b3350', '#323b5c', '#28304a', '#2e3757', '#333d63', '#2a3152'];
+
+  function scatterT() {
+    const a = Math.random() * Math.PI * 2, d = 120 + Math.random() * 90;
+    return { x: Math.cos(a) * d, y: Math.sin(a) * d * 0.7, r: (Math.random() - .5) * 160 };
+  }
+  function build() {
+    board.innerHTML = ''; tiles.length = 0;
+    for (let i = 0; i < 9; i++) {
+      const row = Math.floor(i / 3), col = i % 3;
+      const el = document.createElement('div');
+      el.className = 'tile';
+      el.style.background = CHECK[i]
+        ? 'linear-gradient(135deg,#ffe9a8,#f5b93f)'
+        : darks[i % darks.length];
+      if (CHECK[i]) el.style.boxShadow = '0 6px 18px rgba(245,185,63,.35)';
+      const px = col * CELL + 3, py = row * CELL + 3;
+      const s = scatterT();
+      const t = { el, i, placed: { x: px, y: py, r: 0 }, scat: s };
+      el.style.transform = 'translate(' + s.x + 'px,' + s.y + 'px) rotate(' + s.r + 'deg)';
+      el.style.animationDelay = (i * 0.07) + 's';
+      board.appendChild(el); tiles.push(t);
+    }
+    placedN = 0;
+  }
+  function placeTile(t) {
+    t.el.style.transform = 'translate(' + t.placed.x + 'px,' + t.placed.y + 'px) rotate(0deg)';
+  }
+  function scatterTile(t) {
+    t.el.style.transform = 'translate(' + t.scat.x + 'px,' + t.scat.y + 'px) rotate(' + t.scat.r + 'deg)';
+  }
+  function syncTiles() {
+    if (tilesLocked) return;
+    const want = Math.min(9, Math.floor(progress / 100 * 9 + 1e-6));
+    while (placedN < want) { placeTile(tiles[ORDER[placedN]]); placedN++; }
+    pieceCount.textContent = placedN;
+  }
+
+  function showToast(msg) {
+    toast.textContent = msg; toast.classList.add('show');
+    clearTimeout(showToast._t);
+    showToast._t = setTimeout(() => toast.classList.remove('show'), 1800);
+  }
+  function render() {
+    pctText.textContent = Math.floor(progress);
+    const mb = (progress / 100 * TOTAL_MB).toFixed(1);
+    metaText.textContent = mb + 'MB / ' + TOTAL_MB + 'MB · ' +
+      (state === 'downloading' ? showSpeed.toFixed(1) + ' MB/s' : '-- MB/s');
+    syncTiles();
+  }
+  function setMain(label, ghost, disabled) {
+    mainBtn.textContent = label;
+    mainBtn.classList.toggle('ghost', !!ghost);
+    mainBtn.disabled = !!disabled;
+  }
+  function tick() {
+    if (state !== 'downloading') return;
+    const sp = 8 * (0.6 + Math.random() * 0.8);
+    showSpeed = showSpeed * 0.7 + sp * 0.3;
+    progress += sp * 0.1 / TOTAL_MB * 100;
+    if (progress >= 100) { progress = 100; render(); enterInstalling(); return; }
+    render();
+  }
+  function enterDownloading(reset) {
+    if (reset) { progress = 0; showSpeed = 0; build(); board.classList.remove('done', 'installing'); }
+    tilesLocked = false;
+    state = 'downloading';
+    board.classList.remove('done', 'installing');
+    statusText.childNodes[0].textContent = '正在拼合 v4.0.0（';
+    setMain('取消更新', true, false);
+    clearInterval(timer); timer = setInterval(tick, 100); render();
+  }
+  function enterCancelled() {
+    state = 'cancelled'; clearInterval(timer);
+    board.classList.remove('installing');
+    tiles.forEach(scatterTile); placedN = 0; pieceCount.textContent = 0;
+    tilesLocked = true;
+    statusText.childNodes[0].textContent = '拼图已打散（';
+    setMain('重新下载', true, false);
+    showToast('已取消更新'); render();
+  }
+  function enterInstalling() {
+    state = 'installing'; clearInterval(timer);
+    board.classList.add('installing');
+    statusText.childNodes[0].textContent = '正在压合拼图（';
+    setMain('安装中…', true, true);
+    setTimeout(() => { if (state === 'installing') enterDone(); }, 2000);
+    render();
+  }
+  function enterDone() {
+    state = 'done';
+    board.classList.remove('installing'); board.classList.add('done');
+    statusText.childNodes[0].textContent = '拼合完成（';
+    setMain('立即体验', false, false);
+    showToast('已更新到 v4.0.0'); render();
+  }
+  mainBtn.addEventListener('click', () => {
+    if (state === 'downloading') enterCancelled();
+    else if (state === 'cancelled') enterDownloading(true);
+    else if (state === 'done') { modal.classList.add('hidden'); showToast('已进入 v4.0.0'); }
+  });
+  document.getElementById('closeBtn').addEventListener('click', () => {
+    if (state === 'downloading') enterCancelled();
+    else modal.classList.add('hidden');
+  });
+  document.getElementById('replayBtn').addEventListener('click', () => {
+    modal.classList.remove('hidden'); enterDownloading(true);
+  });
+  build();
+  window.addEventListener('load', () => {
+    if (location.hash === '#mid') { progress = 55; }
+    else if (location.hash === '#done') { progress = 100; render(); enterInstalling(); setTimeout(() => enterDone(), 500); return; }
+    enterDownloading(false);
+  });
+</script>
+</body>
+</html>

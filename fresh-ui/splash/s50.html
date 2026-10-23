@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>气球漫游</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{background:#070a12;display:flex;align-items:center;justify-content:center;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;overflow:hidden}
+.stage{position:relative;width:430px;height:900px;flex:none;overflow:hidden}
+.stage i{display:block;position:absolute}
+.brand{position:absolute;left:0;right:0;bottom:104px;text-align:center;z-index:50;animation:brandIn 1s .9s both}
+.brand h1{font-size:32px;letter-spacing:10px;text-indent:10px;color:#fff;font-weight:700;text-shadow:0 2px 24px rgba(0,0,0,.45)}
+.brand p{margin-top:10px;font-size:11px;letter-spacing:5px;color:rgba(255,255,255,.62)}
+@keyframes brandIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.replay{position:absolute;bottom:30px;left:50%;transform:translateX(-50%);z-index:60;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.35);color:#fff;font-size:12px;letter-spacing:2px;padding:9px 24px;border-radius:20px;cursor:pointer;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.shade{position:absolute;left:0;right:0;bottom:0;height:360px;background:linear-gradient(transparent,rgba(8,6,18,.78));z-index:40;pointer-events:none}
+
+.stage{background:linear-gradient(#ffd9a0,#ffab7c 38%,#e8899c 62%,#7c5f9e)}
+
+.sunglow{width:200px;height:200px;left:115px;top:130px;border-radius:50%;background:radial-gradient(circle at 50% 50%,rgba(255,246,220,.95),rgba(255,246,220,0) 68%)}
+.mts{position:absolute;left:0;right:0;bottom:0;height:330px;z-index:4}
+.mts .m1{position:absolute;left:0;right:0;bottom:0;height:220px;background:#6a4a7e;clip-path:polygon(0 100%,0 60%,14% 25%,28% 62%,44% 35%,60% 68%,76% 42%,90% 64%,100% 50%,100% 100%)}
+.mts .m2{position:absolute;left:0;right:0;bottom:0;height:150px;background:#4a3260;clip-path:polygon(0 100%,0 70%,20% 40%,36% 72%,55% 45%,72% 75%,88% 55%,100% 72%,100% 100%)}
+.bal{z-index:6;transform:scale(var(--sc,1));animation:bob 5s ease-in-out infinite alternate}
+.bal .env{width:112px;height:132px;left:0;top:0;border-radius:50% 50% 50% 50%/56% 56% 44% 44%;background:repeating-linear-gradient(90deg,#ff6b6b 0 15px,#ffe66d 15px 30px)}
+.bal .rope1{width:3px;height:44px;left:32px;top:126px;background:rgba(90,60,40,.8)}
+.bal .rope2{width:3px;height:44px;left:77px;top:126px;background:rgba(90,60,40,.8)}
+.bal .bask{width:40px;height:30px;left:36px;top:166px;border-radius:5px;background:linear-gradient(#9a6a42,#6e4526)}
+.bl1{left:60px;top:180px;animation-duration:5s}
+.bl2{left:250px;top:120px;--sc:.68;animation-duration:6.4s;animation-delay:-2s}
+.bl2 .env{background:repeating-linear-gradient(90deg,#4ecdc4 0 15px,#f7fff7 15px 30px)}
+.bl3{left:160px;top:300px;--sc:.45;animation-duration:7.2s;animation-delay:-4s}
+.bl3 .env{background:repeating-linear-gradient(90deg,#a78bfa 0 15px,#fbcfe8 15px 30px)}
+@keyframes bob{to{transform:translateY(-26px) scale(var(--sc,1))}}
+.cloud{width:130px;height:46px;border-radius:23px;background:rgba(255,255,255,.9);animation:cloud 18s ease-in-out infinite alternate;z-index:5}
+.cc1{left:20px;top:420px}.cc2{left:280px;top:500px;animation-delay:-9s;transform:scale(.7)}
+@keyframes cloud{to{transform:translateX(80px)}}
+
+</style></head><body>
+<div class="stage" id="stage">
+
+<i class="sunglow"></i>
+<i class="bal bl1"><i class="env"></i><i class="rope1"></i><i class="rope2"></i><i class="bask"></i></i>
+<i class="bal bl2"><i class="env"></i><i class="rope1"></i><i class="rope2"></i><i class="bask"></i></i>
+<i class="bal bl3"><i class="env"></i><i class="rope1"></i><i class="rope2"></i><i class="bask"></i></i>
+<i class="cloud cc1"></i><i class="cloud cc2"></i>
+<i class="mts"><i class="m1"></i><i class="m2"></i></i>
+
+<div class="shade"></div>
+<div class="brand"><h1>气球漫游</h1><p>BALLOON</p></div>
+<button class="replay" onclick="var s=document.getElementById('stage');s.replaceWith(s.cloneNode(true))">重新播放</button>
+</div>
+</body></html>

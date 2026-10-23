@@ -1,0 +1,25 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>星系旋转 · 加载动画</title><style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;background:#05060e;display:flex;flex-direction:column;align-items:center;justify-content:center;
+font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;color:#e8eaf0;padding:24px 12px}
+h1{font-size:15px;font-weight:600;letter-spacing:4px;color:#fbbf24;margin-bottom:6px}
+.sub{font-size:11px;color:#8a90a6;margin-bottom:30px;letter-spacing:3px}
+.stage{width:360px;max-width:94vw;height:300px;position:relative;display:flex;align-items:center;justify-content:center}
+.gal{width:270px;height:270px;position:relative}
+.st{position:absolute;width:3px;height:3px;border-radius:50%;background:#fff;animation:twk 2s ease-in-out infinite}
+@keyframes twk{50%{opacity:.15}}
+.core{position:absolute;top:50%;left:50%;width:44px;height:44px;margin:-22px 0 0 -22px;border-radius:50%;
+background:radial-gradient(circle at 40% 40%,#fff7d6,#fbbf24 55%,#b45309);box-shadow:0 0 34px 10px rgba(251,191,36,.55);
+animation:core 3s ease-in-out infinite}
+@keyframes core{50%{transform:scale(1.12)}}
+.ring{position:absolute;top:50%;left:50%;border:1px solid rgba(255,255,255,.16);border-radius:50%;animation:spn linear infinite}
+.r1{width:120px;height:120px;margin:-60px 0 0 -60px;animation-duration:5s}
+.r2{width:185px;height:185px;margin:-92.5px 0 0 -92.5px;animation-duration:9s;animation-direction:reverse}
+.r3{width:250px;height:250px;margin:-125px 0 0 -125px;animation-duration:15s}
+.pl{position:absolute;top:-6px;left:50%;margin-left:-6px;width:12px;height:12px;border-radius:50%}
+.r1 .pl{background:#38bdf8;box-shadow:0 0 12px #38bdf8}.r2 .pl{background:#f472b6;box-shadow:0 0 12px #f472b6}
+.r3 .pl{background:#a78bfa;box-shadow:0 0 12px #a78bfa;width:9px;height:9px;margin-left:-4.5px;top:-4.5px}
+@keyframes spn{to{transform:rotate(360deg)}}
+</style></head><body><h1>星系旋转</h1><div class="sub">LOADING · 加载中</div><div class="stage"><div class="gal"><i class="st" style="left:0%;top:0%;animation-delay:0.00s"></i><i class="st" style="left:67%;top:41%;animation-delay:0.37s"></i><i class="st" style="left:34%;top:82%;animation-delay:0.74s"></i><i class="st" style="left:1%;top:23%;animation-delay:1.11s"></i><i class="st" style="left:68%;top:64%;animation-delay:1.48s"></i><i class="st" style="left:35%;top:5%;animation-delay:1.85s"></i><i class="st" style="left:2%;top:46%;animation-delay:0.22s"></i><i class="st" style="left:69%;top:87%;animation-delay:0.59s"></i><i class="st" style="left:36%;top:28%;animation-delay:0.96s"></i><i class="st" style="left:3%;top:69%;animation-delay:1.33s"></i><i class="st" style="left:70%;top:10%;animation-delay:1.70s"></i><i class="st" style="left:37%;top:51%;animation-delay:0.07s"></i><i class="st" style="left:4%;top:92%;animation-delay:0.44s"></i><i class="st" style="left:71%;top:33%;animation-delay:0.81s"></i><i class="st" style="left:38%;top:74%;animation-delay:1.18s"></i><i class="st" style="left:5%;top:15%;animation-delay:1.55s"></i><i class="st" style="left:72%;top:56%;animation-delay:1.92s"></i><i class="st" style="left:39%;top:97%;animation-delay:0.29s"></i><i class="st" style="left:6%;top:38%;animation-delay:0.66s"></i><i class="st" style="left:73%;top:79%;animation-delay:1.03s"></i><i class="st" style="left:40%;top:20%;animation-delay:1.40s"></i><i class="st" style="left:7%;top:61%;animation-delay:1.77s"></i><i class="st" style="left:74%;top:2%;animation-delay:0.14s"></i><i class="st" style="left:41%;top:43%;animation-delay:0.51s"></i><div class="ring r1"><i class="pl"></i></div><div class="ring r2"><i class="pl"></i></div><div class="ring r3"><i class="pl"></i></div><div class="core"></div></div></div></body></html>

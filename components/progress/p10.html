@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>p10 烘焙 · 进度指示</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0b0e14;color:#e8ecf4;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+.stage{width:360px;max-width:94vw;background:#141926;border:1px solid #232c3f;border-radius:18px;padding:18px 16px 20px;box-shadow:0 10px 40px rgba(0,0,0,.5)}
+.title{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:14px}
+.title h3{font-size:16px;font-weight:600;letter-spacing:2px}
+.title .pct{font-size:22px;font-weight:700;color:#ffd166;font-variant-numeric:tabular-nums}
+.scene{position:relative;height:392px;border-radius:12px;overflow:hidden;border:1px solid #1a2138;
+background:radial-gradient(circle at 30% 20%,#1a2033 0%,#0b0e18 70%)}
+.oven{position:absolute;left:14px;top:18px;width:250px;height:300px;border-radius:16px;
+background:linear-gradient(160deg,#2b3348,#171c2a);border:1px solid #39415c;box-shadow:0 10px 30px rgba(0,0,0,.55)}
+.otop{display:flex;justify-content:space-between;align-items:center;padding:12px 16px 8px;font-size:13px;letter-spacing:2px;color:#c8d3ea}
+.otop .temp{color:#ff9d5c;font-weight:700;font-variant-numeric:tabular-nums}
+.owin{position:relative;margin:2px 16px 0;height:180px;border-radius:10px;background:#05070d;overflow:hidden;border:1px solid #2a3247}
+#heat{position:absolute;inset:0;background:radial-gradient(circle at 50% 75%,rgba(255,140,40,.55),rgba(255,80,20,.12) 60%,transparent 75%)}
+.tray{position:absolute;left:10%;right:10%;bottom:16%;height:10px;border-radius:5px;background:#3d465e;box-shadow:0 2px 6px rgba(0,0,0,.6)}
+#dough{position:absolute;left:50%;bottom:19%;width:104px;height:72px;border-radius:50%;transform:translateX(-50%)}
+#waves{position:absolute;left:0;right:0;top:6%;height:40px;pointer-events:none}
+#waves i{position:absolute;bottom:0;width:26px;height:34px;border:3px solid rgba(255,200,130,.8);border-top:none;border-left:none;border-right:none;border-radius:0 0 14px 14px}
+#waves i:nth-child(1){left:26%}
+#waves i:nth-child(2){left:47%}
+#waves i:nth-child(3){left:68%}
+.obase{position:relative;height:74px}
+.knob{position:absolute;left:50%;top:14px;width:40px;height:40px;margin-left:-20px;border-radius:50%;
+background:radial-gradient(circle at 35% 30%,#4a5468,#232936 70%);border:2px solid #39415c}
+.knob:after{content:"";position:absolute;left:50%;top:3px;width:3px;height:12px;margin-left:-1.5px;background:#ffd166;border-radius:2px}
+.thermo{position:absolute;right:22px;top:60px;width:26px;height:216px}
+.ttube{position:absolute;inset:0;border-radius:13px;background:#0a0d16;border:1px solid #2a3247;overflow:hidden}
+#tfill{position:absolute;left:0;right:0;bottom:0;height:0%}
+.tlabel{position:absolute;left:-8px;right:-8px;top:-26px;text-align:center;font-size:11px;color:#9aa7c2;letter-spacing:1px}
+#badge{position:absolute;left:50%;top:44%;transform:translate(-50%,-50%);font-size:15px;letter-spacing:2px;color:#3a2200;
+background:linear-gradient(160deg,#ffe1a1,#ffb84d);border-radius:22px;padding:12px 22px;font-weight:800;white-space:nowrap;
+box-shadow:0 6px 26px rgba(255,184,77,.55);border:2px solid #fff3d6}
+.cap{position:absolute;left:0;right:0;bottom:0;height:40px;display:flex;align-items:center;justify-content:center;font-size:13px;color:#9aa7c2;letter-spacing:1px}
+.cap b{color:#ffd166}
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="title"><h3>烘焙</h3><span class="pct" id="pct">0%</span></div>
+  <div class="scene" id="scene">
+    <div class="oven">
+      <div class="otop"><span>智能烤箱</span><span class="temp" id="temp">80°C</span></div>
+      <div class="owin">
+        <div id="heat"></div>
+        <div class="tray"></div>
+        <div id="dough"></div>
+        <div id="waves"><i></i><i></i><i></i></div>
+      </div>
+      <div class="obase"><div class="knob" id="knob"></div></div>
+    </div>
+    <div class="thermo">
+      <div class="tlabel">炉温</div>
+      <div class="ttube"><div id="tfill"></div></div>
+    </div>
+    <div id="badge">叮~ 出炉啦！</div>
+    <div class="cap" id="cap"></div>
+  </div>
+</div>
+<script>
+var pctEl=document.getElementById('pct');
+var cap=document.getElementById('cap');
+var dough=document.getElementById('dough');
+var heat=document.getElementById('heat');
+var waves=document.getElementById('waves');
+var tfill=document.getElementById('tfill');
+var temp=document.getElementById('temp');
+var knob=document.getElementById('knob');
+var badge=document.getElementById('badge');
+var RAW=[247,241,227],GOLD=[196,118,40];
+var COLD=[74,163,255],HOT=[255,92,60];
+function mix(a,b,t){
+  return 'rgb('+Math.round(a[0]+(b[0]-a[0])*t)+','+Math.round(a[1]+(b[1]-a[1])*t)+','+Math.round(a[2]+(b[2]-a[2])*t)+')';
+}
+var p=0,dinged=false,isMid=location.hash==='#mid';
+function ding(){
+  try{
+    var Ctx=window.AudioContext||window.webkitAudioContext;
+    if(!Ctx)return;
+    var ctx=new Ctx(),o=ctx.createOscillator(),g=ctx.createGain();
+    o.type='sine';o.frequency.value=880;
+    g.gain.setValueAtTime(0.0001,ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.25,ctx.currentTime+0.02);
+    g.gain.exponentialRampToValueAtTime(0.0001,ctx.currentTime+0.9);
+    o.connect(g);g.connect(ctx.destination);
+    o.start();o.stop(ctx.currentTime+1);
+  }catch(e){}
+}
+function render(){
+  var t=p/100;
+  pctEl.textContent=Math.round(p)+'%';
+  dough.style.transform='translateX(-50%) scale('+(1+0.95*t).toFixed(3)+')';
+  dough.style.background=mix(RAW,GOLD,t);
+  dough.style.boxShadow='inset 0 -'+Math.round(t*14)+'px 24px rgba(120,60,10,'+(t*0.55).toFixed(2)+'),0 4px 14px rgba(0,0,0,.4)';
+  heat.style.opacity=(t*0.85).toFixed(2);
+  tfill.style.height=(t*100).toFixed(1)+'%';
+  tfill.style.background='linear-gradient(to top,'+mix(COLD,HOT,t)+','+mix(COLD,HOT,Math.min(1,t+0.15))+')';
+  temp.textContent=Math.round(80+t*140)+'°C';
+  knob.style.transform='rotate('+Math.round(-120+t*240)+'deg)';
+  var done=p>=100;
+  badge.style.opacity=done?'1':'0';
+  badge.style.transform='translate(-50%,-50%) scale('+(done?'1':'0.5')+')';
+  cap.innerHTML=done?'<b>外壳金黄</b> · 可以出炉！':'升温烘烤中… 面团正在膨胀';
+  if(done&&!dinged){dinged=true;if(!isMid)ding();}
+  if(p<50)dinged=false;
+}
+var DUR=7000;
+function startLoop(){
+  var t0=performance.now();
+  function tick(now){
+    var el=now-t0;
+    if(el>=DUR){p=100;render();setTimeout(startLoop,1000);return;}
+    p=el/DUR*100;
+    render();
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+}
+if(isMid){
+  p=55;render();
+  waves.style.opacity='0.55';
+}else{
+  startLoop();
+  var last=performance.now();
+  (function waveTick(now){
+    var t=p/100;
+    waves.style.opacity=((t)*(0.55+0.35*Math.sin(now/180))).toFixed(2);
+    requestAnimationFrame(waveTick);
+    last=now;
+  })(last);
+}
+</script>
+</body>
+</html>

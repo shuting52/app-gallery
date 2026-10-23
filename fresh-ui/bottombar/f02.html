@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>磁吸滑块</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{display:flex;align-items:center;justify-content:center;background:#d9d9de;
+font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans CJK SC",sans-serif}
+.phone{width:430px;height:900px;border-radius:48px;overflow:hidden;position:relative;
+display:flex;flex-direction:column;background:#f7f7f9;color:#1c1c1e;
+box-shadow:0 30px 80px rgba(0,0,0,.25)}
+.content{flex:1;padding:56px 28px 20px}
+.content .tag{display:inline-block;font-size:12px;letter-spacing:4px;color:#007aff;margin-bottom:14px}
+.content h1{font-size:44px;font-weight:800;letter-spacing:2px;margin-bottom:26px}
+.card{height:150px;border-radius:20px;margin-bottom:18px;position:relative;overflow:hidden;
+background:linear-gradient(135deg,#eef1f6,#e2e7f0);border:1px solid rgba(0,0,0,.05)}
+.card::after{content:"";position:absolute;left:22px;right:60px;top:28px;height:14px;border-radius:7px;background:rgba(0,0,0,.10)}
+.card::before{content:"";position:absolute;left:22px;right:120px;top:58px;height:10px;border-radius:5px;background:rgba(0,0,0,.06)}
+/* tabbar */
+.tabbar{position:relative;height:88px;display:flex;flex:0 0 auto;background:#ffffff;
+border-top:1px solid rgba(0,0,0,.06);box-shadow:0 -8px 24px rgba(0,0,0,.05)}
+.pill{position:absolute;top:12px;width:68px;height:56px;border-radius:22px;pointer-events:none;
+background:rgba(0,122,255,.12);box-shadow:inset 0 0 0 1.5px rgba(0,122,255,.35),0 4px 14px rgba(0,122,255,.18);
+transition:left .45s cubic-bezier(.3,1.6,.4,1)}
+.tab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;
+background:none;border:0;cursor:pointer;color:#9a9aa2;position:relative;z-index:1;padding-top:8px}
+.tab svg{width:26px;height:26px;transition:transform .25s,color .25s}
+.tab .lb{font-size:11px;letter-spacing:1px;transition:color .25s,font-weight .25s}
+.tab.active{color:#007aff}
+.tab.active svg{transform:translateY(-2px)}
+.tab.active .lb{font-weight:700;color:#007aff}
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="content">
+    <span class="tag">MAGNET</span>
+    <h1 id="t">首页</h1>
+    <div class="card"></div><div class="card"></div><div class="card"></div>
+  </div>
+  <nav class="tabbar" id="bar">
+    <div class="pill" id="pill"></div>
+    <button class="tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M10 21v-6h4v6"/></svg><span class="lb">首页</span></button>
+    <button class="tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2 5-5 2 2-5z"/></svg><span class="lb">发现</span></button>
+    <button class="tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg><span class="lb">发布</span></button>
+    <button class="tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 8-3 8h18s-3-1-3-8"/><path d="M10.3 21a2 2 0 0 0 3.4 0"/></svg><span class="lb">消息</span></button>
+    <button class="tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/></svg><span class="lb">我的</span></button>
+  </nav>
+</div>
+<script>
+var names=["首页","发现","发布","消息","我的"];
+var tabs=[].slice.call(document.querySelectorAll(".tab"));
+var pill=document.getElementById("pill");
+var cur=0;
+function place(el){pill.style.left=(el.offsetLeft+el.offsetWidth/2-34)+"px";}
+function activate(k){
+  cur=k;
+  tabs.forEach(function(b,i){b.classList.toggle("active",i===k);});
+  place(tabs[k]);
+  document.getElementById("t").textContent=names[k];
+  try{history.replaceState(null,"","?tab="+k);}catch(e){}
+}
+var q=parseInt(new URLSearchParams(location.search).get("tab"),10);
+if(isNaN(q)||q<0||q>4)q=0;
+tabs.forEach(function(b,i){b.addEventListener("click",function(){activate(i);});});
+requestAnimationFrame(function(){activate(q);});
+</script>
+</body>
+</html>

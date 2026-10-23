@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>多米诺 · 底部栏</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{background:#141416;display:flex;justify-content:center;align-items:flex-start;padding:0;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans CJK SC",sans-serif}
+.phone{width:430px;height:900px;border-radius:48px;overflow:hidden;position:relative;background:#f2eee2;box-shadow:0 30px 80px rgba(0,0,0,.6),0 0 0 10px #0a0a0c,0 0 0 12px #3a3a3e;flex:none}
+.content{padding:64px 28px 0}
+.content h1{font-size:40px;letter-spacing:3px;color:#1d1a13}
+.content .sub{margin-top:12px;font-size:15px;color:#8a8172;line-height:1.8;min-height:54px}
+.card{margin-top:22px;height:148px;border-radius:20px;background:linear-gradient(135deg,#e9e1cb,#d9cfae);position:relative;overflow:hidden;box-shadow:0 8px 20px rgba(60,50,30,.12)}
+.card::before{content:"";position:absolute;left:22px;top:26px;width:36%;height:14px;border-radius:7px;background:rgba(90,75,50,.28)}
+.card::after{content:"";position:absolute;left:22px;top:54px;width:62%;height:10px;border-radius:5px;background:rgba(90,75,50,.15);box-shadow:0 24px 0 rgba(90,75,50,.11)}
+.tabbar{position:absolute;left:0;right:0;bottom:0;height:172px;background:linear-gradient(180deg,#2a2a30,#121214);perspective:800px;display:flex;justify-content:center;align-items:flex-end;gap:13px;padding-bottom:30px;border-top:1px solid #3d3d44}
+.tab{background:none;border:0;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:9px;padding:0}
+.bone{width:56px;height:84px;background:#fdfcf5;border:2px solid #141416;border-radius:10px;position:relative;transform-origin:50% 100%;transition:transform .5s cubic-bezier(.34,1.25,.64,1),box-shadow .4s,border-color .4s;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px}
+.bone::after{content:"";position:absolute;left:9px;right:9px;top:50%;height:2px;background:#141416;transform:translateY(-50%);transition:background .4s}
+.half{display:grid;grid-template-columns:repeat(2,9px);gap:6px;justify-content:center;align-content:center;min-height:22px;z-index:1}
+.pip{width:9px;height:9px;border-radius:50%;background:#141416;display:block;transition:background .4s}
+.bone.falling{transform:rotateX(-74deg)}
+.bone.glow{border-color:#8a6414;box-shadow:0 0 24px 6px rgba(255,196,64,.9),0 0 6px 2px #ffd75e}
+.bone.glow .pip{background:#8a6414}
+.bone.glow::after{background:#8a6414}
+.tlabel{font-size:12px;color:#9a9aa2;letter-spacing:3px;display:block}
+.tab.sel .tlabel{color:#ffd75e}
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="content">
+    <h1 id="ctitle">首页</h1>
+    <p class="sub" id="csub">第一张牌立住了，后面的故事才推得动。</p>
+    <div class="card"></div>
+    <div class="card"></div>
+    <div class="card"></div>
+  </div>
+  <nav class="tabbar" id="bar"></nav>
+</div>
+<script>
+var TABS=[
+ {t:'首页',s:'第一张牌立住了，后面的故事才推得动。',n:1},
+ {t:'发现',s:'轻轻一碰，好奇心连成一片倒下。',n:2},
+ {t:'发布',s:'落子无声，涟漪却传得很远。',n:3},
+ {t:'消息',s:'每一声提醒，都是下一张牌。',n:4},
+ {t:'我的',s:'收牌的人，最后看的是全场。',n:5}
+];
+var bar=document.getElementById('bar');
+TABS.forEach(function(tb,i){
+  var b=document.createElement('button');b.className='tab';b.setAttribute('aria-label',tb.t);
+  var pips='';for(var p=0;p<tb.n;p++){pips+='<i class="pip"></i>';}
+  b.innerHTML='<span class="bone"><span class="half">'+pips+'</span><span class="half"></span></span><span class="tlabel">'+tb.t+'</span>';
+  b.addEventListener('click',function(){select(i,true);});
+  bar.appendChild(b);
+});
+var bones=Array.prototype.slice.call(bar.querySelectorAll('.bone'));
+var tabs=Array.prototype.slice.call(bar.querySelectorAll('.tab'));
+var ctitle=document.getElementById('ctitle'),csub=document.getElementById('csub');
+var token=0;
+function paint(k){
+  tabs.forEach(function(t,i){t.classList.toggle('sel',i===k);});
+  ctitle.textContent=TABS[k].t;csub.textContent=TABS[k].s;
+}
+function select(k,anim){
+  k=Math.max(0,Math.min(k,TABS.length-1));paint(k);
+  if(!anim){bones[k].classList.add('glow');return;}
+  var my=++token;
+  bones.forEach(function(b,i){
+    b.classList.remove('glow');
+    b.style.transitionDelay=(Math.abs(i-k)*85)+'ms';
+    b.classList.add('falling');
+  });
+  var maxd=0;bones.forEach(function(_,i){maxd=Math.max(maxd,Math.abs(i-k));});
+  var total=maxd*85+520;
+  setTimeout(function(){
+    if(my!==token)return;
+    bones.forEach(function(b,i){
+      b.style.transitionDelay=(Math.abs(i-k)*55)+'ms';
+      b.classList.remove('falling');
+    });
+  },total);
+  setTimeout(function(){
+    if(my!==token)return;
+    bones[k].classList.add('glow');
+    bones.forEach(function(b){b.style.transitionDelay='0ms';});
+  },total+580);
+  try{history.replaceState(null,'','?tab='+k);}catch(e){}
+}
+var start=parseInt(new URLSearchParams(location.search).get('tab'),10);
+if(isNaN(start)||start<0||start>=TABS.length)start=0;
+select(start,false);
+</script>
+</body>
+</html>

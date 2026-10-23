@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>紫晶块</title>
+<style>*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sans-serif;background:#07090d;display:flex;justify-content:center;color:#eef2f8}
+.phone{width:430px;height:900px;position:relative;overflow:hidden;background:var(--bg,#0d1117)}
+.phone>.hd,.phone>.bd{position:relative;z-index:1}
+.hd{padding:54px 22px 10px;background:linear-gradient(180deg,var(--hd1,rgba(255,255,255,.08)),transparent)}
+.hd h1{font-size:22px;letter-spacing:2px}
+.hd p{font-size:12px;opacity:.55;margin-top:6px;letter-spacing:1px}
+.bd{padding:16px 18px;display:flex;flex-direction:column;gap:14px}
+.cardx{border-radius:16px;padding:16px;background:var(--cx,rgba(255,255,255,.05));border:1px solid var(--cb,rgba(255,255,255,.08))}
+.sk{height:12px;border-radius:6px;background:linear-gradient(90deg,var(--s1,rgba(255,255,255,.14)),var(--s2,rgba(255,255,255,.05)));margin:8px 0}
+.sk.w60{width:60%}.sk.w80{width:80%}
+.tabbar{position:absolute;left:0;right:0;bottom:0;display:flex}
+.tab{background:none;border:0;color:var(--tc,#8b93a5);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;font-size:11px;cursor:pointer;font-family:inherit;position:relative;padding:6px 0}
+.tab .ic{width:26px;height:26px;display:block}
+.tab .ic svg{width:100%;height:100%;display:block}
+
+.g38{--bg:#100a1e;--hd1:rgba(170,90,255,.14);--cx:rgba(170,110,255,.07);--cb:rgba(170,110,255,.16);--s1:rgba(180,130,255,.22);--s2:rgba(180,130,255,.06)}
+.g38 .phone::before{content:"";position:absolute;inset:0;z-index:0;background:radial-gradient(300px 300px at 80% 20%,rgba(160,70,255,.26),transparent 70%),radial-gradient(280px 280px at 15% 70%,rgba(255,80,200,.16),transparent 70%);filter:blur(8px);animation:dr38 13s ease-in-out infinite alternate;animation-delay:-6s;pointer-events:none}
+@keyframes dr38{to{transform:translate(20px,22px) scale(1.08)}}
+.g38 .tabbar{background:transparent;border:0;justify-content:space-between;padding:0 30px calc(34px + env(safe-area-inset-bottom))}
+.g38 .tab{flex:none;width:56px;height:56px;border-radius:16px;background:linear-gradient(155deg,rgba(255,255,255,.26),rgba(255,255,255,.05) 60%);backdrop-filter:blur(16px) saturate(1.7);-webkit-backdrop-filter:blur(16px) saturate(1.7);border:1px solid rgba(190,140,255,.36);box-shadow:inset 0 2px 3px rgba(255,255,255,.5),0 10px 22px rgba(60,10,120,.45);color:#a68bd4;transition:all .45s cubic-bezier(.34,1.56,.64,1)}
+.g38 .tab span:last-child{display:none}
+.g38 .tab.on{transform:scale(1.14);background:linear-gradient(155deg,#b06bff,#7b2ff2);color:#fff;border-color:rgba(255,255,255,.55);box-shadow:inset 0 2px 4px rgba(255,255,255,.55),0 0 26px rgba(150,90,255,.85),0 10px 24px rgba(80,20,180,.5)}
+.g38 .tab.on::before{content:"";display:block;position:absolute;left:50%;top:-13px;width:9px;height:9px;margin-left:-4.5px;transform:rotate(45deg);background:#c99aff;box-shadow:0 0 10px #b06bff;animation:blk38 1.4s ease-in-out infinite;animation-delay:-.7s}
+@keyframes blk38{50%{transform:rotate(45deg) scale(1.5);opacity:.6}}
+</style></head>
+<body class="g38"><div class="phone">
+<div class="hd"><h1>新鲜 UI 画廊</h1><p>FRESH · BOTTOMBAR · 紫晶块</p></div>
+<div class="bd">
+<div class="cardx"><div class="sk w60"></div><div class="sk"></div><div class="sk w80"></div></div>
+<div class="cardx"><div class="sk w80"></div><div class="sk w60"></div></div>
+<div class="cardx"><div class="sk"></div><div class="sk w60"></div><div class="sk w80"></div></div>
+<div class="cardx"><div class="sk"></div><div class="sk w80"></div><div class="sk w60"></div></div>
+</div>
+<nav class="tabbar"></nav>
+<script>
+const nav=document.querySelector('.tabbar');
+const LBL={'home':'首页','find':'发现','pub':'发布','msg':'消息','me':'我的'};
+const IC={home:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11l8-7 8 7v9h-5v-5h-6v5H4z"/></svg>',find:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="8"/><path d="M15.5 8.5l-2.2 4.8-4.8 2.2 2.2-4.8z"/></svg>',msg:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16v10H9l-5 4z"/></svg>',me:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c1.2-4 4.2-6 8-6s6.8 2 8 6"/></svg>',pub:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>'};
+Object.keys(LBL).forEach(k=>{const b=document.createElement('button');b.className='tab';
+b.innerHTML='<span class="ic">'+IC[k]+'</span><span>'+LBL[k]+'</span>';nav.appendChild(b);});
+const tabs=[...document.querySelectorAll('.tab')];
+let cur=0;
+function act(i){cur=i;tabs.forEach((t,j)=>t.classList.toggle('on',i===j));}
+tabs.forEach((t,i)=>t.addEventListener('click',()=>{act(i);try{history.replaceState(null,'','?tab='+i);}catch(e){}}));
+(function(){const n=+new URLSearchParams(location.search).get('tab');
+act(Number.isInteger(n)&&n>=0&&n<tabs.length?n:0);})();
+</script>
+</div></body></html>

@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>月相更新 · MOON PHASE</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    min-height: 100vh; display: flex; align-items: center; justify-content: center;
+    background: rgba(4, 6, 14, 0.72);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    padding: 20px 14px; color: #fff;
+  }
+  .modal {
+    width: 340px; background: linear-gradient(170deg, #141a33, #0a0e20);
+    border: 1px solid rgba(255,255,255,.1); border-radius: 26px;
+    padding: 24px 22px 20px; box-shadow: 0 24px 70px rgba(0,0,0,.6);
+    display: flex; flex-direction: column; align-items: center; position: relative;
+  }
+  .modal.hidden { display: none; }
+  .m-head { width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+  .m-title { font-size: 18px; font-weight: 700; letter-spacing: 1px; }
+  .m-title .ver {
+    font-size: 11px; color: #f5e9c8; border: 1px solid rgba(245,233,200,.5);
+    border-radius: 99px; padding: 2px 9px; margin-left: 6px; vertical-align: 2px;
+  }
+  .x { background: none; border: none; color: rgba(255,255,255,.4); font-size: 24px; cursor: pointer; line-height: 1; }
+  .x:hover { color: #fff; }
+  .m-sub { width: 100%; font-size: 14px; color: rgba(255,255,255,.72); margin-bottom: 3px; text-align: left; }
+  .m-meta { width: 100%; font-size: 12px; color: rgba(255,255,255,.38); margin-bottom: 12px; text-align: left; font-variant-numeric: tabular-nums; }
+
+  /* 夜空舞台 */
+  .stage {
+    position: relative; width: 280px; height: 210px; border-radius: 18px;
+    background: #0b1026; overflow: hidden; margin-bottom: 10px;
+    box-shadow: inset 0 0 40px rgba(0,0,0,.55);
+  }
+  .star { position: absolute; border-radius: 50%; background: #cdd8ff; animation: tw linear infinite alternate; }
+  @keyframes tw { from { opacity: .15; } to { opacity: .9; } }
+  .moon {
+    position: absolute; left: 50%; top: 50%; width: 120px; height: 120px;
+    margin: -60px 0 0 -60px; border-radius: 50%;
+    background: radial-gradient(circle at 38% 34%, #fffbe9, #f3e6c3 55%, #d9c795);
+    transition: box-shadow 1s;
+  }
+  .moon.full { box-shadow: 0 0 55px 16px rgba(245,233,200,.4); }
+  .moon.install { animation: breathe 1.6s ease-in-out infinite; }
+  @keyframes breathe { 0%,100% { transform: scale(1); } 50% { transform: scale(1.045); } }
+  .shadow-disc {
+    position: absolute; left: 50%; top: 50%; width: 120px; height: 120px;
+    margin: -60px 0 0 -60px; border-radius: 50%; background: #0b1026;
+  }
+  .halo {
+    position: absolute; left: 50%; top: 50%; width: 168px; height: 168px;
+    margin: -84px 0 0 -84px; border-radius: 50%;
+    border: 2px solid rgba(245,233,200,.35);
+    transform: scale(.4); opacity: 0; transition: all 1s cubic-bezier(.2,1.2,.4,1);
+  }
+  .halo.on { transform: scale(1); opacity: 1; }
+  .phase-label {
+    position: absolute; bottom: 10px; width: 100%; text-align: center;
+    font-size: 12px; letter-spacing: 4px; color: rgba(245,233,200,.75);
+  }
+
+  .pct { font-size: 40px; font-weight: 800; font-variant-numeric: tabular-nums; letter-spacing: 1px; }
+  .done-word {
+    font-size: 15px; color: #f5e9c8; letter-spacing: 6px; margin-top: 2px;
+    opacity: 0; transform: translateY(6px); transition: all .6s;
+  }
+  .done-word.on { opacity: 1; transform: none; }
+
+  .main-btn {
+    width: 100%; margin-top: 16px; padding: 14px 0; border-radius: 99px; border: none;
+    font-size: 16px; font-weight: 600; letter-spacing: 2px; cursor: pointer;
+    background: rgba(255,255,255,.1); color: #fff; border: 1px solid rgba(255,255,255,.16);
+    transition: all .25s;
+  }
+  .main-btn:hover { background: rgba(255,255,255,.17); }
+  .main-btn.gold { background: linear-gradient(135deg, #ffedb8, #e8b93f); color: #3a2c07; border: none;
+    box-shadow: 0 8px 26px rgba(232,185,63,.35); }
+  .main-btn:disabled { opacity: .45; cursor: default; }
+  .replay { margin-top: 10px; background: none; border: none; color: rgba(255,255,255,.35);
+    font-size: 12.5px; cursor: pointer; letter-spacing: 1px; }
+  .replay:hover { color: #f5e9c8; }
+  .toast {
+    position: fixed; top: 24px; left: 50%; transform: translateX(-50%) translateY(-14px);
+    background: rgba(18,20,34,.95); border: 1px solid rgba(255,255,255,.14); color: #fff;
+    padding: 10px 22px; border-radius: 99px; font-size: 14px; opacity: 0;
+    pointer-events: none; transition: all .25s; z-index: 60;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+
+<div class="modal" id="modal">
+  <div class="m-head">
+    <div class="m-title">🌙 月相更新<span class="ver">v4.0.0</span></div>
+    <button class="x" id="xBtn">×</button>
+  </div>
+  <div class="m-sub" id="statusText">正在下载 v4.0.0，月亮正在长大</div>
+  <div class="m-meta" id="metaText">0.0MB / 156.8MB · -- MB/s</div>
+
+  <div class="stage" id="stage">
+    <div class="moon" id="moon"></div>
+    <div class="shadow-disc" id="shadowDisc"></div>
+    <div class="halo" id="halo"></div>
+    <div class="phase-label" id="phaseLabel">新月</div>
+  </div>
+
+  <div class="pct" id="pctText">0%</div>
+  <div class="done-word" id="doneWord">圆 满</div>
+
+  <button class="main-btn" id="mainBtn">取消更新</button>
+  <button class="replay" id="replayBtn">↺ 重新演示</button>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+  const moon = document.getElementById('moon');
+  const shadowDisc = document.getElementById('shadowDisc');
+  const halo = document.getElementById('halo');
+  const phaseLabel = document.getElementById('phaseLabel');
+  const pctText = document.getElementById('pctText');
+  const doneWord = document.getElementById('doneWord');
+  const statusText = document.getElementById('statusText');
+  const metaText = document.getElementById('metaText');
+  const mainBtn = document.getElementById('mainBtn');
+  const modal = document.getElementById('modal');
+  const toast = document.getElementById('toast');
+  const stage = document.getElementById('stage');
+
+  // 星星
+  for (let i = 0; i < 26; i++) {
+    const s = document.createElement('div');
+    s.className = 'star';
+    const sz = (Math.random() * 2 + 1).toFixed(1);
+    s.style.cssText = `width:${sz}px;height:${sz}px;left:${Math.random()*96}%;top:${Math.random()*92}%;animation-duration:${(1.5+Math.random()*2.5).toFixed(1)}s;`;
+    stage.appendChild(s);
+  }
+
+  const TOTAL_MB = 156.8;
+  let progress = 0, state = 'downloading', timer = null, showSpeed = 0, fast = false, backTimer = null;
+
+  const PHASES = [[3,'新月'],[22,'娥眉月'],[40,'上弦月'],[60,'盈凸月'],[85,'渐满月'],[101,'满月']];
+  function phaseName(p) { for (const [t, n] of PHASES) if (p < t) return n; return '满月'; }
+
+  function render() {
+    const p = Math.min(Math.max(progress, 0), 100);
+    pctText.textContent = Math.floor(p) + '%';
+    shadowDisc.style.transform = `translateX(${((p / 100) * 132).toFixed(1)}px)`;
+    phaseLabel.textContent = state === 'done' ? '圆满' : phaseName(p);
+    const mb = (p / 100 * TOTAL_MB).toFixed(1);
+    metaText.textContent = state === 'downloading'
+      ? `${mb}MB / ${TOTAL_MB}MB · ${showSpeed.toFixed(1)} MB/s`
+      : metaText.textContent;
+  }
+
+  function showToast(msg) {
+    toast.textContent = msg; toast.classList.add('show');
+    clearTimeout(showToast._t);
+    showToast._t = setTimeout(() => toast.classList.remove('show'), 1800);
+  }
+  function setMain(label, gold, disabled) {
+    mainBtn.textContent = label;
+    mainBtn.classList.toggle('gold', !!gold);
+    mainBtn.disabled = !!disabled;
+  }
+
+  function tick() {
+    if (state !== 'downloading') return;
+    const sp = 8 * (0.6 + Math.random() * 0.8);
+    showSpeed = showSpeed * 0.7 + sp * 0.3;
+    progress += sp * 0.1 / TOTAL_MB * 100;
+    if (progress >= 100) { progress = 100; render(); enterInstalling(); return; }
+    render();
+  }
+  function startTimer() { clearInterval(timer); timer = setInterval(tick, 100); }
+
+  function enterDownloading(reset) {
+    clearInterval(backTimer);
+    if (reset) {
+      progress = 0; showSpeed = 0;
+      moon.classList.remove('full', 'install');
+      halo.classList.remove('on'); doneWord.classList.remove('on');
+    }
+    state = 'downloading';
+    statusText.textContent = '正在下载 v4.0.0，月亮正在长大';
+    setMain('取消更新', false, false);
+    startTimer(); render();
+  }
+  function enterCancelled() {
+    state = 'cancelled'; clearInterval(timer);
+    // 动画回退：月相退回新月
+    let p = progress;
+    clearInterval(backTimer);
+    backTimer = setInterval(() => {
+      p -= 7;
+      if (p <= 0) { p = 0; clearInterval(backTimer); }
+      progress = p; render();
+    }, 50);
+    statusText.textContent = '已取消更新，月亮落下去了';
+    metaText.textContent = `${(progress/100*TOTAL_MB).toFixed(1)}MB / ${TOTAL_MB}MB · 已停止`;
+    setMain('重新下载', false, false);
+    showToast('已取消更新');
+  }
+  function enterInstalling() {
+    state = 'installing'; clearInterval(timer);
+    moon.classList.add('full', 'install');
+    halo.classList.add('on');
+    statusText.textContent = '正在安装…月华凝聚中';
+    metaText.textContent = `${TOTAL_MB}MB / ${TOTAL_MB}MB · 校验完成`;
+    setMain('安装中…', false, true);
+    setTimeout(() => { if (state === 'installing') enterDone(); }, fast ? 400 : 2000);
+    render();
+  }
+  function enterDone() {
+    state = 'done';
+    moon.classList.remove('install'); moon.classList.add('full'); halo.classList.add('on');
+    statusText.textContent = '更新完成';
+    phaseLabel.textContent = '圆满';
+    doneWord.classList.add('on');
+    metaText.textContent = `v4.0.0 已安装 · 月圆之夜`;
+    setMain('立即体验', true, false);
+    showToast('已更新到 v4.0.0');
+    render();
+  }
+
+  mainBtn.addEventListener('click', () => {
+    if (state === 'downloading') enterCancelled();
+    else if (state === 'cancelled') enterDownloading(true);
+    else if (state === 'done') { modal.classList.add('hidden'); showToast('已进入 v4.0.0'); }
+  });
+  document.getElementById('xBtn').addEventListener('click', () => {
+    if (state === 'downloading') enterCancelled();
+    else modal.classList.add('hidden');
+  });
+  document.getElementById('replayBtn').addEventListener('click', () => {
+    modal.classList.remove('hidden');
+    enterDownloading(true);
+    showToast('重新开始演示');
+  });
+
+  window.addEventListener('load', () => {
+    if (location.hash === '#done') { fast = true; progress = 100; enterInstalling(); }
+    else if (location.hash === '#mid') { progress = 55; showSpeed = 8.2; enterDownloading(false); progress = 55; render(); }
+    else enterDownloading(false);
+  });
+</script>
+</body>
+</html>

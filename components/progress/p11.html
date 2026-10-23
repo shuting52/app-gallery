@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>冰融化 · 融化进度</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:#0d141c; color:#e8f4f8; font-family:"PingFang SC","Microsoft YaHei",sans-serif;
+         min-height:100vh; display:flex; align-items:center; justify-content:center; }
+  .stage { width:360px; max-width:94vw; background:#141e29; border-radius:18px;
+           padding:22px 20px 26px; box-shadow:0 10px 40px rgba(0,0,0,.5); }
+  .stage h2 { font-size:17px; font-weight:600; letter-spacing:1px; text-align:center; }
+  .stage .pct { text-align:center; font-size:40px; font-weight:700; color:#7fd4f7;
+                margin:6px 0 16px; font-variant-numeric:tabular-nums; }
+  .scene { position:relative; height:300px; }
+  .table { position:absolute; left:20px; right:20px; bottom:26px; height:10px;
+           background:#0a0f16; border-radius:6px; }
+  .puddle { position:absolute; left:50%; bottom:16px; height:22px; background:rgba(80,180,240,.35);
+            border-radius:50%; border:1px solid rgba(140,220,255,.5); }
+  .ice { position:absolute; left:50%; background:linear-gradient(145deg,#dff4ff,#9fd8f5 60%,#6fb8e0);
+         box-shadow:inset -8px -8px 18px rgba(255,255,255,.55), inset 8px 8px 18px rgba(90,160,210,.5),
+                    0 6px 18px rgba(127,212,247,.25); }
+  .ice .shine { position:absolute; top:8px; left:12px; width:14px; height:30px; border-radius:8px;
+                background:rgba(255,255,255,.75); }
+  .drop { position:absolute; width:10px; height:12px; border-radius:50% 50% 50% 50% / 60% 60% 40% 40%;
+          background:#7fd4f7; box-shadow:0 0 8px rgba(127,212,247,.8); }
+  .tip { text-align:center; color:#8aa0b4; font-size:12px; margin-top:14px; letter-spacing:1px; }
+</style>
+</head>
+<body>
+<div class="stage">
+  <h2>🧊 冰融化 · 融化进度</h2>
+  <div class="pct" id="pct">0%</div>
+  <div class="scene">
+    <div class="puddle" id="puddle"></div>
+    <div class="table"></div>
+    <div class="ice" id="ice"><div class="shine"></div></div>
+  </div>
+  <div class="tip">冰块正缓缓化作一滩水</div>
+</div>
+<script>
+var p = 0;
+var ice = document.getElementById('ice');
+var puddle = document.getElementById('puddle');
+var pctEl = document.getElementById('pct');
+var scene = document.querySelector('.scene');
+var drops = [];
+function render() {
+  var melt = p / 100;                       // 融化程度 0→1
+  var w = 150 * (1 - melt * 0.82) + 26;     // 冰块宽度 150→49
+  var h = 130 * (1 - melt * 0.80) + 26;     // 冰块高度 130→51
+  ice.style.width = w + 'px';
+  ice.style.height = h + 'px';
+  ice.style.left = (160 - w / 2) + 'px';    // 保持居中（scene 宽 320，中心 160；+padding 20 => 内容 320）
+  ice.style.bottom = '36px';
+  ice.style.borderRadius = (10 + melt * 46) + 'px';  // 棱角变圆
+  ice.style.opacity = String(1 - melt * 0.45);
+  var pw = 30 + melt * 220;                 // 水洼扩大
+  puddle.style.width = pw + 'px';
+  puddle.style.left = (160 - pw / 2) + 'px';
+  pctEl.textContent = Math.round(p) + '%';
+}
+function spawnDrop() {
+  if (p <= 2 || p >= 98) return;
+  var d = document.createElement('div');
+  d.className = 'drop';
+  var w = 150 * (1 - (p/100) * 0.82) + 26;
+  d.style.left = (160 - w/2 + Math.random() * w) + 'px';
+  d.style.top = '170px';
+  d.dataset.y = 170; d.dataset.v = 0;
+  scene.appendChild(d); drops.push(d);
+}
+function tickDrops() {
+  for (var i = drops.length - 1; i >= 0; i--) {
+    var d = drops[i];
+    var y = parseFloat(d.dataset.y) + parseFloat(d.dataset.v);
+    d.dataset.v = parseFloat(d.dataset.v) + 0.9;
+    d.dataset.y = y;
+    d.style.top = y + 'px';
+    if (y > 262) { d.remove(); drops.splice(i, 1); }
+  }
+  requestAnimationFrame(tickDrops);
+}
+var start = Date.now();
+function loop() {
+  var t = (Date.now() - start) / 1000;
+  var cycle = 7.5;                    // 6.5s 走 0→100，100% 停 1s
+  if (t < 6.5) p = t / 6.5 * 100;
+  else { p = 100; if (t > cycle) start = Date.now(); }
+  render();
+  requestAnimationFrame(loop);
+}
+render();
+if (location.hash === '#mid') { p = 55; render(); }
+else { requestAnimationFrame(tickDrops); setInterval(spawnDrop, 260); requestAnimationFrame(loop); }
+</script>
+</body>
+</html>

@@ -1,0 +1,30 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>风车牧歌</title><style>*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{width:430px;min-height:900px;margin:0 auto;position:relative;overflow:hidden;color:#fff;font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans CJK SC",sans-serif;background:linear-gradient(180deg,#7ec8f2 0%,#cdeafb 55%,#eef9e6 100%)}
+#app{position:absolute;inset:0}
+.brand{position:absolute;left:0;right:0;bottom:112px;text-align:center;z-index:10;opacity:0;transform:translateY(16px);animation:brandIn .9s cubic-bezier(.2,.7,.3,1.2) 2.3s both}
+.brand h1{font-size:34px;letter-spacing:10px;font-weight:800;text-indent:10px}
+.brand p{margin-top:10px;font-size:12px;letter-spacing:5px;opacity:.7;text-indent:5px}
+@keyframes brandIn{to{opacity:1;transform:none}}
+.tag{position:absolute;top:56px;left:0;right:0;text-align:center;font-size:11px;letter-spacing:8px;text-indent:8px;opacity:0;z-index:10;animation:brandIn 1s ease 2.7s both;color:rgba(255,255,255,.65)}
+.replay{position:absolute;left:50%;bottom:42px;transform:translateX(-50%);z-index:20;background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.35);color:#fff;border-radius:20px;padding:8px 24px;font-size:13px;letter-spacing:2px;cursor:pointer;backdrop-filter:blur(6px)}
+
+.cloud{position:absolute;top:90px;width:120px;height:38px;display:block;background:#fff;border-radius:20px;opacity:.9;animation:drift 26s linear infinite}
+.cloud::before{content:"";position:absolute;left:24px;top:-20px;width:56px;height:56px;background:#fff;border-radius:50%}
+.cloud::after{content:"";position:absolute;left:64px;top:-12px;width:40px;height:40px;background:#fff;border-radius:50%}
+@keyframes drift{from{transform:translateX(-160px)}to{transform:translateX(560px)}}
+.mill{position:absolute;left:150px;top:300px;width:130px;height:330px}
+.mill .tw{position:absolute;bottom:0;left:35px;width:60px;height:300px;background:linear-gradient(180deg,#8a6b4a,#6b4f33);clip-path:polygon(18% 0,82% 0,100% 100%,0 100%)}
+.mill .blades{position:absolute;left:65px;top:34px;width:0;height:0;animation:spin 9s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.mill .bl{position:absolute;left:-9px;top:-104px;width:18px;height:104px;display:block;background:linear-gradient(180deg,#f3e3c2,#c9a06a)}
+.mill .bl:nth-child(1){transform:rotate(0deg)}.mill .bl:nth-child(2){transform:rotate(90deg)}
+.mill .bl:nth-child(3){transform:rotate(180deg)}.mill .bl:nth-child(4){transform:rotate(270deg)}
+.mill .hub{position:absolute;left:53px;top:22px;width:24px;height:24px;display:block;border-radius:50%;background:#4c3a26;z-index:2}
+.tulip{position:absolute;bottom:0;width:26px;height:90px;display:block}
+.tulip .st{position:absolute;bottom:0;left:12px;width:4px;height:62px;background:#3f7d3a}
+.tulip .fl{position:absolute;bottom:58px;left:4px;width:20px;height:28px;background:var(--c,#e2546e);border-radius:50% 50% 40% 40%/60% 60% 40% 40%}
+.ground{position:absolute;bottom:0;left:0;right:0;height:150px;background:linear-gradient(180deg,#7cbf6a,#4d8a41)}
+.sun{position:absolute;right:60px;top:80px;width:74px;height:74px;display:block;border-radius:50%;background:radial-gradient(circle,#fff6c9,#ffd93d 70%);box-shadow:0 0 44px #ffe98a;animation:sun 5s ease-in-out -2s infinite}
+@keyframes sun{50%{transform:scale(1.07)}}
+</style></head><body><div id="app"><div class="sun"></div><div class="cloud" style="animation-delay:-4s"></div><div class="cloud" style="top:170px;animation-delay:-16s;transform:scale(.7)"></div><div class="mill"><div class="tw"></div><div class="blades"><i class="bl"></i><i class="bl"></i><i class="bl"></i><i class="bl"></i></div><i class="hub"></i></div><div class="ground"></div><i class="tulip" style="left:30px;--c:#e2546e"><i class="st" style="display:block;position:absolute"></i><i class="fl" style="display:block;position:absolute"></i></i><i class="tulip" style="left:80px;--c:#f2a03d"><i class="st" style="display:block;position:absolute"></i><i class="fl" style="display:block;position:absolute"></i></i><i class="tulip" style="left:340px;--c:#e2546e"><i class="st" style="display:block;position:absolute"></i><i class="fl" style="display:block;position:absolute"></i></i><i class="tulip" style="left:390px;--c:#b678e2"><i class="st" style="display:block;position:absolute"></i><i class="fl" style="display:block;position:absolute"></i></i><i class="tulip" style="left:250px;--c:#f2a03d"><i class="st" style="display:block;position:absolute"></i><i class="fl" style="display:block;position:absolute"></i></i><div class="tag">WINDMILL</div><div class="brand"><h1>风车牧歌</h1><p>田野微风 · 转动时光</p></div></div><button class="replay">&#8635; 重新播放</button><script>document.querySelector('.replay').onclick=function(){var a=document.getElementById('app');var c=a.cloneNode(true);a.replaceWith(c);};</script></body></html>

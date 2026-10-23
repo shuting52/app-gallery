@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>熔岩灯</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{display:flex;align-items:center;justify-content:center;background:#14141c;
+font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans CJK SC",sans-serif}
+.phone{width:430px;height:900px;border-radius:48px;overflow:hidden;position:relative;
+display:flex;flex-direction:column;background:#0b0b14;color:#f0ecff;
+box-shadow:0 30px 80px rgba(0,0,0,.6)}
+.content{flex:1;padding:56px 28px 20px;position:relative;z-index:1}
+.content .tag{display:inline-block;font-size:12px;letter-spacing:4px;color:#ff9f1c;margin-bottom:14px}
+.content h1{font-size:44px;font-weight:800;letter-spacing:2px;margin-bottom:26px}
+.card{height:150px;border-radius:20px;margin-bottom:18px;position:relative;overflow:hidden;
+background:linear-gradient(135deg,rgba(255,77,109,.12),rgba(255,159,28,.10));
+border:1px solid rgba(255,255,255,.08)}
+.card::after{content:"";position:absolute;left:22px;right:60px;top:28px;height:14px;border-radius:7px;background:rgba(255,255,255,.15)}
+.card::before{content:"";position:absolute;left:22px;right:120px;top:58px;height:10px;border-radius:5px;background:rgba(255,255,255,.08)}
+/* lava behind tabbar */
+.barwrap{position:relative;flex:0 0 auto;z-index:2}
+.lava{position:absolute;left:-30px;right:-30px;top:-60px;bottom:-10px;overflow:hidden;pointer-events:none}
+.blob{position:absolute;display:block;border-radius:50%;filter:blur(26px);opacity:.65;
+animation:rise 9s ease-in-out infinite}
+.blob.b1{width:120px;height:120px;left:8%;bottom:-30px;background:radial-gradient(circle,#ff4d6d,transparent 70%);animation-delay:-2s}
+.blob.b2{width:90px;height:90px;left:34%;bottom:-20px;background:radial-gradient(circle,#ff9f1c,transparent 70%);animation-delay:-5.5s;animation-duration:11s}
+.blob.b3{width:110px;height:110px;left:58%;bottom:-25px;background:radial-gradient(circle,#22d3ee,transparent 70%);animation-delay:-7s;animation-duration:8s}
+.blob.b4{width:80px;height:80px;left:80%;bottom:-15px;background:radial-gradient(circle,#a855f7,transparent 70%);animation-delay:-1s;animation-duration:10s}
+@keyframes rise{0%,100%{transform:translateY(28px) scale(1)}50%{transform:translateY(-52px) scale(1.3)}}
+/* frosted tabbar */
+.tabbar{position:relative;height:88px;display:flex;background:rgba(18,18,32,.55);
+-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);
+border-top:1px solid rgba(255,255,255,.12)}
+/* bubble that lifts the active icon */
+.bubble{position:absolute;top:8px;width:52px;height:52px;border-radius:50%;pointer-events:none;
+background:radial-gradient(circle at 35% 30%,rgba(255,255,255,.75),rgba(255,255,255,.18) 45%,rgba(255,255,255,.05) 70%);
+box-shadow:inset 0 -6px 12px rgba(255,77,109,.25),0 6px 18px rgba(0,0,0,.3);
+transition:left .45s cubic-bezier(.35,1.3,.5,1)}
+.tab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;
+background:none;border:0;cursor:pointer;color:#8a8aa0;position:relative;z-index:1;padding-top:8px}
+.tab svg{width:26px;height:26px;transition:transform .35s,color .35s,filter .35s}
+.tab .lb{font-size:11px;letter-spacing:1px;transition:color .3s}
+.tab.active{color:#ffd9a8}
+.tab.active svg{transform:translateY(-12px) scale(1.15);color:#fff;filter:drop-shadow(0 0 8px rgba(255,159,28,.8))}
+.tab.active .lb{color:#ff9f1c;font-weight:600}
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="content">
+    <span class="tag">LAVA LAMP</span>
+    <h1 id="t">熔炉</h1>
+    <div class="card"></div><div class="card"></div><div class="card"></div>
+  </div>
+  <div class="barwrap">
+    <div class="lava"><span class="blob b1"></span><span class="blob b2"></span><span class="blob b3"></span><span class="blob b4"></span></div>
+    <nav class="tabbar" id="bar">
+      <div class="bubble" id="bub"></div>
+      <button class="tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M10 21v-6h4v6"/></svg><span class="lb">熔炉</span></button>
+      <button class="tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2 5-5 2 2-5z"/></svg><span class="lb">暖流</span></button>
+      <button class="tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg><span class="lb">滴落</span></button>
+      <button class="tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 8-3 8h18s-3-1-3-8"/><path d="M10.3 21a2 2 0 0 0 3.4 0"/></svg><span class="lb">气泡</span></button>
+      <button class="tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/></svg><span class="lb">守夜</span></button>
+    </nav>
+  </div>
+</div>
+<script>
+var names=["熔炉","暖流","滴落","气泡","守夜"];
+var tabs=[].slice.call(document.querySelectorAll(".tab"));
+var bub=document.getElementById("bub");
+var cur=0;
+function place(el){bub.style.left=(el.offsetLeft+el.offsetWidth/2-26)+"px";}
+function activate(k){
+  cur=k;
+  tabs.forEach(function(b,i){b.classList.toggle("active",i===k);});
+  place(tabs[k]);
+  document.getElementById("t").textContent=names[k];
+  try{history.replaceState(null,"","?tab="+k);}catch(e){}
+}
+var q=parseInt(new URLSearchParams(location.search).get("tab"),10);
+if(isNaN(q)||q<0||q>4)q=0;
+tabs.forEach(function(b,i){b.addEventListener("click",function(){activate(i);});});
+requestAnimationFrame(function(){activate(q);});
+</script>
+</body>
+</html>

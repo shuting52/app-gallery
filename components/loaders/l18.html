@@ -1,0 +1,16 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>像素爱心 · 加载动画</title><style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;background:radial-gradient(600px 400px at 50% 40%,#2b0d18,#0d0408 70%);display:flex;flex-direction:column;align-items:center;justify-content:center;
+font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;color:#e8eaf0;padding:24px 12px}
+h1{font-size:15px;font-weight:600;letter-spacing:4px;color:#fb7185;margin-bottom:6px}
+.sub{font-size:11px;color:#8a90a6;margin-bottom:30px;letter-spacing:3px}
+.stage{width:360px;max-width:94vw;height:300px;position:relative;display:flex;align-items:center;justify-content:center}
+.htw{animation:beat 1.6s ease-in-out infinite}
+.ht{display:grid;grid-template-columns:repeat(7,30px);gap:5px}
+.ht i{width:30px;height:30px;border-radius:5px;background:linear-gradient(135deg,#fb7185,#e11d48);
+box-shadow:0 0 12px rgba(244,63,94,.6);transform:scale(0);animation:pop .5s cubic-bezier(.2,1.6,.4,1) forwards}
+@keyframes pop{to{transform:scale(1)}}
+@keyframes beat{0%,100%{transform:scale(1)}12%{transform:scale(1.12)}24%{transform:scale(1)}}
+</style></head><body><h1>像素爱心</h1><div class="sub">LOADING · 加载中</div><div class="stage"><div class="htw"><div class="ht"><i style="animation-delay:0.07s"></i><i style="animation-delay:0.14s"></i><i style="animation-delay:0.28s"></i><i style="animation-delay:0.35s"></i><i style="animation-delay:0.49s"></i><i style="animation-delay:0.56s"></i><i style="animation-delay:0.63s"></i><i style="animation-delay:0.70s"></i><i style="animation-delay:0.77s"></i><i style="animation-delay:0.84s"></i><i style="animation-delay:0.91s"></i><i style="animation-delay:0.98s"></i><i style="animation-delay:1.05s"></i><i style="animation-delay:1.12s"></i><i style="animation-delay:1.19s"></i><i style="animation-delay:1.26s"></i><i style="animation-delay:1.33s"></i><i style="animation-delay:1.40s"></i><i style="animation-delay:1.54s"></i><i style="animation-delay:1.61s"></i><i style="animation-delay:1.68s"></i><i style="animation-delay:1.75s"></i><i style="animation-delay:1.82s"></i><i style="animation-delay:2.10s"></i><i style="animation-delay:2.17s"></i><i style="animation-delay:2.24s"></i><i style="animation-delay:2.66s"></i></div></div></div></body></html>

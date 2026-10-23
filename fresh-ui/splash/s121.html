@@ -1,0 +1,27 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>海豚跃浪</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:430px;height:900px}
+body{overflow:hidden;position:relative;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(#0a3a6b,#0e6ba8 55%,#1290c9);color:#fff}
+.stage{position:absolute;inset:0;overflow:hidden}
+.brand{position:absolute;left:0;right:0;top:648px;text-align:center;z-index:5;animation:brandIn 1s ease 2s both}
+.brand h1{font-size:36px;letter-spacing:10px;font-weight:800}
+.brand p{font-size:13px;letter-spacing:6px;opacity:.65;margin-top:10px}
+@keyframes brandIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.replay{position:absolute;bottom:36px;left:50%;transform:translateX(-50%);z-index:9;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.35);color:#fff;font-size:13px;padding:9px 26px;border-radius:24px;cursor:pointer;backdrop-filter:blur(6px)}
+.wave{position:absolute;bottom:-30px;left:-10%;width:120%;height:190px;background:rgba(255,255,255,.28);border-radius:42% 58% 0 0;animation:waveM 4s ease-in-out infinite}
+.wave.w2{background:rgba(255,255,255,.18);animation-delay:-2s;height:160px}
+@keyframes waveM{50%{transform:translateX(-4%) rotate(-1.5deg)}}
+.dol{position:absolute;left:50%;top:430px;width:120px;height:60px;animation:jump 3.4s ease-in-out infinite;animation-delay:-1s}
+@keyframes jump{0%,100%{transform:translate(-50%,60px) rotate(-24deg)}50%{transform:translate(-50%,-150px) rotate(18deg)}}
+.dol svg{display:block}
+.sun2{position:absolute;left:50%;top:140px;width:110px;height:110px;transform:translateX(-50%);border-radius:50%;background:radial-gradient(circle at 50% 50%,#fff6c9,#ffd93d 65%,transparent 72%)}
+</style></head><body>
+<div class="stage"><div class="sun2"></div>
+<div class="dol"><svg viewBox="0 0 120 60"><path d="M8 44 C 30 20, 60 12, 92 22 L 112 8 L 104 26 C 96 34, 70 44, 40 46 Z" fill="#2b6cb8"/><circle cx="88" cy="24" r="3" fill="#fff"/></svg></div>
+<div class="wave"></div><div class="wave w2"></div></div>
+<div class="brand"><h1>深蓝</h1><p>DOLPHIN · 跃动</p></div>
+<button class="replay" onclick="location.reload()">&#8635; 重新播放</button>
+</body></html>

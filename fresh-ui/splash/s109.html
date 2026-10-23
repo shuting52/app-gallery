@@ -1,0 +1,27 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>彩虹拱桥</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:430px;height:900px}
+body{overflow:hidden;position:relative;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(#0b1026,#1b2a52 60%,#2b3a6b);color:#fff}
+.stage{position:absolute;inset:0;overflow:hidden}
+.brand{position:absolute;left:0;right:0;top:648px;text-align:center;z-index:5;animation:brandIn 1s ease 2s both}
+.brand h1{font-size:36px;letter-spacing:10px;font-weight:800}
+.brand p{font-size:13px;letter-spacing:6px;opacity:.65;margin-top:10px}
+@keyframes brandIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.replay{position:absolute;bottom:36px;left:50%;transform:translateX(-50%);z-index:9;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.35);color:#fff;font-size:13px;padding:9px 26px;border-radius:24px;cursor:pointer;backdrop-filter:blur(6px)}
+.bow{position:absolute;left:50%;top:110px;transform:translateX(-50%) scale(0);border-radius:50%;animation:bowIn 1.2s cubic-bezier(.2,.8,.3,1.2) both}
+@keyframes bowIn{to{transform:translateX(-50%) scale(1)}}
+.b1{width:400px;height:400px;border:14px solid #ff5d5d;border-color:#ff5d5d transparent transparent transparent;animation-delay:.1s}
+.b2{width:352px;height:352px;border:14px solid #ff9f43;border-color:#ff9f43 transparent transparent transparent;animation-delay:.25s}
+.b3{width:304px;height:304px;border:14px solid #ffd93d;border-color:#ffd93d transparent transparent transparent;animation-delay:.4s}
+.b4{width:256px;height:256px;border:14px solid #6bcB77;border-color:#6bcB77 transparent transparent transparent;animation-delay:.55s}
+.b5{width:208px;height:208px;border:14px solid #4dd2ff;border-color:#4dd2ff transparent transparent transparent;animation-delay:.7s}
+.drop{position:absolute;top:-30px;width:6px;height:16px;border-radius:3px;background:#9fdcff;opacity:0;animation:fall 1.6s linear infinite}
+@keyframes fall{0%{opacity:0;transform:translateY(0)}15%{opacity:.9}100%{opacity:0;transform:translateY(560px)}}
+</style></head><body>
+<div class="stage"><div class="bow b1"></div><div class="bow b2"></div><div class="bow b3"></div><div class="bow b4"></div><div class="bow b5"></div><div class="drop" style="left:40px;animation-delay:0.0s"></div><div class="drop" style="left:78px;animation-delay:-0.35s"></div><div class="drop" style="left:116px;animation-delay:-0.7s"></div><div class="drop" style="left:154px;animation-delay:-1.0499999999999998s"></div><div class="drop" style="left:192px;animation-delay:-1.4s"></div><div class="drop" style="left:230px;animation-delay:-1.75s"></div><div class="drop" style="left:268px;animation-delay:-2.0999999999999996s"></div><div class="drop" style="left:306px;animation-delay:-2.4499999999999997s"></div><div class="drop" style="left:344px;animation-delay:-2.8s"></div><div class="drop" style="left:382px;animation-delay:-3.15s"></div></div>
+<div class="brand"><h1>虹桥</h1><p>RAINBOW · 跨越</p></div>
+<button class="replay" onclick="location.reload()">&#8635; 重新播放</button>
+</body></html>

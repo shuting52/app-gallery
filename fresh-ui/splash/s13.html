@@ -1,0 +1,67 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>烟花绽放 · 启动页</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{background:#02040a;display:flex;justify-content:center;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif}
+.stage{width:430px;height:900px;max-width:100vw;max-height:100vh;position:relative;overflow:hidden;
+background:linear-gradient(180deg,#040614 0%,#02040a 70%)}
+.fw{position:absolute;inset:0;z-index:2}
+.spark{position:absolute;width:4px;height:66px;border-radius:2px;display:block;
+transform-origin:50% 100%;opacity:0;animation:burst 1s ease-out both;animation-delay:var(--dl)}
+@keyframes burst{0%{opacity:1;transform:rotate(var(--a)) scaleY(.1)}
+70%{opacity:1}100%{opacity:0;transform:rotate(var(--a)) scaleY(1)}}
+.rocket{position:absolute;left:50%;width:5px;height:60px;margin-left:-2px;border-radius:3px;z-index:2;
+background:linear-gradient(180deg,#fff,#ffd76a);box-shadow:0 0 14px #ffd76a;opacity:0;
+animation:rocket .55s ease-in both;animation-delay:var(--dl)}
+@keyframes rocket{0%{opacity:0;transform:translateY(0)}15%{opacity:1}80%{opacity:1}100%{opacity:0;transform:translateY(-260px)}}
+.glowdot{position:absolute;width:10px;height:10px;border-radius:50%;z-index:2;opacity:0;
+background:radial-gradient(circle,#fff8dc,#ffd76a 60%,transparent 70%);box-shadow:0 0 16px 4px rgba(255,215,106,.6);
+animation:glowdot 2.6s ease-in-out infinite;animation-delay:var(--dl)}
+.glowdot:nth-child(1){left:210px;top:325px;--dl:1.6s}
+.glowdot:nth-child(2){left:115px;top:235px;--dl:2.1s}
+.glowdot:nth-child(3){left:305px;top:245px;--dl:2.6s}
+@keyframes glowdot{0%,100%{opacity:.15;transform:scale(.8)}50%{opacity:.9;transform:scale(1.25)}}
+.ember{position:absolute;width:120px;height:120px;border-radius:50%;z-index:2;opacity:0;
+background:radial-gradient(circle,rgba(255,215,106,.55),transparent 70%);animation:ember 1.2s ease-out both;animation-delay:var(--dl)}
+@keyframes ember{0%{opacity:0;transform:scale(.4)}40%{opacity:1}100%{opacity:0;transform:scale(1.6)}}
+.mark{position:absolute;left:50%;top:330px;width:116px;height:116px;margin:-58px 0 0 -58px;z-index:5;border-radius:50%;
+background:radial-gradient(circle at 35% 30%,#fff3cf,#f5b83e 55%,#c47a1a);
+display:flex;align-items:center;justify-content:center;font-size:48px;color:#6b3d05;font-weight:700;
+box-shadow:0 0 54px rgba(245,184,62,.55);opacity:0;animation:markIn 1s cubic-bezier(.2,.8,.3,1.4) both;animation-delay:1.9s}
+@keyframes markIn{0%{opacity:0;transform:scale(.3)}100%{opacity:1;transform:scale(1)}}
+.brand{position:absolute;left:0;right:0;top:600px;text-align:center;z-index:6;
+opacity:0;animation:fadeUp 1s ease-out both;animation-delay:2.3s}
+.brand h1{font-size:36px;font-weight:700;letter-spacing:14px;color:#fff4dc;text-indent:14px}
+.brand p{font-size:13px;letter-spacing:6px;color:#c8a25e;margin-top:12px;text-indent:6px}
+@keyframes fadeUp{0%{opacity:0;transform:translateY(18px)}100%{opacity:1;transform:translateY(0)}}
+.replay{position:absolute;left:50%;bottom:36px;transform:translateX(-50%);z-index:50;
+border:1px solid rgba(255,200,110,.45);background:rgba(255,200,110,.08);color:#ffe2a8;
+font-size:13px;letter-spacing:3px;padding:10px 26px;border-radius:24px;cursor:pointer}
+.replay:active{transform:translateX(-50%) scale(.94)}
+</style></head><body>
+<div class="stage">
+  <div class="fw" id="fw"></div>
+  <i class="glowdot"></i><i class="glowdot"></i><i class="glowdot"></i>
+  <div class="mark">烁</div>
+  <div class="brand"><h1>烁</h1><p>绽放你的时刻</p></div>
+  <button class="replay">重新播放</button>
+</div>
+<script>
+(function(){const fw=document.getElementById('fw');
+const shows=[[215,330,'#ffd76a',0],[120,240,'#ff8fb3',.45],[310,250,'#8fd0ff',.9]];
+shows.forEach(([x,y,c,dl])=>{
+  const rk=document.createElement('i');rk.className='rocket';rk.style.left=x+'px';rk.style.top=(y+250)+'px';
+  rk.style.setProperty('--dl',dl+'s');fw.appendChild(rk);
+  const em=document.createElement('i');em.className='ember';em.style.left=(x-60)+'px';em.style.top=(y-60)+'px';
+  em.style.setProperty('--dl',(dl+.5)+'s');fw.appendChild(em);
+  for(let i=0;i<14;i++){const s=document.createElement('i');s.className='spark';
+    s.style.left=(x-2)+'px';s.style.top=(y-66)+'px';s.style.background=c;
+    s.style.setProperty('--a',(i*360/14)+'deg');s.style.setProperty('--dl',(dl+.55)+'s');fw.appendChild(s);}});
+})();
+function bind(){document.querySelector('.replay').addEventListener('click',()=>{
+const s=document.querySelector('.stage');const n=s.cloneNode(true);s.replaceWith(n);bind();});}
+bind();
+</script>
+</body></html>

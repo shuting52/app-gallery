@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>词趣背单词 · 每天30词</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{background:#dfeee6;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;color:#1f2937;display:flex;justify-content:center;min-height:100vh}
+.phone{width:100%;max-width:430px;min-height:100vh;background:#f0f9f4;position:relative;padding-bottom:82px}
+.page{display:none;padding:16px 16px 24px;animation:fin .25s ease}
+.page.active{display:block}
+@keyframes fin{from{opacity:0;transform:translateY(8px)}}
+.hd{display:flex;align-items:center;justify-content:space-between;margin:6px 2px 14px}
+.logo{font-size:20px;font-weight:800}
+.logo b{color:#16a34a}
+.fire{font-size:13px;background:#fff;border:1px solid #e5e7eb;padding:5px 12px;border-radius:20px;color:#b45309;font-weight:700}
+.prog{background:#fff;border-radius:16px;padding:14px 16px;margin-bottom:14px;box-shadow:0 2px 10px #16a34a11}
+.prog .row{display:flex;justify-content:space-between;font-size:13px;margin-bottom:8px;color:#4b5563}
+.prog .row b{color:#16a34a}
+.bar{height:10px;background:#e5e7eb;border-radius:6px;overflow:hidden}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,#4ade80,#16a34a);border-radius:6px;transition:width .4s}
+/* 单词卡 */
+.card3d{perspective:1000px;margin:6px 0 16px;cursor:pointer}
+.cardin{position:relative;height:300px;transform-style:preserve-3d;transition:transform .55s cubic-bezier(.3,.7,.3,1.2)}
+.card3d.flip .cardin{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;backface-visibility:hidden;background:#fff;border-radius:22px;box-shadow:0 8px 24px #16a34a1c;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;border:2px solid #bbf7d0}
+.face.back{transform:rotateY(180deg);background:#16a34a;color:#fff;border-color:#16a34a}
+.face .w{font-size:38px;font-weight:800;letter-spacing:1px;margin-bottom:10px}
+.face .ph{font-size:15px;color:#6b7280}
+.face.back .ph{color:#d1fae5}
+.face .tip{font-size:12px;color:#9ca3af;margin-top:16px}
+.face.back .tip{color:#a7f3d0}
+.mean{font-size:22px;font-weight:700;margin-bottom:12px;text-align:center;line-height:1.6}
+.ex{font-size:13px;line-height:1.8;opacity:.9;text-align:center}
+.ex i{color:#fde68a;font-style:normal}
+.kbtns{display:flex;gap:12px}
+.kbtns button{flex:1;padding:15px;border-radius:16px;font-size:16px;font-weight:800;border:0;cursor:pointer}
+.no{background:#fff;color:#dc2626;border:2px solid #fecaca!important}
+.yes{background:#16a34a;color:#fff}
+.kbtns button:active{transform:scale(.95)}
+/* 词库 */
+.search{display:flex;gap:8px;margin-bottom:12px}
+.search input{flex:1;background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:12px;font-size:14px;outline:none}
+.search input:focus{border-color:#16a34a}
+.chips{display:flex;gap:8px;margin-bottom:12px;overflow-x:auto;padding-bottom:2px}
+.chip{background:#fff;border:1px solid #e5e7eb;padding:8px 16px;border-radius:20px;font-size:13px;white-space:nowrap;cursor:pointer;color:#4b5563}
+.chip.on{background:#16a34a;color:#fff;border-color:#16a34a;font-weight:700}
+.wrow{background:#fff;border-radius:14px;padding:13px 16px;margin-bottom:8px;display:flex;align-items:center;gap:12px;box-shadow:0 1px 6px #16a34a0d}
+.wrow .wd{font-size:16px;font-weight:700}
+.wrow .py{font-size:12px;color:#9ca3af;margin-top:2px}
+.wrow .mn{margin-left:auto;font-size:13px;color:#4b5563;text-align:right}
+.spk{background:none;border:0;font-size:18px;cursor:pointer}
+/* 统计 */
+.streak{background:linear-gradient(135deg,#16a34a,#65a30d);color:#fff;border-radius:18px;padding:18px;display:flex;align-items:center;gap:14px;margin-bottom:14px}
+.streak .f{font-size:40px}
+.streak .n{font-size:30px;font-weight:800}
+.streak .d{font-size:12px;opacity:.85}
+.tiles{display:flex;gap:10px;margin-bottom:14px}
+.tile{flex:1;background:#fff;border-radius:14px;padding:14px 8px;text-align:center;box-shadow:0 1px 6px #16a34a0d}
+.tile b{font-size:20px;color:#16a34a;display:block}
+.tile span{font-size:11px;color:#6b7280}
+.chart{background:#fff;border-radius:16px;padding:16px;box-shadow:0 1px 6px #16a34a0d}
+.chart .t{font-size:14px;font-weight:700;margin-bottom:12px}
+.bars{display:flex;align-items:flex-end;gap:8px;height:120px}
+.bcol{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;height:100%;justify-content:flex-end}
+.bcol i{width:100%;background:linear-gradient(180deg,#4ade80,#16a34a);border-radius:6px;display:block}
+.bcol span{font-size:10px;color:#9ca3af}
+.ach{background:#fff;border-radius:16px;padding:6px 16px;margin-top:14px;box-shadow:0 1px 6px #16a34a0d}
+.arow{display:flex;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid #f3f4f6;font-size:14px}
+.arow:last-child{border:0}
+.arow .m{font-size:22px}
+/* 我的 */
+.me{background:#fff;border-radius:18px;padding:18px;display:flex;gap:14px;align-items:center;margin-bottom:14px;box-shadow:0 1px 6px #16a34a0d}
+.avatar{width:58px;height:58px;border-radius:50%;background:linear-gradient(135deg,#4ade80,#0ea5e9);display:flex;align-items:center;justify-content:center;font-size:30px}
+.me .nm{font-size:17px;font-weight:800}
+.me .tg{font-size:12px;color:#16a34a;background:#dcfce7;padding:3px 10px;border-radius:12px;margin-top:6px;display:inline-block}
+.goal{background:#fff;border-radius:16px;padding:16px;margin-bottom:14px;box-shadow:0 1px 6px #16a34a0d}
+.goal .t{font-size:14px;font-weight:700;margin-bottom:10px}
+.stepper{display:flex;align-items:center;gap:16px;justify-content:center}
+.stepper button{width:38px;height:38px;border-radius:50%;border:2px solid #16a34a;background:#fff;color:#16a34a;font-size:20px;font-weight:800;cursor:pointer}
+.stepper b{font-size:24px;color:#16a34a}
+.menu{background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 1px 6px #16a34a0d}
+.mi{display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid #f3f4f6;font-size:14px;cursor:pointer}
+.mi:last-child{border:0}
+.mi .e{font-size:18px}
+.mi .a{margin-left:auto;color:#9ca3af}
+.sw{margin-left:auto;width:48px;height:28px;border-radius:14px;background:#e5e7eb;position:relative;cursor:pointer;transition:background .25s}
+.sw::after{content:"";position:absolute;width:22px;height:22px;border-radius:50%;background:#fff;top:3px;left:3px;transition:left .25s;box-shadow:0 1px 4px #0003}
+.sw.on{background:#16a34a}
+.sw.on::after{left:23px}
+.tabbar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:#fffffff2;backdrop-filter:blur(10px);border-top:1px solid #e5e7eb;display:flex;padding:8px 0 calc(8px + env(safe-area-inset-bottom));z-index:50}
+.tab{flex:1;background:none;border:0;color:#9ca3af;font-size:11px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px}
+.tab .i{font-size:21px}
+.tab.on{color:#16a34a}
+.toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:#1f2937;color:#fff;padding:10px 22px;border-radius:24px;font-size:13px;opacity:0;transition:opacity .3s;z-index:99;pointer-events:none;max-width:86%;text-align:center}
+</style>
+</head>
+<body>
+<div class="phone">
+  <section class="page active" id="p-study">
+    <div class="hd"><div class="logo">📖 词趣<b>背单词</b></div><div class="fire">🔥 12天</div></div>
+    <div class="prog"><div class="row"><span>今日学习进度</span><b id="pcount">12 / 30 词</b></div><div class="bar"><i id="pbar" style="width:40%"></i></div></div>
+    <div class="card3d" id="fcard" onclick="this.classList.toggle('flip')">
+      <div class="cardin">
+        <div class="face"><div class="w" id="w0">serendipity</div><div class="ph" id="w1">/ˌserənˈdɪpəti/</div><div class="tip">👆 点击卡片查看释义</div></div>
+        <div class="face back"><div class="mean" id="w2">n. 意外的惊喜；机缘巧合</div><div class="ex" id="w3">Finding this bookstore was pure <i>serendipity</i>.<br>发现这家书店纯属意外的惊喜。</div><div class="tip">👆 点击翻回单词</div></div>
+      </div>
+    </div>
+    <div class="kbtns"><button class="no" onclick="nextWord(false)">不认识</button><button class="yes" onclick="nextWord(true)">认识 ✓</button></div>
+  </section>
+  <section class="page" id="p-lib">
+    <div class="hd"><div class="logo">📚 词<b>库</b></div></div>
+    <div class="search"><input id="q" placeholder="搜索单词…" oninput="renderLib()"></div>
+    <div class="chips" id="chips"></div>
+    <div id="liblist"></div>
+  </section>
+  <section class="page" id="p-stats">
+    <div class="hd"><div class="logo">📊 学习<b>统计</b></div></div>
+    <div class="streak"><div class="f">🔥</div><div><div class="n">12 天</div><div class="d">连续打卡 · 再坚持 3 天解锁「持之以恒」徽章</div></div></div>
+    <div class="tiles">
+      <div class="tile"><b>1230</b><span>累计词汇</span></div>
+      <div class="tile"><b>86%</b><span>记忆正确率</span></div>
+      <div class="tile"><b>42h</b><span>学习时长</span></div>
+    </div>
+    <div class="chart"><div class="t">本周学习（词）</div><div class="bars" id="bars"></div></div>
+    <div class="ach">
+      <div class="arow"><span class="m">🏅</span><div><b>7天坚持者</b><div style="font-size:12px;color:#6b7280">连续打卡 7 天达成</div></div><span style="margin-left:auto;color:#16a34a;font-weight:700">已获得</span></div>
+      <div class="arow"><span class="m">📖</span><div><b>词汇破千</b><div style="font-size:12px;color:#6b7280">累计掌握 1000 词达成</div></div><span style="margin-left:auto;color:#16a34a;font-weight:700">已获得</span></div>
+      <div class="arow"><span class="m">🌟</span><div><b>全对挑战</b><div style="font-size:12px;color:#6b7280">单日 30 词全部答对（0/1）</div></div><span style="margin-left:auto;color:#9ca3af">未获得</span></div>
+    </div>
+  </section>
+  <section class="page" id="p-mine">
+    <div class="hd"><div class="logo">👤 我<b>的</b></div></div>
+    <div class="me"><div class="avatar">🎓</div><div><div class="nm">学霸小陈</div><span class="tg">🎯 目标：考研英语 70+</span></div></div>
+    <div class="goal"><div class="t">每日学习目标</div><div class="stepper"><button onclick="stepGoal(-5)">−</button><b><span id="goaln">30</span> 词</b><button onclick="stepGoal(5)">＋</button></div></div>
+    <div class="menu">
+      <div class="mi"><span class="e">⏰</span>学习提醒<div class="sw on" onclick="event.stopPropagation();this.classList.toggle('on');toast('学习提醒已'+(this.classList.contains('on')?'开启':'关闭'))"></div></div>
+      <div class="mi"><span class="e">🌙</span>夜间模式<div class="sw" onclick="event.stopPropagation();this.classList.toggle('on');toast('夜间模式已'+(this.classList.contains('on')?'开启':'关闭'))"></div></div>
+      <div class="mi" onclick="toast('已收藏 86 个易错词')"><span class="e">⭐</span>我的生词本<span class="a">›</span></div>
+      <div class="mi" onclick="toast('反馈已提交，感谢你的建议！')"><span class="e">💬</span>意见反馈<span class="a">›</span></div>
+      <div class="mi" onclick="toast('词趣背单词 v3.2.0')"><span class="e">ℹ️</span>关于<span class="a">›</span></div>
+    </div>
+  </section>
+  <nav class="tabbar">
+    <button class="tab on" data-t="p-study"><span class="i">📖</span>学习</button>
+    <button class="tab" data-t="p-lib"><span class="i">📚</span>词库</button>
+    <button class="tab" data-t="p-stats"><span class="i">📊</span>统计</button>
+    <button class="tab" data-t="p-mine"><span class="i">👤</span>我的</button>
+  </nav>
+  <div class="toast" id="toast"></div>
+</div>
+<script>
+let tt;
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.style.opacity=1;clearTimeout(tt);tt=setTimeout(()=>t.style.opacity=0,1800);}
+function switchTab(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('on',b.dataset.t===id));window.scrollTo(0,0);}
+document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>switchTab(b.dataset.t));
+const qtab=new URLSearchParams(location.search).get('tab');if(qtab&&document.getElementById(qtab))switchTab(qtab);
+// 背单词
+const words=[
+ {w:'serendipity',ph:'/ˌserənˈdɪpəti/',m:'n. 意外的惊喜；机缘巧合',ex:'Finding this bookstore was pure <i>serendipity</i>.<br>发现这家书店纯属意外的惊喜。'},
+ {w:'petrichor',ph:'/ˈpetrɪkɔːr/',m:'n. 雨后泥土的芳香',ex:'I love the <i>petrichor</i> after summer rain.<br>我喜欢夏雨过后泥土的芬芳。'},
+ {w:'ephemeral',ph:'/ɪˈfemərəl/',m:'adj. 短暂的，转瞬即逝的',ex:'Youth is <i>ephemeral</i>, so cherish it.<br>青春短暂，应当珍惜。'},
+ {w:'sonder',ph:'/ˈsɒndər/',m:'n. 对他人皆有精彩人生的顿悟',ex:'<i>Sonder</i> hit me in the crowded subway.<br>在拥挤的地铁里我忽然顿悟：人人都有自己的故事。'},
+ {w:'luminous',ph:'/ˈluːmɪnəs/',m:'adj. 发光的；光彩照人的',ex:'Her <i>luminous</i> smile lit up the room.<br>她光彩照人的微笑点亮了整个房间。'},
+ {w:'ineffable',ph:'/ɪnˈefəbl/',m:'adj. 难以言喻的',ex:'The view from the top was <i>ineffable</i>.<br>山顶的景色难以言喻。'}];
+let wi=0,done=12,goal=30;
+function nextWord(know){done++;wi=(wi+1)%words.length;const d=words[wi];
+ document.getElementById('w0').textContent=d.w;document.getElementById('w1').textContent=d.ph;
+ document.getElementById('w2').textContent=d.m;document.getElementById('w3').innerHTML=d.ex;
+ document.getElementById('fcard').classList.remove('flip');
+ if(done>=goal){toast('🎉 今日 '+goal+' 词目标完成，太棒了！');done=0;}
+ document.getElementById('pcount').textContent=done+' / '+goal+' 词';
+ document.getElementById('pbar').style.width=(done/goal*100)+'%';}
+// 词库
+const lib=[
+ {w:'abandon',ph:'/əˈbændən/',m:'v. 放弃；遗弃',lv:'四级'},
+ {w:'bizarre',ph:'/bɪˈzɑːr/',m:'adj. 奇异的',lv:'六级'},
+ {w:'candid',ph:'/ˈkændɪd/',m:'adj. 坦率的',lv:'六级'},
+ {w:'dilemma',ph:'/dɪˈlemə/',m:'n. 困境',lv:'考研'},
+ {w:'eloquent',ph:'/ˈeləkwənt/',m:'adj. 雄辩的',lv:'雅思'},
+ {w:'frugal',ph:'/ˈfruːɡl/',m:'adj. 节俭的',lv:'四级'},
+ {w:'gregarious',ph:'/ɡrɪˈɡeriəs/',m:'adj. 爱社交的',lv:'雅思'},
+ {w:'hinder',ph:'/ˈhɪndər/',m:'v. 阻碍',lv:'考研'}];
+const levels=['全部','四级','六级','考研','雅思'];let curLv='全部';
+const chipsEl=document.getElementById('chips');
+levels.forEach(l=>{const c=document.createElement('div');c.className='chip'+(l==='全部'?' on':'');c.textContent=l;c.onclick=()=>{curLv=l;document.querySelectorAll('.chip').forEach(x=>x.classList.remove('on'));c.classList.add('on');renderLib();};chipsEl.appendChild(c);});
+function renderLib(){const q=document.getElementById('q').value.toLowerCase();const el=document.getElementById('liblist');el.innerHTML='';
+ lib.filter(x=>(curLv==='全部'||x.lv===curLv)&&x.w.includes(q)).forEach(x=>{const d=document.createElement('div');d.className='wrow';
+ d.innerHTML='<div><div class="wd">'+x.w+'</div><div class="py">'+x.ph+' · '+x.lv+'</div></div><div class="mn">'+x.m+'</div><button class="spk" onclick="toast(\'正在播放发音：'+x.w+'\')">🔊</button>';el.appendChild(d);});
+ if(!el.children.length)el.innerHTML='<div style="text-align:center;color:#9ca3af;padding:30px">没有找到相关单词</div>';}
+renderLib();
+// 统计柱状图
+const week=[['一',22],['二',30],['三',18],['四',30],['五',25],['六',35],['日',12]];
+const bars=document.getElementById('bars');const mx=Math.max(...week.map(x=>x[1]));
+week.forEach(x=>{const c=document.createElement('div');c.className='bcol';c.innerHTML='<i style="height:'+(x[1]/mx*100)+'%"></i><span>'+x[0]+'</span>';bars.appendChild(c);});
+function stepGoal(d){goal=Math.min(100,Math.max(10,goal+d));document.getElementById('goaln').textContent=goal;document.getElementById('pcount').textContent=done+' / '+goal+' 词';toast('每日目标已设为 '+goal+' 词');}
+</script>
+</body>
+</html>
