@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>扁平化 Flat Design · 懒得找了 UI 组件库</title>
+<style>
+/* ============ 扁平化 token ============ */
+:root{
+  --red:#E74C3C; --blue:#3498DB; --green:#2ECC71; --yellow:#F1C40F; --purple:#9B59B6;
+  --dark:#2C3E50; --ink:#22303C; --bg:#ECF0F1; --paper:#FFFFFF; --muted:#95A5A6;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{-webkit-text-size-adjust:100%}
+body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--ink);padding-bottom:110px}
+/* 零阴影铁律 */
+*,*::before,*::after{box-shadow:none!important}
+
+/* ============ 顶栏 ============ */
+.hero{background:var(--blue);color:#fff;padding:26px 20px 20px}
+.hero h1{font-size:20px;font-weight:800;letter-spacing:1px}
+.hero p{font-size:12px;opacity:.95;margin-top:6px;line-height:1.7}
+
+/* ============ Tab 面板 ============ */
+.tabpane{display:none;padding:16px 14px}
+.tabpane.on{display:block}
+
+/* ============ 组件卡 ============ */
+.card{background:var(--paper);margin-bottom:14px}
+.card>h3{font-size:13px;font-weight:700;padding:10px 14px;color:#fff;background:var(--dark);letter-spacing:1px}
+.card>h3 .tag{display:inline-block;font-size:11px;background:#fff;color:var(--dark);padding:1px 8px;margin-right:8px}
+.card .body{padding:14px}
+.body p.note{font-size:12px;color:#666;line-height:1.7;margin-bottom:10px}
+
+/* ============ 色板 ============ */
+.palette{display:flex;gap:8px;flex-wrap:wrap}
+.swatch{flex:1 1 30%;min-height:64px;color:#fff;display:flex;align-items:flex-end;justify-content:center;padding:6px;font-size:11px;font-weight:700;cursor:pointer;user-select:none}
+.swatch:active{opacity:.75}
+.swatch small{font-weight:400;opacity:.9;display:block;font-size:10px}
+
+/* ============ 按钮 ============ */
+.btn{border:0;color:#fff;font-weight:700;font-size:14px;padding:12px 26px;cursor:pointer;background:var(--blue)}
+.btn:active{opacity:.75}
+.btn.red{background:var(--red)} .btn.green{background:var(--green)} .btn.yellow{background:var(--yellow);color:var(--ink)} .btn.purple{background:var(--purple)} .btn.dark{background:var(--dark)}
+.btn.big{font-size:16px;padding:14px 34px}
+.btn.sm{font-size:12px;padding:8px 16px}
+.btn.block{display:block;width:100%}
+.btnrow{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
+
+/* ============ 开关（色块开关） ============ */
+.swrow{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:2px solid var(--bg)}
+.swrow:last-child{border-bottom:0}
+.swrow span{font-size:14px}
+.switch{position:relative;width:52px;height:30px;background:#BDC3C7;cursor:pointer;flex-shrink:0}
+.switch.on{background:var(--green)}
+.switch::after{content:"";position:absolute;top:3px;left:3px;width:24px;height:24px;background:#fff;transition:left .12s}
+.switch.on::after{left:25px}
+/* 动画须短：截图时已结束 */
+
+/* ============ 色块标签页 ============ */
+.seg{display:flex}
+.seg button{flex:1;border:0;background:#DDE3E6;color:var(--ink);font-size:13px;font-weight:700;padding:10px 0;cursor:pointer}
+.seg button.on{background:var(--blue);color:#fff}
+.seg button:active{opacity:.8}
+.seg.out{font-size:13px;color:var(--dark);margin-top:8px;min-height:20px}
+
+/* ============ 几何图标按钮 ============ */
+.icorow{display:flex;gap:12px;align-items:center}
+.icobtn{border:0;width:52px;height:52px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#fff}
+.icobtn:active{opacity:.75}
+.icobtn.round{border-radius:50%;background:var(--red)}
+.icobtn.square{background:var(--purple)}
+.icobtn.diamond{background:var(--green)}
+.icobtn.triangle{background:none;width:56px;height:56px}
+.gi{width:0;height:0;border-style:solid}
+.gi.dot{width:16px;height:16px;border:0;border-radius:50%;background:#fff}
+.gi.sq{width:16px;height:16px;border:0;background:#fff}
+.gi.tri{border-width:0 10px 18px 10px;border-color:transparent transparent #fff transparent}
+.gi.dia{width:14px;height:14px;border:0;background:#fff;transform:rotate(45deg)}
+
+/* ============ 表单 ============ */
+.field{margin-bottom:14px}
+.field label{display:block;font-size:12px;font-weight:700;color:var(--dark);margin-bottom:6px}
+.uinput{width:100%;border:0;border-bottom:3px solid var(--blue);background:transparent;font-size:15px;padding:8px 2px;outline:none;color:var(--ink)}
+.uinput::placeholder{color:var(--muted)}
+.uinput:focus{border-bottom-color:var(--purple)}
+.tinput{width:100%;border:0;border-bottom:3px solid var(--green);background:transparent;font-size:15px;padding:8px 2px;outline:none;color:var(--ink);resize:none;font-family:inherit}
+
+/* 复选 / 单选 */
+.checkrow{display:flex;align-items:center;gap:10px;padding:8px 0;font-size:14px;cursor:pointer;user-select:none}
+.cbox{position:relative;width:24px;height:24px;background:#DDE3E6;flex-shrink:0}
+.checkrow.on .cbox{background:var(--green)}
+.checkrow.on .cbox::after{content:"";position:absolute;left:8px;top:4px;width:6px;height:12px;border:solid #fff;border-width:0 3px 3px 0;transform:rotate(45deg)}
+.rdot{position:relative;width:24px;height:24px;border-radius:50%;background:#DDE3E6;flex-shrink:0}
+.checkrow.on .rdot{background:var(--blue)}
+.checkrow.on .rdot::after{content:"";position:absolute;left:7px;top:7px;width:10px;height:10px;border-radius:50%;background:#fff}
+
+/* 色块滑杆 */
+.range{position:relative;height:36px;display:flex;align-items:center}
+.range input{width:100%;-webkit-appearance:none;appearance:none;background:transparent;height:36px;cursor:pointer}
+.range input::-webkit-slider-runnable-track{height:12px;background:var(--yellow)}
+.range input::-webkit-slider-thumb{-webkit-appearance:none;width:26px;height:26px;background:var(--red);margin-top:-7px}
+.range input::-moz-range-track{height:12px;background:var(--yellow)}
+.range input::-moz-range-thumb{width:26px;height:26px;background:var(--red);border:0;border-radius:0}
+.rangeval{font-size:13px;font-weight:700;color:var(--red);margin-top:4px}
+
+/* 色块下拉 */
+.usel{position:relative}
+.usel select{width:100%;appearance:none;-webkit-appearance:none;border:0;background:var(--purple);color:#fff;font-size:14px;font-weight:700;padding:12px 40px 12px 14px;cursor:pointer;outline:none}
+.usel::after{content:"";position:absolute;right:16px;top:50%;margin-top:-9px;border:9px solid transparent;border-top-color:#fff;pointer-events:none}
+
+/* ============ 展示 ============ */
+.statgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.stat{background:var(--paper);color:#fff;padding:14px}
+.stat.r{background:var(--red)} .stat.b{background:var(--blue)} .stat.g{background:var(--green)} .stat.p{background:var(--purple)}
+.stat .n{font-size:26px;font-weight:800}
+.stat .t{font-size:12px;margin-top:4px;opacity:.95}
+
+.plist{background:var(--paper)}
+.prow{display:flex;align-items:center;padding:12px 14px;border-bottom:2px solid var(--bg)}
+.prow:last-child{border-bottom:0}
+.pdot{width:12px;height:12px;flex-shrink:0;margin-right:10px}
+.pdot.r{background:var(--red)} .pdot.b{background:var(--blue)} .pdot.g{background:var(--green)} .pdot.y{background:var(--yellow)}
+.prow .tt{flex:1;font-size:13px;font-weight:700}
+.prow .ss{font-size:11px;color:var(--muted)}
+.ptime{font-size:11px;color:var(--muted);margin-left:8px}
+
+.pbar{background:#DDE3E6;height:14px}
+.pbar>i{display:block;height:100%}
+.ptitle{display:flex;justify-content:space-between;font-size:12px;font-weight:700;margin:10px 0 6px}
+.ptitle:first-child{margin-top:0}
+
+.avaRow{display:flex;gap:0}
+.ava{width:52px;height:52px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px;font-weight:800;margin-left:-10px;border:3px solid var(--paper)}
+.ava:first-child{margin-left:0}
+.ava.circle{border-radius:50%;background:var(--blue)}
+.ava.square{background:var(--red)}
+.ava.dia{background:var(--green)}
+.ava.circle2{border-radius:50%;background:var(--purple)}
+.ava.square2{background:var(--yellow);color:var(--ink)}
+
+/* ============ 反馈 ============ */
+.toastzone{min-height:56px;display:flex;align-items:center;justify-content:center;background:var(--bg);font-size:12px;color:var(--muted)}
+.toast{position:fixed;left:50%;transform:translateX(-50%);color:#fff;font-size:14px;font-weight:700;padding:12px 24px;z-index:99;display:none;max-width:86%}
+.toast.show{display:block}
+.toast.top{top:18px;background:var(--green)}
+.toast.bot{bottom:120px;background:var(--dark)}
+.mask{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;z-index:100}
+.mask.show{display:block}
+.dialog{position:fixed;left:50%;top:38%;transform:translate(-50%,-50%);width:300px;background:#fff;z-index:101;display:none}
+.dialog.show{display:block}
+.dialog h4{background:var(--red);color:#fff;padding:12px 16px;font-size:15px}
+.dialog .db{padding:16px;font-size:13px;line-height:1.7;color:#444}
+.dialog .df{display:flex}
+.dialog .df button{flex:1;border:0;padding:12px;font-size:14px;font-weight:700;cursor:pointer}
+.dialog .df .cancel{background:#DDE3E6;color:var(--ink)}
+.dialog .df .ok{background:var(--red);color:#fff}
+.empty{text-align:center;padding:26px 10px}
+.empty .geo{width:64px;height:64px;background:var(--yellow);margin:0 auto 12px;display:flex;align-items:center;justify-content:center}
+.empty .geo i{width:0;height:0;border-style:solid;border-width:0 14px 24px 14px;border-color:transparent transparent var(--ink) transparent}
+.empty p{font-size:13px;color:var(--muted);line-height:1.7}
+.loadbar{background:#DDE3E6;height:16px;overflow:hidden}
+.loadbar>i{display:block;height:100%;width:40%;background:var(--blue);animation:load 1.1s linear infinite}
+@keyframes load{from{margin-left:-40%}to{margin-left:100%}}
+/* 截图冻结前动画仍在跑，但截图用 virtual-time-budget，不依赖它 */
+
+/* ============ 底部 Tab 栏 ============ */
+.tabbar{position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom));background:var(--dark);border-radius:999px;padding:6px;display:flex;z-index:50}
+.tabbar button{flex:1;position:relative;z-index:2;border:0;background:none;color:#BDC3C7;font-size:12px;font-weight:700;padding:12px 0;cursor:pointer}
+.tabbar button.on{color:#fff}
+#pill{position:absolute;top:6px;bottom:6px;border-radius:999px;background:var(--blue);z-index:1;transition:left .18s,width .18s}
+
+.toastmsg{position:fixed;bottom:110px;left:50%;transform:translateX(-50%);background:var(--dark);color:#fff;font-size:12px;padding:8px 16px;display:none;z-index:200;white-space:nowrap}
+.toastmsg.show{display:block}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <h1>扁平化 Flat Design</h1>
+  <p>二维纯色块 · 零阴影 · 几何图标<br>懒得找了 App 主题组件库 · 共 30 个组件</p>
+</div>
+
+<!-- ================= Tab 0 总览 ================= -->
+<div class="tabpane on" id="pane0">
+  <div class="card"><h3><span class="tag">01</span>风格介绍</h3><div class="body">
+    <p class="note">扁平化设计：去掉一切阴影、高光与渐变，用高饱和纯色块与几何形状表达层级。信息密度高、加载快，适合「懒得找了」这类工具型 App——解析去水印、站点导航、工时打卡一目了然。</p>
+    <div class="btnrow"><button class="btn sm">开始解析</button><button class="btn sm green">站点导航</button><button class="btn sm yellow">工时打卡</button><button class="btn sm purple">设置</button></div>
+  </div></div>
+  <div class="card"><h3><span class="tag">02</span>扁平色板 · 点击复制色值</h3><div class="body">
+    <div class="palette">
+      <div class="swatch" data-c="#E74C3C" style="background:#E74C3C">警示红<small>#E74C3C</small></div>
+      <div class="swatch" data-c="#3498DB" style="background:#3498DB">解析蓝<small>#3498DB</small></div>
+      <div class="swatch" data-c="#2ECC71" style="background:#2ECC71">成功绿<small>#2ECC71</small></div>
+      <div class="swatch" data-c="#F1C40F" style="background:#F1C40F;color:#22303C">提醒黄<small>#F1C40F</small></div>
+      <div class="swatch" data-c="#9B59B6" style="background:#9B59B6">功能紫<small>#9B59B6</small></div>
+      <div class="swatch" data-c="#2C3E50" style="background:#2C3E50">深空灰<small>#2C3E50</small></div>
+    </div>
+  </div></div>
+  <div class="card"><h3><span class="tag">03</span>纯色按钮示例</h3><div class="body">
+    <div class="btnrow"><button class="btn">解析链接</button><button class="btn red">删除记录</button></div>
+    <div class="btnrow"><button class="btn sm dark">小尺寸</button><button class="btn sm green">小尺寸</button><button class="btn sm purple">小尺寸</button></div>
+  </div></div>
+  <div class="card"><h3><span class="tag">04</span>几何图标组</h3><div class="body">
+    <div class="icorow">
+      <div class="icobtn round"><i class="gi dot"></i></div>
+      <div class="icobtn square"><i class="gi sq"></i></div>
+      <div class="icobtn diamond"><i class="gi dia"></i></div>
+      <div class="icobtn triangle"><i class="gi tri"></i></div>
+    </div>
+    <p class="note" style="margin-top:10px;margin-bottom:0">圆形 = 播放 / 方形 = 暂停 / 菱形 = 下载 / 三角形 = 警告</p>
+  </div></div>
+  <div class="card"><h3><span class="tag">05</span>色块标题栏</h3><div class="body">
+    <div style="background:#E74C3C;color:#fff;padding:12px 14px;font-weight:700;font-size:14px;margin-bottom:8px">解析记录 · 今日 128 条</div>
+    <div style="background:#2ECC71;color:#fff;padding:12px 14px;font-weight:700;font-size:14px;margin-bottom:8px">下载完成 · 96 个文件</div>
+    <div style="background:#F1C40F;color:#22303C;padding:12px 14px;font-weight:700;font-size:14px">排队中 · 32 条待解析</div>
+  </div></div>
+  <div class="card"><h3><span class="tag">06</span>色块分割</h3><div class="body">
+    <div style="height:10px;background:#3498DB;margin-bottom:10px"></div>
+    <div style="height:10px;background:#9B59B6;margin-bottom:10px"></div>
+    <div style="height:10px;background:#2ECC71"></div>
+    <p class="note" style="margin-top:10px;margin-bottom:0">用纯色条带代替分割线与装饰边框，区块关系更直接。</p>
+  </div></div>
+</div>
+
+<!-- ================= Tab 1 按钮 ================= -->
+<div class="tabpane" id="pane1">
+  <div class="card"><h3><span class="tag">07</span>纯色实心按钮组</h3><div class="body">
+    <div class="btnrow"><button class="btn">默认蓝</button><button class="btn red">警示红</button><button class="btn green">成功绿</button></div>
+    <div class="btnrow"><button class="btn yellow">提醒黄</button><button class="btn purple">功能紫</button><button class="btn dark">深空灰</button></div>
+  </div></div>
+  <div class="card"><h3><span class="tag">08</span>大按钮 / 整宽按钮</h3><div class="body">
+    <div class="btnrow"><button class="btn big">一键粘贴解析</button></div>
+    <button class="btn block red">清空全部解析记录</button>
+  </div></div>
+  <div class="card"><h3><span class="tag">09</span>色块开关</h3><div class="body">
+    <div class="swrow"><span>粘贴自动解析</span><div class="switch on" data-k="auto"></div></div>
+    <div class="swrow"><span>下载完成后提醒</span><div class="switch" data-k="notify"></div></div>
+    <div class="swrow"><span>工时打卡提醒</span><div class="switch on" data-k="work"></div></div>
+    <p class="note" style="margin:10px 0 0" id="swmsg">开关状态：自动解析开 / 提醒关 / 打卡开</p>
+  </div></div>
+  <div class="card"><h3><span class="tag">10</span>色块标签页</h3><div class="body">
+    <div class="seg" id="seg1"><button class="on">视频</button><button>图集</button><button>音频</button><button>文案</button></div>
+    <div class="seg out" id="segout">当前分类：视频 · 128 条</div>
+  </div></div>
+  <div class="card"><h3><span class="tag">11</span>几何图标按钮</h3><div class="body">
+    <div class="icorow">
+      <button class="icobtn round" data-t="播放解析视频"><i class="gi dot"></i></button>
+      <button class="icobtn square" data-t="暂停下载任务"><i class="gi sq"></i></button>
+      <button class="icobtn diamond" data-t="开始下载"><i class="gi dia"></i></button>
+      <div class="icobtn triangle" style="pointer-events:none"><i class="gi tri"></i></div>
+    </div>
+    <p class="note" style="margin:10px 0 0" id="icamsg">点图标按钮试试</p>
+  </div></div>
+  <div class="card"><h3><span class="tag">12</span>按钮点击反馈</h3><div class="body">
+    <div class="btnrow"><button class="btn" id="countbtn">点我计数</button><span id="count" style="font-size:14px;font-weight:700;color:#3498DB">已点击 0 次</span></div>
+    <p class="note" style="margin-bottom:0">所有按钮均无阴影，按压以透明度变化反馈。</p>
+  </div></div>
+</div>
+
+<!-- ================= Tab 2 表单 ================= -->
+<div class="tabpane" id="pane2">
+  <div class="card"><h3><span class="tag">13</span>无边框下划线输入框</h3><div class="body">
+    <div class="field"><label>粘贴视频链接</label><input class="uinput" id="linkin" placeholder="https://… 粘贴抖音/快手分享链接"></div>
+    <button class="btn block" id="parsebtn">解析</button>
+    <p class="note" style="margin:10px 0 0" id="parseout">等待输入链接…</p>
+  </div></div>
+  <div class="card"><h3><span class="tag">14</span>纯色复选框</h3><div class="body">
+    <div class="checkrow" data-g="dl"><div class="cbox"></div>同时下载封面图</div>
+    <div class="checkrow" data-g="dl"><div class="cbox"></div>保存原画质</div>
+    <div class="checkrow on" data-g="dl"><div class="cbox"></div>解析后自动复制标题</div>
+  </div></div>
+  <div class="card"><h3><span class="tag">15</span>纯色单选框</h3><div class="body">
+    <div class="checkrow on" data-g="q"><div class="rdot"></div>原画质（推荐）</div>
+    <div class="checkrow" data-g="q"><div class="rdot"></div>高清 720p</div>
+    <div class="checkrow" data-g="q"><div class="rdot"></div>流畅 480p</div>
+  </div></div>
+  <div class="card"><h3><span class="tag">16</span>色块滑杆</h3><div class="body">
+    <div class="range"><input type="range" id="vol" min="0" max="100" value="60"></div>
+    <div class="rangeval" id="volv">下载线程数：6</div>
+    <div class="range" style="margin-top:8px"><input type="range" id="spd" min="1" max="10" value="4"></div>
+    <div class="rangeval" style="color:#3498DB" id="spdv">图集批量下载：每次 4 张</div>
+  </div></div>
+  <div class="card"><h3><span class="tag">17</span>色块下拉选择</h3><div class="body">
+    <div class="usel"><select id="sitesel">
+      <option>抖音</option><option>快手</option><option>小红书</option><option>哔哩哔哩</option><option>皮皮虾</option>
+    </select></div>
+    <p class="note" style="margin:10px 0 0" id="siteout">当前站点：抖音</p>
+  </div></div>
+  <div class="card"><h3><span class="tag">18</span>多行备注</h3><div class="body">
+    <div class="field"><label>打卡备注</label><textarea class="tinput" rows="3" id="memo" placeholder="例：今日加班 2 小时"></textarea></div>
+    <button class="btn green sm" id="memobtn">保存备注</button>
+    <p class="note" style="margin:10px 0 0" id="memoout">尚未保存</p>
+  </div></div>
+</div>
+
+<!-- ================= Tab 3 展示 ================= -->
+<div class="tabpane" id="pane3">
+  <div class="card"><h3><span class="tag">19</span>色块统计卡</h3><div class="body">
+    <div class="statgrid">
+      <div class="stat r"><div class="n">1,286</div><div class="t">累计解析量</div></div>
+      <div class="stat b"><div class="n">964</div><div class="t">累计下载量</div></div>
+      <div class="stat g"><div class="n">37</div><div class="t">支持站点数</div></div>
+      <div class="stat p"><div class="n">8.5h</div><div class="t">本月工时</div></div>
+    </div>
+  </div></div>
+  <div class="card"><h3><span class="tag">20</span>纯色列表 · 解析记录</h3><div class="body" style="padding:0">
+    <div class="plist">
+      <div class="prow"><div class="pdot b"></div><div class="tt">街头采访合集 #128</div><div class="ss">视频 · 12.4MB</div><div class="ptime">10:24</div></div>
+      <div class="prow"><div class="pdot g"></div><div class="tt">美食探店图集</div><div class="ss">图集 · 9 张</div><div class="ptime">09:51</div></div>
+      <div class="prow"><div class="pdot y"></div><div class="tt">卡点 BGM 提取</div><div class="ss">音频 · 3:24</div><div class="ptime">昨天</div></div>
+      <div class="prow"><div class="pdot r"></div><div class="tt">链接已失效</div><div class="ss">解析失败</div><div class="ptime">昨天</div></div>
+    </div>
+  </div></div>
+  <div class="card"><h3><span class="tag">21</span>色块进度条</h3><div class="body">
+    <div class="ptitle"><span>今日解析进度</span><span>78%</span></div><div class="pbar"><i style="width:78%;background:#3498DB"></i></div>
+    <div class="ptitle"><span>下载完成率</span><span>45%</span></div><div class="pbar"><i style="width:45%;background:#2ECC71"></i></div>
+    <div class="ptitle"><span>存储占用</span><span>92%</span></div><div class="pbar"><i style="width:92%;background:#E74C3C"></i></div>
+  </div></div>
+  <div class="card"><h3><span class="tag">22</span>几何头像组</h3><div class="body">
+    <div class="avaRow">
+      <div class="ava circle">我</div><div class="ava square">工</div><div class="ava dia">时</div><div class="ava circle2">打</div><div class="ava square2">卡</div>
+    </div>
+    <p class="note" style="margin:10px 0 0">圆形 / 方形 / 菱形头像，纯色块区分身份。</p>
+  </div></div>
+  <div class="card"><h3><span class="tag">23</span>色块横幅</h3><div class="body">
+    <div style="background:#9B59B6;color:#fff;padding:14px;font-size:14px;font-weight:700;margin-bottom:8px">新站点上线：皮皮虾专用解析通道已开启</div>
+    <div style="background:#2C3E50;color:#fff;padding:14px;font-size:14px;font-weight:700">工时统计：本月已打卡 21 天，累计 8.5 小时</div>
+  </div></div>
+  <div class="card"><h3><span class="tag">24</span>色块徽标</h3><div class="body">
+    <div class="btnrow">
+      <span style="background:#E74C3C;color:#fff;font-size:12px;font-weight:700;padding:4px 10px">HOT</span>
+      <span style="background:#3498DB;color:#fff;font-size:12px;font-weight:700;padding:4px 10px">NEW</span>
+      <span style="background:#2ECC71;color:#fff;font-size:12px;font-weight:700;padding:4px 10px">免费</span>
+      <span style="background:#F1C40F;color:#22303C;font-size:12px;font-weight:700;padding:4px 10px">排队中</span>
+      <span style="background:#9B59B6;color:#fff;font-size:12px;font-weight:700;padding:4px 10px">VIP</span>
+    </div>
+  </div></div>
+</div>
+
+<!-- ================= Tab 4 反馈 ================= -->
+<div class="tabpane" id="pane4">
+  <div class="card"><h3><span class="tag">25</span>纯色 Toast · 顶部 / 底部</h3><div class="body">
+    <div class="btnrow"><button class="btn sm green" id="tTop">顶部成功提示</button><button class="btn sm dark" id="tBot">底部普通提示</button></div>
+    <div class="toastzone">toast 将在页面顶部 / 底部弹出</div>
+  </div></div>
+  <div class="card"><h3><span class="tag">26</span>色块对话框</h3><div class="body">
+    <button class="btn red" id="dlgbtn">删除这条解析记录</button>
+    <p class="note" style="margin:10px 0 0" id="dlgout">对话框尚未打开</p>
+  </div></div>
+  <div class="card"><h3><span class="tag">27</span>纯色空状态</h3><div class="body">
+    <div class="empty">
+      <div class="geo"><i></i></div>
+      <p>暂无解析记录<br>粘贴一条视频链接开始去水印</p>
+    </div>
+    <button class="btn block" id="emptybtn">去粘贴链接</button>
+  </div></div>
+  <div class="card"><h3><span class="tag">28</span>色块加载条</h3><div class="body">
+    <div class="loadbar"><i></i></div>
+    <p class="note" style="margin:10px 0 0">解析中…纯色块循环滚动，无渐变无阴影。</p>
+  </div></div>
+  <div class="card"><h3><span class="tag">29</span>纯色提示横条</h3><div class="body">
+    <div style="background:#2ECC71;color:#fff;padding:10px 14px;font-size:13px;font-weight:700;margin-bottom:8px">解析成功：已去除水印</div>
+    <div style="background:#F1C40F;color:#22303C;padding:10px 14px;font-size:13px;font-weight:700;margin-bottom:8px">网络较慢，解析可能需要更久</div>
+    <div style="background:#E74C3C;color:#fff;padding:10px 14px;font-size:13px;font-weight:700">解析失败：链接无效或已删除</div>
+  </div></div>
+  <div class="card"><h3><span class="tag">30</span>小胶囊提示</h3><div class="body" style="text-align:center">
+    <button class="btn sm purple" id="minibtn">复制色值成功</button>
+    <p class="note" style="margin:10px 0 0">点击按钮，底部弹出深色小胶囊提示。</p>
+  </div></div>
+</div>
+
+<!-- 底部悬浮胶囊 Tab 栏 -->
+<nav class="tabbar" id="tabbar">
+  <div id="pill"></div>
+  <button data-i="0" class="on">总览</button>
+  <button data-i="1">按钮</button>
+  <button data-i="2">表单</button>
+  <button data-i="3">展示</button>
+  <button data-i="4">反馈</button>
+</nav>
+
+<div class="toast top" id="toastTop">解析成功，已去除水印</div>
+<div class="toast bot" id="toastBot">已复制到剪贴板</div>
+<div class="mask" id="mask"></div>
+<div class="dialog" id="dialog">
+  <h4>确认删除</h4>
+  <div class="db">确定删除这条解析记录吗？删除后可在回收站找回，30 天后彻底清除。</div>
+  <div class="df"><button class="cancel" id="dlgCancel">取消</button><button class="ok" id="dlgOk">删除</button></div>
+</div>
+<div class="toastmsg" id="minitoast"></div>
+
+<script>
+var tabs=[...document.querySelectorAll('#tabbar button')];
+var panes=[0,1,2,3,4].map(i=>document.getElementById('pane'+i));
+var pill=document.getElementById('pill');
+function movePill(){
+  var on=tabs.find(t=>t.classList.contains('on'));
+  pill.style.left=on.offsetLeft+'px';
+  pill.style.width=on.offsetWidth+'px';
+  pill.style.background=['#3498DB','#E74C3C','#F1C40F','#2ECC71','#9B59B6'][+on.dataset.i];
+}
+function setTab(i,push){
+  tabs.forEach((t,k)=>t.classList.toggle('on',k===i));
+  panes.forEach((p,k)=>p.classList.toggle('on',k===i));
+  movePill(); window.scrollTo(0,0);
+  var u=new URL(location.href); u.searchParams.set('tab',i);
+  if(push) history.pushState({},'',u); else history.replaceState({},'',u);
+}
+tabs.forEach(t=>t.addEventListener('click',()=>setTab(+t.dataset.i,true)));
+window.addEventListener('resize',movePill);
+(function(){var m=/[?&]tab=(\d)/.exec(location.search);var i=m?+m[1]:0;if(i<0||i>4)i=0;setTab(i,false);})();
+
+/* 色板复制 */
+function mini(msg){var e=document.getElementById('minitoast');e.textContent=msg;e.classList.add('show');clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove('show'),1600);}
+document.querySelectorAll('.swatch').forEach(s=>s.addEventListener('click',()=>{
+  var c=s.dataset.c;
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(c).then(()=>mini('已复制 '+c)).catch(()=>mini(c));}
+  else mini(c);
+}));
+
+/* 开关 */
+var swstate={auto:true,notify:false,work:true};
+var swname={auto:'自动解析',notify:'下载提醒',work:'工时打卡'};
+document.querySelectorAll('.switch').forEach(sw=>sw.addEventListener('click',()=>{
+  sw.classList.toggle('on');swstate[sw.dataset.k]=sw.classList.contains('on');
+  document.getElementById('swmsg').textContent='开关状态：'+Object.keys(swstate).map(k=>swname[k]+(swstate[k]?'开':'关')).join(' / ');
+}));
+
+/* 色块标签页 */
+var segData=['视频 · 128 条','图集 · 36 组','音频 · 12 段','文案 · 58 篇'];
+document.querySelectorAll('#seg1 button').forEach((b,k)=>b.addEventListener('click',()=>{
+  document.querySelectorAll('#seg1 button').forEach(x=>x.classList.remove('on'));b.classList.add('on');
+  document.getElementById('segout').textContent='当前分类：'+segData[k];
+}));
+
+/* 图标按钮 */
+document.querySelectorAll('.icobtn[data-t]').forEach(b=>b.addEventListener('click',()=>{
+  document.getElementById('icamsg').textContent='已触发：'+b.dataset.t;
+}));
+
+/* 计数 */
+var n=0;document.getElementById('countbtn').addEventListener('click',()=>{
+  n++;document.getElementById('count').textContent='已点击 '+n+' 次';
+});
+
+/* 解析按钮 */
+document.getElementById('parsebtn').addEventListener('click',()=>{
+  var v=document.getElementById('linkin').value.trim();
+  document.getElementById('parseout').textContent=v?('正在解析：'+v.slice(0,32)+(v.length>32?'…':'')):'请先粘贴视频链接';
+});
+
+/* 复选/单选 */
+document.querySelectorAll('.checkrow').forEach(r=>r.addEventListener('click',()=>{
+  if(r.querySelector('.rdot')){
+    document.querySelectorAll('.checkrow[data-g="'+r.dataset.g+'"]').forEach(x=>x.classList.remove('on'));
+    r.classList.add('on');
+  }else r.classList.toggle('on');
+}));
+
+/* 滑杆 */
+document.getElementById('vol').addEventListener('input',e=>{document.getElementById('volv').textContent='下载线程数：'+Math.max(1,Math.round(e.target.value/10));});
+document.getElementById('spd').addEventListener('input',e=>{document.getElementById('spdv').textContent='图集批量下载：每次 '+e.target.value+' 张';});
+
+/* 下拉 */
+document.getElementById('sitesel').addEventListener('change',e=>{document.getElementById('siteout').textContent='当前站点：'+e.target.value;});
+
+/* 备注 */
+document.getElementById('memobtn').addEventListener('click',()=>{
+  var v=document.getElementById('memo').value.trim();
+  document.getElementById('memoout').textContent=v?('已保存：'+v.slice(0,24)+(v.length>24?'…':'')):'尚未保存';
+});
+
+/* toast */
+function showToast(id){var e=document.getElementById(id);e.classList.add('show');clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove('show'),1800);}
+document.getElementById('tTop').addEventListener('click',()=>showToast('toastTop'));
+document.getElementById('tBot').addEventListener('click',()=>showToast('toastBot'));
+
+/* 对话框 */
+var mask=document.getElementById('mask'),dlg=document.getElementById('dialog');
+document.getElementById('dlgbtn').addEventListener('click',()=>{mask.classList.add('show');dlg.classList.add('show');});
+function closeDlg(){mask.classList.remove('show');dlg.classList.remove('show');}
+document.getElementById('dlgCancel').addEventListener('click',()=>{closeDlg();document.getElementById('dlgout').textContent='已取消删除';});
+document.getElementById('dlgOk').addEventListener('click',()=>{closeDlg();document.getElementById('dlgout').textContent='记录已删除，可在回收站找回';});
+mask.addEventListener('click',closeDlg);
+
+/* 空状态按钮 */
+document.getElementById('emptybtn').addEventListener('click',()=>{setTab(2,true);mini('已跳转到表单 Tab');});
+document.getElementById('minibtn').addEventListener('click',()=>mini('色值 #E74C3C 已复制'));
+</script>
+</body>
+</html>
