@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>jicun 原版主题 · UI 组件库</title>
+<style>
+/* ===== jicun palette 原样还原（lib/ui/palette.dart）===== */
+:root,[data-theme="light"]{
+  --page:#CDDCDC; --surface:rgba(0,0,0,.07); --accent:#1257C9;
+  --accent-soft:rgba(18,87,201,.08); --fg:#1B2430; --secondary:#6E7887;
+  --bar:rgba(242,242,247,.9); --danger:#C0392B; --skeleton:rgba(0,0,0,.07);
+  --avatar:rgba(0,0,0,.12); --subtle:rgba(0,0,0,.08);
+  --dialog:#F2F2F7; --input:rgba(255,255,255,.55); --thumb-line:rgba(0,0,0,.05);
+}
+[data-theme="dark"]{
+  --page:#434343; --surface:rgba(255,255,255,.12); --accent:#5AA9FF;
+  --accent-soft:rgba(90,169,255,.12); --fg:#F5F7FA; --secondary:#ADB7C5;
+  --bar:rgba(28,28,30,.9); --danger:#FF7B72; --skeleton:rgba(255,255,255,.12);
+  --avatar:rgba(255,255,255,.16); --subtle:rgba(255,255,255,.1);
+  --dialog:#1C1C1E; --input:rgba(255,255,255,.08); --thumb-line:rgba(255,255,255,.06);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;background:var(--page);color:var(--fg);font-size:15px;line-height:1.5;transition:background .3s,color .3s;padding-bottom:110px}
+/* 顶部栏：标题 + 浅色/深色切换器 */
+.topbar{position:sticky;top:0;z-index:50;background:var(--bar);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);padding:12px 16px calc(12px + env(safe-area-inset-top));padding-top:calc(12px + env(safe-area-inset-top));display:flex;align-items:center;justify-content:space-between;transition:background .3s}
+.topbar h1{font-size:17px;font-weight:700}
+.topbar h1 small{display:block;font-size:11px;color:var(--secondary);font-weight:400}
+/* 主题分段切换器 */
+.seg{position:relative;display:flex;background:var(--subtle);border-radius:20px;padding:3px}
+.seg button{position:relative;z-index:1;border:none;background:none;color:var(--secondary);font-size:13px;padding:6px 14px;border-radius:16px;cursor:pointer;transition:color .25s}
+.seg button.on{color:#fff;font-weight:600}
+.seg .seg-pill{position:absolute;top:3px;bottom:3px;border-radius:16px;background:var(--accent);transition:left .3s,width .3s;z-index:0}
+/* Tab 页 */
+.tab{display:none;padding:14px 0 8px;animation:fadein .25s ease}
+.tab.on{display:block}
+@keyframes fadein{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.tabhead{padding:2px 18px 10px}
+.tabhead h2{font-size:22px;font-weight:800}
+.tabhead p{font-size:12px;color:var(--secondary);margin-top:2px}
+/* 卡片：半透明 surface，无描边无投影 —— 主题最大特征 */
+.card{background:var(--surface);border:none;border-radius:20px;padding:16px;margin:0 14px 12px;box-shadow:none;transition:background .3s}
+.card h3{font-size:14px;font-weight:700;margin-bottom:4px}
+.card h3 .no{color:var(--accent);font-weight:800;margin-right:6px;font-size:12px}
+.card .desc{font-size:12px;color:var(--secondary);margin-bottom:12px}
+/* 按钮 */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:none;cursor:pointer;font-size:15px;font-weight:600;border-radius:14px;padding:12px 20px;transition:transform .12s,opacity .2s,background .3s}
+.btn:active{transform:scale(.97)}
+.btn-primary{background:var(--accent);color:#fff;width:100%}
+.btn-outline{background:transparent;color:var(--accent);border:1.5px solid var(--accent);padding:10px 18px}
+.btn-text{background:transparent;color:var(--accent);padding:10px 12px}
+.btn-danger{background:var(--danger);color:#fff}
+.btn[disabled]{background:var(--subtle);color:var(--secondary);cursor:not-allowed;transform:none}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap}
+.iconbtns{display:flex;gap:12px}
+.ibtn{width:48px;height:48px;border-radius:16px;background:var(--surface);border:none;display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;color:var(--accent);transition:transform .12s}
+.ibtn:active{transform:scale(.92)}
+.ibtn.danger{color:var(--danger)}
+/* 输入框 */
+.field{margin-bottom:10px}
+.field label{display:block;font-size:13px;color:var(--secondary);margin-bottom:6px}
+.inp{width:100%;background:var(--input);border:none;border-radius:12px;padding:12px 14px;font-size:15px;color:var(--fg);outline:none;transition:background .3s}
+.inp::placeholder{color:var(--secondary)}
+.inp-row{display:flex;gap:8px}
+.inp-row .inp{flex:1}
+/* 单选 / 复选 */
+.opts{display:flex;gap:8px;flex-wrap:wrap}
+.opt{flex:1;min-width:80px;background:var(--input);border:none;border-radius:12px;padding:10px 6px;font-size:14px;color:var(--fg);cursor:pointer;text-align:center;transition:background .2s}
+.opt small{display:block;font-size:11px;color:var(--secondary)}
+.opt.on{background:var(--accent-soft);color:var(--accent);font-weight:700}
+.opt.on small{color:var(--accent)}
+.chk{display:flex;align-items:center;gap:10px;padding:10px 2px;cursor:pointer;font-size:14px}
+.box{width:22px;height:22px;border-radius:7px;background:var(--input);display:flex;align-items:center;justify-content:center;font-size:14px;color:#fff;flex:none;transition:background .2s}
+.chk.on .box{background:var(--accent)}
+.radio{width:22px;height:22px;border-radius:50%;background:var(--input);flex:none;position:relative;transition:background .2s}
+.radio.on{background:var(--accent)}
+.radio.on::after{content:"";position:absolute;inset:6px;border-radius:50%;background:#fff}
+/* 开关 */
+.switch{position:relative;display:inline-block;width:52px;height:30px;flex:none}
+.switch input{opacity:0;width:0;height:0}
+.sl{position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:var(--subtle);border-radius:20px;transition:.3s}
+.sl:before{position:absolute;content:"";width:24px;height:24px;border-radius:50%;left:3px;top:3px;background:#fff;transition:.3s}
+.switch input:checked+.sl{background:var(--accent)}
+.switch input:checked+.sl:before{transform:translateX(22px)}
+/* 设置列表行 */
+.srow{display:flex;align-items:center;gap:12px;padding:12px 2px;font-size:15px}
+.srow+.srow{border-top:1px solid var(--thumb-line)}
+.srow .t{flex:1}
+.srow .t small{display:block;font-size:12px;color:var(--secondary)}
+.srow .arrow{color:var(--secondary);font-size:16px}
+/* 步进器 */
+.stepper{display:flex;align-items:center;gap:14px}
+.stepper button{width:34px;height:34px;border-radius:12px;border:none;background:var(--input);color:var(--accent);font-size:18px;font-weight:700;cursor:pointer}
+.stepper b{font-size:16px;min-width:24px;text-align:center}
+/* 滑杆 */
+input[type=range]{width:100%;accent-color:var(--accent);height:28px}
+/* 色板 */
+.swatches{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.sw{border-radius:14px;overflow:hidden;cursor:pointer;background:var(--input)}
+.sw i{display:block;height:52px}
+.sw span{display:block;font-size:11px;padding:6px 8px;color:var(--fg)}
+.sw span b{display:block;font-size:12px}
+/* 字体层级 */
+.type-demo div{padding:6px 0;border-bottom:1px solid var(--thumb-line)}
+.type-demo div:last-child{border:none}
+/* surface 演示 */
+.surface-demo{display:flex;gap:10px}
+.surface-demo .demo{flex:1;border-radius:14px;padding:14px 10px;text-align:center;font-size:12px;color:var(--secondary)}
+.demo.s1{background:var(--surface)}
+.demo.s2{background:rgba(18,87,201,.15)}
+.demo.s3{background:var(--accent);color:#fff}
+/* 缩略图 / 九宫格 */
+.result{display:flex;gap:12px;align-items:center}
+.thumb{width:88px;height:88px;border-radius:14px;flex:none;display:flex;align-items:center;justify-content:center;font-size:34px;background:linear-gradient(135deg,#7aa7e8,#c9d8f2);position:relative;overflow:hidden}
+[data-theme="dark"] .thumb{background:linear-gradient(135deg,#2c3e5a,#4a5a78)}
+.badge{position:absolute;left:6px;bottom:6px;background:var(--accent);color:#fff;font-size:10px;padding:2px 8px;border-radius:8px;font-weight:700}
+.result .info{flex:1;min-width:0}
+.result .info b{display:block;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.result .info small{color:var(--secondary);font-size:12px}
+.grid9{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.gcell{aspect-ratio:1;border-radius:12px;background:var(--input);display:flex;align-items:center;justify-content:center;font-size:26px;cursor:pointer;position:relative;transition:transform .12s}
+.gcell:active{transform:scale(.95)}
+.gcell.sel{outline:2.5px solid var(--accent);outline-offset:-2.5px}
+.gcell.sel::after{content:"✓";position:absolute;right:6px;top:4px;background:var(--accent);color:#fff;font-size:11px;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+/* 进度条 */
+.pbar{height:8px;border-radius:6px;background:var(--subtle);overflow:hidden}
+.pbar i{display:block;height:100%;width:0;background:var(--accent);border-radius:6px;transition:width .2s}
+.prow{display:flex;align-items:center;gap:10px;font-size:13px}
+.prow .pbar{flex:1}
+.prow b{color:var(--accent);min-width:44px;text-align:right}
+/* 历史列表 */
+.hrow{display:flex;gap:12px;align-items:center;padding:10px 2px}
+.hrow+.hrow{border-top:1px solid var(--thumb-line)}
+.hrow .thumb{width:56px;height:56px;font-size:24px;border-radius:12px}
+.hrow .info{flex:1;min-width:0}
+.hrow .info b{display:block;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hrow .info small{color:var(--secondary);font-size:12px}
+.tag{font-size:11px;color:var(--accent);background:var(--accent-soft);padding:3px 10px;border-radius:10px;flex:none}
+.tag.ok{color:#1e8e4e;background:rgba(30,142,78,.1)}
+[data-theme="dark"] .tag.ok{color:#4ade80}
+/* 统计 */
+.stats{display:flex;gap:10px}
+.stat{flex:1;background:var(--input);border-radius:14px;padding:12px 6px;text-align:center}
+.stat b{display:block;font-size:20px;color:var(--accent)}
+.stat small{font-size:11px;color:var(--secondary)}
+/* 步骤条 */
+.steps{display:flex;align-items:center;margin:4px 0}
+.step{flex:1;text-align:center;font-size:12px;color:var(--secondary)}
+.step .dot{width:28px;height:28px;border-radius:50%;background:var(--input);display:flex;align-items:center;justify-content:center;margin:0 auto 4px;font-size:13px;font-weight:700}
+.step.done{color:var(--accent)}
+.step.done .dot{background:var(--accent);color:#fff}
+.step-line{flex:0 0 30px;height:2px;background:var(--subtle);margin-bottom:20px}
+/* 头像 */
+.avatar{width:44px;height:44px;border-radius:50%;background:var(--avatar);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:var(--fg);flex:none}
+/* Toast */
+#toast{position:fixed;left:50%;bottom:110px;transform:translateX(-50%) translateY(20px);background:var(--fg);color:var(--page);font-size:14px;padding:10px 20px;border-radius:20px;opacity:0;pointer-events:none;transition:.3s;z-index:200;white-space:nowrap}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+#toast.top{bottom:auto;top:80px}
+/* 对话框 */
+#dlg-mask{position:fixed;inset:0;background:rgba(0,0,0,.4);display:none;align-items:center;justify-content:center;z-index:150;padding:30px}
+#dlg-mask.show{display:flex}
+.dlg{background:var(--dialog);border-radius:20px;padding:22px 18px;width:100%;max-width:340px;text-align:center;animation:pop .25s ease}
+@keyframes pop{from{transform:scale(.9);opacity:0}to{transform:none;opacity:1}}
+.dlg h4{font-size:16px;margin-bottom:6px}
+.dlg p{font-size:13px;color:var(--secondary);margin-bottom:16px}
+.dlg .btn-row .btn{flex:1}
+/* 通知卡 */
+.notice{display:flex;gap:12px;align-items:center;background:var(--input);border-radius:16px;padding:12px}
+.notice .nic{width:42px;height:42px;border-radius:14px;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:20px;flex:none}
+.notice b{display:block;font-size:14px}
+.notice small{color:var(--secondary);font-size:12px}
+/* 空状态 */
+.empty{text-align:center;padding:26px 10px;color:var(--secondary)}
+.empty .eic{font-size:44px;margin-bottom:8px;opacity:.6}
+.empty p{font-size:14px}
+/* 骨架屏 */
+.sk{border-radius:10px;background:linear-gradient(90deg,var(--skeleton) 25%,var(--input) 50%,var(--skeleton) 75%);background-size:200% 100%;animation:sk 1.2s infinite}
+@keyframes sk{from{background-position:200% 0}to{background-position:-200% 0}}
+.sk-row{display:flex;gap:10px;margin-bottom:10px}
+.sk-c{width:52px;height:52px;border-radius:12px;flex:none}
+/* 成功动画 */
+.okwrap{text-align:center;padding:10px}
+.okc{width:72px;height:72px;border-radius:50%;background:var(--accent);color:#fff;font-size:34px;display:flex;align-items:center;justify-content:center;margin:0 auto 10px;animation:pop .35s ease}
+/* 底部 Tab 栏 */
+.tabbar{position:fixed;left:16px;right:16px;bottom:calc(14px + env(safe-area-inset-bottom));z-index:100;background:var(--bar);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-radius:30px;display:flex;padding:6px;transition:background .3s}
+.tabbar button{position:relative;z-index:1;flex:1;border:none;background:none;font-size:12px;color:var(--secondary);padding:10px 0;border-radius:24px;cursor:pointer;transition:color .25s;font-weight:500}
+.tabbar button.on{color:#fff;font-weight:700}
+.tabbar .pill{position:absolute;top:6px;bottom:6px;border-radius:24px;background:var(--accent);transition:left .3s cubic-bezier(.3,1.3,.4,1),width .3s;z-index:0}
+.kv{display:flex;justify-content:space-between;font-size:13px;padding:7px 2px}
+.kv span:first-child{color:var(--secondary)}
+.copyhint{font-size:11px;color:var(--secondary);margin-top:8px}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <h1>jicun 原版主题<small>UI 组件库 · 浅 / 深双档</small></h1>
+  <div class="seg" id="themeSeg">
+    <span class="seg-pill"></span>
+    <button data-t="light" class="on">浅色</button>
+    <button data-t="dark">深色</button>
+  </div>
+</header>
+<div id="toast"></div>
+<div id="dlg-mask"><div class="dlg" id="dlg"></div></div>
+<main>
+<!-- ============ TAB 0 总览 ============ -->
+<section class="tab on" data-tab="0">
+  <div class="tabhead"><h2>总览</h2><p>jicun 短视频去水印 App · 主题原样迁移</p></div>
+  <div class="card"><h3><span class="no">01</span>主题介绍</h3>
+    <div class="desc">jicun 是一款短视频去水印工具：粘贴分享链接 → 解析 → 预览 → 下载。本套装将其浅 / 深两档配色与"半透明卡片、无描边、无投影"的核心特征原样还原。</div>
+    <div class="kv"><span>设计语言</span><b>扁平 · 通透 · 无阴影</b></div>
+    <div class="kv"><span>卡片</span><b>7% 黑 / 12% 白半透明</b></div>
+    <div class="kv"><span>圆角</span><b>超椭圆 20px</b></div>
+  </div>
+  <div class="card"><h3><span class="no">02</span>浅色色板 · 点击复制</h3>
+    <div class="desc">Light 档（点色块复制色值）</div>
+    <div class="swatches" id="swLight"></div>
+  </div>
+  <div class="card"><h3><span class="no">03</span>深色色板 · 点击复制</h3>
+    <div class="desc">Dark 档（点色块复制色值）</div>
+    <div class="swatches" id="swDark"></div>
+  </div>
+  <div class="card"><h3><span class="no">04</span>半透明 surface 特性</h3>
+    <div class="desc">卡片没有描边和阴影，靠半透明与底色形成层次。同一张卡片放在不同底色上会自动"透"出底色。</div>
+    <div class="surface-demo">
+      <div class="demo s1">surface<br>7% 黑</div>
+      <div class="demo s2">accentSoft<br>8% 蓝</div>
+      <div class="demo s3">accent<br>实心</div>
+    </div>
+  </div>
+  <div class="card"><h3><span class="no">05</span>字体层级</h3>
+    <div class="type-demo">
+      <div style="font-size:22px;font-weight:800">大标题 22 · 加粗</div>
+      <div style="font-size:16px;font-weight:700">卡片标题 16 · 加粗</div>
+      <div style="font-size:14px">正文 14 · 常规</div>
+      <div style="font-size:12px;color:var(--secondary)">次要文字 12 · 灰色</div>
+    </div>
+  </div>
+  <div class="card"><h3><span class="no">06</span>一键换肤</h3>
+    <div class="desc">顶部切换器可在浅色 / 深色两档间整体换肤，所有组件实时跟随。试试：</div>
+    <div class="btn-row">
+      <button class="btn btn-outline" onclick="setTheme('light')">浅色档</button>
+      <button class="btn btn-outline" onclick="setTheme('dark')">深色档</button>
+    </div>
+  </div>
+</section>
+<!-- ============ TAB 1 按钮 ============ -->
+<section class="tab" data-tab="1">
+  <div class="tabhead"><h2>按钮</h2><p>主色 accent 贯穿所有可点元素</p></div>
+  <div class="card"><h3><span class="no">07</span>开始解析</h3>
+    <div class="desc">主按钮：accent 实心，全宽</div>
+    <button class="btn btn-primary" onclick="toast('开始解析链接…')">开始解析</button>
+  </div>
+  <div class="card"><h3><span class="no">08</span>描边 / 文字按钮</h3>
+    <div class="desc">次级操作</div>
+    <div class="btn-row">
+      <button class="btn btn-outline" onclick="toast('已复制分享链接')">复制链接</button>
+      <button class="btn btn-text" onclick="toast('查看全部历史')">查看全部 ›</button>
+    </div>
+  </div>
+  <div class="card"><h3><span class="no">09</span>禁用态</h3>
+    <div class="desc">未粘贴链接时不可点：subtleFill 底 + 灰字</div>
+    <button class="btn btn-primary" disabled>开始解析</button>
+  </div>
+  <div class="card"><h3><span class="no">10</span>图标按钮组</h3>
+    <div class="desc">半透明方块 + accent 图标</div>
+    <div class="iconbtns">
+      <button class="ibtn" onclick="toast('开始下载')">⬇</button>
+      <button class="ibtn" onclick="toast('已复制链接')">⎘</button>
+      <button class="ibtn" onclick="toast('已分享')">↗</button>
+      <button class="ibtn danger" onclick="toast('已删除')">🗑</button>
+    </div>
+  </div>
+  <div class="card"><h3><span class="no">11</span>下载按钮 · 带进度</h3>
+    <div class="desc">点击模拟下载，进度走完提示保存</div>
+    <div class="prow" style="margin-bottom:10px"><div class="pbar"><i id="dlbar"></i></div><b id="dlpct">0%</b></div>
+    <button class="btn btn-primary" id="dlbtn" onclick="fakeDownload()">下载无水印视频</button>
+  </div>
+  <div class="card"><h3><span class="no">12</span>小尺寸按钮组</h3>
+    <div class="desc">列表内嵌操作</div>
+    <div class="btn-row">
+      <button class="btn btn-outline" style="padding:7px 14px;font-size:13px" onclick="toast('重新解析')">重解析</button>
+      <button class="btn btn-text" style="font-size:13px" onclick="toast('已加入收藏')">收藏</button>
+      <button class="btn btn-text" style="font-size:13px;color:var(--danger)" onclick="toast('已移除')">移除</button>
+    </div>
+  </div>
+</section>
+</main>
+<!-- ============ TAB 2 表单 ============ -->
+<section class="tab" data-tab="2">
+  <div class="tabhead"><h2>表单</h2><p>粘贴 → 选清晰度 → 设选项</p></div>
+  <div class="card"><h3><span class="no">13</span>粘贴链接输入框</h3>
+    <div class="desc">去水印流程第一步</div>
+    <div class="field"><label>分享链接</label>
+      <div class="inp-row"><input class="inp" id="linkInp" placeholder="粘贴抖音 / 快手 / 小红书分享链接…"><button class="btn btn-outline" style="padding:10px 14px;white-space:nowrap" onclick="pasteDemo()">粘贴</button></div>
+    </div>
+    <div class="field"><label>备注（可选）</label><input class="inp" placeholder="给这条解析起个名字"></div>
+  </div>
+  <div class="card"><h3><span class="no">14</span>清晰度单选</h3>
+    <div class="desc">单选：选中项 accentSoft 填充</div>
+    <div class="opts" id="qOpts">
+      <button class="opt on">原画<small>无损 · 推荐</small></button>
+      <button class="opt">720P<small>高清</small></button>
+      <button class="opt">540P<small>省流量</small></button>
+    </div>
+  </div>
+  <div class="card"><h3><span class="no">15</span>下载选项复选框</h3>
+    <div class="chk on" onclick="this.classList.toggle('on')"><span class="box">✓</span>保存到系统相册</div>
+    <div class="chk on" onclick="this.classList.toggle('on')"><span class="box">✓</span>同时下载视频封面</div>
+    <div class="chk" onclick="this.classList.toggle('on')"><span class="box">✓</span>保留原声并转码 MP3</div>
+  </div>
+  <div class="card"><h3><span class="no">16</span>开关</h3>
+    <div class="srow"><div class="t">下载完成通知<small>保存到相册后提醒我</small></div><label class="switch"><input type="checkbox" checked><span class="sl"></span></label></div>
+    <div class="srow"><div class="t">粘贴自动解析<small>复制链接后自动开始</small></div><label class="switch"><input type="checkbox"><span class="sl"></span></label></div>
+    <div class="srow"><div class="t">仅 WiFi 下载<small>省流量模式</small></div><label class="switch"><input type="checkbox" checked><span class="sl"></span></label></div>
+  </div>
+  <div class="card"><h3><span class="no">17</span>设置列表行</h3>
+    <div class="srow"><div class="t">默认清晰度<small>原画优先</small></div><span class="arrow">›</span></div>
+    <div class="srow"><div class="t">下载目录<small>/Download/jicun</small></div><span class="arrow">›</span></div>
+    <div class="srow"><div class="t">深色模式<small>跟随主题切换器</small></div><span class="arrow">›</span></div>
+    <div class="srow"><div class="t">关于 jicun<small>v3.0.7</small></div><span class="arrow">›</span></div>
+  </div>
+  <div class="card"><h3><span class="no">18</span>下载线程步进器</h3>
+    <div class="desc">分段并行下载线程数</div>
+    <div class="stepper"><button onclick="step(-1)">−</button><b id="thNum">4</b><button onclick="step(1)">＋</button><span style="font-size:12px;color:var(--secondary)">线程 · 越多越快</span></div>
+  </div>
+</section>
+<!-- ============ TAB 3 展示 ============ -->
+<section class="tab" data-tab="3">
+  <div class="tabhead"><h2>展示</h2><p>解析结果 · 媒体 · 历史</p></div>
+  <div class="card"><h3><span class="no">19</span>解析结果卡片</h3>
+    <div class="desc">缩略图 + 无水印徽标</div>
+    <div class="result">
+      <div class="thumb">🎬<span class="badge">无水印</span></div>
+      <div class="info"><b>抖音 · 街头采访合集 #128</b><small>12.4MB · 原画 · 刚刚解析</small></div>
+    </div>
+    <div style="height:10px"></div>
+    <div class="steps">
+      <div class="step done"><div class="dot">✓</div>粘贴</div><div class="step-line"></div>
+      <div class="step done"><div class="dot">✓</div>解析</div><div class="step-line"></div>
+      <div class="step"><div class="dot">3</div>下载</div>
+    </div>
+  </div>
+  <div class="card"><h3><span class="no">20</span>媒体九宫格 · 选中态</h3>
+    <div class="desc">点选缩略图：accent 描边 + 对勾（主题规范）</div>
+    <div class="grid9" id="grid9">
+      <div class="gcell sel">🎥</div><div class="gcell">📷</div><div class="gcell">🎞</div>
+      <div class="gcell">🎬</div><div class="gcell">📹</div><div class="gcell">🖼</div>
+      <div class="gcell">🎧</div><div class="gcell">🎵</div><div class="gcell">📼</div>
+    </div>
+  </div>
+  <div class="card"><h3><span class="no">21</span>下载进度条</h3>
+    <div class="desc">accent 进度，多任务并行</div>
+    <div class="prow" style="margin-bottom:8px"><div class="pbar"><i style="width:72%"></i></div><b>72%</b></div>
+    <div class="prow" style="margin-bottom:8px"><div class="pbar"><i style="width:35%"></i></div><b>35%</b></div>
+    <div class="prow"><div class="pbar"><i style="width:100%"></i></div><b>完成</b></div>
+  </div>
+  <div class="card"><h3><span class="no">22</span>历史列表</h3>
+    <div class="hrow"><div class="thumb">🎬</div><div class="info"><b>快手 · 美食探店</b><small>8.1MB · 720P · 10 分钟前</small></div><span class="tag ok">已保存</span></div>
+    <div class="hrow"><div class="thumb">📷</div><div class="info"><b>小红书 · 穿搭图集 9 张</b><small>图集 · 1 小时前</small></div><span class="tag ok">已保存</span></div>
+    <div class="hrow"><div class="thumb">🎥</div><div class="info"><b>抖音 · 卡点视频</b><small>15.2MB · 原画 · 昨天</small></div><span class="tag">无水印</span></div>
+  </div>
+  <div class="card"><h3><span class="no">23</span>数据统计</h3>
+    <div class="stats">
+      <div class="stat"><b>128</b><small>今日解析</small></div>
+      <div class="stat"><b>1.2G</b><small>已下载</small></div>
+      <div class="stat"><b>36</b><small>剩余配额</small></div>
+    </div>
+  </div>
+  <div class="card"><h3><span class="no">24</span>用户行</h3>
+    <div class="srow"><div class="avatar">懒</div><div class="t">懒友_8823<small>连续签到 6 天 · 去水印达人</small></div><span class="arrow">›</span></div>
+  </div>
+</section>
+<!-- ============ TAB 4 反馈 ============ -->
+<section class="tab" data-tab="4">
+  <div class="tabhead"><h2>反馈</h2><p>提示 · 确认 · 状态</p></div>
+  <div class="card"><h3><span class="no">25</span>Toast 提示</h3>
+    <div class="desc">操作后的轻反馈</div>
+    <div class="btn-row">
+      <button class="btn btn-outline" onclick="toast('已复制分享链接')">复制成功</button>
+      <button class="btn btn-outline" onclick="toast('已保存到相册',true)">顶部 Toast</button>
+    </div>
+  </div>
+  <div class="card"><h3><span class="no">26</span>确认清除对话框</h3>
+    <div class="desc">危险操作二次确认</div>
+    <button class="btn btn-danger" style="width:100%" onclick="confirmClear()">清空解析历史</button>
+  </div>
+  <div class="card"><h3><span class="no">27</span>下载完成通知</h3>
+    <div class="notice"><div class="nic">⬇</div><div><b>下载完成</b><small>无水印视频已保存到相册 · 12.4MB</small></div></div>
+  </div>
+  <div class="card"><h3><span class="no">28</span>空状态</h3>
+    <div class="empty"><div class="eic">🕸</div><p>暂无解析历史<br><span style="font-size:12px">粘贴一条分享链接试试</span></p></div>
+    <button class="btn btn-primary" onclick="switchTab(2)">去粘贴链接</button>
+  </div>
+  <div class="card"><h3><span class="no">29</span>骨架屏</h3>
+    <div class="desc">解析中占位，可重播</div>
+    <div id="skbox">
+      <div class="sk-row"><div class="sk sk-c"></div><div style="flex:1"><div class="sk" style="height:14px;margin-bottom:8px"></div><div class="sk" style="height:12px;width:60%"></div></div></div>
+      <div class="sk-row"><div class="sk sk-c"></div><div style="flex:1"><div class="sk" style="height:14px;margin-bottom:8px"></div><div class="sk" style="height:12px;width:45%"></div></div></div>
+    </div>
+    <div style="height:10px"></div>
+    <button class="btn btn-outline" onclick="replaySk()">重新加载</button>
+  </div>
+  <div class="card"><h3><span class="no">30</span>解析成功</h3>
+    <div class="okwrap"><div class="okc">✓</div><b>去水印成功</b><p style="font-size:12px;color:var(--secondary)">已去除水印 · 可选择清晰度下载</p></div>
+    <button class="btn btn-primary" onclick="toast('已保存到相册')">保存到相册</button>
+  </div>
+</section>
+</main>
+<!-- 底部 Tab 栏 -->
+<nav class="tabbar" id="tabbar">
+  <span class="pill" id="pill"></span>
+  <button data-i="0" class="on">总览</button>
+  <button data-i="1">按钮</button>
+  <button data-i="2">表单</button>
+  <button data-i="3">展示</button>
+  <button data-i="4">反馈</button>
+</nav>
+<script>
+/* ---------- 主题切换 ---------- */
+const seg=document.getElementById('themeSeg'),segBtns=[...seg.querySelectorAll('button')],segPill=seg.querySelector('.seg-pill');
+function setTheme(t){
+  document.documentElement.dataset.theme=t;
+  segBtns.forEach(b=>b.classList.toggle('on',b.dataset.t===t));
+  moveSeg();
+}
+function moveSeg(){
+  const b=seg.querySelector('button.on');
+  segPill.style.left=b.offsetLeft+'px';segPill.style.width=b.offsetWidth+'px';
+}
+segBtns.forEach(b=>b.onclick=()=>setTheme(b.dataset.t));
+window.addEventListener('resize',()=>{moveSeg();movePill(cur)});
+setTheme(new URLSearchParams(location.search).get('theme')==='dark'?'dark':'light');
+/* ---------- Tab 切换 + pill ---------- */
+const tabs=[...document.querySelectorAll('.tab')],tbtns=[...document.querySelectorAll('#tabbar button')],pill=document.getElementById('pill');
+let cur=0;
+function movePill(i){
+  const b=tbtns[i];
+  pill.style.left=b.offsetLeft+'px';pill.style.width=b.offsetWidth+'px';
+}
+function switchTab(i){
+  cur=i;
+  tabs.forEach((t,k)=>t.classList.toggle('on',k===i));
+  tbtns.forEach((b,k)=>b.classList.toggle('on',k===i));
+  movePill(i);
+  history.replaceState(null,'','?tab='+i);
+  window.scrollTo({top:0});
+}
+tbtns.forEach(b=>b.onclick=()=>switchTab(+b.dataset.i));
+switchTab(Math.min(4,Math.max(0,parseInt(new URLSearchParams(location.search).get('tab'))||0)));
+/* ---------- Toast ---------- */
+let toastTimer;
+function toast(msg,top){
+  const el=document.getElementById('toast');
+  el.textContent=msg;el.classList.toggle('top',!!top);el.classList.add('show');
+  clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('show'),1800);
+}
+/* ---------- 对话框 ---------- */
+const mask=document.getElementById('dlg-mask'),dlg=document.getElementById('dlg');
+function confirmClear(){
+  dlg.innerHTML='<h4>清空解析历史？</h4><p>将删除全部 36 条解析记录，此操作不可恢复。</p><div class="btn-row"><button class="btn btn-outline" id="cNo">取消</button><button class="btn btn-danger" id="cYes">清空</button></div>';
+  mask.classList.add('show');
+  document.getElementById('cNo').onclick=()=>mask.classList.remove('show');
+  document.getElementById('cYes').onclick=()=>{mask.classList.remove('show');toast('已清空解析历史');};
+}
+mask.addEventListener('click',e=>{if(e.target===mask)mask.classList.remove('show')});
+/* ---------- 色板 ---------- */
+const L=[['页面底 pageBackground','#CDDCDC'],['卡片 surface','#12000000'],['主色 accent','#1257C9'],['选中填充 accentSoft','#141257C9'],['主文字 foreground','#1B2430'],['次要文字 secondary','#6E7887']];
+const D=[['页面底 pageBackground','#434343'],['卡片 surface','#1FFFFFFF'],['主色 accent','#5AA9FF'],['选中填充 accentSoft','#1F5AA9FF'],['主文字 foreground','#F5F7FA'],['次要文字 secondary','#ADB7C5']];
+function fillSw(id,list){
+  document.getElementById(id).innerHTML=list.map(([n,c])=>`<div class="sw" data-c="${c}"><i style="background:${c}"></i><span><b>${n}</b>${c}</span></div>`).join('');
+  document.getElementById(id).querySelectorAll('.sw').forEach(el=>el.onclick=()=>{
+    const c=el.dataset.c;
+    (navigator.clipboard?navigator.clipboard.writeText(c):Promise.reject()).then(()=>toast('已复制 '+c)).catch(()=>toast(c));
+  });
+}
+fillSw('swLight',L);fillSw('swDark',D);
+/* ---------- 表单交互 ---------- */
+document.getElementById('qOpts').querySelectorAll('.opt').forEach(o=>o.onclick=()=>{
+  document.getElementById('qOpts').querySelectorAll('.opt').forEach(x=>x.classList.remove('on'));
+  o.classList.add('on');toast('清晰度：'+o.firstChild.textContent);
+});
+let th=4;
+function step(d){th=Math.min(8,Math.max(1,th+d));document.getElementById('thNum').textContent=th;}
+function pasteDemo(){
+  document.getElementById('linkInp').value='https://v.douyin.com/abc123/';
+  toast('已粘贴分享链接');
+}
+document.getElementById('grid9').querySelectorAll('.gcell').forEach(c=>c.onclick=()=>{
+  document.getElementById('grid9').querySelectorAll('.gcell').forEach(x=>x.classList.remove('sel'));
+  c.classList.add('sel');
+});
+/* ---------- 下载模拟 ---------- */
+function fakeDownload(){
+  const bar=document.getElementById('dlbar'),pct=document.getElementById('dlpct'),btn=document.getElementById('dlbtn');
+  let p=0;btn.disabled=true;
+  const t=setInterval(()=>{
+    p=Math.min(100,p+Math.random()*16);
+    bar.style.width=p+'%';pct.textContent=Math.round(p)+'%';
+    if(p>=100){clearInterval(t);btn.disabled=false;toast('已保存到相册');}
+  },220);
+}
+/* ---------- 骨架屏重播 ---------- */
+function replaySk(){
+  const box=document.getElementById('skbox');
+  box.style.display='none';setTimeout(()=>box.style.display='',600);
+}
+</script>
+</body>
+</html>
