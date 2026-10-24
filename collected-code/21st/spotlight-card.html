@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Spotlight Card · 复刻自 21st.dev</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #09090b;
+    color: #e4e4e7;
+    font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+    min-height: 100vh;
+    padding: 40px 20px 60px;
+  }
+  .page { max-width: 430px; margin: 0 auto; }
+  .crumb {
+    font-size: 12px; color: #71717a; letter-spacing: .08em;
+    margin-bottom: 10px;
+  }
+  .crumb b { color: #a1a1aa; font-weight: 600; }
+  h1 { font-size: 24px; font-weight: 700; margin-bottom: 8px; }
+  .sub { font-size: 13px; color: #71717a; line-height: 1.7; margin-bottom: 28px; }
+  .grid { display: grid; gap: 16px; }
+  .card {
+    position: relative;
+    background: #101013;
+    border: 1px solid #232328;
+    border-radius: 14px;
+    padding: 22px 20px;
+    overflow: hidden;
+    cursor: pointer;
+  }
+  .card::before {
+    content: "";
+    position: absolute; inset: 0;
+    background: radial-gradient(circle at var(--mx, 50%) var(--my, 50%),
+      rgba(255,255,255,.16), transparent 62%);
+    opacity: 0;
+    transition: opacity .35s ease;
+    pointer-events: none;
+  }
+  .card:hover::before, .card.lit::before { opacity: 1; }
+  .card .ring {
+    position: absolute; inset: 0; border-radius: 14px;
+    border: 1px solid transparent;
+    background: radial-gradient(circle at var(--mx, 50%) var(--my, 50%),
+      rgba(255,255,255,.35), transparent 45%) border-box;
+    -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor; mask-composite: exclude;
+    opacity: 0; transition: opacity .35s ease; pointer-events: none;
+  }
+  .card:hover .ring, .card.lit .ring { opacity: 1; }
+  .icon {
+    width: 40px; height: 40px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; margin-bottom: 14px;
+    background: rgba(255,255,255,.05);
+    border: 1px solid rgba(255,255,255,.08);
+  }
+  .card h3 { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
+  .card p { font-size: 13px; color: #a1a1aa; line-height: 1.7; }
+  .tag {
+    display: inline-block; margin-top: 12px; font-size: 11px;
+    color: #71717a; border: 1px solid #232328; border-radius: 99px;
+    padding: 3px 10px;
+  }
+  .hint {
+    margin-top: 28px; text-align: center;
+    font-size: 12px; color: #52525b;
+  }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="crumb">复刻自 <b>21st.dev · Spotlight Card</b></div>
+  <h1>Spotlight Card</h1>
+  <p class="sub">把鼠标移到卡片上，一束光会跟着你的指尖走，照亮卡片的每个角落。离开后光斑缓缓淡出。</p>
+  <div class="grid">
+    <div class="card">
+      <div class="ring"></div>
+      <div class="icon">✦</div>
+      <h3>跟随指尖的光斑</h3>
+      <p>卡片实时读取鼠标坐标，用径向渐变在指尖位置投下一圈柔光，内容仿佛被手电筒照亮。</p>
+      <span class="tag">mousemove 追踪</span>
+    </div>
+    <div class="card">
+      <div class="ring"></div>
+      <div class="icon">◈</div>
+      <h3>每张卡片独立响应</h3>
+      <p>网格里的卡片互不干扰：你指到哪一张，哪一张亮起，其余保持安静的深色。</p>
+      <span class="tag">独立作用域</span>
+    </div>
+    <div class="card">
+      <div class="ring"></div>
+      <div class="icon">❖</div>
+      <h3>离开即淡出</h3>
+      <p>鼠标移开后光斑不做生硬消失，而是用 0.35 秒的过渡缓缓隐去，像灯被轻轻调暗。</p>
+      <span class="tag">opacity 过渡</span>
+    </div>
+    <div class="card">
+      <div class="ring"></div>
+      <div class="icon">✧</div>
+      <h3>边缘也被点亮</h3>
+      <p>除了内部光斑，卡片描边同样跟随指尖发光——光走到哪里，边框就亮到哪里。</p>
+      <span class="tag">边框高光</span>
+    </div>
+  </div>
+  <p class="hint">纯 CSS 变量 + radial-gradient 实现 · 零依赖</p>
+</div>
+<script>
+  document.querySelectorAll('.card').forEach(function (card) {
+    card.addEventListener('mousemove', function (e) {
+      var r = card.getBoundingClientRect();
+      card.style.setProperty('--mx', (e.clientX - r.left) + 'px');
+      card.style.setProperty('--my', (e.clientY - r.top) + 'px');
+    });
+    // 触摸设备：点按时也点亮
+    card.addEventListener('touchstart', function (e) {
+      var t = e.touches[0], r = card.getBoundingClientRect();
+      card.style.setProperty('--mx', (t.clientX - r.left) + 'px');
+      card.style.setProperty('--my', (t.clientY - r.top) + 'px');
+      card.classList.add('lit');
+    }, {passive: true});
+    card.addEventListener('touchend', function () {
+      card.classList.remove('lit');
+    });
+  });
+</script>
+</body>
+</html>
