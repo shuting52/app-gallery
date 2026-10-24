@@ -1,0 +1,45 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>液态玻璃播放器</title><style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;min-height:100vh;
+background:radial-gradient(120% 90% at 50% 0%,#1c2a44 0%,#0b1220 55%,#060a14 100%);
+color:#eef3fa;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.blob{position:absolute;border-radius:50%;filter:blur(60px);opacity:.75;animation:drift 9s ease-in-out infinite alternate}
+.b1{width:280px;height:280px;background:#5aa9ff;left:-60px;top:-40px}
+.b2{width:240px;height:240px;background:#ff9ecb;right:-50px;top:30%;animation-delay:-3s}
+.b3{width:220px;height:220px;background:#ffd166;left:30%;bottom:-70px;animation-delay:-6s}
+@keyframes drift{from{transform:translate(0,0) scale(1)}to{transform:translate(30px,24px) scale(1.12)}}
+.glass{position:relative;background:linear-gradient(135deg,rgba(255,255,255,.22),rgba(255,255,255,.08));
+-webkit-backdrop-filter:blur(22px) saturate(1.8);backdrop-filter:blur(22px) saturate(1.8);
+border:1px solid rgba(255,255,255,.38);border-radius:26px;
+box-shadow:0 18px 50px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.45),inset 0 -1px 0 rgba(255,255,255,.12)}
+.glass::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+background:linear-gradient(115deg,rgba(255,255,255,.28) 0%,rgba(255,255,255,0) 42%)}
+.tag{position:absolute;top:18px;left:18px;font-size:11px;color:#9fb3d1;letter-spacing:1px}
+h2{font-size:20px;margin-bottom:6px}p{font-size:13px;color:#c6d4e8;line-height:1.7}
+.player{width:300px;padding:26px;text-align:center}
+.disc{width:96px;height:96px;margin:0 auto 16px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+font-size:38px;background:conic-gradient(#5aa9ff,#ff9ecb,#ffd166,#5aa9ff);
+box-shadow:0 8px 24px rgba(0,0,0,.45),inset 0 0 0 8px rgba(255,255,255,.18);animation:spin 6s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.disc.paused{animation-play-state:paused}
+.prog{height:6px;border-radius:99px;background:rgba(255,255,255,.15);margin-top:14px;overflow:hidden}
+.bar{height:100%;width:33%;border-radius:99px;background:linear-gradient(90deg,#5aa9ff,#ff9ecb)}
+.times{display:flex;justify-content:space-between;font-size:11px;color:#9fb3d1;margin-top:6px}
+.ctrl{display:flex;gap:14px;justify-content:center;margin-top:18px}
+.ctrl button{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.3);color:#fff;
+width:44px;height:44px;border-radius:50%;font-size:17px;cursor:pointer}
+.ctrl .play{width:54px;height:54px;font-size:20px;background:linear-gradient(135deg,#5aa9ff,#7b6cff)}</style></head><body>
+<div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
+<span class="tag">LIQUID GLASS · 复刻</span>
+<div class="glass player"><div class="disc" id="disc">🎵</div>
+<div class="meta"><h2>城市夜跑轻音乐</h2><p>正在播放 · 第 3 / 20 首</p>
+<div class="prog"><div class="bar" id="bar"></div></div>
+<div class="times"><span id="t1">01:12</span><span>03:36</span></div></div>
+<div class="ctrl"><button>⏮</button><button class="play" id="play">⏸</button><button>⏭</button></div></div>
+<script>var p=0,playing=true,bar=document.getElementById('bar'),t1=document.getElementById('t1'),
+disc=document.getElementById('disc'),btn=document.getElementById('play');
+setInterval(function(){if(!playing)return;p=(p+0.4)%100;bar.style.width=p+'%';
+var s=Math.floor(72+p*1.4);t1.textContent='0'+Math.floor(s/60)+':'+('0'+s%60).slice(-2);},300);
+btn.addEventListener('click',function(){playing=!playing;btn.textContent=playing?'⏸':'▶';disc.classList.toggle('paused',!playing);});</script></body></html>
