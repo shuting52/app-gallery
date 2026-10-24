@@ -3,39 +3,56 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Dock · 弹簧弹性程序坞</title>
+<title>懒得找了 · 弹簧弹性底栏</title>
 <style>*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{height:100%}
-body{font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;background:radial-gradient(120% 90% at 50% 0%, #233252 0%, #0d1526 55%, #070b15 100%);color:#e8eef7;min-height:100vh;display:flex;flex-direction:column;align-items:center;overflow:hidden;user-select:none}
-header{margin-top:64px;text-align:center;padding:0 24px}
-header .tag{display:inline-block;font-size:12px;color:#9fb3d1;border:1px solid rgba(159,179,209,.28);border-radius:999px;padding:4px 12px;margin-bottom:14px;letter-spacing:.5px;background:rgba(255,255,255,.04)}
-header h1{font-size:30px;font-weight:800;letter-spacing:2px}
-header h1 .dot{color:#5aa9ff}
-header p{margin-top:10px;font-size:13px;color:#8fa3c2;line-height:1.7}
-.stage{flex:1;width:100%;display:flex;align-items:flex-end;justify-content:center;padding-bottom:48px}
+body{font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;background:radial-gradient(120% 90% at 50% 0%, #233252 0%, #0d1526 55%, #070b15 100%);color:#e8eef7;min-height:100vh;display:flex;flex-direction:column;overflow:hidden;user-select:none}
+.status{display:flex;justify-content:space-between;align-items:center;height:30px;padding:0 18px;font-size:13px;font-weight:600;flex:none}
+.status .right{display:flex;align-items:center;gap:6px}
+.sig{display:flex;align-items:flex-end;gap:2px}.sig i{display:block;width:3px;background:#fff;border-radius:1px}.sig i:nth-child(1){height:5px}.sig i:nth-child(2){height:8px}.sig i:nth-child(3){height:11px}.sig i:nth-child(4){height:14px}
+.bat{width:24px;height:12px;border:1.5px solid rgba(255,255,255,.8);border-radius:3px;position:relative}.bat:after{content:"";position:absolute;left:2px;top:2px;bottom:2px;width:70%;background:#4ade80;border-radius:1px}.bat:before{content:"";position:absolute;right:-4px;top:4px;width:2px;height:4px;background:rgba(255,255,255,.8);border-radius:1px}
+.topbar{display:flex;align-items:center;gap:10px;padding:8px 16px 12px;flex:none}
+.topbar .logo{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,#5aa9ff,#2563eb);display:flex;align-items:center;justify-content:center;font-size:19px;font-weight:800;box-shadow:0 4px 14px rgba(0,0,0,.35);flex:none}
+.topbar h1{font-size:19px;font-weight:800;letter-spacing:1px}
+.topbar .search{flex:1;height:34px;border-radius:999px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);display:flex;align-items:center;padding:0 12px;font-size:12px;color:rgba(232,238,247,.75);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
+.topbar .ava{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;font-size:15px;flex:none}
+.content{flex:1;padding:4px 16px 8px;overflow:hidden}
+.hero{border-radius:20px;padding:18px;background:linear-gradient(135deg,#5aa9ff33,rgba(255,255,255,.10) 60%);border:1px solid rgba(255,255,255,.22);box-shadow:0 10px 30px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.25);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
+.hero .k{font-size:12px;color:rgba(232,238,247,.8);letter-spacing:1px}
+.hero h2{font-size:22px;margin:6px 0 4px}
+.hero p{font-size:12px;color:rgba(232,238,247,.75)}
+.bar{height:8px;border-radius:99px;background:rgba(0,0,0,.3);margin-top:14px;overflow:hidden}
+.bar i{display:block;height:100%;width:78%;border-radius:99px;background:linear-gradient(90deg,#5aa9ff,#2563eb)}
+.sec{font-size:13px;font-weight:700;margin:18px 2px 10px;color:rgba(232,238,247,.9)}
+.row{display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:14px;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.14);margin-bottom:9px;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+.row .ic{width:38px;height:38px;border-radius:11px;background:rgba(255,255,255,.14);display:flex;align-items:center;justify-content:center;font-size:18px;flex:none}
+.row b{font-size:13px;display:block}.row span{font-size:11px;color:rgba(232,238,247,.65)}
+.row .go{margin-left:auto;font-size:15px;color:rgba(232,238,247,.6)}
+.dockbar{flex:none;padding:2px 12px 16px}
 .dock-wrap{display:flex;flex-direction:column;align-items:center;position:relative}
 .tip{margin-bottom:14px;font-size:12px;color:#cfe0f7;background:rgba(20,28,46,.85);border:1px solid rgba(255,255,255,.14);border-radius:8px;padding:5px 12px;opacity:0;transform:translateY(6px);transition:opacity .18s,transform .18s;pointer-events:none;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
 .tip.show{opacity:1;transform:translateY(0)}
-.dock{display:flex;align-items:flex-end;gap:10px;padding:14px 16px;max-width:calc(100vw - 24px);background:rgba(255,255,255,.12);-webkit-backdrop-filter:blur(22px) saturate(1.6);backdrop-filter:blur(22px) saturate(1.6);border:1px solid rgba(255,255,255,.22);border-radius:26px;box-shadow:0 18px 50px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.25)}
-.app{position:relative;display:flex;flex-direction:column;align-items:center;cursor:pointer;transform-origin:bottom center;will-change:transform}
+.dock{position:relative;display:flex;align-items:flex-end;gap:10px;padding:14px 16px;max-width:calc(100vw - 24px);border-radius:26px;background:linear-gradient(115deg,rgba(255,255,255,.20),rgba(255,255,255,.08) 45%,rgba(255,255,255,.16));-webkit-backdrop-filter:blur(20px) saturate(1.8);backdrop-filter:blur(20px) saturate(1.8);border:1px solid rgba(255,255,255,.35);box-shadow:0 18px 50px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.4)}
+.dock:after{content:"";position:absolute;inset:0;border-radius:26px;background:linear-gradient(115deg,rgba(255,255,255,0) 30%,rgba(255,255,255,.20) 48%,rgba(255,255,255,0) 62%);pointer-events:none}
+.app{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;cursor:pointer;transform-origin:bottom center;will-change:transform}
 .icon{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:28px;box-shadow:0 6px 16px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.35);border:1px solid rgba(255,255,255,.2)}
 .dot-run{width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.85);margin-top:5px;box-shadow:0 0 6px rgba(255,255,255,.6)}
 .sep{width:1px;align-self:stretch;background:rgba(255,255,255,.25);margin:6px 2px;border-radius:1px}
-footer{padding-bottom:26px;font-size:11px;color:#5b6c88}
 @media (max-width:480px){.dock{gap:5px;padding:8px 10px;border-radius:18px}.icon{width:32px;height:32px;font-size:18px;border-radius:9px}.sep{margin:4px 1px}}
 .app{transition:transform .5s cubic-bezier(.34,1.56,.64,1)}</style>
 </head>
 <body>
-<header>
-<div class="tag">复刻自 21st.dev · Dock</div>
-<h1>弹簧弹性程序坞<span class="dot">.</span></h1>
-<p>放大带回弹，松开像弹簧一样抖两下才站稳<br>（触屏可直接点按试试）</p>
-</header>
-<div class="stage"><div class="dock-wrap">
+<div class="status"><span>9:41</span><span class="right"><span class="sig"><i></i><i></i><i></i><i></i></span><span>5G</span><span class="bat"></span></span></div>
+<div class="topbar"><div class="logo">懒</div><h1>懒得找了</h1><div class="search">🔍 搜索站点 / 粘贴链接…</div><div class="ava">👤</div></div>
+<div class="content">
+<div class="hero"><div class="k">今日解析</div><h2>去水印解析进行中</h2><p>抖音短视频 · 正在去除水印</p><div class="bar"><i></i></div></div>
+<div class="sec">最近任务</div>
+<div class="row"><div class="ic">🎬</div><div><b>抖音视频解析完成</b><span>已保存到下载管理</span></div><div class="go">✓</div></div><div class="row"><div class="ic">🌐</div><div><b>站点导航 · 今日推荐</b><span>19 个新站点已更新</span></div><div class="go">›</div></div><div class="row"><div class="ic">⬇️</div><div><b>下载管理 · 3 个任务</b><span>2 个完成，1 个进行中</span></div><div class="go">›</div></div><div class="row"><div class="ic">⏱️</div><div><b>工时打卡 · 今日已打卡</b><span>连续打卡 12 天</span></div><div class="go">✓</div></div>
+</div>
+<div class="dockbar"><div class="dock-wrap">
 <div class="tip" id="tip">访达</div>
 <div class="dock" id="dock"><div class="app" data-label="表格"><div class="icon" style="background:linear-gradient(135deg,#34d399,#059669)">📊</div><div class="dot-run"></div></div><div class="app" data-label="股市"><div class="icon" style="background:linear-gradient(135deg,#f87171,#dc2626)">📈</div></div><div class="app" data-label="日历"><div class="icon" style="background:linear-gradient(135deg,#fbbf24,#d97706)">🗓️</div><div class="dot-run"></div></div><div class="app" data-label="剪贴板"><div class="icon" style="background:linear-gradient(135deg,#a78bfa,#7c3aed)">📋</div></div><div class="sep"></div><div class="app" data-label="设计"><div class="icon" style="background:linear-gradient(135deg,#f472b6,#db2777)">🎨</div></div><div class="app" data-label="剪辑"><div class="icon" style="background:linear-gradient(135deg,#38bdf8,#0284c7)">🎬</div><div class="dot-run"></div></div><div class="app" data-label="播客"><div class="icon" style="background:linear-gradient(135deg,#fb923c,#ea580c)">🎙️</div></div><div class="sep"></div><div class="app" data-label="终端"><div class="icon" style="background:linear-gradient(135deg,#4b5563,#111827)">💻</div></div><div class="app" data-label="设置"><div class="icon" style="background:linear-gradient(135deg,#9ca3af,#374151)">⚙️</div></div><div class="app" data-label="废纸篓"><div class="icon" style="background:linear-gradient(135deg,#e2e8f0,#94a3b8)">🗑️</div></div></div>
 </div></div>
-<footer>纯手写 CSS · 零框架 · 零外部依赖</footer>
 <script>(function(){
 var dock=document.getElementById('dock'),tip=document.getElementById('tip');
 var apps=Array.prototype.slice.call(dock.querySelectorAll('.app'));

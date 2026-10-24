@@ -3,72 +3,117 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Dock · 复刻自 21st.dev</title>
+<title>懒得找了 · 曜石黑</title>
 <style>
 * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-  html,body { height:100%; }
-  body {
-    font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
-    background:radial-gradient(120% 90% at 50% 0%, #1a1a1a 0%, #080808 55%, #000000 100%);
-    color:#f1ead8; min-height:100vh; display:flex; flex-direction:column; align-items:center;
-    overflow:hidden; user-select:none;
-  }
-  header { margin-top:64px; text-align:center; padding:0 24px; }
-  header .tag {
-    display:inline-block; font-size:12px; color:#e8c874; border:1px solid rgba(232,200,116,.45);
-    border-radius:999px; padding:4px 12px; margin-bottom:14px; letter-spacing:.5px;
-    background:rgba(232,200,116,.06);
-  }
-  header h1 { font-size:30px; font-weight:800; letter-spacing:2px; }
-  header h1 .dot { color:#e8c874; }
-  header p { margin-top:10px; font-size:13px; color:#a89878; line-height:1.7; }
-  .stage { flex:1; width:100%; display:flex; align-items:flex-end; justify-content:center; padding-bottom:48px; }
-  .dock-wrap { display:flex; flex-direction:column; align-items:center; }
-  .tip {
+html,body { height:100%; }
+body {
+  font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  background:radial-gradient(120% 90% at 50% 0%, #1a1a1a 0%, #080808 55%, #000000 100%); color:#f1ead8; height:100vh; overflow:hidden;
+  display:flex; flex-direction:column; user-select:none;
+}
+.status { height:30px; display:flex; justify-content:space-between; align-items:center;
+  padding:0 18px; font-size:13px; font-weight:600; flex:none; }
+.status .r { font-size:12px; letter-spacing:1px; }
+.topbar { display:flex; align-items:center; gap:12px; padding:10px 16px 6px; flex:none; }
+.avatar { width:42px; height:42px; border-radius:13px; background:#e8c874; color:#fff;
+  display:flex; align-items:center; justify-content:center; font-size:20px; font-weight:800;
+  box-shadow:0 4px 14px rgba(0,0,0,.3), inset 0 1px 0 rgba(255,255,255,.4); flex:none; }
+.topbar h1 { font-size:20px; letter-spacing:1px; }
+.topbar p { font-size:11px; opacity:.68; margin-top:2px; }
+.search { margin-left:auto; font-size:12px; padding:8px 12px; border-radius:999px;
+  background:rgba(255,255,255,.10); border:1px solid rgba(255,255,255,.16); opacity:.85; white-space:nowrap; }
+.main { flex:1; overflow:hidden; padding:12px 16px 0; }
+.hero { background:rgba(255,255,255,.10); border:1px solid rgba(255,255,255,.16); border-radius:20px; padding:16px;
+  box-shadow:0 10px 30px rgba(0,0,0,.18), inset 0 1px 0 rgba(255,255,255,.25); }
+.hero .tag { font-size:11px; color:#e8c874; font-weight:700; letter-spacing:1px; }
+.hero h2 { font-size:18px; margin:8px 0 4px; line-height:1.4; }
+.hero p { font-size:12px; color:rgba(255,255,255,.68); line-height:1.6; }
+.bar { height:8px; border-radius:99px; background:rgba(255,255,255,.18); margin-top:12px; overflow:hidden; }
+.bar i { display:block; height:100%; width:72%; background:linear-gradient(90deg,#e8c874,#ffb27a); border-radius:99px; }
+.hero .meta { display:flex; justify-content:space-between; font-size:11px; color:rgba(255,255,255,.68); margin-top:8px; }
+.btnrow { display:flex; gap:10px; margin-top:14px; }
+.btnrow b { flex:1; text-align:center; font-size:13px; padding:10px 0; border-radius:12px; }
+.btnrow .go { background:#e8c874; color:#fff; box-shadow:0 6px 16px rgba(0,0,0,.25); }
+.btnrow .dl { background:rgba(255,255,255,.10); border:1px solid rgba(255,255,255,.16); }
+.chips { display:flex; gap:8px; margin:14px 0 4px; }
+.chips span { font-size:12px; padding:7px 12px; border-radius:999px; background:rgba(255,255,255,.10); border:1px solid rgba(255,255,255,.16); }
+.sec { font-size:14px; font-weight:700; margin:14px 0 10px; }
+.sec small { float:right; font-size:11px; font-weight:400; color:#e8c874; }
+.row { display:flex; align-items:center; gap:12px; background:rgba(255,255,255,.10); border:1px solid rgba(255,255,255,.16);
+  border-radius:16px; padding:10px 12px; margin-bottom:10px; }
+.th { width:44px; height:44px; border-radius:12px; background:rgba(255,255,255,.10); border:1px solid rgba(255,255,255,.16);
+  display:flex; align-items:center; justify-content:center; font-size:22px; flex:none; }
+.rt { flex:1; min-width:0; }
+.rt b { display:block; font-size:13px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.rt span { font-size:11px; color:rgba(255,255,255,.68); }
+.row i { font-style:normal; font-size:11px; color:#e8c874; white-space:nowrap; }
+.dock-wrap { position:fixed; left:50%; transform:translateX(-50%); bottom:14px; z-index:10;
+  display:flex; flex-direction:column; align-items:center; }
+.tip {
     margin-bottom:14px; font-size:12px; color:#f5e9c8; background:rgba(20,18,10,.92);
     border:1px solid rgba(232,200,116,.4); border-radius:8px; padding:5px 12px;
     opacity:0; transform:translateY(6px); transition:opacity .18s, transform .18s; pointer-events:none;
-    backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
-  }
-  .tip.show { opacity:1; transform:translateY(0); }
-  .dock {
+    backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);}
+.tip.show { opacity:1; transform:translateY(0); }
+.dock {
     display:flex; align-items:flex-end; gap:10px; padding:14px 16px;
     max-width:calc(100vw - 24px);
     background:rgba(255,255,255,.06);
     -webkit-backdrop-filter:blur(22px) saturate(1.6); backdrop-filter:blur(22px) saturate(1.6);
     border:1px solid rgba(232,200,116,.45); border-radius:26px;
-    box-shadow:0 18px 50px rgba(0,0,0,.5), inset 0 1px 0 rgba(232,200,116,.25);
-  }
-  .app { position:relative; display:flex; flex-direction:column; align-items:center; cursor:pointer;
+    box-shadow:0 18px 50px rgba(0,0,0,.5), inset 0 1px 0 rgba(232,200,116,.25);}
+.dock-glass { position:relative; background:rgba(12,12,14,.58);-webkit-backdrop-filter:blur(26px) saturate(1.2);backdrop-filter:blur(26px) saturate(1.2);border:1px solid rgba(232,200,116,.45);box-shadow:0 18px 50px rgba(0,0,0,.6),inset 0 1px 0 rgba(232,200,116,.3); }
+.dock-glass::before { content:""; position:absolute; inset:0; border-radius:inherit; pointer-events:none;
+  background:linear-gradient(110deg, transparent 30%, rgba(255,255,255,.28) 47%, rgba(255,255,255,.06) 53%, transparent 70%); }
+.app { position:relative; display:flex; flex-direction:column; align-items:center; cursor:pointer;
     transform-origin:bottom center; will-change:transform; }
   .icon {
     width:52px; height:52px; border-radius:14px; display:flex; align-items:center; justify-content:center;
     font-size:28px; box-shadow:0 6px 16px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.35);
-    border:1px solid rgba(232,200,116,.4);
-  }
-  .dot-run {
+    border:1px solid rgba(232,200,116,.4);}
+.icon {
+    width:52px; height:52px; border-radius:14px; display:flex; align-items:center; justify-content:center;
+    font-size:28px; box-shadow:0 6px 16px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.35);
+    border:1px solid rgba(232,200,116,.4);}
+.dot-run {
     width:5px; height:5px; border-radius:50%; background:#e8c874; margin-top:5px;
-    box-shadow:0 0 6px #e8c874;
-  }
-  .sep { width:1px; align-self:stretch; background:rgba(232,200,116,.4); margin:6px 2px; border-radius:1px; }
+    box-shadow:0 0 6px #e8c874;}
+.sep { width:1px; align-self:stretch; background:rgba(232,200,116,.4); margin:6px 2px; border-radius:1px; }
   footer { padding-bottom:26px; font-size:11px; color:#77694e; }
   @media (max-width:480px){
     .dock{ gap:5px; padding:8px 10px; border-radius:18px; }
     .icon{ width:32px; height:32px; font-size:18px; border-radius:9px; }
-    .sep{ margin:4px 1px; }
-  }
+    .sep{ margin:4px 1px; }}
+@media (max-width:480px){
+    .dock{ gap:5px; padding:8px 10px; border-radius:18px; }
+    .icon{ width:32px; height:32px; font-size:18px; border-radius:9px; }
+    .sep{ margin:4px 1px; }}
 </style>
 </head>
 <body>
-  <header>
-    <div class="tag">复刻自 21st.dev · Dock</div>
-    <h1>曜石黑程序坞<span class="dot">.</span></h1>
-    <p>墨玉为底，金线描边，鼠标靠近图标会像放大镜一样鼓起来<br>（触屏可直接点按试试）</p>
-  </header>
-  <div class="stage">
-    <div class="dock-wrap">
-      <div class="tip" id="tip">访达</div>
-      <div class="dock" id="dock">
+  <div class="status"><span>9:41</span><span class="r">5G &#128246; &#128267;</span></div>
+  <div class="topbar">
+    <div class="avatar">懒</div>
+    <div><h1>懒得找了</h1><p>去水印 · 站点导航 · 下载管理</p></div>
+    <div class="search">&#128269; 粘贴链接…</div>
+  </div>
+  <div class="main">
+    <div class="hero">
+      <div class="tag">曜石黑 · 今日解析</div>
+      <h2>一键解析，视频原画直存相册</h2>
+      <p>粘贴短视频链接，自动去水印并生成高清原片，支持批量解析与站点收藏。</p>
+      <div class="bar"><i></i></div>
+      <div class="meta"><span>今日已解析 18 条</span><span>72% · 剩 6 条免费额度</span></div>
+      <div class="btnrow"><b class="go">开始解析</b><b class="dl">我的下载</b></div>
+    </div>
+    <div class="chips"><span>🔥 热门站点</span><span>🎬 去水印</span><span>⭐ 我的收藏</span><span>⬇️ 下载中</span></div>
+    <div class="sec">最近解析 <small>查看全部 &gt;</small></div>
+    <div class="row"><div class="th">🎬</div><div class="rt"><b>城市夜景混剪 · 无水印版</b><span>抖音 · 1080P · 已解析</span></div><i>已保存</i></div><div class="row"><div class="th">🌐</div><div class="rt"><b>设计灵感合集 · 50 个站点</b><span>站点导航 · 今日更新</span></div><i>已收藏</i></div><div class="row"><div class="th">🎵</div><div class="rt"><b>治愈系纯音乐 · 30 首</b><span>音乐 · 本地下载</span></div><i>下载中</i></div><div class="row"><div class="th">📁</div><div class="rt"><b>旅行 Vlog 素材包 · 12 段</b><span>下载管理 · 剩余 3 项</span></div><i>排队中</i></div>
+  </div>
+  <div class="dock-wrap">
+    <div class="tip" id="tip">访达</div>
+    <div class="dock dock-glass" id="dock">
         <div class="app" data-label="访达"><div class="icon" style="background:linear-gradient(135deg,#3a3a3a,#111111)">🖤</div><div class="dot-run"></div></div>
         <div class="app" data-label="浏览器"><div class="icon" style="background:linear-gradient(135deg,#4a4a4a,#1a1a1a)">🌐</div><div class="dot-run"></div></div>
         <div class="app" data-label="邮件"><div class="icon" style="background:linear-gradient(135deg,#e8c874,#8a6d1f)">✉️</div></div>
@@ -80,10 +125,8 @@
         <div class="app" data-label="保险库"><div class="icon" style="background:linear-gradient(135deg,#e8c874,#6d5a1e)">🔒</div></div>
         <div class="app" data-label="设置"><div class="icon" style="background:linear-gradient(135deg,#868e96,#343a40)">⚙️</div></div>
         <div class="app" data-label="废纸篓"><div class="icon" style="background:linear-gradient(135deg,#dee2e6,#868e96)">🗑️</div></div>
-      </div>
     </div>
   </div>
-  <footer>纯手写 CSS · 零框架 · 零外部依赖</footer>
 <script>
 (function(){
   var dock = document.getElementById('dock');

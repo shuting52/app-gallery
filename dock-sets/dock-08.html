@@ -3,70 +3,70 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Dock · 复刻自 21st.dev</title>
+<title>懒得找了 · 复古 Mac程序坞</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
   html,body { height:100%; }
   body {
     font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
-    background:repeating-linear-gradient(0deg,#e8e8e8 0,#e8e8e8 2px,#dedede 2px,#dedede 4px);
-    color:#222; min-height:100vh; display:flex; flex-direction:column; align-items:center;
-    overflow:hidden; user-select:none;
+    background:repeating-linear-gradient(0deg,#e8e8e8 0,#e8e8e8 2px,#dedede 2px,#dedede 4px); color:#222;
+    height:100vh; display:flex; flex-direction:column; overflow:hidden; user-select:none;
   }
-  header { margin-top:64px; text-align:center; padding:0 24px; }
-  header .tag {
-    display:inline-block; font-size:12px; color:#555; border:1px solid rgba(0,0,0,.3);
-    border-radius:999px; padding:4px 12px; margin-bottom:14px; letter-spacing:.5px;
-    background:rgba(255,255,255,.04);
-  }
-  header h1 { font-size:30px; font-weight:800; letter-spacing:2px; }
-  header h1 .dot { color:#5aa9ff; }
-  header p { margin-top:10px; font-size:13px; color:#555; line-height:1.7; opacity:.85; }
-  .stage { flex:1; width:100%; display:flex; align-items:flex-end; justify-content:center; padding-bottom:48px; }
+  .status { height:30px; flex:none; display:flex; align-items:center; justify-content:space-between; padding:0 18px; font-size:13px; font-weight:600; }
+  .status .r { display:flex; align-items:center; gap:6px; font-size:12px; }
+  .bat { width:24px; height:12px; border:1.5px solid currentColor; border-radius:4px; position:relative; display:inline-block; }
+  .bat i { position:absolute; left:2px; top:2px; bottom:2px; width:70%; background:currentColor; border-radius:2px; }
+  .bat:after { content:""; position:absolute; right:-4px; top:4px; width:2px; height:4px; background:currentColor; border-radius:1px; }
+  .topbar { height:56px; flex:none; display:flex; align-items:center; gap:10px; padding:0 16px; }
+  .appname { font-size:18px; font-weight:800; letter-spacing:.5px; color:#44403c; white-space:nowrap; }
+  .search { flex:1; height:34px; border-radius:17px; background:#fef3c7; color:#a8a29e; font-size:13px; display:flex; align-items:center; padding:0 12px; gap:6px; }
+  .avatar { width:34px; height:34px; flex:none; border-radius:50%; background:linear-gradient(135deg,#d97706,#92400e); color:#fff; display:flex; align-items:center; justify-content:center; font-size:15px; font-weight:700; }
+  .content { flex:1; padding:14px 16px 8px; display:flex; flex-direction:column; gap:14px; overflow:hidden; }
+  .hero { border-radius:20px; background:linear-gradient(135deg,#fef3c7,#fde68a); color:#44403c; padding:18px; }
+  .hero .t { font-size:20px; font-weight:800; }
+  .hero .s { margin-top:6px; font-size:12px; color:#78716c; line-height:1.6; }
+  .bar { margin-top:14px; height:8px; border-radius:4px; background:rgba(217,119,6,.20); overflow:hidden; }
+  .bar i { display:block; height:100%; width:66%; background:#d97706; border-radius:4px; }
+  .hero .p { margin-top:8px; font-size:11px; color:#78716c; }
+  .sect { font-size:13px; font-weight:700; color:#44403c; }
+  .list { display:flex; flex-direction:column; gap:10px; }
+  .row { display:flex; align-items:center; gap:12px; background:#fffbeb; border:1px solid #fde68a; border-radius:16px; padding:12px; }
+  .chip { width:40px; height:40px; flex:none; border-radius:12px; background:#fffbeb; border:1px solid #fde68a; display:flex; align-items:center; justify-content:center; font-size:20px; }
+  .row .nm { font-size:14px; font-weight:700; }
+  .row .ds { margin-top:2px; font-size:11px; color:#78716c; }
+  .row .mid { flex:1; min-width:0; }
+  .tag { font-size:11px; background:#fef3c7; color:#92400e; border-radius:999px; padding:4px 9px; white-space:nowrap; }
+  .dock-zone { flex:none; padding:0 12px 16px; display:flex; justify-content:center; }
   .dock-wrap { display:flex; flex-direction:column; align-items:center; }
-  .tip {
-    margin-bottom:14px; font-size:12px; color:#cfe0f7; background:#fff;
-    border:1px solid rgba(255,255,255,.14); border-radius:8px; padding:5px 12px;
-    opacity:0; transform:translateY(6px); transition:opacity .18s, transform .18s; pointer-events:none;
-    backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
-  }
+  .tip { margin-bottom:12px; font-size:12px; color:#cfe0f7; background:rgba(20,28,46,.85); border:1px solid rgba(255,255,255,.14); border-radius:8px; padding:5px 12px; opacity:0; transform:translateY(6px); transition:opacity .18s, transform .18s; pointer-events:none; backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); }
   .tip.show { opacity:1; transform:translateY(0); }
-  .dock {
-    display:flex; align-items:flex-end; gap:10px; padding:14px 16px;
-    max-width:calc(100vw - 24px);
-    background:#d4d4d4;
-    -webkit-backdrop-filter:blur(22px) saturate(1.6); backdrop-filter:blur(22px) saturate(1.6);
-    border:1px solid 2px solid #000; border-radius:26px;
-    box-shadow:4px 4px 0 #000;
-  }
-  .app { position:relative; display:flex; flex-direction:column; align-items:center; cursor:pointer;
-    transform-origin:bottom center; will-change:transform; }
-  .icon {
-    width:52px; height:52px; border-radius:4px; display:flex; align-items:center; justify-content:center;
-    font-size:28px; box-shadow:2px 2px 0 #000;
-    border:2px solid #000;
-  }
-  .dot-run {
-    width:5px; height:5px; border-radius:50%; background:rgba(255,255,255,.85); margin-top:5px;
-    box-shadow:0 0 6px rgba(255,255,255,.6);
-  }
-  .sep { width:1px; align-self:stretch; background:#000; margin:6px 2px; border-radius:1px; }
-  footer { padding-bottom:26px; font-size:11px; color:#888; }
+  .dock { display:flex; align-items:flex-end; gap:10px; padding:14px 16px; max-width:calc(100vw - 24px); border:1px solid rgba(255,255,255,.35); border-radius:26px; box-shadow:0 18px 50px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.4); background:linear-gradient(135deg,rgba(255,255,255,.50),rgba(255,255,255,.10) 45%,rgba(217,119,6,.18)),rgba(255,251,235,.45);backdrop-filter:blur(22px) saturate(1.8);-webkit-backdrop-filter:blur(22px) saturate(1.8); }
+  .app { position:relative; display:flex; flex-direction:column; align-items:center; cursor:pointer; transform-origin:bottom center; will-change:transform; }
+  .icon { width:52px; height:52px; border-radius:14px; display:flex; align-items:center; justify-content:center; font-size:28px; box-shadow:0 6px 16px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.35); border:1px solid rgba(255,255,255,.2); }
+  .dot-run { width:5px; height:5px; border-radius:50%; background:rgba(255,255,255,.85); margin-top:5px; box-shadow:0 0 6px rgba(255,255,255,.6); }
+  .sep { width:1px; align-self:stretch; background:rgba(255,255,255,.25); margin:6px 2px; border-radius:1px; }
   @media (max-width:480px){
     .dock{ gap:5px; padding:8px 10px; border-radius:18px; }
     .icon{ width:32px; height:32px; font-size:18px; border-radius:9px; }
     .sep{ margin:4px 1px; }
   }
-  .tip{color:#000;border-radius:0;border:2px solid #000;box-shadow:2px 2px 0 #000}.dock{border-radius:6px}header h1{font-family:monospace;letter-spacing:0}
+  .hero{border:1px dashed #d6a419} .row{border:1px dashed #fcd34d}
 </style>
 </head>
 <body>
-  <header>
-    <div class="tag">复刻自 21st.dev · Dock</div>
-    <h1>复古 Mac 程序坞<span class="dot">.</span></h1>
-    <p>灰白条纹 + 像素感，回到 1984<br>方方正正的老派味道</p>
-  </header>
-  <div class="stage">
+  <div class="status"><span>9:41</span><span class="r"><span>▂▄▆</span><span>📶</span><span class="bat"><i></i></span></span></div>
+  <div class="topbar"><div class="appname">懒得找了</div><div class="search">🔍 搜索站点 / 粘贴链接解析</div><div class="avatar">找</div></div>
+  <main class="content">
+    <div class="hero"><div class="t">复古收藏</div><div class="s">暖调卡片 · 像一本旧杂志</div><div class="bar"><i></i></div><div class="p">旧杂志翻到第 66 页</div></div>
+    <div class="sect">常用功能</div>
+    <div class="list">
+      <div class="row"><div class="chip">🔗</div><div class="mid"><div class="nm">链接解析</div><div class="ds">短视频去水印 · 粘贴即解析</div></div><span class="tag">已完成</span></div>
+      <div class="row"><div class="chip">⭐</div><div class="mid"><div class="nm">收藏站点</div><div class="ds">2,320 个站点 · 19 个分类</div></div><span class="tag">已同步</span></div>
+      <div class="row"><div class="chip">⬇️</div><div class="mid"><div class="nm">下载管理</div><div class="ds">3 个进行中 · 12 个已完成</div></div><span class="tag">进行中</span></div>
+      <div class="row"><div class="chip">⏱️</div><div class="mid"><div class="nm">工时打卡</div><div class="ds">本周 32 小时 · 今日 6.5 小时</div></div><span class="tag">已打卡</span></div>
+    </div>
+  </main>
+  <div class="dock-zone">
     <div class="dock-wrap">
       <div class="tip" id="tip">软盘</div>
       <div class="dock" id="dock">
@@ -81,10 +81,9 @@
         <div class="app" data-label="游戏机"><div class="icon" style="background:linear-gradient(135deg,#e5e7eb,#9ca3af)">👾</div><div class="dot-run"></div></div>
         <div class="app" data-label="照相机"><div class="icon" style="background:linear-gradient(135deg,#d1d5db,#6b7280)">📸</div></div>
         <div class="app" data-label="收音机"><div class="icon" style="background:linear-gradient(135deg,#f3f4f6,#d1d5db)">📻</div><div class="dot-run"></div></div>
-      </div>
+            </div>
     </div>
   </div>
-  <footer>纯手写 CSS · 零框架 · 零外部依赖</footer>
 <script>
 (function(){
   var dock = document.getElementById('dock');
@@ -125,7 +124,6 @@
     }
   }
   window.addEventListener('resize', adapt); adapt();
-})();
-</script>
+})();</script>
 </body>
 </html>
