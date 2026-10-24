@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>46 · 光点汇聚</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#0e1420;color:#e9f0fa;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;overflow-x:hidden;padding:20px}
+.tag{position:fixed;top:12px;left:14px;font-size:12px;color:#93a7c4;letter-spacing:1px;z-index:5}
+.stage{width:100%;max-width:380px;height:320px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.desc{margin-top:6px;font-size:14px;color:#9db2cc;text-align:center;line-height:1.9;padding:0 24px;max-width:380px}
+.cv{position:relative;width:210px;height:210px}
+.cv i{position:absolute;top:50%;left:50%;width:13px;height:13px;margin:-6.5px;background:#7df9ff;border-radius:50%;box-shadow:0 0 12px #4dd8ff;animation:conv 2.9s ease-in-out infinite}
+@keyframes conv{0%,100%{transform:rotate(var(--a)) translateX(88px);opacity:.85}50%{transform:rotate(var(--a)) translateX(0);opacity:1}}
+</style>
+</head>
+<body>
+<div class="tag">46 · 光点汇聚</div>
+<div class="stage"><div class="cv"><i style="--a:0deg"></i><i style="--a:45deg"></i><i style="--a:90deg"></i><i style="--a:135deg"></i><i style="--a:180deg"></i><i style="--a:225deg"></i><i style="--a:270deg"></i><i style="--a:315deg"></i></div></div>
+<p class="desc">光点从四周聚向中心，再散开。</p>
+
+</body>
+</html>

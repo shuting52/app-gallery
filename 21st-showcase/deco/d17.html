@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>17 · 同心波点圈</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#0e1420;color:#e9f0fa;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;overflow-x:hidden;padding:20px}
+.tag{position:fixed;top:12px;left:14px;font-size:12px;color:#93a7c4;letter-spacing:1px;z-index:5}
+.stage{width:100%;max-width:380px;height:320px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.desc{margin-top:6px;font-size:14px;color:#9db2cc;text-align:center;line-height:1.9;padding:0 24px;max-width:380px}
+.cr{position:relative;width:150px;height:150px}
+.cr i{position:absolute;inset:0;border:3px solid #4dd8ff;border-radius:50%;animation:brc 2.6s ease-in-out infinite}
+.cr i:nth-child(2){animation-delay:.35s;border-color:#7c5cff}
+.cr i:nth-child(3){animation-delay:.7s;border-color:#ff7fae}
+.cr b{position:absolute;top:50%;left:50%;width:22px;height:22px;margin:-11px;background:#4dd8ff;border-radius:50%;box-shadow:0 0 18px #4dd8ff}
+@keyframes brc{0%,100%{transform:scale(.72);opacity:.45}50%{transform:scale(1);opacity:1}}
+</style>
+</head>
+<body>
+<div class="tag">17 · 同心波点圈</div>
+<div class="stage"><div class="cr"><i></i><i></i><i></i><b></b></div></div>
+<p class="desc">三个同心圆一起呼吸，节奏整齐划一。</p>
+
+</body>
+</html>

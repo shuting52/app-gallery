@@ -1,0 +1,15 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>14 · 由虚入实</title><style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{background:#0b0e14;color:#eef2f7;font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;overflow-x:hidden}
+.tag{position:fixed;top:10px;left:12px;font-size:12px;color:#8b93a5;letter-spacing:.08em;z-index:10}
+.stage{width:100%;max-width:430px;padding:28px 20px;text-align:center}
+.txt{font-size:30px;font-weight:800;line-height:1.5;letter-spacing:.06em}
+.sub{margin-top:14px;font-size:13px;color:#8b93a5;letter-spacing:.2em}
+.fill{position:relative;display:inline-block;font-size:30px;font-weight:800;letter-spacing:.1em;color:transparent;-webkit-text-stroke:1.5px #7dd3fc}
+.fill::after{content:attr(data-t);position:absolute;left:0;top:0;color:#7dd3fc;-webkit-text-stroke:0;clip-path:inset(0 100% 0 0);animation:fillin 3s ease-in-out infinite}
+@keyframes fillin{0%{clip-path:inset(0 100% 0 0)}55%{clip-path:inset(0 0 0 0)}100%{clip-path:inset(0 0 0 0);opacity:0}}
+</style></head><body><div class="tag">14 · 由虚入实</div><div class="stage"><div class="txt fill" data-t="由虚入实">由虚入实</div></div>
+<script></script></body></html>

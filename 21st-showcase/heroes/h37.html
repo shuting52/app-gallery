@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>37 · 旋转星系</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;background:#0b0e14;display:flex;justify-content:center;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;color:#fff;overflow-x:hidden}
+.tag{position:fixed;top:10px;left:12px;z-index:60;font-size:12px;letter-spacing:.08em;color:#9aa3b8;background:rgba(0,0,0,.4);padding:4px 10px;border-radius:99px}
+.hero{position:relative;width:min(430px,100vw);min-height:100vh;min-height:100svh;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.bg{position:absolute;inset:0;overflow:hidden}
+.content{position:relative;z-index:5;text-align:center;padding:0 30px;width:100%}
+.kicker{font-size:12px;letter-spacing:.4em;text-indent:.4em;color:#d9c9ff;margin-bottom:16px;animation:kickIn 1s .45s both}
+.ttl{font-size:33px;line-height:1.45;font-weight:800;margin-bottom:16px}
+.sub{font-size:14px;line-height:1.9;color:rgba(255,255,255,.75);margin-bottom:30px;animation:fadeUp .9s .6s both}
+.cta{display:inline-block;padding:14px 44px;border-radius:999px;font-size:15px;font-weight:700;color:#fff;text-decoration:none;background:linear-gradient(135deg,#6b3dff,#00c8ff);box-shadow:0 8px 30px rgba(110,90,255,.5);animation:fadeUp .9s .8s both;transition:transform .25s}
+.cta:active{transform:scale(.94)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+@keyframes kickIn{from{opacity:0}to{opacity:1}}
+@keyframes spin{to{transform:rotate(360deg)}}
+#cv{position:absolute;inset:0;width:100%;height:100%}
+.ttl{animation:spiralIn 1.3s .3s both}
+@keyframes spiralIn{from{opacity:0;transform:rotate(-340deg) scale(.2)}to{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<div class="tag">37 · 旋转星系</div>
+<section class="hero">
+<div class="bg"><canvas id="cv"></canvas></div>
+<div class="content">
+<div class="kicker">科幻 · 星际远航</div>
+<h1 class="ttl">我们的征途<br>是星辰大海</h1>
+<p class="sub">科幻小说与太空主题展，硬核浪漫指南。</p>
+<a class="cta" href="#">登船出发</a>
+</div>
+</section>
+
+<script>
+const c=document.getElementById('cv'),x=c.getContext('2d');c.width=430;c.height=900;
+const S=Array.from({length:240},()=>{const a=Math.random()*6.283,r=20+Math.pow(Math.random(),.6)*190;
+return{a,r,sp:.4+Math.random()*.8,sz:Math.random()*2+.6};});
+let t=0;
+function loop(){t+=.008;x.fillStyle='#05060f';x.fillRect(0,0,430,900);
+const cx=215,cy=430;
+for(const s of S){const a=s.a+t*s.sp*(1.6-s.r/220),rr=s.r;
+const px=cx+Math.cos(a)*rr,py=cy+Math.sin(a)*rr*.72;
+x.globalAlpha=.35+.6*(1-rr/220);x.fillStyle=rr<90?'#ffe9b8':'#9db8ff';
+x.beginPath();x.arc(px,py,s.sz,0,6.29);x.fill();}
+x.globalAlpha=1;const g=x.createRadialGradient(cx,cy,0,cx,cy,70);
+g.addColorStop(0,'rgba(255,240,200,.95)');g.addColorStop(1,'rgba(255,240,200,0)');
+x.fillStyle=g;x.beginPath();x.arc(cx,cy,70,0,6.29);x.fill();
+requestAnimationFrame(loop);}
+setTimeout(function(){requestAnimationFrame(loop);},2200);
+</script>
+</body>
+</html>

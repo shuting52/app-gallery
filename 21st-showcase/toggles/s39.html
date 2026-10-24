@@ -1,0 +1,47 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>39 · 气泡上升开关</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;background:#f0f9ff;color:#0c4a6e;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;max-width:430px;margin:0 auto;position:relative;overflow-x:hidden;padding:70px 24px 50px}
+.t{position:absolute;top:14px;left:16px;font-size:13px;color:#7cb3d1;letter-spacing:2px}
+.u{font-size:14px;color:#0369a1}
+input{display:none}
+.stage{cursor:pointer}
+.tank{position:relative;width:212px;height:252px;border:5px solid #94a3b8;border-top:none;border-radius:0 0 24px 24px;background:linear-gradient(#bae6fd,#38bdf8 68%,#0284c7);overflow:hidden}
+.bub{position:absolute;left:var(--x);bottom:28px;width:var(--s);height:var(--s);border-radius:50%;border:2px solid rgba(255,255,255,.8);background:radial-gradient(circle at 32% 30%,rgba(255,255,255,.9),rgba(255,255,255,.05) 62%);animation:brise var(--t) linear infinite;animation-delay:var(--dl);animation-play-state:paused;opacity:.92}
+#sw:checked~.stage .bub{animation-play-state:running}
+@keyframes brise{0%{transform:translateY(0)}100%{transform:translateY(-232px)}}
+.sand{position:absolute;bottom:0;left:0;right:0;height:28px;background:linear-gradient(#fde68a,#f59e0b);border-radius:0 0 18px 18px}
+.plant{position:absolute;bottom:26px;left:36px}
+.plant i{position:absolute;bottom:0;width:9px;height:56px;background:linear-gradient(#22c55e,#15803d);border-radius:5px 5px 0 0;transform-origin:bottom center;animation:sway 3.2s ease-in-out infinite}
+.plant i:first-child{left:0;transform:rotate(-12deg)}
+.plant i:last-child{left:14px;height:72px;animation-delay:-1.6s;transform:rotate(10deg)}
+@keyframes sway{0%,100%{rotate:-4deg}50%{rotate:5deg}}
+.peb{position:absolute;bottom:8px;width:16px;height:11px;background:#cbd5e1;border-radius:50%}
+.ctl{display:flex;align-items:center;gap:10px}
+.sw{width:62px;height:34px;border-radius:17px;background:#bae6fd;position:relative;cursor:pointer;transition:background .3s;flex:none}
+.knob{position:absolute;top:3px;left:3px;width:28px;height:28px;border-radius:50%;background:#fff;box-shadow:0 2px 5px rgba(0,0,0,.25);transition:left .35s cubic-bezier(.55,-.3,.3,1.4)}
+#sw:checked~.ctl .sw{background:#0284c7}
+#sw:checked~.ctl .sw .knob{left:31px}
+.st{font-size:13px;color:#7cb3d1;width:34px}
+.st::before{content:"关"}
+#sw:checked~.ctl .st::before{content:"开";color:#0284c7}
+</style></head><body>
+<input type="checkbox" id="sw">
+<div class="t">39 · 气泡上升开关</div>
+<label class="stage" for="sw">
+<div class="tank">
+<i class="bub" style="--x:14%;--s:13px;--t:4.2s;--dl:-.6s"></i>
+<i class="bub" style="--x:30%;--s:18px;--t:5.4s;--dl:-2.8s"></i>
+<i class="bub" style="--x:47%;--s:11px;--t:3.6s;--dl:-1.4s"></i>
+<i class="bub" style="--x:62%;--s:16px;--t:4.8s;--dl:-3.6s"></i>
+<i class="bub" style="--x:76%;--s:12px;--t:4s;--dl:-2.1s"></i>
+<i class="bub" style="--x:86%;--s:19px;--t:5.8s;--dl:-.9s"></i>
+<div class="plant"><i></i><i></i></div>
+<div class="sand"></div>
+<span class="peb" style="left:96px"></span><span class="peb" style="left:140px;width:12px"></span>
+</div></label>
+<div class="ctl"><label class="sw" for="sw"><span class="knob"></span></label><span class="st"></span></div>
+<p class="u">用途：鱼缸增氧开关</p>
+</body></html>

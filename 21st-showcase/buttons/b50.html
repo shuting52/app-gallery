@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>50 · 彩带庆祝按钮</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{min-height:100vh;background:#0e1116;color:#f1f5f9;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:system-ui,-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;overflow-x:hidden;padding:24px 16px}
+.tag{position:fixed;top:12px;left:14px;font-size:12px;color:#8b93a3;letter-spacing:.08em;z-index:50}
+.stage{position:relative;width:100%;max-width:430px;min-height:52vh;display:flex;align-items:center;justify-content:center}
+.btn{position:relative;border:0;cursor:pointer;font-size:17px;font-weight:700;color:#fff;padding:16px 42px;border-radius:14px;font-family:inherit;overflow:hidden;white-space:nowrap;-webkit-tap-highlight-color:transparent}
+.btn:active{filter:brightness(1.25)}
+.hint{margin-top:18px;color:#5b6474;font-size:13px;min-height:20px;text-align:center}
+.btn{background:linear-gradient(135deg,#f59e0b,#ef4444);overflow:visible}
+.cf{position:absolute;width:8px;height:12px;top:40%;left:50%;pointer-events:none;animation:fall 1.25s ease-in forwards;z-index:6}
+@keyframes fall{to{transform:translate(var(--dx),170px) rotate(var(--dr));opacity:0}}
+</style>
+</head>
+<body>
+<div class="tag">50 · 彩带庆祝按钮</div>
+<div class="stage"><button class="btn">庆祝一下</button></div>
+<p class="hint">点击按钮试试</p>
+<script>
+var b=document.querySelector('.btn'),s=document.querySelector('.stage');
+var cols=['#f472b6','#22d3ee','#a3e635','#fbbf24','#a78bfa','#fff'];
+b.addEventListener('click',function(){var r=b.getBoundingClientRect(),sr=s.getBoundingClientRect();
+for(var i=0;i<26;i++){var d=document.createElement('span');d.className='cf';
+d.style.background=cols[i%cols.length];
+d.style.setProperty('--dx',(Math.random()*260-130)+'px');
+d.style.setProperty('--dr',(Math.random()*720-360)+'deg');
+d.style.left=(r.left-sr.left+r.width/2)+'px';d.style.animationDelay=(Math.random()*.25)+'s';
+s.appendChild(d);(function(el){setTimeout(function(){el.remove()},1800)})(d);}});
+</script>
+</body>
+</html>

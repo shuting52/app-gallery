@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>49 · 飞鸟剪影</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;background:#0b0e14;display:flex;justify-content:center;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;color:#fff;overflow-x:hidden}
+.tag{position:fixed;top:10px;left:12px;z-index:60;font-size:12px;letter-spacing:.08em;color:#9aa3b8;background:rgba(0,0,0,.4);padding:4px 10px;border-radius:99px}
+.hero{position:relative;width:min(430px,100vw);min-height:100vh;min-height:100svh;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.bg{position:absolute;inset:0;overflow:hidden}
+.content{position:relative;z-index:5;text-align:center;padding:0 30px;width:100%}
+.kicker{font-size:12px;letter-spacing:.4em;text-indent:.4em;color:#5a6b85;margin-bottom:16px;animation:kickIn 1s .45s both}
+.ttl{font-size:33px;line-height:1.45;font-weight:800;margin-bottom:16px}
+.sub{font-size:14px;line-height:1.9;color:rgba(255,255,255,.75);margin-bottom:30px;animation:fadeUp .9s .6s both}
+.cta{display:inline-block;padding:14px 44px;border-radius:999px;font-size:15px;font-weight:700;color:#fff;text-decoration:none;background:linear-gradient(135deg,#3d5b7a,#6ba89a);box-shadow:0 8px 30px rgba(90,120,140,.45);animation:fadeUp .9s .8s both;transition:transform .25s}
+.cta:active{transform:scale(.94)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+@keyframes kickIn{from{opacity:0}to{opacity:1}}
+@keyframes spin{to{transform:rotate(360deg)}}
+.bg{background:linear-gradient(#cfe0ee,#eef4f8 60%,#f8f4e8)}
+.bd{position:absolute;left:-60px;width:44px;animation:fly linear infinite}
+@keyframes fly{0%{transform:translate(0,0)}50%{transform:translate(250px,-26px)}100%{transform:translate(560px,10px)}}
+.brd{display:inline-block;color:#1d2b3d;opacity:0;animation:flyIn .7s both}
+@keyframes flyIn{from{opacity:0;transform:translateX(-84px) translateY(22px)}to{opacity:1;transform:none}}
+.sub{color:rgba(29,43,61,.7)!important}.kicker{color:#7a8aa0!important}
+</style>
+</head>
+<body>
+<div class="tag">49 · 飞鸟剪影</div>
+<section class="hero">
+<div class="bg"><svg class="bd" style="top:16%;animation-duration:14s;animation-delay:0s" viewBox="0 0 40 16"><path d="M2,12 Q12,2 20,10 Q28,2 38,12" fill="none" stroke="rgba(20,30,50,.8)" stroke-width="3" stroke-linecap="round"/></svg><svg class="bd" style="top:26%;animation-duration:17s;animation-delay:-5s" viewBox="0 0 40 16"><path d="M2,12 Q12,2 20,10 Q28,2 38,12" fill="none" stroke="rgba(20,30,50,.8)" stroke-width="3" stroke-linecap="round"/></svg><svg class="bd" style="top:38%;animation-duration:15s;animation-delay:-9s" viewBox="0 0 40 16"><path d="M2,12 Q12,2 20,10 Q28,2 38,12" fill="none" stroke="rgba(20,30,50,.8)" stroke-width="3" stroke-linecap="round"/></svg><svg class="bd" style="top:52%;animation-duration:18s;animation-delay:-3s" viewBox="0 0 40 16"><path d="M2,12 Q12,2 20,10 Q28,2 38,12" fill="none" stroke="rgba(20,30,50,.8)" stroke-width="3" stroke-linecap="round"/></svg><svg class="bd" style="top:64%;animation-duration:16s;animation-delay:-11s" viewBox="0 0 40 16"><path d="M2,12 Q12,2 20,10 Q28,2 38,12" fill="none" stroke="rgba(20,30,50,.8)" stroke-width="3" stroke-linecap="round"/></svg></div>
+<div class="content">
+<div class="kicker">自然 · 候鸟驿站</div>
+<h1 class="ttl"><span class="brd" style="animation-delay:0.25s">跟</span><span class="brd" style="animation-delay:0.29s">着</span><span class="brd" style="animation-delay:0.34s">候</span><span class="brd" style="animation-delay:0.39s">鸟</span><br><span class="brd" style="animation-delay:0.43s">去</span><span class="brd" style="animation-delay:0.47s">迁</span><span class="brd" style="animation-delay:0.52s">徙</span></h1>
+<p class="sub">观鸟路线与自然教育，认识身边的生灵。</p>
+<a class="cta" href="#">加入观鸟团</a>
+</div>
+</section>
+
+</body>
+</html>

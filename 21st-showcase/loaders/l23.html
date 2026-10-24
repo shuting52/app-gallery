@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="zh"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>23 · 方块波浪</title>
+<style>*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{background:#0b0e14;color:#e8ecf4;font-family:system-ui,-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:26px;min-height:100vh;overflow:hidden}
+.tag{position:fixed;top:12px;left:14px;font-size:12px;color:#7d8699;letter-spacing:2px}
+.stage{width:220px;height:180px;display:flex;align-items:center;justify-content:center}
+.cap{font-size:13px;color:#98a1b3;letter-spacing:1px}
+@keyframes spin{to{transform:rotate(360deg)}}.gw{display:grid;grid-template-columns:repeat(6,18px);gap:8px}.gw i{width:18px;height:18px;border-radius:4px;background:#38bdf8;animation:gwv 1.4s ease-in-out infinite}@keyframes gwv{0%,100%{transform:scale(.35);opacity:.35}50%{transform:scale(1);opacity:1}}</style></head>
+<body>
+<div class="tag">23 · 方块波浪</div>
+<div class="stage"><div class="gw"></div></div>
+<p class="cap">像素浪潮涌来…</p>
+<script>var g=document.querySelector('.gw');for(var r=0;r<6;r++)for(var c=0;c<6;c++){var i=document.createElement('i');i.style.animationDelay=((r+c)*0.09).toFixed(2)+'s';g.appendChild(i);}</script>
+</body></html>

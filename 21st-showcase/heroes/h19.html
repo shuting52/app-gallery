@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>19 · 水墨晕染</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;background:#0b0e14;display:flex;justify-content:center;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;color:#fff;overflow-x:hidden}
+.tag{position:fixed;top:10px;left:12px;z-index:60;font-size:12px;letter-spacing:.08em;color:#9aa3b8;background:rgba(0,0,0,.4);padding:4px 10px;border-radius:99px}
+.hero{position:relative;width:min(430px,100vw);min-height:100vh;min-height:100svh;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.bg{position:absolute;inset:0;overflow:hidden}
+.content{position:relative;z-index:5;text-align:center;padding:0 30px;width:100%}
+.kicker{font-size:12px;letter-spacing:.4em;text-indent:.4em;color:#e8dcc2;margin-bottom:16px;animation:kickIn 1s .45s both}
+.ttl{font-size:33px;line-height:1.45;font-weight:800;margin-bottom:16px}
+.sub{font-size:14px;line-height:1.9;color:rgba(255,255,255,.75);margin-bottom:30px;animation:fadeUp .9s .6s both}
+.cta{display:inline-block;padding:14px 44px;border-radius:999px;font-size:15px;font-weight:700;color:#fff;text-decoration:none;background:linear-gradient(135deg,#5c4a2e,#a8894e);box-shadow:0 8px 30px rgba(170,140,80,.4);animation:fadeUp .9s .8s both;transition:transform .25s}
+.cta:active{transform:scale(.94)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+@keyframes kickIn{from{opacity:0}to{opacity:1}}
+@keyframes spin{to{transform:rotate(360deg)}}
+.bg{background:linear-gradient(#101012,#1c1a16)}
+.ink{position:absolute;border-radius:50%;filter:blur(50px);opacity:.5;animation:morph 12s ease-in-out infinite alternate}
+.i1{width:300px;height:260px;background:#3a3a40;top:8%;left:-60px}
+.i2{width:260px;height:260px;background:#2a2c33;bottom:6%;right:-50px;animation-delay:-6s}
+.seal{position:absolute;top:16%;right:12%;width:54px;height:54px;background:#b03a2e;border-radius:8px;opacity:.9;animation:sealIn 1s 1.2s both;display:flex;align-items:center;justify-content:center;font-size:22px;color:#fff}
+@keyframes morph{from{border-radius:50%;transform:scale(1)}to{border-radius:38% 62% 55% 45%;transform:scale(1.15)}}
+@keyframes sealIn{from{opacity:0;transform:scale(1.6) rotate(-14deg)}to{opacity:.9;transform:scale(1) rotate(-8deg)}}
+.draw{animation:draw 2.2s .4s forwards,fadefill 1s 2.2s forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+@keyframes fadefill{to{fill:rgba(255,255,255,.92)}}
+</style>
+</head>
+<body>
+<div class="tag">19 · 水墨晕染</div>
+<section class="hero">
+<div class="bg"><div class="ink i1"></div><div class="ink i2"></div><div class="seal">茶</div></div>
+<div class="content">
+<div class="kicker">茶艺 · 墨香茶室</div>
+<h1 class="ttl"><svg viewBox="0 0 340 120" style="width:100%;max-width:340px"><text x="50%" y="62" text-anchor="middle" font-size="46" font-weight="800" fill="rgba(255,255,255,0)" stroke="#f2ede2" stroke-width="1.6" stroke-dasharray="420" stroke-dashoffset="420" class="draw">一盏茶，半日闲</text></svg></h1>
+<p class="sub">小众茶山直供，岩茶普洱白茶，喝懂每一泡。</p>
+<a class="cta" href="#">品一杯好茶</a>
+</div>
+</section>
+
+</body>
+</html>

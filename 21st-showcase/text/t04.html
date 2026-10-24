@@ -1,0 +1,16 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>04 · 关键词轮播</title><style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{background:#0b0e14;color:#eef2f7;font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;overflow-x:hidden}
+.tag{position:fixed;top:10px;left:12px;font-size:12px;color:#8b93a5;letter-spacing:.08em;z-index:10}
+.stage{width:100%;max-width:430px;padding:28px 20px;text-align:center}
+.txt{font-size:30px;font-weight:800;line-height:1.5;letter-spacing:.06em}
+.sub{margin-top:14px;font-size:13px;color:#8b93a5;letter-spacing:.2em}
+.rw{display:inline-block;position:relative;height:1.5em;min-width:4em;vertical-align:bottom;overflow:hidden;color:#7dd3fc}
+.rw span{position:absolute;left:0;top:0;width:100%;opacity:0;transform:translateY(60%);animation:rot 8s infinite}
+.rw span:nth-child(2){animation-delay:2s}.rw span:nth-child(3){animation-delay:4s}.rw span:nth-child(4){animation-delay:6s}
+@keyframes rot{0%{opacity:0;transform:translateY(60%)}5%{opacity:1;transform:none}22%{opacity:1;transform:none}27%{opacity:0;transform:translateY(-60%)}100%{opacity:0;transform:translateY(-60%)}}
+</style></head><body><div class="tag">04 · 关键词轮播</div><div class="stage"><div class="txt">为<span class="rw"><span>热爱</span><span>梦想</span><span>生活</span><span>远方</span></span><br>而创作</div></div>
+<script></script></body></html>

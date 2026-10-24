@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>50 · 日出渐变</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;background:#0b0e14;display:flex;justify-content:center;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;color:#fff;overflow-x:hidden}
+.tag{position:fixed;top:10px;left:12px;z-index:60;font-size:12px;letter-spacing:.08em;color:#9aa3b8;background:rgba(0,0,0,.4);padding:4px 10px;border-radius:99px}
+.hero{position:relative;width:min(430px,100vw);min-height:100vh;min-height:100svh;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.bg{position:absolute;inset:0;overflow:hidden}
+.content{position:relative;z-index:5;text-align:center;padding:0 30px;width:100%}
+.kicker{font-size:12px;letter-spacing:.4em;text-indent:.4em;color:#5a4a2e;margin-bottom:16px;animation:kickIn 1s .45s both}
+.ttl{font-size:33px;line-height:1.45;font-weight:800;margin-bottom:16px}
+.sub{font-size:14px;line-height:1.9;color:rgba(255,255,255,.75);margin-bottom:30px;animation:fadeUp .9s .6s both}
+.cta{display:inline-block;padding:14px 44px;border-radius:999px;font-size:15px;font-weight:700;color:#fff;text-decoration:none;background:linear-gradient(135deg,#b06b2e,#e8913d);box-shadow:0 8px 30px rgba(220,150,60,.45);animation:fadeUp .9s .8s both;transition:transform .25s}
+.cta:active{transform:scale(.94)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+@keyframes kickIn{from{opacity:0}to{opacity:1}}
+@keyframes spin{to{transform:rotate(360deg)}}
+.sky{position:absolute;inset:0;background:linear-gradient(#2b1a3d,#7a2e4d 45%,#e8913d 75%,#ffd35f);background-size:100% 220%;animation:skyUp 12s ease-in-out infinite alternate}
+@keyframes skyUp{from{background-position:0 100%}to{background-position:0 0}}
+.sun{position:absolute;left:50%;bottom:24%;width:130px;height:130px;margin-left:-65px;border-radius:50%;background:radial-gradient(circle,#fff8e0,#ffd35f 65%,rgba(255,211,95,0));box-shadow:0 0 80px rgba(255,200,90,.9);animation:sunR 12s ease-in-out infinite alternate}
+@keyframes sunR{from{transform:translateY(90px)}to{transform:translateY(-40px)}}
+.field{position:absolute;bottom:-30px;left:-10%;width:120%;height:170px;background:#2e4d1a;border-radius:50% 50% 0 0}
+.ttl{animation:haloIn 1.4s .35s both}
+@keyframes haloIn{from{opacity:0;text-shadow:0 0 46px rgba(255,210,120,.95)}to{opacity:1;text-shadow:0 0 0 transparent}}
+</style>
+</head>
+<body>
+<div class="tag">50 · 日出渐变</div>
+<section class="hero">
+<div class="bg"><div class="sky"></div><div class="sun"></div><div class="field"></div></div>
+<div class="content">
+<div class="kicker">农场 · 晨曦农场</div>
+<h1 class="ttl">在日出前，<br>采下第一颗果</h1>
+<p class="sub">有机农场直供，田间到餐桌 24 小时。</p>
+<a class="cta" href="#">订阅菜篮子</a>
+</div>
+</section>
+
+</body>
+</html>

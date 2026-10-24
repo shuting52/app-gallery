@@ -1,0 +1,25 @@
+<!DOCTYPE html><html lang="zh"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>19 · 烟雾缭绕</title><style>
+*{margin:0;box-sizing:border-box}html,body{height:100%}
+body{font-family:system-ui,-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:#070a12;color:#fff;overflow:hidden}
+canvas{position:fixed;inset:0;width:100%;height:100%}
+.tag{position:fixed;top:12px;left:12px;z-index:10;font-size:12px;color:rgba(255,255,255,.8);background:rgba(0,0,0,.38);padding:4px 10px;border-radius:99px;backdrop-filter:blur(4px);letter-spacing:1px}
+.center{position:fixed;inset:0;z-index:5;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 34px;pointer-events:none}
+.center::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(0,0,0,.5),rgba(0,0,0,.12) 65%,transparent 80%)}
+h1{position:relative;font-size:30px;letter-spacing:6px;margin-bottom:12px;text-shadow:0 2px 14px rgba(0,0,0,.7)}
+p{position:relative;font-size:13px;color:rgba(255,255,255,.82);line-height:1.9;text-shadow:0 1px 8px rgba(0,0,0,.7);max-width:300px}
+
+</style></head><body>
+<div class="tag">19 · 烟雾缭绕</div>
+<canvas id="v"></canvas>
+<div class="center"><h1>雾漫山野</h1><p>茶室品牌背景 · 烟雾袅袅上升</p></div>
+<script>
+const c=document.getElementById('v'),g=c.getContext('2d');let W,H;const R=(a,b)=>a+Math.random()*(b-a);function rs(){W=c.width=innerWidth;H=c.height=innerHeight}addEventListener('resize',rs);rs();
+const M=[];for(let i=0;i<26;i++)M.push({x:R(0,W),y:R(H*.4,H),r:R(30,80),s:R(.3,.9),a:R(.05,.16),w:R(0,6.3)});
+(function f(t){g.fillStyle='#0c0e12';g.fillRect(0,0,W,H);
+for(const m of M){m.y-=m.s;m.r+=.12;const x=m.x+Math.sin(t/1400+m.w)*40;if(m.y<-100){m.y=H+60;m.r=R(30,80)}
+const gr=g.createRadialGradient(x,m.y,0,x,m.y,m.r);gr.addColorStop(0,'rgba(180,190,205,'+m.a+')');gr.addColorStop(1,'transparent');
+g.fillStyle=gr;g.beginPath();g.arc(x,m.y,m.r,0,7);g.fill()}
+requestAnimationFrame(f)})(0);
+</script></body></html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>40 · 花朵绽放开关</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;background:#fdf2f8;color:#831843;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;max-width:430px;margin:0 auto;position:relative;overflow-x:hidden;padding:70px 24px 50px}
+.t{position:absolute;top:14px;left:16px;font-size:13px;color:#d69fb8;letter-spacing:2px}
+.u{font-size:14px;color:#be185d}
+input{display:none}
+.stage{cursor:pointer}
+.petal{fill:#f9a8d4;stroke:#ec4899;stroke-width:2;transform-box:fill-box;transform-origin:50% 88%;transform:rotate(var(--r)) scale(.42);transition:transform .9s cubic-bezier(.3,1.4,.5,1);transition-delay:var(--d)}
+.petal:nth-of-type(even){fill:#fbcfe8}
+#sw:checked~.stage .petal{transform:rotate(var(--r)) scale(1)}
+.core{transform-box:fill-box;transform-origin:center;transform:scale(.55);transition:transform .6s ease .35s}
+#sw:checked~.stage .core{transform:scale(1.18)}
+.bloom{filter:drop-shadow(0 6px 14px rgba(236,72,153,.25));transition:filter .8s}
+#sw:checked~.stage .bloom{filter:drop-shadow(0 8px 22px rgba(236,72,153,.5))}
+.ctl{display:flex;align-items:center;gap:10px}
+.sw{width:62px;height:34px;border-radius:17px;background:#f9a8d4;position:relative;cursor:pointer;transition:background .3s;flex:none}
+.knob{position:absolute;top:3px;left:3px;width:28px;height:28px;border-radius:50%;background:#fff;box-shadow:0 2px 5px rgba(0,0,0,.25);transition:left .35s cubic-bezier(.55,-.3,.3,1.4)}
+#sw:checked~.ctl .sw{background:#ec4899}
+#sw:checked~.ctl .sw .knob{left:31px}
+.st{font-size:13px;color:#d69fb8;width:34px}
+.st::before{content:"关"}
+#sw:checked~.ctl .st::before{content:"开";color:#db2777}
+</style></head><body>
+<input type="checkbox" id="sw">
+<div class="t">40 · 花朵绽放开关</div>
+<label class="stage" for="sw">
+<svg class="bloom" viewBox="0 0 170 212" width="175" height="218">
+<path d="M85 204 C85 165 82 140 85 112" stroke="#16a34a" stroke-width="6" fill="none" stroke-linecap="round"/>
+<path d="M85 162 q-32 -6 -46 -30 q34 -2 46 30" fill="#22c55e"/>
+<path d="M85 142 q32 -6 46 -30 q-34 -2 -46 30" fill="#16a34a"/>
+<g transform="translate(85,80)">
+<ellipse class="petal" style="--r:0deg;--d:0s" cx="0" cy="-24" rx="15" ry="27"/>
+<ellipse class="petal" style="--r:60deg;--d:.06s" cx="0" cy="-24" rx="15" ry="27"/>
+<ellipse class="petal" style="--r:120deg;--d:.12s" cx="0" cy="-24" rx="15" ry="27"/>
+<ellipse class="petal" style="--r:180deg;--d:.18s" cx="0" cy="-24" rx="15" ry="27"/>
+<ellipse class="petal" style="--r:240deg;--d:.24s" cx="0" cy="-24" rx="15" ry="27"/>
+<ellipse class="petal" style="--r:300deg;--d:.3s" cx="0" cy="-24" rx="15" ry="27"/>
+<circle class="core" r="13" fill="#fbbf24" stroke="#f59e0b" stroke-width="2"/>
+</g>
+</svg></label>
+<div class="ctl"><label class="sw" for="sw"><span class="knob"></span></label><span class="st"></span></div>
+<p class="u">用途：春日模式开关</p>
+</body></html>

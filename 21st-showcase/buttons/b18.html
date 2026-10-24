@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>18 · 星光闪烁按钮</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{min-height:100vh;background:#0e1116;color:#f1f5f9;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:system-ui,-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;overflow-x:hidden;padding:24px 16px}
+.tag{position:fixed;top:12px;left:14px;font-size:12px;color:#8b93a3;letter-spacing:.08em;z-index:50}
+.stage{position:relative;width:100%;max-width:430px;min-height:52vh;display:flex;align-items:center;justify-content:center}
+.btn{position:relative;border:0;cursor:pointer;font-size:17px;font-weight:700;color:#fff;padding:16px 42px;border-radius:14px;font-family:inherit;overflow:hidden;white-space:nowrap;-webkit-tap-highlight-color:transparent}
+.btn:active{filter:brightness(1.25)}
+.hint{margin-top:18px;color:#5b6474;font-size:13px;min-height:20px;text-align:center}
+.btn{background:linear-gradient(135deg,#1e1b4b,#312e81);overflow:visible}
+.star{position:absolute;color:#fde68a;font-size:14px;pointer-events:none;animation:tw 1.2s ease-out forwards;z-index:5}
+@keyframes tw{0%{transform:scale(0) rotate(0);opacity:0}40%{opacity:1}100%{transform:scale(1.5) rotate(90deg);opacity:0}}
+</style>
+</head>
+<body>
+<div class="tag">18 · 星光闪烁按钮</div>
+<div class="stage"><button class="btn">点击进入</button></div>
+<p class="hint">点击按钮试试</p>
+<script>
+var b=document.querySelector('.btn'),s=document.querySelector('.stage');
+setInterval(function(){if(s.querySelectorAll('.star').length>10)return;var r=b.getBoundingClientRect(),sr=s.getBoundingClientRect();
+var d=document.createElement('span');d.className='star';d.textContent='✦';
+d.style.left=(r.left-sr.left+Math.random()*r.width-20)+'px';d.style.top=(r.top-sr.top+Math.random()*r.height-20)+'px';
+s.appendChild(d);setTimeout(function(){d.remove()},1300);},380);
+</script>
+</body>
+</html>

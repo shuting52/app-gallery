@@ -1,0 +1,17 @@
+<!DOCTYPE html><html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>34 · 滑动切换面板</title><style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;background:#0b0e14;color:#e8edf5;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;display:flex;align-items:center;justify-content:center;padding:28px 14px}
+.tag{position:fixed;top:10px;left:12px;font-size:12px;color:#8b93a7;letter-spacing:.06em;z-index:50}
+.stage{width:100%;max-width:380px}
+.card{background:#141a26;border:1px solid #232c3f;border-radius:18px;overflow:hidden;position:relative}
+.pic{height:150px}
+.card h3{font-size:17px;padding:16px 18px 6px}
+.card p{font-size:13px;color:#9aa4b8;padding:0 18px 18px;line-height:1.7}
+.g1{background:linear-gradient(135deg,#5b8cff,#9b5bff)}
+.g2{background:linear-gradient(135deg,#22e0ff,#2b6cff)}
+.g3{background:linear-gradient(135deg,#ff8a5b,#ff5b8c)}
+.g4{background:linear-gradient(135deg,#3ddc84,#22b8e0)}
+.g5{background:linear-gradient(135deg,#b45bff,#5b8cff)}
+.g6{background:linear-gradient(135deg,#ffd166,#ff7a5b)}
+.vp{overflow:hidden;border-radius:0}.panes{display:flex;width:200%;transition:transform .45s cubic-bezier(.3,.7,.3,1)}.pane{width:50%;flex:none}.tabs{display:flex;gap:8px;padding:14px 18px 4px}.tab{padding:7px 16px;border-radius:16px;background:#1c2436;border:1px solid #2a3550;color:#9aa4b8;font-size:13px;cursor:pointer}.tab.on{background:#2b4a8f;color:#fff;border-color:#2b4a8f}
+</style></head><body><div class="tag">34 · 滑动切换面板</div><div class="stage"><div class="card"><div class="tabs"><span class="tab on">简介</span><span class="tab">评价</span></div><div class="vp"><div class="panes"><div class="pane"><h3>山间民宿</h3><p>藏在云雾里的木屋，推窗见山，夜晚有萤火虫。</p></div><div class="pane"><h3>住客评价</h3><p>“床品舒服，早餐的玉米粥一绝！”—— 128 条好评。</p></div></div></div></div></div><script>const ts=[...document.querySelectorAll('.tab')],pn=document.querySelector('.panes');ts.forEach((t,i)=>t.onclick=()=>{ts.forEach(x=>x.classList.remove('on'));t.classList.add('on');pn.style.transform=`translateX(-${i*50}%)`});</script></body></html>

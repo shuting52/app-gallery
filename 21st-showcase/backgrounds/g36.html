@@ -1,0 +1,27 @@
+<!DOCTYPE html><html lang="zh"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>36 · 星云深处</title><style>
+*{margin:0;box-sizing:border-box}html,body{height:100%}
+body{font-family:system-ui,-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:#070a12;color:#fff;overflow:hidden}
+canvas{position:fixed;inset:0;width:100%;height:100%}
+.tag{position:fixed;top:12px;left:12px;z-index:10;font-size:12px;color:rgba(255,255,255,.8);background:rgba(0,0,0,.38);padding:4px 10px;border-radius:99px;backdrop-filter:blur(4px);letter-spacing:1px}
+.center{position:fixed;inset:0;z-index:5;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 34px;pointer-events:none}
+.center::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(0,0,0,.5),rgba(0,0,0,.12) 65%,transparent 80%)}
+h1{position:relative;font-size:30px;letter-spacing:6px;margin-bottom:12px;text-shadow:0 2px 14px rgba(0,0,0,.7)}
+p{position:relative;font-size:13px;color:rgba(255,255,255,.82);line-height:1.9;text-shadow:0 1px 8px rgba(0,0,0,.7);max-width:300px}
+
+</style></head><body>
+<div class="tag">36 · 星云深处</div>
+<canvas id="v"></canvas>
+<div class="center"><h1>星云深处</h1><p>天文馆展览 · 彩色星云缓缓旋转</p></div>
+<script>
+const c=document.getElementById('v'),g=c.getContext('2d');let W,H;const R=(a,b)=>a+Math.random()*(b-a);function rs(){W=c.width=innerWidth;H=c.height=innerHeight}addEventListener('resize',rs);rs();
+const N=[{c:'#7b3fff',x:.3,y:.4,r:190},{c:'#ff4d8d',x:.7,y:.6,r:170},{c:'#2fbfff',x:.55,y:.25,r:150},{c:'#ffb84d',x:.4,y:.75,r:130}];
+const S=[];for(let i=0;i<120;i++)S.push({x:R(0,1),y:R(0,1),r:R(.5,1.8),p:R(0,6.3)});
+let t=0;(function f(){t+=.004;g.fillStyle='#04030c';g.fillRect(0,0,W,H);
+for(const n of N){const x=(n.x+.05*Math.sin(t*3+n.r))*W,y=(n.y+.05*Math.cos(t*2.4+n.x*9))*H;
+const gr=g.createRadialGradient(x,y,0,x,y,n.r);gr.addColorStop(0,n.c+'55');gr.addColorStop(1,'transparent');
+g.fillStyle=gr;g.beginPath();g.arc(x,y,n.r,0,7);g.fill()}
+for(const s of S){g.globalAlpha=.3+.7*Math.abs(Math.sin(t*40+s.p));g.fillStyle='#fff';g.beginPath();g.arc(s.x*W,s.y*H,s.r,0,7);g.fill()}
+g.globalAlpha=1;requestAnimationFrame(f)})();
+</script></body></html>

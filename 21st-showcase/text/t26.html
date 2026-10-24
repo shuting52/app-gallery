@@ -1,0 +1,18 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>26 · 磁吸字母</title><style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{background:#0b0e14;color:#eef2f7;font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;overflow-x:hidden}
+.tag{position:fixed;top:10px;left:12px;font-size:12px;color:#8b93a5;letter-spacing:.08em;z-index:10}
+.stage{width:100%;max-width:430px;padding:28px 20px;text-align:center}
+.txt{font-size:30px;font-weight:800;line-height:1.5;letter-spacing:.06em}
+.sub{margin-top:14px;font-size:13px;color:#8b93a5;letter-spacing:.2em}
+.txt span{display:inline-block;transition:transform .25s ease-out;cursor:default}
+</style></head><body><div class="tag">26 · 磁吸字母</div><div class="stage"><div class="txt" id="mag">靠近我</div><div class="sub">移动手指试试</div></div>
+<script>var el=document.getElementById("mag"),t=el.textContent;el.innerHTML="";var sp=[];
+t.split("").forEach(function(c){var s=document.createElement("span");s.textContent=c;el.appendChild(s);sp.push(s);});
+document.addEventListener("pointermove",function(e){var r=el.getBoundingClientRect();
+sp.forEach(function(s,i){var b=s.getBoundingClientRect(),cx=b.left+b.width/2,cy=b.top+b.height/2,dx=e.clientX-cx,dy=e.clientY-cy,d=Math.hypot(dx,dy),m=Math.max(0,1-d/160);
+s.style.transform="translate("+(dx*m*0.35)+"px,"+(dy*m*0.35)+"px)";});});
+document.addEventListener("pointerleave",function(){sp.forEach(function(s){s.style.transform="";});});</script></body></html>

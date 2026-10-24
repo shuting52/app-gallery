@@ -1,0 +1,26 @@
+<!DOCTYPE html><html lang="zh"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>25 · 萤火虫</title><style>
+*{margin:0;box-sizing:border-box}html,body{height:100%}
+body{font-family:system-ui,-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:#070a12;color:#fff;overflow:hidden}
+canvas{position:fixed;inset:0;width:100%;height:100%}
+.tag{position:fixed;top:12px;left:12px;z-index:10;font-size:12px;color:rgba(255,255,255,.8);background:rgba(0,0,0,.38);padding:4px 10px;border-radius:99px;backdrop-filter:blur(4px);letter-spacing:1px}
+.center{position:fixed;inset:0;z-index:5;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 34px;pointer-events:none}
+.center::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(0,0,0,.5),rgba(0,0,0,.12) 65%,transparent 80%)}
+h1{position:relative;font-size:30px;letter-spacing:6px;margin-bottom:12px;text-shadow:0 2px 14px rgba(0,0,0,.7)}
+p{position:relative;font-size:13px;color:rgba(255,255,255,.82);line-height:1.9;text-shadow:0 1px 8px rgba(0,0,0,.7);max-width:300px}
+
+</style></head><body>
+<div class="tag">25 · 萤火虫</div>
+<canvas id="v"></canvas>
+<div class="center"><h1>夏夜萤光</h1><p>露营活动背景 · 萤火虫明明灭灭</p></div>
+<script>
+const c=document.getElementById('v'),g=c.getContext('2d');let W,H;const R=(a,b)=>a+Math.random()*(b-a);function rs(){W=c.width=innerWidth;H=c.height=innerHeight}addEventListener('resize',rs);rs();
+const F=[];for(let i=0;i<34;i++)F.push({x:R(0,W),y:R(H*.25,H),p:R(0,6.3),q:R(0,6.3),sp:R(.4,1)});
+(function f(t){g.fillStyle='#071006';g.fillRect(0,0,W,H);
+for(const m of F){const x=m.x+Math.sin(t/1700*m.sp+m.p)*46,y=m.y+Math.cos(t/2100*m.sp+m.q)*34;
+const b=Math.pow(Math.abs(Math.sin(t/800*m.sp+m.p)),3);
+const gr=g.createRadialGradient(x,y,0,x,y,16);gr.addColorStop(0,'rgba(220,255,150,'+(.9*b)+')');gr.addColorStop(1,'transparent');
+g.fillStyle=gr;g.beginPath();g.arc(x,y,16,0,7);g.fill()}
+requestAnimationFrame(f)})(0);
+</script></body></html>

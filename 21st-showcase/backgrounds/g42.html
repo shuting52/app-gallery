@@ -1,0 +1,30 @@
+<!DOCTYPE html><html lang="zh"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>42 · 流星雨</title><style>
+*{margin:0;box-sizing:border-box}html,body{height:100%}
+body{font-family:system-ui,-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:#070a12;color:#fff;overflow:hidden}
+canvas{position:fixed;inset:0;width:100%;height:100%}
+.tag{position:fixed;top:12px;left:12px;z-index:10;font-size:12px;color:rgba(255,255,255,.8);background:rgba(0,0,0,.38);padding:4px 10px;border-radius:99px;backdrop-filter:blur(4px);letter-spacing:1px}
+.center{position:fixed;inset:0;z-index:5;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 34px;pointer-events:none}
+.center::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(0,0,0,.5),rgba(0,0,0,.12) 65%,transparent 80%)}
+h1{position:relative;font-size:30px;letter-spacing:6px;margin-bottom:12px;text-shadow:0 2px 14px rgba(0,0,0,.7)}
+p{position:relative;font-size:13px;color:rgba(255,255,255,.82);line-height:1.9;text-shadow:0 1px 8px rgba(0,0,0,.7);max-width:300px}
+
+</style></head><body>
+<div class="tag">42 · 流星雨</div>
+<canvas id="v"></canvas>
+<div class="center"><h1>许愿流星</h1><p>七夕活动背景 · 流星拖尾划过夜空</p></div>
+<script>
+const c=document.getElementById('v'),g=c.getContext('2d');let W,H;const R=(a,b)=>a+Math.random()*(b-a);function rs(){W=c.width=innerWidth;H=c.height=innerHeight}addEventListener('resize',rs);rs();
+const M=[],S=[];for(let i=0;i<90;i++)S.push({x:R(0,W),y:R(0,H),p:R(0,6.3)});
+setInterval(()=>{if(M.length<5)M.push({x:R(W*.3,W*1.1),y:R(-40,H*.3),vx:R(-11,-7),vy:R(4,7),life:1})},700);
+(function f(t){g.fillStyle='#03040c';g.fillRect(0,0,W,H);
+for(const s of S){g.globalAlpha=.3+.6*Math.abs(Math.sin(t/800+s.p));g.fillStyle='#dfeaff';g.fillRect(s.x,s.y,2,2)}
+g.globalAlpha=1;
+for(let i=M.length-1;i>=0;i--){const m=M[i];m.x+=m.vx;m.y+=m.vy;m.life-=.014;
+if(m.life<=0){M.splice(i,1);continue}
+const tx=m.x-m.vx*9,ty=m.y-m.vy*9,gr=g.createLinearGradient(m.x,m.y,tx,ty);
+gr.addColorStop(0,'rgba(255,255,255,'+(.95*m.life)+')');gr.addColorStop(1,'transparent');
+g.strokeStyle=gr;g.lineWidth=2.4;g.beginPath();g.moveTo(m.x,m.y);g.lineTo(tx,ty);g.stroke()}
+requestAnimationFrame(f)})(0);
+</script></body></html>

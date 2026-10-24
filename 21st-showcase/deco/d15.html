@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>15 · 彩虹描边</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#0e1420;color:#e9f0fa;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;overflow-x:hidden;padding:20px}
+.tag{position:fixed;top:12px;left:14px;font-size:12px;color:#93a7c4;letter-spacing:1px;z-index:5}
+.stage{width:100%;max-width:380px;height:320px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.desc{margin-top:6px;font-size:14px;color:#9db2cc;text-align:center;line-height:1.9;padding:0 24px;max-width:380px}
+.rb{position:relative;width:250px;height:126px;border-radius:18px;overflow:hidden}
+.rb::before{content:"";position:absolute;inset:-45%;background:conic-gradient(#ff5f5f,#ffb35f,#f9f871,#5fff8f,#5fbfff,#b45fff,#ff5f5f);animation:spin 4s linear infinite}
+.rbin{position:absolute;inset:3px;background:#141b2a;border-radius:15px;display:flex;align-items:center;justify-content:center;color:#e9f0fa;font-size:16px;letter-spacing:2px}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<div class="tag">15 · 彩虹描边</div>
+<div class="stage"><div class="rb"><div class="rbin">彩虹守护中</div></div></div>
+<p class="desc">彩虹色的描边围着卡片缓缓流转。</p>
+
+</body>
+</html>

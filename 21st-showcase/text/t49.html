@@ -1,0 +1,21 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>49 · 落英缤纷</title><style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{background:#0b0e14;color:#eef2f7;font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;overflow-x:hidden}
+.tag{position:fixed;top:10px;left:12px;font-size:12px;color:#8b93a5;letter-spacing:.08em;z-index:10}
+.stage{width:100%;max-width:430px;padding:28px 20px;text-align:center}
+.txt{font-size:30px;font-weight:800;line-height:1.5;letter-spacing:.06em}
+.sub{margin-top:14px;font-size:13px;color:#8b93a5;letter-spacing:.2em}
+#rain{position:fixed;inset:0;pointer-events:none;z-index:1}
+.stage{position:relative;z-index:2}
+.txt{text-shadow:0 2px 18px rgba(0,0,0,.7)}
+</style></head><body><div class="tag">49 · 落英缤纷</div><div class="stage"><canvas id="rain"></canvas><div class="txt">落英缤纷</div></div>
+<script>var c=document.getElementById("rain"),x=c.getContext("2d"),W,H,chs="花瓣飘落缤纷",ps=[];
+function rs(){W=c.width=innerWidth;H=c.height=innerHeight;}rs();addEventListener("resize",rs);
+for(var i=0;i<70;i++)ps.push({x:Math.random()*2000%400,y:Math.random()*900,v:1+Math.random()*2.4,s:12+Math.random()*14,c:chs[Math.floor(Math.random()*chs.length)],o:.25+Math.random()*.5,ph:Math.random()*6.28});
+(function loop(){x.clearRect(0,0,W,H);x.textAlign="center";
+ps.forEach(function(p){p.y+=p.v;p.ph+=.03;p.x+=Math.sin(p.ph)*.6;if(p.y>H+20){p.y=-20;p.x=Math.random()*W;}
+x.globalAlpha=p.o;x.font=p.s+"px serif";x.fillStyle="#f9a8d4";x.fillText(p.c,p.x,p.y);});
+x.globalAlpha=1;requestAnimationFrame(loop);})();</script></body></html>

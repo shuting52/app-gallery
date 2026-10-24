@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>43 · 星光闪烁带</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#0e1420;color:#e9f0fa;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;overflow-x:hidden;padding:20px}
+.tag{position:fixed;top:12px;left:14px;font-size:12px;color:#93a7c4;letter-spacing:1px;z-index:5}
+.stage{width:100%;max-width:380px;height:320px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.desc{margin-top:6px;font-size:14px;color:#9db2cc;text-align:center;line-height:1.9;padding:0 24px;max-width:380px}
+.sb{display:flex;gap:12px;font-size:32px;color:#ffe9a8}
+.sb span{animation:tw 1.7s ease-in-out infinite}
+.sb span:nth-child(2){animation-delay:.2s}.sb span:nth-child(3){animation-delay:.4s}
+.sb span:nth-child(4){animation-delay:.6s}.sb span:nth-child(5){animation-delay:.8s}
+.sb span:nth-child(6){animation-delay:1s}.sb span:nth-child(7){animation-delay:1.2s}
+@keyframes tw{0%,100%{opacity:.18;transform:scale(.82)}50%{opacity:1;transform:scale(1.18);text-shadow:0 0 16px #ffcf5f}}
+</style>
+</head>
+<body>
+<div class="tag">43 · 星光闪烁带</div>
+<div class="stage"><div class="sb"><span>✦</span><span>✦</span><span>✦</span><span>✦</span><span>✦</span><span>✦</span><span>✦</span></div></div>
+<p class="desc">一排小星星轮流眨眼，像跑马灯。</p>
+
+</body>
+</html>

@@ -1,0 +1,17 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>33 · 四季旋转</title><style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{background:#0b0e14;color:#eef2f7;font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;overflow-x:hidden}
+.tag{position:fixed;top:10px;left:12px;font-size:12px;color:#8b93a5;letter-spacing:.08em;z-index:10}
+.stage{width:100%;max-width:430px;padding:28px 20px;text-align:center}
+.txt{font-size:30px;font-weight:800;line-height:1.5;letter-spacing:.06em}
+.sub{margin-top:14px;font-size:13px;color:#8b93a5;letter-spacing:.2em}
+.car{position:relative;height:1.6em;font-size:32px;font-weight:800;transform-style:preserve-3d}
+.car span{position:absolute;left:0;right:0;opacity:0;animation:car 8s infinite}
+.car span:nth-child(1){color:#fda4af}.car span:nth-child(2){color:#86efac}.car span:nth-child(3){color:#fcd34d}.car span:nth-child(4){color:#bae6fd}
+.car span:nth-child(2){animation-delay:2s}.car span:nth-child(3){animation-delay:4s}.car span:nth-child(4){animation-delay:6s}
+@keyframes car{0%{opacity:0;transform:perspective(400px) rotateX(80deg)}8%{opacity:1;transform:perspective(400px) rotateX(0)}22%{opacity:1;transform:perspective(400px) rotateX(0)}30%{opacity:0;transform:perspective(400px) rotateX(-80deg)}100%{opacity:0}}
+</style></head><body><div class="tag">33 · 四季旋转</div><div class="stage"><div class="car"><span>春</span><span>夏</span><span>秋</span><span>冬</span></div><div class="sub">四季轮转</div></div>
+<script></script></body></html>

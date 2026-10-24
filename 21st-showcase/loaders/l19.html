@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="zh"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>19 · 拼图拼合</title>
+<style>*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{background:#0b0e14;color:#e8ecf4;font-family:system-ui,-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:26px;min-height:100vh;overflow:hidden}
+.tag{position:fixed;top:12px;left:14px;font-size:12px;color:#7d8699;letter-spacing:2px}
+.stage{width:220px;height:180px;display:flex;align-items:center;justify-content:center}
+.cap{font-size:13px;color:#98a1b3;letter-spacing:1px}
+@keyframes spin{to{transform:rotate(360deg)}}.pz{position:relative;width:92px;height:92px}.pz i{position:absolute;width:38px;height:38px;border-radius:8px;animation:pz 2.4s ease-in-out infinite}.pz .a{background:#38bdf8;left:0;top:0;--x:8px;--y:8px}.pz .b{background:#f472b6;right:0;top:0;--x:-8px;--y:8px}.pz .c{background:#34d399;left:0;bottom:0;--x:8px;--y:-8px}.pz .d{background:#fbbf24;right:0;bottom:0;--x:-8px;--y:-8px}@keyframes pz{0%,100%{transform:translate(0,0)}50%{transform:translate(var(--x),var(--y))}}</style></head>
+<body>
+<div class="tag">19 · 拼图拼合</div>
+<div class="stage"><div class="pz"><i class="a"></i><i class="b"></i><i class="c"></i><i class="d"></i></div></div>
+<p class="cap">碎片正在归位…</p>
+
+</body></html>

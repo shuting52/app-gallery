@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="zh"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>15 · 弹跳球</title>
+<style>*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{background:#0b0e14;color:#e8ecf4;font-family:system-ui,-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:26px;min-height:100vh;overflow:hidden}
+.tag{position:fixed;top:12px;left:14px;font-size:12px;color:#7d8699;letter-spacing:2px}
+.stage{width:220px;height:180px;display:flex;align-items:center;justify-content:center}
+.cap{font-size:13px;color:#98a1b3;letter-spacing:1px}
+@keyframes spin{to{transform:rotate(360deg)}}.bb{position:relative;width:80px;height:112px}.bl{width:44px;height:44px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fda4af,#e11d48);margin:0 auto;animation:bn 1s cubic-bezier(.5,.05,.5,1) infinite alternate}@keyframes bn{from{transform:translateY(0) scale(1,1)}to{transform:translateY(54px) scale(1.18,.82)}}.sh{position:absolute;bottom:0;left:50%;width:50px;height:10px;background:rgba(0,0,0,.45);border-radius:50%;animation:shd 1s ease-in-out infinite alternate}@keyframes shd{from{transform:translateX(-50%) scale(.65);opacity:.3}to{transform:translateX(-50%) scale(1.25);opacity:.65}}</style></head>
+<body>
+<div class="tag">15 · 弹跳球</div>
+<div class="stage"><div class="bb"><div class="bl"></div><div class="sh"></div></div></div>
+<p class="cap">皮球正在蹦跶…</p>
+
+</body></html>

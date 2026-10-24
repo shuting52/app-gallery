@@ -1,0 +1,19 @@
+<!DOCTYPE html><html lang="zh"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>21 · 渐变边框滑动导航</title><style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;background:#0d1220;color:#eef2fa;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:58px 14px 60px;overflow-x:hidden}
+.tag{position:fixed;top:12px;left:14px;font-size:12px;color:#7c86a0;letter-spacing:.08em;z-index:99}
+.stage{width:100%;max-width:398px;display:flex;flex-direction:column;gap:16px;align-items:center}
+.hint{font-size:12px;color:#7c86a0;text-align:center;line-height:1.7}
+button{font-family:inherit;border:0;background:none;color:inherit;cursor:pointer}
+.gbnav{display:flex;width:100%;gap:8px}
+.gbnav .ni{flex:1;position:relative;border-radius:14px;padding:12px 0;color:#8b93a7;font-size:11px;display:flex;flex-direction:column;align-items:center;gap:4px;background:#141a2e;overflow:hidden}
+.gbnav .ic{font-size:22px}
+.gbnav .ni::before{content:"";position:absolute;inset:0;border-radius:14px;padding:2px;background:conic-gradient(from var(--ga,0deg),#5b8cff,#9b5bff,#ff5b8c,#ffb35b,#5b8cff);-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude;opacity:0;transition:opacity .3s}
+.gbnav .ni.active{color:#fff}
+.gbnav .ni.active::before{opacity:1;animation:gspin 3s linear infinite}
+@property --ga{syntax:'<angle>';initial-value:0deg;inherits:false}
+@keyframes gspin{to{--ga:360deg}}</style></head><body>
+<div class="tag">21 · 渐变边框滑动导航</div>
+<div class="stage"><nav class="gbnav"><button class="ni active"><span class="ic">🏠</span><span class="lb">首页</span></button><button class="ni"><span class="ic">🔍</span><span class="lb">发现</span></button><button class="ni"><span class="ic">💬</span><span class="lb">消息</span></button><button class="ni"><span class="ic">👤</span><span class="lb">我的</span></button></nav><div class="hint"> conic 渐变边框持续旋转</div></div>
+<script>document.querySelectorAll('.ni').forEach(function(e){e.addEventListener('click',function(){document.querySelectorAll('.ni').forEach(function(x){x.classList.remove('active')});e.classList.add('active')})});</script></body></html>

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>14 · 徽章翻转</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#0e1420;color:#e9f0fa;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;overflow-x:hidden;padding:20px}
+.tag{position:fixed;top:12px;left:14px;font-size:12px;color:#93a7c4;letter-spacing:1px;z-index:5}
+.stage{width:100%;max-width:380px;height:320px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.desc{margin-top:6px;font-size:14px;color:#9db2cc;text-align:center;line-height:1.9;padding:0 24px;max-width:380px}
+.flip{width:124px;height:124px;perspective:600px}
+.in{position:relative;width:100%;height:100%;transform-style:preserve-3d;animation:fl 3.4s ease-in-out infinite}
+.f,.b{position:absolute;inset:0;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:54px;font-weight:800;backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.f{background:radial-gradient(circle at 35% 30%,#ffe9a8,#f5b301);color:#7a4d00;box-shadow:0 8px 26px rgba(245,179,1,.4)}
+.b{background:radial-gradient(circle at 35% 30%,#bfe3ff,#2f8ff5);color:#fff;transform:rotateY(180deg);box-shadow:0 8px 26px rgba(47,143,245,.4)}
+@keyframes fl{0%,18%{transform:rotateY(0)}50%,68%{transform:rotateY(180deg)}100%{transform:rotateY(360deg)}}
+</style>
+</head>
+<body>
+<div class="tag">14 · 徽章翻转</div>
+<div class="stage"><div class="flip"><div class="in"><div class="f">★</div><div class="b">赞</div></div></div></div>
+<p class="desc">金色徽章翻来翻去，正反两面各不同。</p>
+
+</body>
+</html>

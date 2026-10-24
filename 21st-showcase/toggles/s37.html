@@ -1,0 +1,51 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>37 · 火焰点燃开关</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;background:#1c1917;color:#e7e5e4;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;max-width:430px;margin:0 auto;position:relative;overflow-x:hidden;padding:70px 24px 50px}
+.t{position:absolute;top:14px;left:16px;font-size:13px;color:#78716c;letter-spacing:2px}
+.u{font-size:14px;color:#a8a29e}
+input{display:none}
+.stage{cursor:pointer}
+.mbox{position:relative;width:230px;height:200px}
+.match{position:absolute;left:60px;bottom:22px;width:20px;display:flex;flex-direction:column;align-items:center;transform:rotate(-24deg);transform-origin:bottom center}
+.head{width:19px;height:22px;margin-bottom:-3px;background:radial-gradient(circle at 35% 30%,#fca5a5,#dc2626 60%,#991b1b);border-radius:50%;position:relative;z-index:1}
+.stick{width:10px;height:112px;background:linear-gradient(90deg,#b45309,#eab308);border-radius:5px}
+.mflame{position:absolute;left:17px;top:52px;transform:translate(-50%,-100%)}
+.mfl{width:36px;height:58px;background:radial-gradient(circle at 50% 82%,#fefce8 0 14%,#fde047 38%,#fb923c 66%,rgba(249,115,22,0) 100%);border-radius:50% 50% 50% 50%/60% 60% 40% 40%;transform-origin:50% 100%;transform:scale(0);transition:transform .3s ease}
+#sw:checked~.stage .mfl{transform:scale(1);animation:bigflick 1s ease-in-out infinite}
+@keyframes bigflick{0%,100%{transform:scale(1,1) skewX(0)}35%{transform:scale(.92,1.1) skewX(-5deg)}60%{transform:scale(1.07,.92) skewX(4deg)}85%{transform:scale(.96,1.05) skewX(-2deg)}}
+.mglow{position:absolute;left:17px;top:52px;transform:translate(-50%,-80%);width:120px;height:120px;border-radius:50%;background:radial-gradient(circle,rgba(251,146,60,.45),transparent 70%);opacity:0;transition:opacity .5s}
+#sw:checked~.stage .mglow{opacity:1}
+.em{position:absolute;bottom:6px;left:50%;width:6px;height:6px;margin-left:var(--x);border-radius:50%;background:#fdba74;opacity:0}
+#sw:checked~.stage .em{animation:erise 1.7s linear infinite;animation-delay:var(--d)}
+@keyframes erise{0%{transform:translateY(0) scale(1);opacity:0}20%{opacity:1}100%{transform:translateY(-85px) scale(.3);opacity:0}}
+.striker{position:absolute;right:8px;bottom:22px;width:64px;height:20px;background:linear-gradient(#78716c,#57534e);border-radius:4px;transform:rotate(-8deg)}
+.striker::after{content:"磷面";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:10px;color:#d6d3d1}
+.ctl{display:flex;align-items:center;gap:10px}
+.sw{width:62px;height:34px;border-radius:17px;background:#44403c;position:relative;cursor:pointer;transition:background .3s;flex:none}
+.knob{position:absolute;top:3px;left:3px;width:28px;height:28px;border-radius:50%;background:#fff;box-shadow:0 2px 5px rgba(0,0,0,.4);transition:left .35s cubic-bezier(.55,-.3,.3,1.4)}
+#sw:checked~.ctl .sw{background:#f97316}
+#sw:checked~.ctl .sw .knob{left:31px}
+.st{font-size:13px;color:#78716c;width:34px}
+.st::before{content:"关"}
+#sw:checked~.ctl .st::before{content:"开";color:#fb923c}
+</style></head><body>
+<input type="checkbox" id="sw">
+<div class="t">37 · 火焰点燃开关</div>
+<label class="stage" for="sw">
+<div class="mbox">
+<div class="mglow"></div>
+<div class="mflame">
+<div class="mfl"></div>
+<i class="em" style="--d:0s;--x:-14px"></i>
+<i class="em" style="--d:.55s;--x:8px"></i>
+<i class="em" style="--d:1.1s;--x:-3px"></i>
+</div>
+<div class="match"><div class="head"></div><div class="stick"></div></div>
+<div class="striker"></div>
+</div></label>
+<div class="ctl"><label class="sw" for="sw"><span class="knob"></span></label><span class="st"></span></div>
+<p class="u">用途：篝火点火开关</p>
+</body></html>

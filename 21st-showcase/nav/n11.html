@@ -1,0 +1,20 @@
+<!DOCTYPE html><html lang="zh"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>11 · 液态玻璃Tab导航</title><style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;background:#0d1220;color:#eef2fa;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:58px 14px 60px;overflow-x:hidden}
+.tag{position:fixed;top:12px;left:14px;font-size:12px;color:#7c86a0;letter-spacing:.08em;z-index:99}
+.stage{width:100%;max-width:398px;display:flex;flex-direction:column;gap:16px;align-items:center}
+.hint{font-size:12px;color:#7c86a0;text-align:center;line-height:1.7}
+button{font-family:inherit;border:0;background:none;color:inherit;cursor:pointer}
+.liq{position:relative;display:flex;width:100%;background:rgba(255,255,255,.07);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.14);border-radius:22px;padding:8px;overflow:hidden}
+.liq .ni{flex:1;z-index:2;display:flex;flex-direction:column;align-items:center;gap:2px;padding:10px 0;color:#9aa3bd;font-size:11px}
+.liq .ic{font-size:20px}
+.liq .ni.active{color:#fff}
+.liqblob{position:absolute;top:8px;bottom:8px;left:8px;width:calc(25% - 12px);background:rgba(125,249,255,.16);border:1px solid rgba(125,249,255,.4);border-radius:16px;z-index:1;transition:transform .45s cubic-bezier(.6,-0.3,.3,1.4);animation:blobMorph 5s ease-in-out infinite}
+@keyframes blobMorph{0%,100%{border-radius:16px 22px 16px 22px}50%{border-radius:24px 14px 24px 14px}}
+.liq .ni:nth-child(2).active~.liqblob{transform:translateX(100%)}
+.liq .ni:nth-child(3).active~.liqblob{transform:translateX(200%)}
+.liq .ni:nth-child(4).active~.liqblob{transform:translateX(300%)}</style></head><body>
+<div class="tag">11 · 液态玻璃Tab导航</div>
+<div class="stage"><nav class="liq"><button class="ni active"><span class="ic">🏠</span><span class="lb">首页</span></button><button class="ni"><span class="ic">🔍</span><span class="lb">发现</span></button><button class="ni"><span class="ic">💬</span><span class="lb">消息</span></button><button class="ni"><span class="ic">👤</span><span class="lb">我的</span></button><span class="liqblob"></span></nav><div class="hint">点击切换试试</div></div>
+<script>document.querySelectorAll('.ni').forEach(function(e){e.addEventListener('click',function(){document.querySelectorAll('.ni').forEach(function(x){x.classList.remove('active')});e.classList.add('active')})});</script></body></html>

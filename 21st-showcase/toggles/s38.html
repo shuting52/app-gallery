@@ -1,0 +1,52 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>38 · 水滴落下开关</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;background:#f0f9ff;color:#0c4a6e;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;max-width:430px;margin:0 auto;position:relative;overflow-x:hidden;padding:70px 24px 50px}
+.t{position:absolute;top:14px;left:16px;font-size:13px;color:#7cb3d1;letter-spacing:2px}
+.u{font-size:14px;color:#0369a1}
+input{display:none}
+.stage{position:relative;width:230px;height:235px;cursor:pointer}
+.pipe{position:absolute;top:0;left:50%;transform:translateX(-50%);width:56px;height:26px;background:linear-gradient(#94a3b8,#64748b);border-radius:0 0 10px 10px}
+.pipe::after{content:"";position:absolute;left:50%;bottom:-9px;transform:translateX(-50%);width:17px;height:13px;background:#64748b;border-radius:0 0 6px 6px}
+.drop{position:absolute;top:36px;left:50%;width:18px;height:25px;margin-left:-9px;background:linear-gradient(#7dd3fc,#0284c7);border-radius:50% 50% 50% 50%/58% 58% 42% 42%;opacity:0}
+.stage.on .drop{opacity:1;animation:fall .65s cubic-bezier(.5,0,.8,.4) forwards}
+@keyframes fall{0%{transform:translateY(0)}88%{transform:translateY(148px) scale(1,.92);opacity:1}100%{transform:translateY(154px) scale(1.5,.35);opacity:0}}
+.pool{position:absolute;bottom:18px;left:22px;right:22px;height:15px;background:linear-gradient(90deg,#7dd3fc,#38bdf8,#7dd3fc);border-radius:8px}
+.ring{position:absolute;bottom:25px;left:50%;width:22px;height:9px;margin-left:-11px;border:2px solid #38bdf8;border-radius:50%;opacity:0}
+.stage.on .r1{animation:rip 2.2s ease-out infinite}
+.stage.on .r2{animation:rip 2.2s ease-out 1.1s infinite}
+@keyframes rip{0%{transform:scale(.4);opacity:.9}100%{transform:scale(4.6);opacity:0}}
+.splash i{position:absolute;bottom:32px;left:50%;width:7px;height:7px;border-radius:50%;background:#38bdf8;opacity:0}
+.stage.on .splash i{animation:spl .55s ease-out .58s forwards}
+.splash i:nth-child(1){--sx:-36px;--sy:-36px}
+.splash i:nth-child(2){--sx:32px;--sy:-42px}
+.splash i:nth-child(3){--sx:-22px;--sy:-54px}
+.splash i:nth-child(4){--sx:24px;--sy:-28px}
+@keyframes spl{0%{transform:translate(0,0);opacity:1}100%{transform:translate(var(--sx),var(--sy));opacity:0}}
+.ctl{display:flex;align-items:center;gap:10px}
+.sw{width:62px;height:34px;border-radius:17px;background:#bae6fd;position:relative;cursor:pointer;transition:background .3s;flex:none}
+.knob{position:absolute;top:3px;left:3px;width:28px;height:28px;border-radius:50%;background:#fff;box-shadow:0 2px 5px rgba(0,0,0,.25);transition:left .35s cubic-bezier(.55,-.3,.3,1.4)}
+#sw:checked~.ctl .sw{background:#0284c7}
+#sw:checked~.ctl .sw .knob{left:31px}
+.st{font-size:13px;color:#7cb3d1;width:34px}
+.st::before{content:"关"}
+#sw:checked~.ctl .st::before{content:"开";color:#0284c7}
+</style></head><body>
+<input type="checkbox" id="sw">
+<div class="t">38 · 水滴落下开关</div>
+<label class="stage" id="st38" for="sw">
+<div class="pipe"></div>
+<div class="drop"></div>
+<div class="splash"><i></i><i></i><i></i><i></i></div>
+<div class="pool"></div>
+<div class="ring r1"></div><div class="ring r2"></div>
+</label>
+<div class="ctl"><label class="sw" for="sw"><span class="knob"></span></label><span class="st"></span></div>
+<p class="u">用途：加湿器开关</p>
+<script>
+var c=document.getElementById('sw'),s=document.getElementById('st38');
+c.addEventListener('change',function(){s.classList.toggle('on',c.checked);});
+</script>
+</body></html>

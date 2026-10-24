@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>30 · 冰霜碎裂按钮</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{min-height:100vh;background:#0e1116;color:#f1f5f9;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:system-ui,-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;overflow-x:hidden;padding:24px 16px}
+.tag{position:fixed;top:12px;left:14px;font-size:12px;color:#8b93a3;letter-spacing:.08em;z-index:50}
+.stage{position:relative;width:100%;max-width:430px;min-height:52vh;display:flex;align-items:center;justify-content:center}
+.btn{position:relative;border:0;cursor:pointer;font-size:17px;font-weight:700;color:#fff;padding:16px 42px;border-radius:14px;font-family:inherit;overflow:hidden;white-space:nowrap;-webkit-tap-highlight-color:transparent}
+.btn:active{filter:brightness(1.25)}
+.hint{margin-top:18px;color:#5b6474;font-size:13px;min-height:20px;text-align:center}
+.btn{background:linear-gradient(135deg,#0ea5e9,#6366f1)}
+.frost{position:absolute;inset:0;background:rgba(255,255,255,0);transition:background .4s;pointer-events:none}
+.crack{position:absolute;top:50%;left:50%;width:120%;height:2px;background:rgba(255,255,255,.9);opacity:0;pointer-events:none}
+.btn.on .frost{background:rgba(255,255,255,.35)}
+.btn.on .crack{animation:crackin .5s ease forwards}
+.btn.on .c1{transform:translate(-50%,-50%) rotate(24deg)}
+.btn.on .c2{transform:translate(-50%,-50%) rotate(-31deg);animation-delay:.08s}
+.btn.on .c3{transform:translate(-50%,-50%) rotate(72deg);animation-delay:.16s}
+@keyframes crackin{from{opacity:0;transform:translate(-50%,-50%) scaleX(.3) rotate(var(--rr,0deg))}to{opacity:1;transform:translate(-50%,-50%) scaleX(1) rotate(var(--rr,0deg))}}
+</style>
+</head>
+<body>
+<div class="tag">30 · 冰霜碎裂按钮</div>
+<div class="stage"><button class="btn">冷冻一下<span class="frost"></span><span class="crack c1" style="--rr:24deg"></span><span class="crack c2" style="--rr:-31deg"></span><span class="crack c3" style="--rr:72deg"></span></button></div>
+<p class="hint">点击按钮试试</p>
+<script>
+var b=document.querySelector('.btn');b.addEventListener('click',function(){b.classList.toggle('on');});
+</script>
+</body>
+</html>

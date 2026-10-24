@@ -1,0 +1,16 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>35 · 方块光标打字</title><style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{background:#0b0e14;color:#eef2f7;font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;overflow-x:hidden}
+.tag{position:fixed;top:10px;left:12px;font-size:12px;color:#8b93a5;letter-spacing:.08em;z-index:10}
+.stage{width:100%;max-width:430px;padding:28px 20px;text-align:center}
+.txt{font-size:30px;font-weight:800;line-height:1.5;letter-spacing:.06em}
+.sub{margin-top:14px;font-size:13px;color:#8b93a5;letter-spacing:.2em}
+#bk{font-size:28px;font-weight:800;font-family:ui-monospace,monospace;color:#a5b4fc;min-height:1.5em;display:inline-block}
+#bk::after{content:"";display:inline-block;width:.62em;height:1.05em;background:#a5b4fc;vertical-align:-0.16em;margin-left:3px;animation:blink .8s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+</style></head><body><div class="tag">35 · 方块光标打字</div><div class="stage"><div><span id="bk"></span></div><div class="sub">终端输出中</div></div>
+<script>var s="代码改变世界",el=document.getElementById("bk"),i=0;
+function t(){if(i<=s.length){el.textContent=s.slice(0,i);i++;setTimeout(t,200);}else{setTimeout(function(){i=0;t();},2400);}}t();</script></body></html>

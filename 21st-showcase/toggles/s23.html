@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="zh"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>23 · 抽屉推拉开关</title>
+<style>*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{background:#0b0e14;color:#e8ecf4;font-family:system-ui,-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;min-height:100vh;overflow:hidden}
+.tag{position:fixed;top:12px;left:14px;font-size:12px;color:#7d8699;letter-spacing:2px}
+.cap{font-size:13px;color:#98a1b3;letter-spacing:1px}
+.use{font-size:13px;color:#7d8699;border:1px solid rgba(255,255,255,.12);border-radius:999px;padding:6px 16px;background:rgba(255,255,255,.03)}
+.hid{position:absolute;opacity:0;pointer-events:none}
+.cab{position:relative;width:210px;height:160px;background:linear-gradient(180deg,#8a6844,#6b4e2f);border-radius:12px;cursor:pointer;display:block;box-shadow:0 10px 30px rgba(0,0,0,.45),inset 0 2px 0 rgba(255,255,255,.15)}
+.slot{position:absolute;left:18px;top:22px;width:128px;height:116px;background:#080a10;border-radius:8px;overflow:hidden}
+.bulb{width:26px;height:26px;border-radius:50%;background:#3a3f4d;margin:45px auto;transition:background .4s}
+#sw:checked+.cab .bulb{background:#ffd76a;box-shadow:0 0 26px 10px rgba(255,200,90,.85);animation:bulbPulse 1.6s ease-in-out infinite}
+@keyframes bulbPulse{0%,100%{transform:scale(1);filter:brightness(1)}50%{transform:scale(1.12);filter:brightness(1.25)}}
+.drawer{position:absolute;left:18px;top:22px;width:128px;height:116px;border-radius:8px;background:repeating-linear-gradient(90deg,#a97e4e 0 12px,#9a7143 12px 24px);box-shadow:0 6px 16px rgba(0,0,0,.5),inset 0 2px 0 rgba(255,255,255,.2);transition:transform .8s cubic-bezier(.5,0,.2,1)}
+#sw:checked+.cab .drawer{transform:translateX(128px)}
+.knob{position:absolute;right:12px;top:50%;width:18px;height:18px;margin-top:-9px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#e8ecf4,#8a93a8);box-shadow:0 2px 5px rgba(0,0,0,.5)}
+.st{font-size:14px;color:#dfe5f0;letter-spacing:1px}
+.st .a{display:none;color:#ffd98a}
+#sw:checked~.st .a{display:inline}
+#sw:checked~.st .b{display:none}</style></head>
+<body>
+<div class="tag">23 · 抽屉推拉开关</div>
+<input type="checkbox" id="sw" class="hid">
+<label for="sw" class="cab">
+<div class="slot"><div class="bulb"></div></div>
+<div class="drawer"><div class="knob"></div></div>
+</label>
+<div class="st"><span class="a">抽屉拉出 · 小夜灯亮了</span><span class="b">抽屉推进 · 灯灭了</span></div>
+<p class="cap">点按柜子，推拉抽屉</p>
+<p class="use">用途：床头柜氛围灯开关</p>
+</body></html>

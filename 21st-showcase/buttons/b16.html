@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>16 · 翻转切换按钮</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{min-height:100vh;background:#0e1116;color:#f1f5f9;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:system-ui,-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;overflow-x:hidden;padding:24px 16px}
+.tag{position:fixed;top:12px;left:14px;font-size:12px;color:#8b93a3;letter-spacing:.08em;z-index:50}
+.stage{position:relative;width:100%;max-width:430px;min-height:52vh;display:flex;align-items:center;justify-content:center}
+.btn{position:relative;border:0;cursor:pointer;font-size:17px;font-weight:700;color:#fff;padding:16px 42px;border-radius:14px;font-family:inherit;overflow:hidden;white-space:nowrap;-webkit-tap-highlight-color:transparent}
+.btn:active{filter:brightness(1.25)}
+.hint{margin-top:18px;color:#5b6474;font-size:13px;min-height:20px;text-align:center}
+.flip{perspective:700px}
+.btn{width:230px;height:64px;padding:0;background:transparent;overflow:visible}
+.face{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;border-radius:14px;backface-visibility:hidden;-webkit-backface-visibility:hidden;font-size:17px;font-weight:700}
+.front{background:linear-gradient(135deg,#6366f1,#4f46e5)}
+.back{background:linear-gradient(135deg,#ec4899,#be185d);transform:rotateX(180deg)}
+</style>
+</head>
+<body>
+<div class="tag">16 · 翻转切换按钮</div>
+<div class="stage"><div class="flip"><button class="btn"><span class="face front">立即开通</span><span class="face back">确认开通 ✓</span></button></div></div>
+<p class="hint">点击按钮试试</p>
+<script>
+var b=document.querySelector('.btn'),f=false;
+var st=document.createElement('style');st.textContent='@keyframes flipf{to{transform:rotateX(180deg)}}@keyframes flipb{from{transform:rotateX(180deg)}to{transform:rotateX(0)}}';document.head.appendChild(st);
+b.addEventListener('click',function(){f=!f;b.style.animation=f?'flipf .6s forwards':'flipb .6s forwards';});
+</script>
+</body>
+</html>

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>46 · 闪电描边按钮</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{min-height:100vh;background:#0e1116;color:#f1f5f9;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:system-ui,-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;overflow-x:hidden;padding:24px 16px}
+.tag{position:fixed;top:12px;left:14px;font-size:12px;color:#8b93a3;letter-spacing:.08em;z-index:50}
+.stage{position:relative;width:100%;max-width:430px;min-height:52vh;display:flex;align-items:center;justify-content:center}
+.btn{position:relative;border:0;cursor:pointer;font-size:17px;font-weight:700;color:#fff;padding:16px 42px;border-radius:14px;font-family:inherit;overflow:hidden;white-space:nowrap;-webkit-tap-highlight-color:transparent}
+.btn:active{filter:brightness(1.25)}
+.hint{margin-top:18px;color:#5b6474;font-size:13px;min-height:20px;text-align:center}
+.btn{background:#0f172a;border:2px solid #facc15;color:#fef08a}
+.btn:hover{animation:zapb .9s steps(2) infinite}
+@keyframes zapb{0%,100%{box-shadow:0 0 6px #facc15;border-color:#facc15}50%{box-shadow:0 0 26px #facc15,0 0 64px rgba(250,204,21,.5);border-color:#fef9c3}}
+</style>
+</head>
+<body>
+<div class="tag">46 · 闪电描边按钮</div>
+<div class="stage"><button class="btn">⚡ 雷霆一击</button></div>
+<p class="hint">点击按钮试试</p>
+<script>
+
+</script>
+</body>
+</html>

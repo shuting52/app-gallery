@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>12 · 磁吸吸附开关</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{min-height:100vh;display:flex;align-items:center;justify-content:center;background:#eef1f6;font-family:system-ui,"PingFang SC","Microsoft YaHei",sans-serif;overflow-x:hidden}
+.t{position:fixed;top:14px;left:16px;font-size:13px;color:#9aa0ae;letter-spacing:1px}
+.card{display:flex;flex-direction:column;align-items:center;gap:22px;padding:44px 40px}
+.sw{position:relative;width:132px;height:64px;cursor:pointer}
+.sw input{position:absolute;inset:0;opacity:0;margin:0;cursor:pointer;z-index:5}
+.track{position:absolute;inset:0;border-radius:32px;background:#dfe4ec;box-shadow:inset 0 3px 8px rgba(120,130,150,.35);transition:background .4s}
+.mag{position:absolute;top:50%;width:12px;height:12px;margin-top:-6px;border-radius:50%;background:#b9c2d2;box-shadow:inset 0 1px 3px rgba(90,100,120,.5)}
+.mag.l{left:14px}.mag.r{right:14px}
+.sw input:checked~.track{background:#cde3d2}
+.knob{position:absolute;top:7px;left:7px;width:50px;height:50px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#ffffff,#aeb9cc 75%);box-shadow:0 3px 10px rgba(80,90,110,.45);transition:left .42s cubic-bezier(.2,1.9,.45,1)}
+.sw input:checked~.knob{left:75px;background:radial-gradient(circle at 35% 30%,#ffffff,#9fd4a8 75%)}
+.knob.pulse{animation:magpulse .45s ease-out}
+@keyframes magpulse{0%{transform:scale(1)}35%{transform:scale(1.32,.72)}60%{transform:scale(.94,1.08)}100%{transform:scale(1)}}
+.tag{font-size:14px;color:#5b6270;text-align:center;line-height:1.7}
+.tag b{color:#2f9e5f;font-weight:600}
+</style>
+</head>
+<body>
+<div class="t">12 · 磁吸吸附开关</div>
+<div class="card">
+<label class="sw">
+<input type="checkbox" id="ck" aria-label="磁吸吸附开关">
+<span class="track"></span><span class="mag l"></span><span class="mag r"></span><span class="knob" id="knob"></span>
+</label>
+<div class="tag"><b>用途：磁吸式电源开关</b><br>旋钮靠近端点时被磁力"吸"过去并弹一下</div>
+</div>
+<script>
+(function(){
+var ck=document.getElementById('ck'),knob=document.getElementById('knob');
+ck.addEventListener('change',function(){
+knob.classList.remove('pulse');void knob.offsetWidth;knob.classList.add('pulse');
+});
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,27 @@
+<!DOCTYPE html><html lang="zh"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>46 · 拉链开合开关</title><style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;background:#0d1220;color:#eef2fa;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:58px 14px 60px;overflow-x:hidden}
+.tag{position:fixed;top:12px;left:14px;font-size:12px;color:#7c86a0;letter-spacing:.08em;z-index:99}
+.stage{width:100%;max-width:398px;display:flex;flex-direction:column;gap:18px;align-items:center}
+.hint{font-size:12px;color:#7c86a0;text-align:center;line-height:1.8}
+.hint b{color:#ffd23f;font-weight:600}
+.ck{position:absolute;opacity:0;width:0;height:0;pointer-events:none}
+.cap{position:absolute;top:10px;left:0;right:0;text-align:center;font-size:12px;color:#9fb2e8;letter-spacing:.1em;pointer-events:none}
+.cap .o2{display:none}
+.sw46{position:relative;display:flex;align-items:center;justify-content:center;width:250px;height:150px;background:#10182e;border:1px solid #243056;border-radius:18px;cursor:pointer;overflow:hidden}
+.zip{position:relative;width:220px;height:60px}
+.inn{position:absolute;left:8px;top:8px;bottom:8px;width:0;border-radius:12px;background:linear-gradient(90deg,#5b8cff,#9b5bff,#ff5b8c);transition:width .6s ease;box-shadow:inset 0 2px 8px rgba(0,0,0,.4)}
+.teeth{position:absolute;left:8px;right:8px;top:8px;bottom:8px;border-radius:12px;background:repeating-linear-gradient(90deg,#5a6685 0 7px,#232c47 7px 14px);transition:opacity .35s}
+.teeth::after{content:"";position:absolute;left:50%;top:0;bottom:0;width:3px;transform:translateX(-50%);background:#141b31}
+.sld{position:absolute;left:10px;top:50%;transform:translateY(-50%);width:28px;height:44px;background:linear-gradient(180deg,#e8ecf7,#aab3cc);border-radius:9px;box-shadow:0 3px 8px rgba(0,0,0,.5);transition:left .6s cubic-bezier(.55,0,.3,1.1);z-index:2}
+.sld i{position:absolute;left:50%;top:100%;margin-top:-3px;transform:translateX(-50%);width:11px;height:24px;background:#8b93a7;border-radius:6px}
+.sld i::after{content:"";position:absolute;left:50%;top:5px;transform:translateX(-50%);width:5px;height:9px;border-radius:3px;background:#232c47}
+#t46:checked+.sw46 .inn{width:204px}
+#t46:checked+.sw46 .teeth{opacity:0}
+#t46:checked+.sw46 .sld{left:182px;animation:tug .3s ease .6s}
+@keyframes tug{30%{transform:translateY(-50%) translateX(-8px)}70%{transform:translateY(-50%) translateX(4px)}}</style></head><body>
+<div class="tag">46 · 拉链开合开关</div>
+<div class="stage"><input type="checkbox" id="t46" class="ck"><label for="t46" class="sw46"><span class="zip"><span class="inn"></span><span class="teeth"></span><span class="sld"><i></i></span></span><span class="cap"><b class="o1">拉链合上</b><b class="o2">拉链拉开</b></span></label><div class="hint">用途：隐私遮罩<br>点击开关切换试试</div></div>
+<style>#t46:checked+label .o1{display:none}#t46:checked+label .o2{display:inline}</style>
+</body></html>

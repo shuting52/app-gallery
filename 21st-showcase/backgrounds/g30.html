@@ -1,0 +1,26 @@
+<!DOCTYPE html><html lang="zh"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>30 · 蜂巢呼吸</title><style>
+*{margin:0;box-sizing:border-box}html,body{height:100%}
+body{font-family:system-ui,-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:#070a12;color:#fff;overflow:hidden}
+canvas{position:fixed;inset:0;width:100%;height:100%}
+.tag{position:fixed;top:12px;left:12px;z-index:10;font-size:12px;color:rgba(255,255,255,.8);background:rgba(0,0,0,.38);padding:4px 10px;border-radius:99px;backdrop-filter:blur(4px);letter-spacing:1px}
+.center{position:fixed;inset:0;z-index:5;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 34px;pointer-events:none}
+.center::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(0,0,0,.5),rgba(0,0,0,.12) 65%,transparent 80%)}
+h1{position:relative;font-size:30px;letter-spacing:6px;margin-bottom:12px;text-shadow:0 2px 14px rgba(0,0,0,.7)}
+p{position:relative;font-size:13px;color:rgba(255,255,255,.82);line-height:1.9;text-shadow:0 1px 8px rgba(0,0,0,.7);max-width:300px}
+
+</style></head><body>
+<div class="tag">30 · 蜂巢呼吸</div>
+<canvas id="v"></canvas>
+<div class="center"><h1>蜂巢脉动</h1><p>生物科技背景 · 六边形阵列呼吸</p></div>
+<script>
+const c=document.getElementById('v'),g=c.getContext('2d');let W,H;const R=(a,b)=>a+Math.random()*(b-a);function rs(){W=c.width=innerWidth;H=c.height=innerHeight}addEventListener('resize',rs);rs();
+function hex(x,y,r){g.beginPath();for(let i=0;i<6;i++){const a=Math.PI/3*i+Math.PI/6;i?g.lineTo(x+r*Math.cos(a),y+r*Math.sin(a)):g.moveTo(x+r*Math.cos(a),y+r*Math.sin(a))}g.closePath()}
+let t=0;(function f(){t+=.03;g.fillStyle='#081008';g.fillRect(0,0,W,H);
+const s=44;let row=0;
+for(let y=s*.6;y<H+s;y+=s*1.5,row++)for(let x=(row%2?s:0);x<W+s;x+=s*1.73){
+const d=Math.hypot(x-W/2,y-H/2),r=13+7*Math.sin(t-d/60);
+g.strokeStyle='rgba(140,255,170,'+(.25+.35*Math.abs(Math.sin(t-d/60)))+')';g.lineWidth=1.6;hex(x,y,Math.max(4,r));g.stroke()}
+requestAnimationFrame(f)})();
+</script></body></html>

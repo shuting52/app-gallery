@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="zh"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>50 · 粒子汇聚</title>
+<style>*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{background:#0b0e14;color:#e8ecf4;font-family:system-ui,-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:26px;min-height:100vh;overflow:hidden}
+.tag{position:fixed;top:12px;left:14px;font-size:12px;color:#7d8699;letter-spacing:2px}
+.stage{width:220px;height:180px;display:flex;align-items:center;justify-content:center}
+.cap{font-size:13px;color:#98a1b3;letter-spacing:1px}
+@keyframes spin{to{transform:rotate(360deg)}}.pc2{width:220px;height:180px}</style></head>
+<body>
+<div class="tag">50 · 粒子汇聚</div>
+<div class="stage"><canvas class="pc2" width="220" height="180"></canvas></div>
+<p class="cap">粒子正在集结…</p>
+<script>var c=document.querySelector('.pc2'),x=c.getContext('2d'),P=[];function mk(){return{a:Math.random()*6.283,r:110,h:Math.random()*360|0}}for(var i=0;i<70;i++){var p=mk();p.r=Math.random()*110;P.push(p)}(function f(){x.clearRect(0,0,220,180);for(var k=0;k<P.length;k++){var q=P[k];q.r-=1.6;if(q.r<2){var n=mk();q.a=n.a;q.r=n.r;q.h=n.h}var px=110+Math.cos(q.a)*q.r,py=90+Math.sin(q.a)*q.r*.8;x.beginPath();x.arc(px,py,2.2,0,7);x.fillStyle='hsla('+q.h+',85%,65%,.9)';x.fill()}requestAnimationFrame(f)})();</script>
+</body></html>

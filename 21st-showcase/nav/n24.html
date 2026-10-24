@@ -1,0 +1,18 @@
+<!DOCTYPE html><html lang="zh"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>24 · 手风琴展开导航</title><style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;background:#0d1220;color:#eef2fa;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:58px 14px 60px;overflow-x:hidden}
+.tag{position:fixed;top:12px;left:14px;font-size:12px;color:#7c86a0;letter-spacing:.08em;z-index:99}
+.stage{width:100%;max-width:398px;display:flex;flex-direction:column;gap:16px;align-items:center}
+.hint{font-size:12px;color:#7c86a0;text-align:center;line-height:1.7}
+button{font-family:inherit;border:0;background:none;color:inherit;cursor:pointer}
+.acc{width:100%;display:flex;flex-direction:column;gap:8px}
+.ani{background:#161c31;border-radius:14px;padding:0 16px;overflow:hidden;text-align:left;color:#aab3cc;max-height:52px;transition:max-height .45s cubic-bezier(.5,0,.3,1),background .3s}
+.ani .ah{display:flex;align-items:center;height:52px;font-size:15px;font-weight:600}
+.ani .ab{display:block;padding:0 0 14px;font-size:13px;color:#7c86a0;opacity:0;transform:translateY(8px);transition:opacity .3s .1s,transform .3s .1s}
+.ani.active{max-height:110px;background:#1e2748;color:#fff;animation:accOpen .45s ease}
+.ani.active .ab{opacity:1;transform:translateY(0)}
+@keyframes accOpen{0%{transform:scale(.98)}60%{transform:scale(1.01)}100%{transform:scale(1)}}</style></head><body>
+<div class="tag">24 · 手风琴展开导航</div>
+<div class="stage"><nav class="acc"><button class="ani active"><span class="ah">🏠 首页</span><span class="ab">回到推荐信息流</span></button><button class="ani"><span class="ah">🔍 发现</span><span class="ab">探索新鲜内容</span></button><button class="ani"><span class="ah">💬 消息</span><span class="ab">3 条未读私信</span></button><button class="ani"><span class="ah">👤 我的</span><span class="ab">个人中心设置</span></button></nav><div class="hint">点击切换试试</div></div>
+<script>document.querySelectorAll('.ani').forEach(function(e){e.addEventListener('click',function(){document.querySelectorAll('.ani').forEach(function(x){x.classList.remove('active')});e.classList.add('active')})});</script></body></html>

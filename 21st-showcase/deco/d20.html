@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>20 · 光点轨道</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#0e1420;color:#e9f0fa;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;overflow-x:hidden;padding:20px}
+.tag{position:fixed;top:12px;left:14px;font-size:12px;color:#93a7c4;letter-spacing:1px;z-index:5}
+.stage{width:100%;max-width:380px;height:320px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.desc{margin-top:6px;font-size:14px;color:#9db2cc;text-align:center;line-height:1.9;padding:0 24px;max-width:380px}
+.ob{position:relative;width:170px;height:170px;animation:spin 5.5s linear infinite}
+.ob b{position:absolute;top:50%;left:50%;width:28px;height:28px;margin:-14px;background:#ffd76a;border-radius:50%;box-shadow:0 0 22px #ffb300;z-index:2}
+.ob i{position:absolute;top:50%;left:50%;width:13px;height:13px;margin:-6.5px;border-radius:50%}
+.ob i:nth-child(1){background:#4dd8ff;box-shadow:0 0 12px #4dd8ff;transform:rotate(0deg) translateX(72px)}
+.ob i:nth-child(2){background:#ff7fae;box-shadow:0 0 12px #ff7fae;transform:rotate(120deg) translateX(72px)}
+.ob i:nth-child(3){background:#5fffb0;box-shadow:0 0 12px #5fffb0;transform:rotate(240deg) translateX(72px)}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<div class="tag">20 · 光点轨道</div>
+<div class="stage"><div class="ob"><i></i><i></i><i></i><b></b></div></div>
+<p class="desc">三颗小光点围着中心转圈，像小行星。</p>
+
+</body>
+</html>

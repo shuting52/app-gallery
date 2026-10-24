@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>09 · 分割线生长</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#0e1420;color:#e9f0fa;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;overflow-x:hidden;padding:20px}
+.tag{position:fixed;top:12px;left:14px;font-size:12px;color:#93a7c4;letter-spacing:1px;z-index:5}
+.stage{width:100%;max-width:380px;height:320px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.desc{margin-top:6px;font-size:14px;color:#9db2cc;text-align:center;line-height:1.9;padding:0 24px;max-width:380px}
+.grow{width:300px;display:flex;justify-content:center}
+.grow i{display:block;width:300px;height:2px;border-radius:1px;background:linear-gradient(90deg,transparent,#4dd8ff,transparent);transform:scaleX(0);animation:gr 2.6s ease-in-out infinite}
+@keyframes gr{0%{transform:scaleX(0)}45%,70%{transform:scaleX(1)}100%{transform:scaleX(0)}}
+</style>
+</head>
+<body>
+<div class="tag">09 · 分割线生长</div>
+<div class="stage"><div class="grow"><i></i></div></div>
+<p class="desc">一条细线从中间向两边生长出来。</p>
+
+</body>
+</html>

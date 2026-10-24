@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>09 · 故障抖动按钮</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{min-height:100vh;background:#0e1116;color:#f1f5f9;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:system-ui,-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;overflow-x:hidden;padding:24px 16px}
+.tag{position:fixed;top:12px;left:14px;font-size:12px;color:#8b93a3;letter-spacing:.08em;z-index:50}
+.stage{position:relative;width:100%;max-width:430px;min-height:52vh;display:flex;align-items:center;justify-content:center}
+.btn{position:relative;border:0;cursor:pointer;font-size:17px;font-weight:700;color:#fff;padding:16px 42px;border-radius:14px;font-family:inherit;overflow:hidden;white-space:nowrap;-webkit-tap-highlight-color:transparent}
+.btn:active{filter:brightness(1.25)}
+.hint{margin-top:18px;color:#5b6474;font-size:13px;min-height:20px;text-align:center}
+.btn{background:#1f2937}
+.t{position:relative;display:inline-block}
+.t::before,.t::after{content:attr(data-t);position:absolute;left:0;top:0;width:100%;opacity:0;pointer-events:none}
+.btn:hover .t{animation:gl .38s steps(2) infinite}
+.btn:hover .t::before{opacity:.85;color:#22d3ee;animation:gl1 .38s steps(2) infinite}
+.btn:hover .t::after{opacity:.85;color:#f472b6;animation:gl2 .38s steps(2) infinite}
+@keyframes gl{25%{transform:translate(-2px,1px)}50%{transform:translate(2px,-1px)}75%{transform:translate(-1px,-2px)}}
+@keyframes gl1{50%{transform:translate(-4px,0);clip-path:inset(10% 0 55% 0)}}
+@keyframes gl2{50%{transform:translate(4px,0);clip-path:inset(60% 0 8% 0)}}
+</style>
+</head>
+<body>
+<div class="tag">09 · 故障抖动按钮</div>
+<div class="stage"><button class="btn"><span class="t" data-t="进入未来">进入未来</span></button></div>
+<p class="hint">点击按钮试试</p>
+<script>
+
+</script>
+</body>
+</html>

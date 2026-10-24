@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>36 · 泡泡破裂</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#0e1420;color:#e9f0fa;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;overflow-x:hidden;padding:20px}
+.tag{position:fixed;top:12px;left:14px;font-size:12px;color:#93a7c4;letter-spacing:1px;z-index:5}
+.stage{width:100%;max-width:380px;height:320px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.desc{margin-top:6px;font-size:14px;color:#9db2cc;text-align:center;line-height:1.9;padding:0 24px;max-width:380px}
+.pp{position:relative;width:210px;height:210px}
+.pp i{position:absolute;border:2px solid rgba(157,216,255,.85);border-radius:50%;background:radial-gradient(circle at 32% 28%,rgba(255,255,255,.55),transparent 55%);animation:pop 3.2s ease-out infinite}
+.pp i:nth-child(1){width:74px;height:74px;left:18px;top:62px}
+.pp i:nth-child(2){width:48px;height:48px;left:126px;top:28px;animation-delay:1.05s}
+.pp i:nth-child(3){width:58px;height:58px;left:82px;top:126px;animation-delay:2.1s}
+@keyframes pop{0%{transform:scale(.3);opacity:0}22%{opacity:1}72%{transform:scale(1);opacity:1}90%,100%{transform:scale(1.28);opacity:0}}
+</style>
+</head>
+<body>
+<div class="tag">36 · 泡泡破裂</div>
+<div class="stage"><div class="pp"><i></i><i></i><i></i></div></div>
+<p class="desc">泡泡越吹越大，"啵"地一下破掉。</p>
+
+</body>
+</html>

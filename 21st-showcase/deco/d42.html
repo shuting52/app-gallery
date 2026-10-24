@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>42 · 彩虹弧线描画</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#0e1420;color:#e9f0fa;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;overflow-x:hidden;padding:20px}
+.tag{position:fixed;top:12px;left:14px;font-size:12px;color:#93a7c4;letter-spacing:1px;z-index:5}
+.stage{width:100%;max-width:380px;height:320px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.desc{margin-top:6px;font-size:14px;color:#9db2cc;text-align:center;line-height:1.9;padding:0 24px;max-width:380px}
+.ra{width:270px;height:150px}
+.ra path{fill:none;stroke-width:11;stroke-linecap:round;stroke-dasharray:380;stroke-dashoffset:380;animation:draw 3.6s ease-in-out infinite}
+.ra .c1{stroke:#ff5f5f}.ra .c2{stroke:#ffb35f;animation-delay:.25s}.ra .c3{stroke:#5fff8f;animation-delay:.5s}
+@keyframes draw{0%{stroke-dashoffset:380}58%,82%{stroke-dashoffset:0}100%{stroke-dashoffset:380}}
+</style>
+</head>
+<body>
+<div class="tag">42 · 彩虹弧线描画</div>
+<div class="stage"><svg class="ra" viewBox="0 0 270 150"><path class="c1" d="M25,135 A110,110 0 0 1 245,135"/><path class="c2" d="M45,135 A90,90 0 0 1 225,135"/><path class="c3" d="M65,135 A70,70 0 0 1 205,135"/></svg></div>
+<p class="desc">彩虹弧线一笔一笔被画出来。</p>
+
+</body>
+</html>

@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="zh"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>38 · 雷达扫描</title>
+<style>*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{background:#0b0e14;color:#e8ecf4;font-family:system-ui,-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:26px;min-height:100vh;overflow:hidden}
+.tag{position:fixed;top:12px;left:14px;font-size:12px;color:#7d8699;letter-spacing:2px}
+.stage{width:220px;height:180px;display:flex;align-items:center;justify-content:center}
+.cap{font-size:13px;color:#98a1b3;letter-spacing:1px}
+@keyframes spin{to{transform:rotate(360deg)}}.rd{position:relative;width:112px;height:112px;border-radius:50%;border:2px solid #14532d;background:radial-gradient(circle,#052e16,#020617);overflow:hidden}.sw{position:absolute;inset:0;border-radius:50%;background:conic-gradient(rgba(34,197,94,.7),transparent 25%);animation:spin 2s linear infinite}.rd i{position:absolute;width:8px;height:8px;border-radius:50%;background:#4ade80;box-shadow:0 0 8px #4ade80;animation:twk2 2s ease-in-out infinite}.p1{left:30%;top:62%}.p2{left:64%;top:30%;animation-delay:1s}@keyframes twk2{0%,100%{opacity:.2}50%{opacity:1}}</style></head>
+<body>
+<div class="tag">38 · 雷达扫描</div>
+<div class="stage"><div class="rd"><div class="sw"></div><i class="p1"></i><i class="p2"></i></div></div>
+<p class="cap">雷达正在全图扫描…</p>
+
+</body></html>

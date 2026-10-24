@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>40 · 泡泡破裂</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;background:#0b0e14;display:flex;justify-content:center;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;color:#fff;overflow-x:hidden}
+.tag{position:fixed;top:10px;left:12px;z-index:60;font-size:12px;letter-spacing:.08em;color:#9aa3b8;background:rgba(0,0,0,.4);padding:4px 10px;border-radius:99px}
+.hero{position:relative;width:min(430px,100vw);min-height:100vh;min-height:100svh;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.bg{position:absolute;inset:0;overflow:hidden}
+.content{position:relative;z-index:5;text-align:center;padding:0 30px;width:100%}
+.kicker{font-size:12px;letter-spacing:.4em;text-indent:.4em;color:#ffe3ef;margin-bottom:16px;animation:kickIn 1s .45s both}
+.ttl{font-size:33px;line-height:1.45;font-weight:800;margin-bottom:16px}
+.sub{font-size:14px;line-height:1.9;color:rgba(255,255,255,.75);margin-bottom:30px;animation:fadeUp .9s .6s both}
+.cta{display:inline-block;padding:14px 44px;border-radius:999px;font-size:15px;font-weight:700;color:#fff;text-decoration:none;background:linear-gradient(135deg,#ff7ab0,#ffb35f);box-shadow:0 8px 30px rgba(255,140,170,.45);animation:fadeUp .9s .8s both;transition:transform .25s}
+.cta:active{transform:scale(.94)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+@keyframes kickIn{from{opacity:0}to{opacity:1}}
+@keyframes spin{to{transform:rotate(360deg)}}
+#cv{position:absolute;inset:0;width:100%;height:100%}
+.ttl{animation:bubblePop 1s .3s both}
+@keyframes bubblePop{0%{opacity:0;transform:scale(.2)}70%{opacity:1;transform:scale(1.1)}100%{opacity:1;transform:scale(1)}}
+</style>
+</head>
+<body>
+<div class="tag">40 · 泡泡破裂</div>
+<section class="hero">
+<div class="bg"><canvas id="cv"></canvas></div>
+<div class="content">
+<div class="kicker">亲子 · 泡泡乐园</div>
+<h1 class="ttl">童年是<br>五彩的泡泡</h1>
+<p class="sub">亲子活动与早教游戏，陪伴是最好的礼物。</p>
+<a class="cta" href="#">陪孩子玩</a>
+</div>
+</section>
+
+<script>
+const c=document.getElementById('cv'),x=c.getContext('2d');c.width=430;c.height=900;
+const cols=['#ff8ab0','#ffd35f','#8affc1','#8ac9ff','#d09aff'];
+const B=Array.from({length:26},()=>({x:Math.random()*430,y:Math.random()*900,r:6+Math.random()*20,vy:.6+Math.random()*1.6,ci:Math.floor(Math.random()*5),pop:0}));
+function loop(){x.clearRect(0,0,430,900);
+for(const b of B){b.y-=b.vy;if(b.pop>0){b.pop++;b.r+=2.4;if(b.pop>9){b.y=930;b.pop=0;b.r=6+Math.random()*20;}}
+else if(Math.random()<.006)b.pop=1;
+if(b.y<-40){b.y=930;b.x=Math.random()*430;}
+x.globalAlpha=b.pop>0?Math.max(1-b.pop/9,0)*.8:.75;
+x.strokeStyle=cols[b.ci];x.lineWidth=2.5;x.beginPath();x.arc(b.x,b.y,b.r,0,6.29);x.stroke();
+x.globalAlpha*=.5;x.fillStyle='#fff';x.beginPath();x.arc(b.x-b.r*.3,b.y-b.r*.3,b.r*.22,0,6.29);x.fill();}
+x.globalAlpha=1;requestAnimationFrame(loop);}
+setTimeout(function(){requestAnimationFrame(loop);},2200);
+</script>
+</body>
+</html>

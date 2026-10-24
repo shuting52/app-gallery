@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>14 · 波浪填充开关</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{min-height:100vh;display:flex;align-items:center;justify-content:center;background:#eaf4fb;font-family:system-ui,"PingFang SC","Microsoft YaHei",sans-serif;overflow-x:hidden}
+.t{position:fixed;top:14px;left:16px;font-size:13px;color:#8aa2b5;letter-spacing:1px}
+.card{display:flex;flex-direction:column;align-items:center;gap:22px;padding:44px 40px}
+.sw{position:relative;width:150px;height:64px;cursor:pointer}
+.sw input{position:absolute;inset:0;opacity:0;margin:0;cursor:pointer;z-index:5}
+.track{position:absolute;inset:0;border-radius:32px;background:#d7e6f2;box-shadow:inset 0 3px 9px rgba(90,130,165,.35);overflow:hidden}
+.fill{position:absolute;left:0;top:0;bottom:0;width:0;background:linear-gradient(#4fc3f7,#0288d1);transition:width .9s ease-in-out}
+.wave{position:absolute;left:0;right:-80px;top:-7px;height:14px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='14'%3E%3Cpath d='M0 8 Q10 2 20 8 T40 8 V14 H0 Z' fill='%234fc3f7'/%3E%3C/svg%3E") repeat-x;background-size:40px 14px;animation:waveslide 1.4s linear infinite}
+@keyframes waveslide{to{background-position-x:40px}}
+.sw input:checked~.track .fill{width:100%}
+.knob{position:absolute;top:7px;left:7px;width:50px;height:50px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff,#cfe6f5 75%);box-shadow:0 3px 10px rgba(40,100,140,.4);transition:left .9s ease-in-out;z-index:2}
+.sw input:checked~.knob{left:93px}
+.tag{font-size:14px;color:#4d6b82;text-align:center;line-height:1.7}
+.tag b{color:#0288d1;font-weight:600}
+</style>
+</head>
+<body>
+<div class="t">14 · 波浪填充开关</div>
+<div class="card">
+<label class="sw">
+<input type="checkbox" aria-label="波浪填充开关">
+<span class="track"><span class="fill"><span class="wave"></span></span></span><span class="knob"></span>
+</label>
+<div class="tag"><b>用途：注水式进度开关</b><br>液体波浪从左向右灌满轨道，波面持续起伏</div>
+</div>
+</body>
+</html>

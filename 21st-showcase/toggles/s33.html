@@ -1,0 +1,45 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>33 · 温度计上升开关</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;background:#f8fafc;color:#1e293b;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;max-width:430px;margin:0 auto;position:relative;overflow-x:hidden;padding:70px 24px 50px}
+.t{position:absolute;top:14px;left:16px;font-size:13px;color:#94a3b8;letter-spacing:2px}
+.u{font-size:14px;color:#64748b}
+input{display:none}
+.stage{cursor:pointer}
+.thermo{position:relative;width:120px;height:250px}
+.tube{position:absolute;left:50%;top:0;transform:translateX(-50%);width:36px;height:216px;border-radius:18px;background:#e2e8f0;border:3px solid #94a3b8;overflow:hidden}
+.mer{position:absolute;left:0;right:0;bottom:0;height:10%;background:linear-gradient(#fca5a5,#ef4444 60%,#dc2626);transition:height 1.4s cubic-bezier(.4,0,.3,1)}
+#sw:checked~.stage .mer{height:88%}
+.bulb{position:absolute;left:50%;bottom:6px;transform:translateX(-50%);width:58px;height:58px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fca5a5,#dc2626 70%);border:3px solid #94a3b8}
+.ticks{position:absolute;left:6px;top:14px;bottom:56px;display:flex;flex-direction:column;justify-content:space-between}
+.tk{width:18px;height:4px;border-radius:2px;background:#cbd5e1;transition:background .3s,box-shadow .3s;transition-delay:var(--d)}
+#sw:checked~.stage .tk{background:#ef4444;box-shadow:0 0 8px rgba(239,68,68,.8)}
+.tlab{position:absolute;right:4px;font-size:11px;color:#94a3b8}
+.tlab.hi{top:10px}.tlab.lo{bottom:52px}
+.ctl{display:flex;align-items:center;gap:10px}
+.sw{width:62px;height:34px;border-radius:17px;background:#cbd5e1;position:relative;cursor:pointer;transition:background .3s;flex:none}
+.knob{position:absolute;top:3px;left:3px;width:28px;height:28px;border-radius:50%;background:#fff;box-shadow:0 2px 5px rgba(0,0,0,.25);transition:left .35s cubic-bezier(.55,-.3,.3,1.4)}
+#sw:checked~.ctl .sw{background:#ef4444}
+#sw:checked~.ctl .sw .knob{left:31px}
+.st{font-size:13px;color:#94a3b8;width:34px}
+.st::before{content:"关"}
+#sw:checked~.ctl .st::before{content:"开";color:#dc2626}
+</style></head><body>
+<input type="checkbox" id="sw">
+<div class="t">33 · 温度计上升开关</div>
+<label class="stage" for="sw">
+<div class="thermo">
+<div class="tube"><div class="mer"></div></div>
+<div class="bulb"></div>
+<div class="ticks">
+<span class="tk" style="--d:1.15s"></span><span class="tk" style="--d:.95s"></span>
+<span class="tk" style="--d:.75s"></span><span class="tk" style="--d:.55s"></span>
+<span class="tk" style="--d:.35s"></span><span class="tk" style="--d:.15s"></span>
+</div>
+<span class="tlab hi">高</span><span class="tlab lo">低</span>
+</div></label>
+<div class="ctl"><label class="sw" for="sw"><span class="knob"></span></label><span class="st"></span></div>
+<p class="u">用途：取暖模式开关</p>
+</body></html>

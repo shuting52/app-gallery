@@ -1,0 +1,25 @@
+<!DOCTYPE html><html lang="zh"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>31 · DNA螺旋</title><style>
+*{margin:0;box-sizing:border-box}html,body{height:100%}
+body{font-family:system-ui,-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:#070a12;color:#fff;overflow:hidden}
+canvas{position:fixed;inset:0;width:100%;height:100%}
+.tag{position:fixed;top:12px;left:12px;z-index:10;font-size:12px;color:rgba(255,255,255,.8);background:rgba(0,0,0,.38);padding:4px 10px;border-radius:99px;backdrop-filter:blur(4px);letter-spacing:1px}
+.center{position:fixed;inset:0;z-index:5;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 34px;pointer-events:none}
+.center::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(0,0,0,.5),rgba(0,0,0,.12) 65%,transparent 80%)}
+h1{position:relative;font-size:30px;letter-spacing:6px;margin-bottom:12px;text-shadow:0 2px 14px rgba(0,0,0,.7)}
+p{position:relative;font-size:13px;color:rgba(255,255,255,.82);line-height:1.9;text-shadow:0 1px 8px rgba(0,0,0,.7);max-width:300px}
+
+</style></head><body>
+<div class="tag">31 · DNA螺旋</div>
+<canvas id="v"></canvas>
+<div class="center"><h1>生命密码</h1><p>基因检测品牌 · 双螺旋缓缓上升</p></div>
+<script>
+const c=document.getElementById('v'),g=c.getContext('2d');let W,H;const R=(a,b)=>a+Math.random()*(b-a);function rs(){W=c.width=innerWidth;H=c.height=innerHeight}addEventListener('resize',rs);rs();
+let t=0;(function f(){t+=.04;g.fillStyle='#060a12';g.fillRect(0,0,W,H);const cx=W/2;
+for(let y=-20;y<H+20;y+=26){const a=t+y/38,x1=cx+Math.sin(a)*86,x2=cx-Math.sin(a)*86;
+g.fillStyle='#4dc3ff';g.beginPath();g.arc(x1,y,5,0,7);g.fill();
+g.fillStyle='#ff7bd5';g.beginPath();g.arc(x2,y,5,0,7);g.fill();
+g.strokeStyle='rgba(160,200,255,.35)';g.lineWidth=2;g.beginPath();g.moveTo(x1,y);g.lineTo(x2,y);g.stroke()}
+requestAnimationFrame(f)})();
+</script></body></html>

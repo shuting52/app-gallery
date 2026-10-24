@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="zh"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>25 · 水滴落下</title>
+<style>*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{background:#0b0e14;color:#e8ecf4;font-family:system-ui,-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:26px;min-height:100vh;overflow:hidden}
+.tag{position:fixed;top:12px;left:14px;font-size:12px;color:#7d8699;letter-spacing:2px}
+.stage{width:220px;height:180px;display:flex;align-items:center;justify-content:center}
+.cap{font-size:13px;color:#98a1b3;letter-spacing:1px}
+@keyframes spin{to{transform:rotate(360deg)}}.dr{position:relative;width:60px;height:112px}.dp{position:absolute;top:0;left:50%;width:26px;height:26px;margin-left:-13px;background:#38bdf8;border-radius:50% 50% 50% 0;transform:rotate(-45deg);animation:drp 1.6s ease-in infinite}@keyframes drp{0%{top:0;opacity:0}15%{opacity:1}82%{top:62px;opacity:1}100%{top:70px;opacity:0}}.rp{position:absolute;bottom:8px;left:50%;width:44px;height:12px;margin-left:-22px;border:3px solid #38bdf8;border-radius:50%;animation:rpl 1.6s ease-out infinite}@keyframes rpl{0%,68%{transform:scale(.3);opacity:0}82%{opacity:.85}100%{transform:scale(1.25);opacity:0}}</style></head>
+<body>
+<div class="tag">25 · 水滴落下</div>
+<div class="stage"><div class="dr"><div class="dp"></div><div class="rp"></div></div></div>
+<p class="cap">水滴正在汇聚…</p>
+
+</body></html>

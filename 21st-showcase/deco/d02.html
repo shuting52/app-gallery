@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>02 · 缎带飘动</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#0e1420;color:#e9f0fa;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;overflow-x:hidden;padding:20px}
+.tag{position:fixed;top:12px;left:14px;font-size:12px;color:#93a7c4;letter-spacing:1px;z-index:5}
+.stage{width:100%;max-width:380px;height:320px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.desc{margin-top:6px;font-size:14px;color:#9db2cc;text-align:center;line-height:1.9;padding:0 24px;max-width:380px}
+.rib{position:relative;width:250px;height:44px;background:linear-gradient(135deg,#ff5f8f,#ff9d5f);border-radius:6px;box-shadow:0 8px 24px rgba(255,95,143,.35);animation:flut 2.4s ease-in-out infinite}
+.rib::before,.rib::after{content:"";position:absolute;top:0;border:22px solid transparent}
+.rib::before{left:-34px;border-right:16px solid #ff5f8f}
+.rib::after{right:-34px;border-left:16px solid #ff9d5f}
+@keyframes flut{0%,100%{transform:skewY(4deg) rotate(2deg)}50%{transform:skewY(-4deg) rotate(-2deg) translateY(-10px)}}
+</style>
+</head>
+<body>
+<div class="tag">02 · 缎带飘动</div>
+<div class="stage"><div class="rib"></div></div>
+<p class="desc">一条缎带在风里上下翻飞，永不停歇。</p>
+
+</body>
+</html>

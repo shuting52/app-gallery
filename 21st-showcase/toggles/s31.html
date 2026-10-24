@@ -1,0 +1,57 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>31 · 齿轮啮合开关</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;background:#f1f5f9;color:#1e293b;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;max-width:430px;margin:0 auto;position:relative;overflow-x:hidden;padding:70px 24px 50px}
+.t{position:absolute;top:14px;left:16px;font-size:13px;color:#94a3b8;letter-spacing:2px}
+.u{font-size:14px;color:#64748b}
+input{display:none}
+.stage{display:flex;flex-direction:column;align-items:center;gap:14px}
+.gears{cursor:pointer}
+.gear{transform-box:fill-box;transform-origin:center;animation:spin 6s linear infinite;animation-play-state:paused}
+.g2{animation-name:spinR;animation-delay:-.375s}
+#sw:checked~.stage .gear{animation-play-state:running}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes spinR{to{transform:rotate(-360deg)}}
+.ind{position:relative;width:140px;height:32px;border-radius:16px;background:#e2e8f0;overflow:hidden}
+.ot{position:absolute;top:0;width:70px;height:32px;line-height:32px;text-align:center;font-size:13px;color:#64748b;z-index:1}
+.ot.r{right:0}
+.blk{position:absolute;top:4px;left:4px;width:62px;height:24px;border-radius:12px;background:#94a3b8;transition:left .35s cubic-bezier(.5,1.4,.5,1),background .35s}
+#sw:checked~.stage .blk{left:74px;background:#22c55e}
+.ctl{display:flex;align-items:center;gap:10px}
+.sw{width:62px;height:34px;border-radius:17px;background:#cbd5e1;position:relative;cursor:pointer;transition:background .3s;flex:none}
+.knob{position:absolute;top:3px;left:3px;width:28px;height:28px;border-radius:50%;background:#fff;box-shadow:0 2px 5px rgba(0,0,0,.25);transition:left .35s cubic-bezier(.55,-.3,.3,1.4)}
+#sw:checked~.ctl .sw{background:#22c55e}
+#sw:checked~.ctl .sw .knob{left:31px}
+.st{font-size:13px;color:#94a3b8;width:34px}
+.st::before{content:"关"}
+#sw:checked~.ctl .st::before{content:"开";color:#16a34a}
+</style></head><body>
+<input type="checkbox" id="sw">
+<div class="t">31 · 齿轮啮合开关</div>
+<div class="stage">
+<label class="gears" for="sw">
+<svg viewBox="0 0 240 150" width="250" height="156">
+<defs><g id="gr">
+<g fill="#94a3b8">
+<rect x="-6" y="-48" width="12" height="15" rx="3"/>
+<rect x="-6" y="-48" width="12" height="15" rx="3" transform="rotate(45)"/>
+<rect x="-6" y="-48" width="12" height="15" rx="3" transform="rotate(90)"/>
+<rect x="-6" y="-48" width="12" height="15" rx="3" transform="rotate(135)"/>
+<rect x="-6" y="-48" width="12" height="15" rx="3" transform="rotate(180)"/>
+<rect x="-6" y="-48" width="12" height="15" rx="3" transform="rotate(225)"/>
+<rect x="-6" y="-48" width="12" height="15" rx="3" transform="rotate(270)"/>
+<rect x="-6" y="-48" width="12" height="15" rx="3" transform="rotate(315)"/>
+</g>
+<circle r="35" fill="#94a3b8"/><circle r="35" fill="none" stroke="#64748b" stroke-width="2"/>
+<circle r="14" fill="#e2e8f0"/><circle r="6" fill="#475569"/>
+</g></defs>
+<g transform="translate(76,75)"><use href="#gr" class="gear g1"/></g>
+<g transform="translate(164,75)"><use href="#gr" class="gear g2"/></g>
+</svg></label>
+<div class="ind"><span class="ot">关</span><span class="blk"></span><span class="ot r">开</span></div>
+</div>
+<div class="ctl"><label class="sw" for="sw"><span class="knob"></span></label><span class="st"></span></div>
+<p class="u">用途：省电模式开关</p>
+</body></html>

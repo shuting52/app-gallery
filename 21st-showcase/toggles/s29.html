@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="zh"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>29 · 纸牌翻面开关</title>
+<style>*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{background:#0b0e14;color:#e8ecf4;font-family:system-ui,-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;min-height:100vh;overflow:hidden}
+.tag{position:fixed;top:12px;left:14px;font-size:12px;color:#7d8699;letter-spacing:2px}
+.cap{font-size:13px;color:#98a1b3;letter-spacing:1px}
+.use{font-size:13px;color:#7d8699;border:1px solid rgba(255,255,255,.12);border-radius:999px;padding:6px 16px;background:rgba(255,255,255,.03)}
+.hid{position:absolute;opacity:0;pointer-events:none}
+.cardbtn{cursor:pointer;display:block;perspective:700px;padding:10px 40px}
+.card{width:132px;height:184px;position:relative;transform-style:preserve-3d;transition:transform .85s cubic-bezier(.4,.1,.3,1.15)}
+#sw:checked+.cardbtn .card{transform:rotateY(180deg)}
+.cf{position:absolute;inset:0;border-radius:12px;backface-visibility:hidden;background:#f7f8fb;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;box-shadow:0 12px 28px rgba(0,0,0,.5)}
+.cf .r{font-size:26px;font-weight:800}
+.cf .s{font-size:56px;line-height:1}
+.black{color:#232838}
+.red{color:#d63a4e;transform:rotateY(180deg)}
+#sw:checked+.cardbtn .red{animation:cardGlow 1.8s ease-in-out infinite}
+@keyframes cardGlow{0%,100%{box-shadow:0 12px 28px rgba(0,0,0,.5)}50%{box-shadow:0 12px 34px rgba(214,58,78,.55)}}
+.st{font-size:14px;color:#dfe5f0;letter-spacing:1px}
+.st .a{display:none;color:#ff8ba0}
+#sw:checked~.st .a{display:inline}
+#sw:checked~.st .b{display:none}</style></head>
+<body>
+<div class="tag">29 · 纸牌翻面开关</div>
+<input type="checkbox" id="sw" class="hid">
+<label for="sw" class="cardbtn">
+<div class="card">
+<div class="cf black"><span class="r">A</span><span class="s">♠</span></div>
+<div class="cf red"><span class="r">A</span><span class="s">♥</span></div>
+</div>
+</label>
+<div class="st"><span class="a">翻出红桃 · 牌局开</span><span class="b">翻出黑桃 · 牌局关</span></div>
+<p class="cap">点按纸牌，翻个面</p>
+<p class="use">用途：红黑牌局开关</p>
+</body></html>

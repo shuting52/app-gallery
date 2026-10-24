@@ -1,0 +1,27 @@
+<!DOCTYPE html><html lang="zh"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>38 · 散景光斑</title><style>
+*{margin:0;box-sizing:border-box}html,body{height:100%}
+body{font-family:system-ui,-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:#070a12;color:#fff;overflow:hidden}
+canvas{position:fixed;inset:0;width:100%;height:100%}
+.tag{position:fixed;top:12px;left:12px;z-index:10;font-size:12px;color:rgba(255,255,255,.8);background:rgba(0,0,0,.38);padding:4px 10px;border-radius:99px;backdrop-filter:blur(4px);letter-spacing:1px}
+.center{position:fixed;inset:0;z-index:5;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 34px;pointer-events:none}
+.center::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(0,0,0,.5),rgba(0,0,0,.12) 65%,transparent 80%)}
+h1{position:relative;font-size:30px;letter-spacing:6px;margin-bottom:12px;text-shadow:0 2px 14px rgba(0,0,0,.7)}
+p{position:relative;font-size:13px;color:rgba(255,255,255,.82);line-height:1.9;text-shadow:0 1px 8px rgba(0,0,0,.7);max-width:300px}
+
+</style></head><body>
+<div class="tag">38 · 散景光斑</div>
+<canvas id="v"></canvas>
+<div class="center"><h1>梦幻散景</h1><p>婚庆策划背景 · 光斑虚实漂移</p></div>
+<script>
+const c=document.getElementById('v'),g=c.getContext('2d');let W,H;const R=(a,b)=>a+Math.random()*(b-a);function rs(){W=c.width=innerWidth;H=c.height=innerHeight}addEventListener('resize',rs);rs();
+const B=[];const C=['#ffb3c8','#b3d9ff','#ffe6a8','#d3b3ff'];
+for(let i=0;i<24;i++)B.push({x:R(0,W),y:R(0,H),r:R(18,66),vx:R(-.3,.3),vy:R(-.25,.25),c:C[(Math.random()*4)|0],a:R(.12,.3),p:R(0,6.3)});
+(function f(t){const gr=g.createLinearGradient(0,0,0,H);gr.addColorStop(0,'#171021');gr.addColorStop(1,'#0b0912');g.fillStyle=gr;g.fillRect(0,0,W,H);
+for(const b of B){b.x+=b.vx;b.y+=b.vy;if(b.x<-80)b.x=W+80;if(b.x>W+80)b.x=-80;if(b.y<-80)b.y=H+80;if(b.y>H+80)b.y=-80;
+const a=b.a*(.7+.3*Math.sin(t/1200+b.p));
+const rg=g.createRadialGradient(b.x,b.y,0,b.x,b.y,b.r);rg.addColorStop(0,b.c);rg.addColorStop(.7,b.c+'88');rg.addColorStop(1,'transparent');
+g.globalAlpha=a*2.4;g.fillStyle=rg;g.beginPath();g.arc(b.x,b.y,b.r,0,7);g.fill()}
+g.globalAlpha=1;requestAnimationFrame(f)})(0);
+</script></body></html>

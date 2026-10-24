@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="zh"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>26 · 时钟转动</title>
+<style>*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{background:#0b0e14;color:#e8ecf4;font-family:system-ui,-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:26px;min-height:100vh;overflow:hidden}
+.tag{position:fixed;top:12px;left:14px;font-size:12px;color:#7d8699;letter-spacing:2px}
+.stage{width:220px;height:180px;display:flex;align-items:center;justify-content:center}
+.cap{font-size:13px;color:#98a1b3;letter-spacing:1px}
+@keyframes spin{to{transform:rotate(360deg)}}.ck{position:relative;width:92px;height:92px;border:4px solid #1e293b;border-radius:50%;background:#0f1522}.ck .h,.ck .m,.ck .s{position:absolute;left:50%;bottom:50%;transform-origin:50% 100%;border-radius:3px}.ck .h{width:6px;height:24px;margin-left:-3px;background:#e8ecf4;animation:spin 12s linear infinite}.ck .m{width:4px;height:34px;margin-left:-2px;background:#94a3b8;animation:spin 6s linear infinite}.ck .s{width:2px;height:38px;margin-left:-1px;background:#f43f5e;animation:spin 2s linear infinite}.ck .ct{position:absolute;left:50%;top:50%;width:10px;height:10px;margin:-5px 0 0 -5px;border-radius:50%;background:#f43f5e}</style></head>
+<body>
+<div class="tag">26 · 时钟转动</div>
+<div class="stage"><div class="ck"><div class="h"></div><div class="m"></div><div class="s"></div><div class="ct"></div></div></div>
+<p class="cap">时针正在赶路…</p>
+
+</body></html>

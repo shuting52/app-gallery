@@ -1,0 +1,17 @@
+<!DOCTYPE html><html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>06 · 图片悬停缩放</title><style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;background:#0b0e14;color:#e8edf5;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;display:flex;align-items:center;justify-content:center;padding:28px 14px}
+.tag{position:fixed;top:10px;left:12px;font-size:12px;color:#8b93a7;letter-spacing:.06em;z-index:50}
+.stage{width:100%;max-width:380px}
+.card{background:#141a26;border:1px solid #232c3f;border-radius:18px;overflow:hidden;position:relative}
+.pic{height:150px}
+.card h3{font-size:17px;padding:16px 18px 6px}
+.card p{font-size:13px;color:#9aa4b8;padding:0 18px 18px;line-height:1.7}
+.g1{background:linear-gradient(135deg,#5b8cff,#9b5bff)}
+.g2{background:linear-gradient(135deg,#22e0ff,#2b6cff)}
+.g3{background:linear-gradient(135deg,#ff8a5b,#ff5b8c)}
+.g4{background:linear-gradient(135deg,#3ddc84,#22b8e0)}
+.g5{background:linear-gradient(135deg,#b45bff,#5b8cff)}
+.g6{background:linear-gradient(135deg,#ffd166,#ff7a5b)}
+.pic{overflow:hidden}.pic i{display:block;height:100%;transition:transform .6s cubic-bezier(.2,.7,.3,1)}.card:hover .pic i{transform:scale(1.18)}
+</style></head><body><div class="tag">06 · 图片悬停缩放</div><div class="stage"><div class="card"><div class="pic"><i class="g2"></i></div><h3>冰川徒步之旅</h3><p>悬停时图片缓缓推近，细节尽收眼底。</p></div></div><script></script></body></html>

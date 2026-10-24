@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>20 · 数据流</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;background:#0b0e14;display:flex;justify-content:center;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;color:#fff;overflow-x:hidden}
+.tag{position:fixed;top:10px;left:12px;z-index:60;font-size:12px;letter-spacing:.08em;color:#9aa3b8;background:rgba(0,0,0,.4);padding:4px 10px;border-radius:99px}
+.hero{position:relative;width:min(430px,100vw);min-height:100vh;min-height:100svh;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.bg{position:absolute;inset:0;overflow:hidden}
+.content{position:relative;z-index:5;text-align:center;padding:0 30px;width:100%}
+.kicker{font-size:12px;letter-spacing:.4em;text-indent:.4em;color:#9fffd0;margin-bottom:16px;animation:kickIn 1s .45s both}
+.ttl{font-size:33px;line-height:1.45;font-weight:800;margin-bottom:16px}
+.sub{font-size:14px;line-height:1.9;color:rgba(255,255,255,.75);margin-bottom:30px;animation:fadeUp .9s .6s both}
+.cta{display:inline-block;padding:14px 44px;border-radius:999px;font-size:15px;font-weight:700;color:#fff;text-decoration:none;background:linear-gradient(135deg,#00c389,#0a3dff);box-shadow:0 8px 30px rgba(0,220,150,.4);animation:fadeUp .9s .8s both;transition:transform .25s}
+.cta:active{transform:scale(.94)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+@keyframes kickIn{from{opacity:0}to{opacity:1}}
+@keyframes spin{to{transform:rotate(360deg)}}
+#cv{position:absolute;inset:0;width:100%;height:100%}
+.ttl{animation:glitch 2.6s .5s both}
+@keyframes glitch{0%{opacity:0}6%{opacity:1;transform:translate(0)}8%{transform:translate(-6px,2px);text-shadow:3px 0 #ff2e88,-3px 0 #00e0ff}11%{transform:translate(5px,-2px);text-shadow:-3px 0 #ff2e88,3px 0 #00e0ff}14%{transform:none;text-shadow:none}78%{transform:none}80%{transform:translate(4px,1px);text-shadow:3px 0 #ff2e88,-3px 0 #00e0ff}83%{transform:none;text-shadow:none}100%{opacity:1}}
+</style>
+</head>
+<body>
+<div class="tag">20 · 数据流</div>
+<section class="hero">
+<div class="bg"><canvas id="cv"></canvas></div>
+<div class="content">
+<div class="kicker">科技 · 量子终端</div>
+<h1 class="ttl">未来已来，<br>只是分布不均</h1>
+<p class="sub">前沿科技资讯与极客装备，每日深度解读。</p>
+<a class="cta" href="#">进入终端</a>
+</div>
+</section>
+
+<script>
+const c=document.getElementById('cv'),x=c.getContext('2d');c.width=430;c.height=900;
+const cols=Array.from({length:22},(_,i)=>({x:i*20+6,y:Math.random()*-900,s:6+Math.random()*10}));
+x.fillStyle='#04140c';x.fillRect(0,0,430,900);
+function loop(){x.fillStyle='rgba(4,20,12,.12)';x.fillRect(0,0,430,900);x.fillStyle='#37ff9e';x.font='13px monospace';
+for(const q of cols){x.fillText(Math.random()>.5?'1':'0',q.x,q.y);q.y+=q.s;if(q.y>910){q.y=-20;q.s=6+Math.random()*10;}}
+requestAnimationFrame(loop);}
+setTimeout(function(){requestAnimationFrame(loop);},2200);
+</script>
+</body>
+</html>

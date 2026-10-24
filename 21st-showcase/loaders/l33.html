@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="zh"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>33 · 螺旋光点</title>
+<style>*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{background:#0b0e14;color:#e8ecf4;font-family:system-ui,-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:26px;min-height:100vh;overflow:hidden}
+.tag{position:fixed;top:12px;left:14px;font-size:12px;color:#7d8699;letter-spacing:2px}
+.stage{width:220px;height:180px;display:flex;align-items:center;justify-content:center}
+.cap{font-size:13px;color:#98a1b3;letter-spacing:1px}
+@keyframes spin{to{transform:rotate(360deg)}}.spc{width:200px;height:180px}</style></head>
+<body>
+<div class="tag">33 · 螺旋光点</div>
+<div class="stage"><canvas class="spc" width="200" height="180"></canvas></div>
+<p class="cap">光点正在盘旋上升…</p>
+<script>var c=document.querySelector('.spc'),x=c.getContext('2d'),t=0;(function f(){x.clearRect(0,0,200,180);t+=.06;for(var i=0;i<60;i++){var a=i*.35+t,r=4+i*1.15,px=100+Math.cos(a)*r,py=90+Math.sin(a)*r*.7;x.beginPath();x.arc(px,py,2.4,0,7);x.fillStyle='hsla('+(190+i*3)+',90%,65%,'+(.25+.75*i/60).toFixed(2)+')';x.fill()}requestAnimationFrame(f)})();</script>
+</body></html>

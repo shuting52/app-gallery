@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>05 · 流体渐变</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;background:#0b0e14;display:flex;justify-content:center;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;color:#fff;overflow-x:hidden}
+.tag{position:fixed;top:10px;left:12px;z-index:60;font-size:12px;letter-spacing:.08em;color:#9aa3b8;background:rgba(0,0,0,.4);padding:4px 10px;border-radius:99px}
+.hero{position:relative;width:min(430px,100vw);min-height:100vh;min-height:100svh;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.bg{position:absolute;inset:0;overflow:hidden}
+.content{position:relative;z-index:5;text-align:center;padding:0 30px;width:100%}
+.kicker{font-size:12px;letter-spacing:.4em;text-indent:.4em;color:#ffc7e8;margin-bottom:16px;animation:kickIn 1s .45s both}
+.ttl{font-size:33px;line-height:1.45;font-weight:800;margin-bottom:16px}
+.sub{font-size:14px;line-height:1.9;color:rgba(255,255,255,.75);margin-bottom:30px;animation:fadeUp .9s .6s both}
+.cta{display:inline-block;padding:14px 44px;border-radius:999px;font-size:15px;font-weight:700;color:#fff;text-decoration:none;background:linear-gradient(135deg,#ff5f9e,#b45fff);box-shadow:0 8px 30px rgba(255,95,158,.45);animation:fadeUp .9s .8s both;transition:transform .25s}
+.cta:active{transform:scale(.94)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+@keyframes kickIn{from{opacity:0}to{opacity:1}}
+@keyframes spin{to{transform:rotate(360deg)}}
+.fl{position:absolute;inset:-35%;background:conic-gradient(from 0deg,#ff5f9e,#ffb35f,#5fffb0,#5fb4ff,#b45fff,#ff5f9e);filter:blur(90px);opacity:.55;animation:spin 26s linear infinite}
+.ttl{animation:blurIn 1.2s .3s both}
+@keyframes blurIn{from{opacity:0;filter:blur(16px);transform:translateY(22px)}to{opacity:1;filter:blur(0);transform:none}}
+</style>
+</head>
+<body>
+<div class="tag">05 · 流体渐变</div>
+<section class="hero">
+<div class="bg"><div class="fl"></div></div>
+<div class="content">
+<div class="kicker">音乐 · 声波漫游</div>
+<h1 class="ttl">让耳朵<br>去旅行</h1>
+<p class="sub">独立音乐人的私藏歌单，每日一曲新发现。</p>
+<a class="cta" href="#">戴上耳机</a>
+</div>
+</section>
+
+</body>
+</html>

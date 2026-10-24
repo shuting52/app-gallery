@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="zh"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>18 · 心跳线</title>
+<style>*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{background:#0b0e14;color:#e8ecf4;font-family:system-ui,-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:26px;min-height:100vh;overflow:hidden}
+.tag{position:fixed;top:12px;left:14px;font-size:12px;color:#7d8699;letter-spacing:2px}
+.stage{width:220px;height:180px;display:flex;align-items:center;justify-content:center}
+.cap{font-size:13px;color:#98a1b3;letter-spacing:1px}
+@keyframes spin{to{transform:rotate(360deg)}}.ecg{width:200px;height:60px}.ecg polyline{fill:none;stroke:#f43f5e;stroke-width:3;stroke-linejoin:round;stroke-linecap:round;stroke-dasharray:320;stroke-dashoffset:320;animation:ecg 2s linear infinite}@keyframes ecg{0%{stroke-dashoffset:0}45%{stroke-dashoffset:-320}55%{stroke-dashoffset:320}100%{stroke-dashoffset:0}}</style></head>
+<body>
+<div class="tag">18 · 心跳线</div>
+<div class="stage"><svg class="ecg" viewBox="0 0 200 60"><polyline points="0,30 40,30 55,30 65,8 78,52 90,30 120,30 130,22 140,38 150,30 200,30"/></svg></div>
+<p class="cap">小心脏正在起搏…</p>
+
+</body></html>

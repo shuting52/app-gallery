@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>24 · 光斑扫过</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#0e1420;color:#e9f0fa;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;overflow-x:hidden;padding:20px}
+.tag{position:fixed;top:12px;left:14px;font-size:12px;color:#93a7c4;letter-spacing:1px;z-index:5}
+.stage{width:100%;max-width:380px;height:320px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.desc{margin-top:6px;font-size:14px;color:#9db2cc;text-align:center;line-height:1.9;padding:0 24px;max-width:380px}
+.sw{position:relative;width:250px;height:126px;border-radius:16px;background:linear-gradient(135deg,#232c44,#161d31);display:flex;align-items:center;justify-content:center;color:#e9f0fa;font-size:17px;letter-spacing:3px;overflow:hidden;box-shadow:0 12px 30px rgba(0,0,0,.35)}
+.sw::after{content:"";position:absolute;top:-20%;bottom:-20%;width:74px;background:linear-gradient(100deg,transparent,rgba(255,255,255,.38),transparent);transform:skewX(-18deg);animation:sweep 2.8s ease-in-out infinite}
+@keyframes sweep{0%{left:-100px}62%,100%{left:280px}}
+</style>
+</head>
+<body>
+<div class="tag">24 · 光斑扫过</div>
+<div class="stage"><div class="sw">质感卡片</div></div>
+<p class="desc">一道光斑扫过卡片，像被手电照了一下。</p>
+
+</body>
+</html>

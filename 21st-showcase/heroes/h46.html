@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>46 · 闪烁格子</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;background:#0b0e14;display:flex;justify-content:center;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;color:#fff;overflow-x:hidden}
+.tag{position:fixed;top:10px;left:12px;z-index:60;font-size:12px;letter-spacing:.08em;color:#9aa3b8;background:rgba(0,0,0,.4);padding:4px 10px;border-radius:99px}
+.hero{position:relative;width:min(430px,100vw);min-height:100vh;min-height:100svh;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.bg{position:absolute;inset:0;overflow:hidden}
+.content{position:relative;z-index:5;text-align:center;padding:0 30px;width:100%}
+.kicker{font-size:12px;letter-spacing:.4em;text-indent:.4em;color:#d8d2c4;margin-bottom:16px;animation:kickIn 1s .45s both}
+.ttl{font-size:33px;line-height:1.45;font-weight:800;margin-bottom:16px}
+.sub{font-size:14px;line-height:1.9;color:rgba(255,255,255,.75);margin-bottom:30px;animation:fadeUp .9s .6s both}
+.cta{display:inline-block;padding:14px 44px;border-radius:999px;font-size:15px;font-weight:700;color:#fff;text-decoration:none;background:linear-gradient(135deg,#4a4842,#8a8474);box-shadow:0 8px 30px rgba(150,140,115,.45);animation:fadeUp .9s .8s both;transition:transform .25s}
+.cta:active{transform:scale(.94)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+@keyframes kickIn{from{opacity:0}to{opacity:1}}
+@keyframes spin{to{transform:rotate(360deg)}}
+.cells{position:absolute;inset:0;display:grid;grid-template-columns:repeat(5,1fr);grid-template-rows:repeat(8,1fr);gap:3px;padding:14px;opacity:.4}
+.gc{background:#8a8474;border-radius:4px;animation:gcB 2.2s ease-in-out infinite}
+@keyframes gcB{0%,100%{opacity:.25}50%{opacity:1;background:#e8e2d2}}
+.tl{display:inline-block;opacity:0;animation:tileIn .6s both}
+@keyframes tileIn{from{opacity:0;transform:scale(.35) rotate(10deg)}to{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<div class="tag">46 · 闪烁格子</div>
+<section class="hero">
+<div class="bg"><div class="cells"><i class="gc" style="animation-delay:1.48s"></i><i class="gc" style="animation-delay:1.50s"></i><i class="gc" style="animation-delay:1.21s"></i><i class="gc" style="animation-delay:0.76s"></i><i class="gc" style="animation-delay:0.91s"></i><i class="gc" style="animation-delay:0.24s"></i><i class="gc" style="animation-delay:0.21s"></i><i class="gc" style="animation-delay:1.23s"></i><i class="gc" style="animation-delay:0.79s"></i><i class="gc" style="animation-delay:1.81s"></i><i class="gc" style="animation-delay:0.66s"></i><i class="gc" style="animation-delay:0.44s"></i><i class="gc" style="animation-delay:1.61s"></i><i class="gc" style="animation-delay:0.47s"></i><i class="gc" style="animation-delay:1.09s"></i><i class="gc" style="animation-delay:1.25s"></i><i class="gc" style="animation-delay:0.22s"></i><i class="gc" style="animation-delay:0.00s"></i><i class="gc" style="animation-delay:1.13s"></i><i class="gc" style="animation-delay:1.89s"></i><i class="gc" style="animation-delay:1.29s"></i><i class="gc" style="animation-delay:1.36s"></i><i class="gc" style="animation-delay:1.09s"></i><i class="gc" style="animation-delay:1.31s"></i><i class="gc" style="animation-delay:0.01s"></i><i class="gc" style="animation-delay:0.91s"></i><i class="gc" style="animation-delay:1.37s"></i><i class="gc" style="animation-delay:0.68s"></i><i class="gc" style="animation-delay:0.74s"></i><i class="gc" style="animation-delay:0.59s"></i><i class="gc" style="animation-delay:0.41s"></i><i class="gc" style="animation-delay:1.22s"></i><i class="gc" style="animation-delay:0.81s"></i><i class="gc" style="animation-delay:1.68s"></i><i class="gc" style="animation-delay:0.05s"></i><i class="gc" style="animation-delay:1.13s"></i><i class="gc" style="animation-delay:1.61s"></i><i class="gc" style="animation-delay:0.03s"></i><i class="gc" style="animation-delay:1.38s"></i><i class="gc" style="animation-delay:1.22s"></i></div></div>
+<div class="content">
+<div class="kicker">摄影后期 · 像素暗房</div>
+<h1 class="ttl"><span class="tl" style="animation-delay:0.25s">在</span><span class="tl" style="animation-delay:0.29s">暗</span><span class="tl" style="animation-delay:0.34s">房</span><span class="tl" style="animation-delay:0.39s">里</span><span class="tl" style="animation-delay:0.43s">，</span><br><span class="tl" style="animation-delay:0.47s">点</span><span class="tl" style="animation-delay:0.52s">亮</span><span class="tl" style="animation-delay:0.56s">照</span><span class="tl" style="animation-delay:0.61s">片</span></h1>
+<p class="sub">修图预设与后期教程，手机也能出大片。</p>
+<a class="cta" href="#">领取预设</a>
+</div>
+</section>
+
+</body>
+</html>

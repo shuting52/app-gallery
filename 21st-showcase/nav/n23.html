@@ -1,0 +1,21 @@
+<!DOCTYPE html><html lang="zh"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>23 · 水波纹点击导航</title><style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;background:#0d1220;color:#eef2fa;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:58px 14px 60px;overflow-x:hidden}
+.tag{position:fixed;top:12px;left:14px;font-size:12px;color:#7c86a0;letter-spacing:.08em;z-index:99}
+.stage{width:100%;max-width:398px;display:flex;flex-direction:column;gap:16px;align-items:center}
+.hint{font-size:12px;color:#7c86a0;text-align:center;line-height:1.7}
+button{font-family:inherit;border:0;background:none;color:inherit;cursor:pointer}
+.ripnav{display:flex;width:100%;background:#141a2e;border-radius:18px;padding:10px 6px}
+.ripnav .ni{flex:1;position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:center;gap:4px;color:#8b93a7;font-size:11px;padding:10px 0;border-radius:12px}
+.ripnav .ic{font-size:22px}
+.ripnav .ni.active{color:#fff;background:#202a48}
+.rip{position:absolute;border-radius:50%;background:rgba(125,249,255,.45);transform:scale(0);animation:ripGo .6s ease-out forwards;pointer-events:none}
+@keyframes ripGo{to{transform:scale(4);opacity:0}}</style></head><body>
+<div class="tag">23 · 水波纹点击导航</div>
+<div class="stage"><nav class="ripnav"><button class="ni active"><span class="ic">🏠</span><span class="lb">首页</span></button><button class="ni"><span class="ic">🔍</span><span class="lb">发现</span></button><button class="ni"><span class="ic">💬</span><span class="lb">消息</span></button><button class="ni"><span class="ic">👤</span><span class="lb">我的</span></button></nav><div class="hint">点击切换试试</div></div>
+<script>document.querySelectorAll('.ripnav .ni').forEach(function(e){e.addEventListener('click',function(ev){
+document.querySelectorAll('.ripnav .ni').forEach(function(x){x.classList.remove('active')});e.classList.add('active');
+var b=e.getBoundingClientRect();var r=document.createElement('span');r.className='rip';var s=Math.max(b.width,b.height);
+r.style.width=r.style.height=s+'px';r.style.left=(ev.clientX-b.left-s/2)+'px';r.style.top=(ev.clientY-b.top-s/2)+'px';
+e.appendChild(r);setTimeout(function(){r.remove()},650)})});</script></body></html>

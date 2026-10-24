@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="zh"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>25 · 跷跷板开关</title>
+<style>*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{background:#0b0e14;color:#e8ecf4;font-family:system-ui,-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;min-height:100vh;overflow:hidden}
+.tag{position:fixed;top:12px;left:14px;font-size:12px;color:#7d8699;letter-spacing:2px}
+.cap{font-size:13px;color:#98a1b3;letter-spacing:1px}
+.use{font-size:13px;color:#7d8699;border:1px solid rgba(255,255,255,.12);border-radius:999px;padding:6px 16px;background:rgba(255,255,255,.03)}
+.hid{position:absolute;opacity:0;pointer-events:none}
+.see{position:relative;width:250px;height:190px;cursor:pointer;display:block}
+.base{position:absolute;left:15px;right:15px;bottom:0;height:10px;border-radius:5px;background:#2b3350}
+.ful{position:absolute;left:50%;bottom:10px;width:0;height:0;margin-left:-30px;border-left:30px solid transparent;border-right:30px solid transparent;border-bottom:64px solid #4a5878}
+.plank{position:absolute;left:15px;top:96px;width:220px;height:16px;border-radius:8px;background:linear-gradient(180deg,#7f8db0,#5b6a8a);transform:rotate(9deg);transform-origin:110px 8px;transition:transform .7s cubic-bezier(.34,1.56,.64,1);box-shadow:0 6px 14px rgba(0,0,0,.4)}
+#sw:checked+.see .plank{transform:rotate(-9deg)}
+.seat{position:absolute;top:-34px;font-style:normal;font-size:12px;font-weight:700;letter-spacing:1px;color:#8a93a8;background:#1a2130;border:1px solid #39415a;padding:3px 10px;border-radius:8px;transition:color .4s,border-color .4s}
+.seat.on{left:6px}.seat.off{right:6px;color:#ff9d8a;border-color:#ff9d8a}
+#sw:checked+.see .seat.on{color:#7cf5b8;border-color:#7cf5b8}
+#sw:checked+.see .seat.off{color:#8a93a8;border-color:#39415a}
+.led{position:absolute;left:22px;top:3px;width:10px;height:10px;border-radius:50%;background:#3a4356}
+#sw:checked+.see .led{background:#7cf5b8;box-shadow:0 0 10px 3px rgba(124,245,184,.8);animation:ledBlink 1.2s ease-in-out infinite}
+@keyframes ledBlink{0%,100%{opacity:1}50%{opacity:.35}}
+.st{font-size:14px;color:#dfe5f0;letter-spacing:1px}
+.st .a{display:none;color:#7cf5b8}
+#sw:checked~.st .a{display:inline}
+#sw:checked~.st .b{display:none}</style></head>
+<body>
+<div class="tag">25 · 跷跷板开关</div>
+<input type="checkbox" id="sw" class="hid">
+<label for="sw" class="see">
+<div class="ful"></div>
+<div class="plank"><b class="seat on">ON</b><b class="seat off">OFF</b><i class="led"></i></div>
+<div class="base"></div>
+</label>
+<div class="st"><span class="a">左边落地 · 起床模式开</span><span class="b">右边落地 · 还在赖床</span></div>
+<p class="cap">点按跷跷板，翻个面</p>
+<p class="use">用途：儿童房起床模式开关</p>
+</body></html>

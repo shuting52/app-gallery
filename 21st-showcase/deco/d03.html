@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>03 · 波浪分割线</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#0e1420;color:#e9f0fa;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;overflow-x:hidden;padding:20px}
+.tag{position:fixed;top:12px;left:14px;font-size:12px;color:#93a7c4;letter-spacing:1px;z-index:5}
+.stage{width:100%;max-width:380px;height:320px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.desc{margin-top:6px;font-size:14px;color:#9db2cc;text-align:center;line-height:1.9;padding:0 24px;max-width:380px}
+.wv{width:320px;height:64px}
+.wv path{fill:none;stroke-width:3;stroke-linecap:round}
+.w1{stroke:#4dd8ff;animation:wx 2.6s linear infinite}
+.w2{stroke:rgba(124,92,255,.7);animation:wx 4s linear infinite reverse}
+@keyframes wx{to{transform:translateX(-160px)}}
+</style>
+</head>
+<body>
+<div class="tag">03 · 波浪分割线</div>
+<div class="stage"><svg class="wv" viewBox="0 0 320 64" preserveAspectRatio="none"><path class="w1" d="M-320,30 q20,-18 40,0 t40,0 q20,-18 40,0 t40,0 q20,-18 40,0 t40,0 q20,-18 40,0 t40,0 q20,-18 40,0 t40,0 q20,-18 40,0 t40,0 q20,-18 40,0 t40,0 q20,-18 40,0 t40,0 q20,-18 40,0 t40,0 q20,-18 40,0 t40,0 q20,-18 40,0 t40,0 q20,-18 40,0 t40,0 q20,-18 40,0 t40,0 q20,-18 40,0 t40,0 q20,-18 40,0 t40,0 q20,-18 40,0 t40,0 q20,-18 40,0 t40,0 q20,-18 40,0 t40,0 q20,-18 40,0 t40,0 q20,-18 40,0 t40,0 q20,-18 40,0 t40,0 q20,-18 40,0 t40,0 q20,-18 40,0 t40,0 q20,-18 40,0 t40,0 "/><path class="w2" d="M-320,30 q20,-18 40,0 t40,0 q20,-18 40,0 t40,0 q20,-18 40,0 t40,0 q20,-18 40,0 t40,0 q20,-18 40,0 t40,0 q20,-18 40,0 t40,0 q20,-18 40,0 t40,0 q20,-18 40,0 t40,0 q20,-18 40,0 t40,0 q20,-18 40,0 t40,0 q20,-18 40,0 t40,0 q20,-18 40,0 t40,0 q20,-18 40,0 t40,0 q20,-18 40,0 t40,0 q20,-18 40,0 t40,0 q20,-18 40,0 t40,0 q20,-18 40,0 t40,0 q20,-18 40,0 t40,0 q20,-18 40,0 t40,0 q20,-18 40,0 t40,0 q20,-18 40,0 t40,0 q20,-18 40,0 t40,0 q20,-18 40,0 t40,0 q20,-18 40,0 t40,0 " transform="translate(0,18)"/></svg></div>
+<p class="desc">两层波浪一前一后涌动，像海面一样起伏。</p>
+
+</body>
+</html>

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>11 · 霓虹灯管开关</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{min-height:100vh;display:flex;align-items:center;justify-content:center;background:#0d0d14;font-family:system-ui,"PingFang SC","Microsoft YaHei",sans-serif;overflow-x:hidden}
+.t{position:fixed;top:14px;left:16px;font-size:13px;color:#8a8a99;letter-spacing:1px}
+.card{display:flex;flex-direction:column;align-items:center;gap:22px;padding:44px 40px}
+.sw{position:relative;width:132px;height:64px;cursor:pointer}
+.sw input{position:absolute;inset:0;opacity:0;margin:0;cursor:pointer;z-index:5}
+.track{position:absolute;inset:0;border-radius:32px;background:#16161f;border:1px solid #26262f;box-shadow:inset 0 3px 10px rgba(0,0,0,.7);transition:box-shadow .4s}
+.tube{position:absolute;left:20px;right:20px;top:50%;height:7px;transform:translateY(-50%);border-radius:4px;background:#2b2b36;transition:background .35s}
+.knob{position:absolute;top:7px;left:7px;width:50px;height:50px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#3a3a48,#1c1c26 70%);box-shadow:0 2px 8px rgba(0,0,0,.6);transition:left .38s cubic-bezier(.5,1.6,.4,1),box-shadow .35s}
+.sw input:checked~.track{box-shadow:inset 0 3px 10px rgba(0,0,0,.7),0 0 18px rgba(34,211,238,.35)}
+.sw input:checked~.tube{background:linear-gradient(90deg,#22d3ee,#818cf8,#e879f9);box-shadow:0 0 10px #22d3ee,0 0 26px #818cf8,0 0 44px rgba(232,121,249,.7);animation:breathe 2.2s ease-in-out infinite}
+.sw input:checked~.knob{left:75px;box-shadow:0 0 14px rgba(34,211,238,.9),0 2px 8px rgba(0,0,0,.6)}
+@keyframes breathe{0%,100%{opacity:1}50%{opacity:.72}}
+.tag{font-size:14px;color:#c7c7d4;text-align:center;line-height:1.7}
+.tag b{color:#67e8f9;font-weight:600}
+</style>
+</head>
+<body>
+<div class="t">11 · 霓虹灯管开关</div>
+<div class="card">
+<label class="sw">
+<input type="checkbox" aria-label="霓虹灯管开关">
+<span class="track"></span><span class="tube"></span><span class="knob"></span>
+</label>
+<div class="tag"><b>用途：深夜模式氛围开关</b><br>点亮后灯管泛起霓虹光晕并持续呼吸</div>
+</div>
+</body>
+</html>

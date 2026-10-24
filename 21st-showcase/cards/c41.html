@@ -1,0 +1,17 @@
+<!DOCTYPE html><html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>41 · 滑动揭示操作</title><style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;background:#0b0e14;color:#e8edf5;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;display:flex;align-items:center;justify-content:center;padding:28px 14px}
+.tag{position:fixed;top:10px;left:12px;font-size:12px;color:#8b93a7;letter-spacing:.06em;z-index:50}
+.stage{width:100%;max-width:380px}
+.card{background:#141a26;border:1px solid #232c3f;border-radius:18px;overflow:hidden;position:relative}
+.pic{height:150px}
+.card h3{font-size:17px;padding:16px 18px 6px}
+.card p{font-size:13px;color:#9aa4b8;padding:0 18px 18px;line-height:1.7}
+.g1{background:linear-gradient(135deg,#5b8cff,#9b5bff)}
+.g2{background:linear-gradient(135deg,#22e0ff,#2b6cff)}
+.g3{background:linear-gradient(135deg,#ff8a5b,#ff5b8c)}
+.g4{background:linear-gradient(135deg,#3ddc84,#22b8e0)}
+.g5{background:linear-gradient(135deg,#b45bff,#5b8cff)}
+.g6{background:linear-gradient(135deg,#ffd166,#ff7a5b)}
+.sw{position:relative;border-radius:18px;overflow:hidden}.acts{position:absolute;inset:0;display:flex;justify-content:flex-end;align-items:center;gap:10px;padding:0 18px;background:#1a2334}.acts span{padding:10px 16px;border-radius:12px;font-size:13px;cursor:pointer}.a1{background:#2b4a8f;color:#fff}.a2{background:#5f2430;color:#ffb3c0}.sw .card{position:relative;transition:transform .25s ease;touch-action:pan-y;cursor:grab}
+</style></head><body><div class="tag">41 · 滑动揭示操作</div><div class="stage"><div class="sw"><div class="acts"><span class="a1">收藏</span><span class="a2">删除</span></div><div class="card"><div class="pic g5"></div><h3>待办清单</h3><p>向左滑动卡片，露出快捷操作按钮。</p></div></div></div><script>const c=document.querySelector('.sw .card');let sx=0,dx=0;const set=x=>c.style.transform=`translateX(${Math.max(-132,Math.min(0,x))}px)`;c.addEventListener('pointerdown',e=>{sx=e.clientX;c.setPointerCapture(e.pointerId)});c.addEventListener('pointermove',e=>{if(e.buttons)set(e.clientX-sx)});c.addEventListener('pointerup',e=>{dx=e.clientX-sx;set(dx<-60?-132:0)});</script></body></html>

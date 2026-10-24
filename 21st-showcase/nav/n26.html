@@ -1,0 +1,18 @@
+<!DOCTYPE html><html lang="zh"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>26 · 呼吸灯导航</title><style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;background:#0d1220;color:#eef2fa;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:58px 14px 60px;overflow-x:hidden}
+.tag{position:fixed;top:12px;left:14px;font-size:12px;color:#7c86a0;letter-spacing:.08em;z-index:99}
+.stage{width:100%;max-width:398px;display:flex;flex-direction:column;gap:16px;align-items:center}
+.hint{font-size:12px;color:#7c86a0;text-align:center;line-height:1.7}
+button{font-family:inherit;border:0;background:none;color:inherit;cursor:pointer}
+.breath{display:flex;width:100%;background:#101527;border-radius:18px;padding:12px 6px}
+.breath .ni{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;color:#5a6480;font-size:11px;padding:8px 0}
+.breath .ic{font-size:22px;position:relative}
+.breath .ni.active{color:#e8fff2}
+.breath .ni.active .ic::after{content:"";position:absolute;inset:-6px;border-radius:50%;background:radial-gradient(circle,rgba(91,255,157,.5),transparent 70%);animation:breathe 2.2s ease-in-out infinite;z-index:-1}
+@keyframes breathe{0%,100%{transform:scale(.8);opacity:.5}50%{transform:scale(1.35);opacity:1}}
+.breath .ni.active .ic{z-index:1}</style></head><body>
+<div class="tag">26 · 呼吸灯导航</div>
+<div class="stage"><nav class="breath"><button class="ni active"><span class="ic">🏠</span><span class="lb">首页</span></button><button class="ni"><span class="ic">🔍</span><span class="lb">发现</span></button><button class="ni"><span class="ic">💬</span><span class="lb">消息</span></button><button class="ni"><span class="ic">👤</span><span class="lb">我的</span></button></nav><div class="hint">点击切换试试</div></div>
+<script>document.querySelectorAll('.ni').forEach(function(e){e.addEventListener('click',function(){document.querySelectorAll('.ni').forEach(function(x){x.classList.remove('active')});e.classList.add('active')})});</script></body></html>

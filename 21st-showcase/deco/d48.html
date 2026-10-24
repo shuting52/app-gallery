@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>48 · 彩带雨</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#0e1420;color:#e9f0fa;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;overflow-x:hidden;padding:20px}
+.tag{position:fixed;top:12px;left:14px;font-size:12px;color:#93a7c4;letter-spacing:1px;z-index:5}
+.stage{width:100%;max-width:380px;height:320px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.desc{margin-top:6px;font-size:14px;color:#9db2cc;text-align:center;line-height:1.9;padding:0 24px;max-width:380px}
+.rr{position:absolute;inset:0}
+.rn{position:absolute;top:-40px;width:5px;height:34px;border-radius:3px;animation:rfall linear infinite}
+@keyframes rfall{to{transform:translateY(400px) translateX(24px) rotate(180deg)}}
+</style>
+</head>
+<body>
+<div class="tag">48 · 彩带雨</div>
+<div class="stage"><div class="rr" id="rr"></div></div>
+<p class="desc">细细的彩带像雨一样落下。</p>
+<script>
+(function(){var box=document.getElementById('rr');if(!box)return;
+var cs=['#ff5f8f','#ffb35f','#5fff8f','#5fbfff','#b45fff','#f9f871'];
+for(var i=0;i<30;i++){var s=document.createElement('i');s.className='rn';
+s.style.left=(Math.random()*100)+'%';s.style.background=cs[i%cs.length];
+s.style.animationDuration=(2.2+Math.random()*2.2)+'s';s.style.animationDelay=(-Math.random()*4.5)+'s';
+box.appendChild(s);}})();
+</script>
+</body>
+</html>

@@ -1,0 +1,26 @@
+<!DOCTYPE html><html lang="zh"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>14 · 旋转星系</title><style>
+*{margin:0;box-sizing:border-box}html,body{height:100%}
+body{font-family:system-ui,-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:#070a12;color:#fff;overflow:hidden}
+canvas{position:fixed;inset:0;width:100%;height:100%}
+.tag{position:fixed;top:12px;left:12px;z-index:10;font-size:12px;color:rgba(255,255,255,.8);background:rgba(0,0,0,.38);padding:4px 10px;border-radius:99px;backdrop-filter:blur(4px);letter-spacing:1px}
+.center{position:fixed;inset:0;z-index:5;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 34px;pointer-events:none}
+.center::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(0,0,0,.5),rgba(0,0,0,.12) 65%,transparent 80%)}
+h1{position:relative;font-size:30px;letter-spacing:6px;margin-bottom:12px;text-shadow:0 2px 14px rgba(0,0,0,.7)}
+p{position:relative;font-size:13px;color:rgba(255,255,255,.82);line-height:1.9;text-shadow:0 1px 8px rgba(0,0,0,.7);max-width:300px}
+
+</style></head><body>
+<div class="tag">14 · 旋转星系</div>
+<canvas id="v"></canvas>
+<div class="center"><h1>银河漩涡</h1><p>科幻电影宣传 · 旋臂星云缓缓旋转</p></div>
+<script>
+const c=document.getElementById('v'),g=c.getContext('2d');let W,H;const R=(a,b)=>a+Math.random()*(b-a);function rs(){W=c.width=innerWidth;H=c.height=innerHeight}addEventListener('resize',rs);rs();
+const P=[];for(let i=0;i<420;i++){const a=R(0,6.3),r=Math.pow(Math.random(),.6)*Math.min(W,H)*.48;P.push({a,r,sp:R(.0015,.004)*(1-r/300),c:Math.random()<.5?'#9fd0ff':'#ffc7e8',s:R(.6,2)})}
+let t=0;(function f(){g.fillStyle='rgba(3,4,12,.25)';g.fillRect(0,0,W,H);t++;
+const cx=W/2,cy=H/2;
+for(const p of P){const a=p.a+t*p.sp*8+p.r*.02,x=cx+Math.cos(a)*p.r,y=cy+Math.sin(a)*p.r*.72;
+g.fillStyle=p.c;g.globalAlpha=.85;g.beginPath();g.arc(x,y,p.s,0,7);g.fill()}
+g.globalAlpha=1;const gr=g.createRadialGradient(cx,cy,0,cx,cy,60);gr.addColorStop(0,'rgba(255,240,250,.9)');gr.addColorStop(1,'transparent');g.fillStyle=gr;g.fillRect(cx-60,cy-60,120,120);
+requestAnimationFrame(f)})();
+</script></body></html>

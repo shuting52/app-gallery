@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>20 · 纸张翻页开关</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{min-height:100vh;display:flex;align-items:center;justify-content:center;background:#f7f3ec;font-family:system-ui,"PingFang SC","Microsoft YaHei",sans-serif;overflow-x:hidden}
+.t{position:fixed;top:14px;left:16px;font-size:13px;color:#a8a094;letter-spacing:1px}
+.card{display:flex;flex-direction:column;align-items:center;gap:24px;padding:44px 40px}
+.sw{position:relative;width:150px;height:88px;cursor:pointer;perspective:600px}
+.sw input{position:absolute;inset:0;opacity:0;margin:0;cursor:pointer;z-index:5}
+.book{position:absolute;inset:0;border-radius:10px;background:linear-gradient(#8a6f4d,#6f5739);box-shadow:0 10px 26px rgba(120,95,55,.4)}
+.page{position:absolute;inset:6px;border-radius:7px;transform-style:preserve-3d;background:#fffdf7}
+.page.flipR{animation:flipR .6s ease-in-out forwards}
+.page.flipL{animation:flipL .6s ease-in-out forwards}
+@keyframes flipR{0%{transform:rotateY(0)}45%{transform:rotateY(96deg) translateY(-10px)}100%{transform:rotateY(180deg)}}
+@keyframes flipL{0%{transform:rotateY(180deg)}45%{transform:rotateY(84deg) translateY(-10px)}100%{transform:rotateY(360deg)}}
+.face{position:absolute;inset:0;border-radius:7px;backface-visibility:hidden;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700}
+.face.front{background:repeating-linear-gradient(#fffdf7 0 10px,#f4ecdc 10px 11px);color:#9a8f7c}
+.face.back{background:linear-gradient(#e7f6e9,#cfe9d4);color:#2f9e5f;transform:rotateY(180deg)}
+.tag{font-size:14px;color:#6e6656;text-align:center;line-height:1.7}
+.tag b{color:#2f9e5f;font-weight:600}
+</style>
+</head>
+<body>
+<div class="t">20 · 纸张翻页开关</div>
+<div class="card">
+<label class="sw">
+<input type="checkbox" id="ck" aria-label="纸张翻页开关">
+<span class="book"></span>
+<span class="page" id="page"><span class="face front">关</span><span class="face back">开</span></span>
+</label>
+<div class="tag"><b>用途：书页翻面阅读开关</b><br>轨道像书页一样翻面，露出背面的"开"</div>
+</div>
+<script>
+(function(){
+var ck=document.getElementById('ck'),page=document.getElementById('page');
+ck.addEventListener('change',function(){
+page.classList.remove('flipR','flipL');void page.offsetWidth;
+page.classList.add(ck.checked?'flipR':'flipL');
+});
+})();
+</script>
+</body>
+</html>

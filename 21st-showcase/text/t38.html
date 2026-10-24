@@ -1,0 +1,17 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>38 · 扫描显现</title><style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{background:#0b0e14;color:#eef2f7;font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;overflow-x:hidden}
+.tag{position:fixed;top:10px;left:12px;font-size:12px;color:#8b93a5;letter-spacing:.08em;z-index:10}
+.stage{width:100%;max-width:430px;padding:28px 20px;text-align:center}
+.txt{font-size:30px;font-weight:800;line-height:1.5;letter-spacing:.06em}
+.sub{margin-top:14px;font-size:13px;color:#8b93a5;letter-spacing:.2em}
+.scn{position:relative;display:inline-block;font-size:32px;font-weight:800;letter-spacing:.12em;color:#334155}
+.scn::after{content:attr(data-t);position:absolute;inset:0;color:#22d3ee;clip-path:inset(0 0 100% 0);animation:scan 3.4s ease-in-out infinite}
+.scn::before{content:"";position:absolute;left:0;right:0;height:3px;background:#22d3ee;box-shadow:0 0 16px #22d3ee;top:0;animation:bar 3.4s ease-in-out infinite}
+@keyframes scan{0%{clip-path:inset(0 0 100% 0)}55%{clip-path:inset(0 0 0 0)}100%{clip-path:inset(0 0 0 0)}}
+@keyframes bar{0%{top:0}55%{top:100%}100%{top:100%;opacity:0}}
+</style></head><body><div class="tag">38 · 扫描显现</div><div class="stage"><div class="txt scn" data-t="扫描完成">扫描完成</div></div>
+<script></script></body></html>

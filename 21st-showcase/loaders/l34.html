@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="zh"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>34 · 弹簧小球</title>
+<style>*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{background:#0b0e14;color:#e8ecf4;font-family:system-ui,-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:26px;min-height:100vh;overflow:hidden}
+.tag{position:fixed;top:12px;left:14px;font-size:12px;color:#7d8699;letter-spacing:2px}
+.stage{width:220px;height:180px;display:flex;align-items:center;justify-content:center}
+.cap{font-size:13px;color:#98a1b3;letter-spacing:1px}
+@keyframes spin{to{transform:rotate(360deg)}}.spb{position:relative;width:60px;height:122px}.spr{position:absolute;top:0;left:50%;width:20px;height:62px;margin-left:-10px;background:repeating-linear-gradient(180deg,#64748b 0 4px,transparent 4px 9px);transform-origin:top center;animation:spr 1.6s ease-in-out infinite}@keyframes spr{0%,100%{transform:scaleY(.4)}50%{transform:scaleY(1)}}.bl2{position:absolute;left:50%;width:34px;height:34px;margin-left:-17px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fde68a,#f59e0b);animation:bl2 1.6s ease-in-out infinite}@keyframes bl2{0%,100%{top:22px}50%{top:74px}}</style></head>
+<body>
+<div class="tag">34 · 弹簧小球</div>
+<div class="stage"><div class="spb"><div class="spr"></div><div class="bl2"></div></div></div>
+<p class="cap">弹簧正在蓄力…</p>
+
+</body></html>

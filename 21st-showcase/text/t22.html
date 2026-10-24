@@ -1,0 +1,16 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>22 · 逐行上滑</title><style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{background:#0b0e14;color:#eef2f7;font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;overflow-x:hidden}
+.tag{position:fixed;top:10px;left:12px;font-size:12px;color:#8b93a5;letter-spacing:.08em;z-index:10}
+.stage{width:100%;max-width:430px;padding:28px 20px;text-align:center}
+.txt{font-size:30px;font-weight:800;line-height:1.5;letter-spacing:.06em}
+.sub{margin-top:14px;font-size:13px;color:#8b93a5;letter-spacing:.2em}
+.ln{display:block;overflow:hidden;height:1.6em}
+.ln span{display:block;animation:lnup 4.5s ease infinite}
+.ln:nth-child(2) span{animation-delay:.3s}.ln:nth-child(3) span{animation-delay:.6s}
+@keyframes lnup{0%{transform:translateY(110%)}20%{transform:none}80%{transform:none;opacity:1}100%{transform:translateY(-110%);opacity:0}}
+</style></head><body><div class="tag">22 · 逐行上滑</div><div class="stage"><div class="txt"><span class="ln"><span>一行一行</span></span><span class="ln"><span>走向远方</span></span><span class="ln"><span>步步生花</span></span></div></div>
+<script></script></body></html>

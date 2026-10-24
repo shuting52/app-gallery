@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="zh"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>30 · 魔方旋转开关</title>
+<style>*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{background:#0b0e14;color:#e8ecf4;font-family:system-ui,-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;min-height:100vh;overflow:hidden}
+.tag{position:fixed;top:12px;left:14px;font-size:12px;color:#7d8699;letter-spacing:2px}
+.cap{font-size:13px;color:#98a1b3;letter-spacing:1px}
+.use{font-size:13px;color:#7d8699;border:1px solid rgba(255,255,255,.12);border-radius:999px;padding:6px 16px;background:rgba(255,255,255,.03)}
+.hid{position:absolute;opacity:0;pointer-events:none}
+.cubebtn{cursor:pointer;display:block;perspective:560px;padding:26px 60px}
+.spin{width:96px;height:96px;position:relative;transform-style:preserve-3d;animation:spinCube 9s linear infinite}
+@keyframes spinCube{from{transform:rotateX(-18deg) rotateY(0)}to{transform:rotateX(-18deg) rotateY(360deg)}}
+.fc{position:absolute;inset:0;border-radius:10px;border:3px solid #0b0e14;transition:background-color .6s}
+.fc::after{content:"";position:absolute;inset:8px;border-radius:5px;background:linear-gradient(115deg,rgba(255,255,255,.35),transparent 55%)}
+.f1{background-color:#8a93a8}.f2{background-color:#7c8496}.f3{background-color:#9aa3b8}
+.f4{background-color:#6e7688}.f5{background-color:#98a1b3}.f6{background-color:#828b9e}
+#sw:checked+.cubebtn .f1{background-color:#e5484d}#sw:checked+.cubebtn .f2{background-color:#2f7de1}
+#sw:checked+.cubebtn .f3{background-color:#30a46c}#sw:checked+.cubebtn .f4{background-color:#f5a524}
+#sw:checked+.cubebtn .f5{background-color:#8e4ec6}#sw:checked+.cubebtn .f6{background-color:#f0f3f9}
+.f1{transform:translateZ(48px)}.f2{transform:rotateY(180deg) translateZ(48px)}
+.f3{transform:rotateX(90deg) translateZ(48px)}.f4{transform:rotateX(-90deg) translateZ(48px)}
+.f5{transform:rotateY(90deg) translateZ(48px)}.f6{transform:rotateY(-90deg) translateZ(48px)}
+.shdw{width:110px;height:14px;margin:4px auto 0;border-radius:50%;background:rgba(0,0,0,.45);filter:blur(4px);animation:shdwB 9s linear infinite}
+@keyframes shdwB{0%,100%{transform:scaleX(1)}25%{transform:scaleX(.82)}50%{transform:scaleX(1)}75%{transform:scaleX(.82)}}
+.st{font-size:14px;color:#dfe5f0;letter-spacing:1px}
+.st .a{display:none;color:#8fd0ff}
+#sw:checked~.st .a{display:inline}
+#sw:checked~.st .b{display:none}</style></head>
+<body>
+<div class="tag">30 · 魔方旋转开关</div>
+<input type="checkbox" id="sw" class="hid">
+<label for="sw" class="cubebtn">
+<div class="spin">
+<div class="fc f1"></div><div class="fc f2"></div><div class="fc f3"></div>
+<div class="fc f4"></div><div class="fc f5"></div><div class="fc f6"></div>
+</div>
+<div class="shdw"></div>
+</label>
+<div class="st"><span class="a">彩色面 · 解压开</span><span class="b">灰色面 · 待机中</span></div>
+<p class="cap">点按魔方，切换配色</p>
+<p class="use">用途：桌面解压魔方开关</p>
+</body></html>

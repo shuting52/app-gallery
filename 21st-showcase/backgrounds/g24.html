@@ -1,0 +1,25 @@
+<!DOCTYPE html><html lang="zh"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>24 · 落叶纷飞</title><style>
+*{margin:0;box-sizing:border-box}html,body{height:100%}
+body{font-family:system-ui,-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:#070a12;color:#fff;overflow:hidden}
+canvas{position:fixed;inset:0;width:100%;height:100%}
+.tag{position:fixed;top:12px;left:12px;z-index:10;font-size:12px;color:rgba(255,255,255,.8);background:rgba(0,0,0,.38);padding:4px 10px;border-radius:99px;backdrop-filter:blur(4px);letter-spacing:1px}
+.center{position:fixed;inset:0;z-index:5;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 34px;pointer-events:none}
+.center::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(0,0,0,.5),rgba(0,0,0,.12) 65%,transparent 80%)}
+h1{position:relative;font-size:30px;letter-spacing:6px;margin-bottom:12px;text-shadow:0 2px 14px rgba(0,0,0,.7)}
+p{position:relative;font-size:13px;color:rgba(255,255,255,.82);line-height:1.9;text-shadow:0 1px 8px rgba(0,0,0,.7);max-width:300px}
+
+</style></head><body>
+<div class="tag">24 · 落叶纷飞</div>
+<canvas id="v"></canvas>
+<div class="center"><h1>秋日私语</h1><p>文创市集背景 · 落叶打着旋儿飘落</p></div>
+<script>
+const c=document.getElementById('v'),g=c.getContext('2d');let W,H;const R=(a,b)=>a+Math.random()*(b-a);function rs(){W=c.width=innerWidth;H=c.height=innerHeight}addEventListener('resize',rs);rs();
+const L=[],C=['#e8a13c','#d97b2f','#c2b04a','#a85f2a'];
+for(let i=0;i<42;i++)L.push({x:R(0,W),y:R(-H,0),s:R(1,2.6),a:R(0,6.3),va:R(.03,.1),c:C[(Math.random()*4)|0],w:R(0,6.3),rx:R(5,10),ry:R(3,6)});
+(function f(t){const gr=g.createLinearGradient(0,0,0,H);gr.addColorStop(0,'#241a10');gr.addColorStop(1,'#120d08');g.fillStyle=gr;g.fillRect(0,0,W,H);
+for(const l of L){l.y+=l.s;l.a+=l.va;const x=l.x+Math.sin(t/600+l.w)*30;if(l.y>H+16){l.y=-16;l.x=R(0,W)}
+g.save();g.translate(x,l.y);g.rotate(l.a);g.fillStyle=l.c;g.beginPath();g.ellipse(0,0,l.rx,l.ry,0,0,7);g.fill();g.restore()}
+requestAnimationFrame(f)})(0);
+</script></body></html>

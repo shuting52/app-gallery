@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>26 · 烟雾升腾</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;background:#0b0e14;display:flex;justify-content:center;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;color:#fff;overflow-x:hidden}
+.tag{position:fixed;top:10px;left:12px;z-index:60;font-size:12px;letter-spacing:.08em;color:#9aa3b8;background:rgba(0,0,0,.4);padding:4px 10px;border-radius:99px}
+.hero{position:relative;width:min(430px,100vw);min-height:100vh;min-height:100svh;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.bg{position:absolute;inset:0;overflow:hidden}
+.content{position:relative;z-index:5;text-align:center;padding:0 30px;width:100%}
+.kicker{font-size:12px;letter-spacing:.4em;text-indent:.4em;color:#d8d2c4;margin-bottom:16px;animation:kickIn 1s .45s both}
+.ttl{font-size:33px;line-height:1.45;font-weight:800;margin-bottom:16px}
+.sub{font-size:14px;line-height:1.9;color:rgba(255,255,255,.75);margin-bottom:30px;animation:fadeUp .9s .6s both}
+.cta{display:inline-block;padding:14px 44px;border-radius:999px;font-size:15px;font-weight:700;color:#fff;text-decoration:none;background:linear-gradient(135deg,#6b6252,#a89a7d);box-shadow:0 8px 30px rgba(160,150,125,.4);animation:fadeUp .9s .8s both;transition:transform .25s}
+.cta:active{transform:scale(.94)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+@keyframes kickIn{from{opacity:0}to{opacity:1}}
+@keyframes spin{to{transform:rotate(360deg)}}
+.sm{position:absolute;bottom:-120px;border-radius:50%;filter:blur(46px);background:rgba(190,180,160,.35);animation:smUp 13s linear infinite}
+@keyframes smUp{from{transform:translateY(0) scale(.8);opacity:0}25%{opacity:.8}to{transform:translateY(-1050px) scale(1.5);opacity:0}}
+.ttl{animation:fadeUp 1.8s 1s both}
+</style>
+</head>
+<body>
+<div class="tag">26 · 烟雾升腾</div>
+<section class="hero">
+<div class="bg"><div class="sm" style="left:33%;width:178px;height:179px;animation-delay:11.58s"></div><div class="sm" style="left:7%;width:160px;height:142px;animation-delay:10.07s"></div><div class="sm" style="left:75%;width:211px;height:145px;animation-delay:7.64s"></div><div class="sm" style="left:68%;width:194px;height:168px;animation-delay:10.14s"></div><div class="sm" style="left:66%;width:139px;height:168px;animation-delay:0.40s"></div><div class="sm" style="left:52%;width:137px;height:156px;animation-delay:4.99s"></div></div>
+<div class="content">
+<div class="kicker">家居 · 雾屿家居</div>
+<h1 class="ttl">家，是安放<br>身心的小岛</h1>
+<p class="sub">香薰与软装搭配指南，打造会呼吸的家。</p>
+<a class="cta" href="#">布置我的家</a>
+</div>
+</section>
+
+</body>
+</html>

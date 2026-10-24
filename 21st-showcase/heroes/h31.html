@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>31 · 纸屑旋转</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;background:#0b0e14;display:flex;justify-content:center;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;color:#fff;overflow-x:hidden}
+.tag{position:fixed;top:10px;left:12px;z-index:60;font-size:12px;letter-spacing:.08em;color:#9aa3b8;background:rgba(0,0,0,.4);padding:4px 10px;border-radius:99px}
+.hero{position:relative;width:min(430px,100vw);min-height:100vh;min-height:100svh;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.bg{position:absolute;inset:0;overflow:hidden}
+.content{position:relative;z-index:5;text-align:center;padding:0 30px;width:100%}
+.kicker{font-size:12px;letter-spacing:.4em;text-indent:.4em;color:#ffe3b8;margin-bottom:16px;animation:kickIn 1s .45s both}
+.ttl{font-size:33px;line-height:1.45;font-weight:800;margin-bottom:16px}
+.sub{font-size:14px;line-height:1.9;color:rgba(255,255,255,.75);margin-bottom:30px;animation:fadeUp .9s .6s both}
+.cta{display:inline-block;padding:14px 44px;border-radius:999px;font-size:15px;font-weight:700;color:#fff;text-decoration:none;background:linear-gradient(135deg,#ff8a3d,#ff3d7a);box-shadow:0 8px 30px rgba(255,130,60,.45);animation:fadeUp .9s .8s both;transition:transform .25s}
+.cta:active{transform:scale(.94)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+@keyframes kickIn{from{opacity:0}to{opacity:1}}
+@keyframes spin{to{transform:rotate(360deg)}}
+.pc{position:absolute;top:-24px;border-radius:50%;animation:pcF linear infinite}
+@keyframes pcF{0%{transform:translateY(0) rotate(0)}100%{transform:translateY(980px) rotate(540deg)}}
+.fp{display:inline-block;opacity:0;animation:flipL .8s both}
+@keyframes flipL{from{opacity:0;transform:perspective(400px) rotateY(90deg)}to{opacity:1;transform:perspective(400px) rotateY(0)}}
+</style>
+</head>
+<body>
+<div class="tag">31 · 纸屑旋转</div>
+<section class="hero">
+<div class="bg"><i class="pc" style="left:34%;width:10px;height:10px;background:#d09aff;animation-duration:7.36s;animation-delay:4.26s"></i><i class="pc" style="left:46%;width:9px;height:9px;background:#ff8ab0;animation-duration:5.41s;animation-delay:4.64s"></i><i class="pc" style="left:10%;width:16px;height:16px;background:#8ac9ff;animation-duration:4.38s;animation-delay:2.45s"></i><i class="pc" style="left:55%;width:15px;height:15px;background:#ffd35f;animation-duration:7.77s;animation-delay:0.35s"></i><i class="pc" style="left:74%;width:16px;height:16px;background:#ffd35f;animation-duration:4.62s;animation-delay:3.44s"></i><i class="pc" style="left:54%;width:12px;height:12px;background:#ff8ab0;animation-duration:5.46s;animation-delay:3.97s"></i><i class="pc" style="left:82%;width:12px;height:12px;background:#8ac9ff;animation-duration:5.40s;animation-delay:3.09s"></i><i class="pc" style="left:53%;width:13px;height:13px;background:#8affc1;animation-duration:4.14s;animation-delay:5.84s"></i><i class="pc" style="left:41%;width:13px;height:13px;background:#ffd35f;animation-duration:5.11s;animation-delay:1.74s"></i><i class="pc" style="left:56%;width:16px;height:16px;background:#d09aff;animation-duration:7.19s;animation-delay:3.20s"></i><i class="pc" style="left:96%;width:8px;height:8px;background:#ffd35f;animation-duration:7.04s;animation-delay:0.34s"></i><i class="pc" style="left:46%;width:11px;height:11px;background:#8affc1;animation-duration:7.28s;animation-delay:4.08s"></i><i class="pc" style="left:29%;width:8px;height:8px;background:#ff8ab0;animation-duration:5.65s;animation-delay:2.19s"></i><i class="pc" style="left:48%;width:16px;height:16px;background:#8ac9ff;animation-duration:4.26s;animation-delay:5.72s"></i><i class="pc" style="left:53%;width:15px;height:15px;background:#ff8ab0;animation-duration:6.03s;animation-delay:4.38s"></i><i class="pc" style="left:9%;width:12px;height:12px;background:#d09aff;animation-duration:6.59s;animation-delay:4.79s"></i><i class="pc" style="left:83%;width:9px;height:9px;background:#ff8ab0;animation-duration:5.29s;animation-delay:2.97s"></i><i class="pc" style="left:40%;width:11px;height:11px;background:#ffd35f;animation-duration:5.74s;animation-delay:2.34s"></i></div>
+<div class="content">
+<div class="kicker">市集 · 欢乐市集</div>
+<h1 class="ttl"><span class="fp" style="animation-delay:0.25s">赶</span><span class="fp" style="animation-delay:0.29s">一</span><span class="fp" style="animation-delay:0.34s">场</span><br><span class="fp" style="animation-delay:0.39s">人</span><span class="fp" style="animation-delay:0.43s">间</span><span class="fp" style="animation-delay:0.47s">烟</span><span class="fp" style="animation-delay:0.52s">火</span></h1>
+<p class="sub">周末市集摊主招募与逛吃地图。</p>
+<a class="cta" href="#">逛本周市集</a>
+</div>
+</section>
+
+</body>
+</html>

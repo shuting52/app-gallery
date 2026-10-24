@@ -1,0 +1,15 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>19 · 乱码解密</title><style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{background:#0b0e14;color:#eef2f7;font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;overflow-x:hidden}
+.tag{position:fixed;top:10px;left:12px;font-size:12px;color:#8b93a5;letter-spacing:.08em;z-index:10}
+.stage{width:100%;max-width:430px;padding:28px 20px;text-align:center}
+.txt{font-size:30px;font-weight:800;line-height:1.5;letter-spacing:.06em}
+.sub{margin-top:14px;font-size:13px;color:#8b93a5;letter-spacing:.2em}
+#sc{font-size:30px;font-weight:800;letter-spacing:.1em;color:#34d399;font-family:ui-monospace,monospace}
+</style></head><body><div class="tag">19 · 乱码解密</div><div class="stage"><div id="sc"></div><div class="sub">解密中 · 请稍候</div></div>
+<script>var real="真相终将浮现",pool="!<>-_\/[]{}—=+*^?#01",el=document.getElementById("sc"),f=0;
+function tick(){var out="";for(var i=0;i<real.length;i++){out+= i<f?real[i]:pool[Math.floor(Math.random()*pool.length)];}
+el.textContent=out;f+=0.35;if(f<=real.length+2){setTimeout(tick,60);}else{setTimeout(function(){f=0;tick();},2200);}}tick();</script></body></html>

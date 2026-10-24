@@ -1,0 +1,20 @@
+<!DOCTYPE html><html lang="zh"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>41 · 顶部进度线导航</title><style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;background:#0d1220;color:#eef2fa;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:58px 14px 60px;overflow-x:hidden}
+.tag{position:fixed;top:12px;left:14px;font-size:12px;color:#7c86a0;letter-spacing:.08em;z-index:99}
+.stage{width:100%;max-width:398px;display:flex;flex-direction:column;gap:16px;align-items:center}
+.hint{font-size:12px;color:#7c86a0;text-align:center;line-height:1.7}
+button{font-family:inherit;border:0;background:none;color:inherit;cursor:pointer}
+.tpnav{position:relative;display:flex;width:100%;background:#141a2e;border-radius:0 0 18px 18px;padding:14px 6px 10px;overflow:hidden}
+.tpfill{position:absolute;top:0;left:0;height:3px;width:25%;background:linear-gradient(90deg,#5bff9d,#7df9ff);transition:left .4s cubic-bezier(.5,1.3,.4,1);animation:tpfGlow 1.8s ease-in-out infinite}
+@keyframes tpfGlow{0%,100%{box-shadow:0 0 4px #5bff9d}50%{box-shadow:0 0 14px #7df9ff}}
+.tpnav .ni{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;color:#8b93a7;font-size:11px;padding:6px 0}
+.tpnav .ic{font-size:20px}
+.tpnav .ni.active{color:#fff}
+.tpnav .ni:nth-child(3).active~.tpfill{left:25%}
+.tpnav .ni:nth-child(4).active~.tpfill{left:50%}
+.tpnav .ni:nth-child(5).active~.tpfill{left:75%}</style></head><body>
+<div class="tag">41 · 顶部进度线导航</div>
+<div class="stage"><nav class="tpnav"><span class="tpfill"></span><button class="ni active"><span class="ic">🏠</span><span class="lb">首页</span></button><button class="ni"><span class="ic">🔍</span><span class="lb">发现</span></button><button class="ni"><span class="ic">💬</span><span class="lb">消息</span></button><button class="ni"><span class="ic">👤</span><span class="lb">我的</span></button></nav><div class="hint">点击切换试试</div></div>
+<script>document.querySelectorAll('.ni').forEach(function(e){e.addEventListener('click',function(){document.querySelectorAll('.ni').forEach(function(x){x.classList.remove('active')});e.classList.add('active')})});</script></body></html>

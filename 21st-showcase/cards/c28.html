@@ -1,0 +1,18 @@
+<!DOCTYPE html><html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>28 · 放大镜</title><style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;background:#0b0e14;color:#e8edf5;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;display:flex;align-items:center;justify-content:center;padding:28px 14px}
+.tag{position:fixed;top:10px;left:12px;font-size:12px;color:#8b93a7;letter-spacing:.06em;z-index:50}
+.stage{width:100%;max-width:380px}
+.card{background:#141a26;border:1px solid #232c3f;border-radius:18px;overflow:hidden;position:relative}
+.pic{height:150px}
+.card h3{font-size:17px;padding:16px 18px 6px}
+.card p{font-size:13px;color:#9aa4b8;padding:0 18px 18px;line-height:1.7}
+.g1{background:linear-gradient(135deg,#5b8cff,#9b5bff)}
+.g2{background:linear-gradient(135deg,#22e0ff,#2b6cff)}
+.g3{background:linear-gradient(135deg,#ff8a5b,#ff5b8c)}
+.g4{background:linear-gradient(135deg,#3ddc84,#22b8e0)}
+.g5{background:linear-gradient(135deg,#b45bff,#5b8cff)}
+.g6{background:linear-gradient(135deg,#ffd166,#ff7a5b)}
+.pic{position:relative;overflow:hidden;cursor:none}.lens{position:absolute;width:110px;height:110px;border-radius:50%;border:2px solid rgba(255,255,255,.85);box-shadow:0 6px 20px rgba(0,0,0,.45);background:linear-gradient(135deg,#5b8cff,#9b5bff);background-size:760px 300px;background-repeat:no-repeat;display:none;pointer-events:none;z-index:2;transition:left .12s ease-out,top .12s ease-out;animation:pulse 2.4s ease-in-out infinite}
+@keyframes pulse{0%,100%{box-shadow:0 6px 20px rgba(0,0,0,.45),0 0 0 0 rgba(255,255,255,.35)}50%{box-shadow:0 6px 20px rgba(0,0,0,.45),0 0 0 10px rgba(255,255,255,0)}}
+</style></head><body><div class="tag">28 · 放大镜</div><div class="stage"><div class="card"><div class="pic g1"><div class="lens"></div></div><h3>星空摄影展</h3><p>把鼠标放进图片，放大镜会带你看清星点。</p></div></div><script>const p=document.querySelector('.pic'),l=document.querySelector('.lens');p.addEventListener('mousemove',e=>{const r=p.getBoundingClientRect(),x=e.clientX-r.left,y=e.clientY-r.top;l.style.display='block';l.style.left=(x-55)+'px';l.style.top=(y-55)+'px';l.style.backgroundPosition=`${-(x*2-55)}px ${-(y*2-55)}px`});p.addEventListener('mouseleave',()=>l.style.display='none');</script></body></html>

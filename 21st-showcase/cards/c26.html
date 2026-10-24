@@ -1,0 +1,17 @@
+<!DOCTYPE html><html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>26 · 手风琴折叠</title><style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;background:#0b0e14;color:#e8edf5;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;display:flex;align-items:center;justify-content:center;padding:28px 14px}
+.tag{position:fixed;top:10px;left:12px;font-size:12px;color:#8b93a7;letter-spacing:.06em;z-index:50}
+.stage{width:100%;max-width:380px}
+.card{background:#141a26;border:1px solid #232c3f;border-radius:18px;overflow:hidden;position:relative}
+.pic{height:150px}
+.card h3{font-size:17px;padding:16px 18px 6px}
+.card p{font-size:13px;color:#9aa4b8;padding:0 18px 18px;line-height:1.7}
+.g1{background:linear-gradient(135deg,#5b8cff,#9b5bff)}
+.g2{background:linear-gradient(135deg,#22e0ff,#2b6cff)}
+.g3{background:linear-gradient(135deg,#ff8a5b,#ff5b8c)}
+.g4{background:linear-gradient(135deg,#3ddc84,#22b8e0)}
+.g5{background:linear-gradient(135deg,#b45bff,#5b8cff)}
+.g6{background:linear-gradient(135deg,#ffd166,#ff7a5b)}
+.sec{border-bottom:1px solid #232c3f}.sec:last-child{border:none}.hd{padding:15px 18px;font-size:15px;cursor:pointer;display:flex;justify-content:space-between;align-items:center}.hd::after{content:"+";color:#6ea8ff;font-size:18px;transition:transform .3s}.sec.open .hd::after{transform:rotate(45deg)}.bd{max-height:0;overflow:hidden;transition:max-height .45s ease}.sec.open .bd{max-height:130px}.bd p{padding:0 18px 16px}
+</style></head><body><div class="tag">26 · 手风琴折叠</div><div class="stage"><div class="card"><div class="sec open"><div class="hd">行程第一天 · 抵达</div><div class="bd"><p>落地后先去酒店放行李，傍晚逛老城区夜市，尝三家本地小吃。</p></div></div><div class="sec"><div class="hd">行程第二天 · 登山</div><div class="bd"><p>清晨 5 点出发看日出，带足水和防风外套，下山吃农家菜。</p></div></div><div class="sec"><div class="hd">行程第三天 · 返程</div><div class="bd"><p>睡到自然醒，买伴手礼，下午的高铁回家。</p></div></div></div></div><script>document.querySelectorAll('.hd').forEach(h=>h.onclick=()=>h.parentElement.classList.toggle('open'));</script></body></html>

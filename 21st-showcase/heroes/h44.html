@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>44 · 沙粒下落</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;background:#0b0e14;display:flex;justify-content:center;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;color:#fff;overflow-x:hidden}
+.tag{position:fixed;top:10px;left:12px;z-index:60;font-size:12px;letter-spacing:.08em;color:#9aa3b8;background:rgba(0,0,0,.4);padding:4px 10px;border-radius:99px}
+.hero{position:relative;width:min(430px,100vw);min-height:100vh;min-height:100svh;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.bg{position:absolute;inset:0;overflow:hidden}
+.content{position:relative;z-index:5;text-align:center;padding:0 30px;width:100%}
+.kicker{font-size:12px;letter-spacing:.4em;text-indent:.4em;color:#ffe9b8;margin-bottom:16px;animation:kickIn 1s .45s both}
+.ttl{font-size:33px;line-height:1.45;font-weight:800;margin-bottom:16px}
+.sub{font-size:14px;line-height:1.9;color:rgba(255,255,255,.75);margin-bottom:30px;animation:fadeUp .9s .6s both}
+.cta{display:inline-block;padding:14px 44px;border-radius:999px;font-size:15px;font-weight:700;color:#fff;text-decoration:none;background:linear-gradient(135deg,#b06b2e,#e8a13d);box-shadow:0 8px 30px rgba(210,150,60,.45);animation:fadeUp .9s .8s both;transition:transform .25s}
+.cta:active{transform:scale(.94)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+@keyframes kickIn{from{opacity:0}to{opacity:1}}
+@keyframes spin{to{transform:rotate(360deg)}}
+.bg{background:linear-gradient(#171006,#2c1f0c)}
+#cv{position:absolute;inset:0;width:100%;height:100%}
+.ttl{animation:hourglass 2s .3s both}
+@keyframes hourglass{from{clip-path:inset(0 0 100% 0)}to{clip-path:inset(0 0 0 0)}}
+</style>
+</head>
+<body>
+<div class="tag">44 · 沙粒下落</div>
+<section class="hero">
+<div class="bg"><canvas id="cv"></canvas></div>
+<div class="content">
+<div class="kicker">时间管理 · 流沙时钟</div>
+<h1 class="ttl">时间看得见，<br>才抓得住</h1>
+<p class="sub">番茄钟与习惯打卡，让自律有回音。</p>
+<a class="cta" href="#">开始专注</a>
+</div>
+</section>
+
+<script>
+const c=document.getElementById('cv'),x=c.getContext('2d');c.width=430;c.height=900;
+const G=Array.from({length:80},()=>({x:195+Math.random()*40,y:Math.random()*-300,vy:2+Math.random()*3}));
+let pile=0;
+function loop(){x.clearRect(0,0,430,900);x.fillStyle='#e8c26b';
+for(const g of G){g.y+=g.vy;if(g.y>770){g.y=-10;g.x=195+Math.random()*40;pile=Math.min(pile+1,300);}
+x.fillRect(g.x,g.y,2.4,2.4);}
+x.globalAlpha=.85;const ph=pile/300*46;
+x.beginPath();x.moveTo(150,820);x.lineTo(280,820);x.lineTo(215,820-ph);x.closePath();x.fill();x.globalAlpha=1;
+requestAnimationFrame(loop);}
+setTimeout(function(){requestAnimationFrame(loop);},2200);
+</script>
+</body>
+</html>

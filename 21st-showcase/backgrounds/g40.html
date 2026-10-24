@@ -1,0 +1,19 @@
+<!DOCTYPE html><html lang="zh"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>40 · 旋转光轮</title><style>
+*{margin:0;box-sizing:border-box}html,body{height:100%}
+body{font-family:system-ui,-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:#070a12;color:#fff;overflow:hidden}
+canvas{position:fixed;inset:0;width:100%;height:100%}
+.tag{position:fixed;top:12px;left:12px;z-index:10;font-size:12px;color:rgba(255,255,255,.8);background:rgba(0,0,0,.38);padding:4px 10px;border-radius:99px;backdrop-filter:blur(4px);letter-spacing:1px}
+.center{position:fixed;inset:0;z-index:5;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 34px;pointer-events:none}
+.center::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(0,0,0,.5),rgba(0,0,0,.12) 65%,transparent 80%)}
+h1{position:relative;font-size:30px;letter-spacing:6px;margin-bottom:12px;text-shadow:0 2px 14px rgba(0,0,0,.7)}
+p{position:relative;font-size:13px;color:rgba(255,255,255,.82);line-height:1.9;text-shadow:0 1px 8px rgba(0,0,0,.7);max-width:300px}
+body{background:#07070d}.wl{position:fixed;inset:-42%;background:conic-gradient(from 0deg,transparent 0deg,rgba(120,200,255,.22) 18deg,transparent 36deg,transparent 90deg,rgba(255,120,200,.18) 108deg,transparent 126deg,transparent 200deg,rgba(150,255,190,.16) 218deg,transparent 236deg);animation:wl 9s linear infinite}@keyframes wl{to{transform:rotate(360deg)}}.core{position:fixed;left:50%;top:46%;width:120px;height:120px;margin:-60px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.5),transparent 70%);filter:blur(10px)}
+</style></head><body>
+<div class="tag">40 · 旋转光轮</div>
+<div class="wl"></div><div class="core"></div>
+<div class="center"><h1>光轮流转</h1><p>舞台灯光背景 · 锥形光轮不停旋转</p></div>
+<script>
+
+</script></body></html>

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>40 · 音符跳跃</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#0e1420;color:#e9f0fa;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;overflow-x:hidden;padding:20px}
+.tag{position:fixed;top:12px;left:14px;font-size:12px;color:#93a7c4;letter-spacing:1px;z-index:5}
+.stage{width:100%;max-width:380px;height:320px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.desc{margin-top:6px;font-size:14px;color:#9db2cc;text-align:center;line-height:1.9;padding:0 24px;max-width:380px}
+.nt{display:flex;gap:16px;font-size:54px;color:#b45fff;text-shadow:0 0 20px rgba(180,95,255,.6)}
+.nt span{display:inline-block;animation:jump 1.5s ease-in-out infinite}
+.nt span:nth-child(2){animation-delay:.14s}.nt span:nth-child(3){animation-delay:.28s}
+.nt span:nth-child(4){animation-delay:.42s}.nt span:nth-child(5){animation-delay:.56s}
+@keyframes jump{0%,100%{transform:translateY(0)}38%{transform:translateY(-28px)}}
+</style>
+</head>
+<body>
+<div class="tag">40 · 音符跳跃</div>
+<div class="stage"><div class="nt"><span>♪</span><span>♫</span><span>♪</span><span>♬</span><span>♪</span></div></div>
+<p class="desc">音符排排坐，一个个轮流跳起来。</p>
+
+</body>
+</html>

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>41 · 斜切光斑</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;background:#0b0e14;display:flex;justify-content:center;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;color:#fff;overflow-x:hidden}
+.tag{position:fixed;top:10px;left:12px;z-index:60;font-size:12px;letter-spacing:.08em;color:#9aa3b8;background:rgba(0,0,0,.4);padding:4px 10px;border-radius:99px}
+.hero{position:relative;width:min(430px,100vw);min-height:100vh;min-height:100svh;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.bg{position:absolute;inset:0;overflow:hidden}
+.content{position:relative;z-index:5;text-align:center;padding:0 30px;width:100%}
+.kicker{font-size:12px;letter-spacing:.4em;text-indent:.4em;color:#ffe3b8;margin-bottom:16px;animation:kickIn 1s .45s both}
+.ttl{font-size:33px;line-height:1.45;font-weight:800;margin-bottom:16px}
+.sub{font-size:14px;line-height:1.9;color:rgba(255,255,255,.75);margin-bottom:30px;animation:fadeUp .9s .6s both}
+.cta{display:inline-block;padding:14px 44px;border-radius:999px;font-size:15px;font-weight:700;color:#fff;text-decoration:none;background:linear-gradient(135deg,#c86b2e,#ff9a3d);box-shadow:0 8px 30px rgba(220,140,50,.45);animation:fadeUp .9s .8s both;transition:transform .25s}
+.cta:active{transform:scale(.94)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+@keyframes kickIn{from{opacity:0}to{opacity:1}}
+@keyframes spin{to{transform:rotate(360deg)}}
+.bg{background:linear-gradient(#241206,#4d2c10)}
+.slab{position:absolute;top:-20%;bottom:-20%;width:110px;background:linear-gradient(90deg,transparent,rgba(255,190,110,.28),transparent);transform:skewX(-22deg);animation:slab 7s ease-in-out infinite}
+@keyframes slab{0%,100%{left:-16%}50%{left:96%}}
+.ttl{animation:expandX 1s .3s both;transform-origin:left center}
+@keyframes expandX{from{opacity:0;transform:scaleX(.15)}to{opacity:1;transform:scaleX(1)}}
+</style>
+</head>
+<body>
+<div class="tag">41 · 斜切光斑</div>
+<section class="hero">
+<div class="bg"><div class="slab" style="animation-delay:0s"></div><div class="slab" style="animation-delay:2.4s;width:70px"></div></div>
+<div class="content">
+<div class="kicker">餐厅 · 斜阳小馆</div>
+<h1 class="ttl">黄昏时分，<br>饭菜正香</h1>
+<p class="sub">私房菜预约与主厨推荐，家的味道。</p>
+<a class="cta" href="#">预订晚餐</a>
+</div>
+</section>
+
+</body>
+</html>

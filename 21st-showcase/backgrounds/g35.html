@@ -1,0 +1,25 @@
+<!DOCTYPE html><html lang="zh"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>35 · 极光窗帘</title><style>
+*{margin:0;box-sizing:border-box}html,body{height:100%}
+body{font-family:system-ui,-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:#070a12;color:#fff;overflow:hidden}
+canvas{position:fixed;inset:0;width:100%;height:100%}
+.tag{position:fixed;top:12px;left:12px;z-index:10;font-size:12px;color:rgba(255,255,255,.8);background:rgba(0,0,0,.38);padding:4px 10px;border-radius:99px;backdrop-filter:blur(4px);letter-spacing:1px}
+.center{position:fixed;inset:0;z-index:5;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 34px;pointer-events:none}
+.center::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(0,0,0,.5),rgba(0,0,0,.12) 65%,transparent 80%)}
+h1{position:relative;font-size:30px;letter-spacing:6px;margin-bottom:12px;text-shadow:0 2px 14px rgba(0,0,0,.7)}
+p{position:relative;font-size:13px;color:rgba(255,255,255,.82);line-height:1.9;text-shadow:0 1px 8px rgba(0,0,0,.7);max-width:300px}
+
+</style></head><body>
+<div class="tag">35 · 极光窗帘</div>
+<canvas id="v"></canvas>
+<div class="center"><h1>极光帷幕</h1><p>北欧旅游宣传 · 极光如帷幕摆动</p></div>
+<script>const c=document.getElementById('v'),g=c.getContext('2d');let W,H;const R=(a,b)=>a+Math.random()*(b-a);function rs(){W=c.width=innerWidth;H=c.height=innerHeight}addEventListener('resize',rs);rs();
+let t=0;const bands=[['#2dffb8',.06],['#3fa9ff',.27],['#b14dff',.48],['#ff6ec7',.69],['#2dffb8',.9]];
+(function f(){t+=.02;g.fillStyle='#020610';g.fillRect(0,0,W,H);
+for(let b=0;b<bands.length;b++){const col=bands[b][0],bx=W*bands[b][1];
+for(const lw of [[34,.16],[10,.4]]){g.strokeStyle=col;g.globalAlpha=lw[1];g.lineWidth=lw[0];g.lineCap='round';
+g.shadowColor=col;g.shadowBlur=26;g.beginPath();
+for(let y=0;y<=H*.92;y+=10){const x=bx+Math.sin(y/70+t*(1+b*.15)+b*2)*46;y?g.lineTo(x,y):g.moveTo(x,y)}
+g.stroke()}}
+g.globalAlpha=1;g.shadowBlur=0;requestAnimationFrame(f)})();</script></body></html>

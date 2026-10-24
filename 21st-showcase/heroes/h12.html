@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>12 · 浮动几何</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;background:#0b0e14;display:flex;justify-content:center;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;color:#fff;overflow-x:hidden}
+.tag{position:fixed;top:10px;left:12px;z-index:60;font-size:12px;letter-spacing:.08em;color:#9aa3b8;background:rgba(0,0,0,.4);padding:4px 10px;border-radius:99px}
+.hero{position:relative;width:min(430px,100vw);min-height:100vh;min-height:100svh;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.bg{position:absolute;inset:0;overflow:hidden}
+.content{position:relative;z-index:5;text-align:center;padding:0 30px;width:100%}
+.kicker{font-size:12px;letter-spacing:.4em;text-indent:.4em;color:#c9d4ff;margin-bottom:16px;animation:kickIn 1s .45s both}
+.ttl{font-size:33px;line-height:1.45;font-weight:800;margin-bottom:16px}
+.sub{font-size:14px;line-height:1.9;color:rgba(255,255,255,.75);margin-bottom:30px;animation:fadeUp .9s .6s both}
+.cta{display:inline-block;padding:14px 44px;border-radius:999px;font-size:15px;font-weight:700;color:#fff;text-decoration:none;background:linear-gradient(135deg,#3d4bff,#00c8ff);box-shadow:0 8px 30px rgba(70,100,255,.45);animation:fadeUp .9s .8s both;transition:transform .25s}
+.cta:active{transform:scale(.94)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+@keyframes kickIn{from{opacity:0}to{opacity:1}}
+@keyframes spin{to{transform:rotate(360deg)}}
+.sp{position:absolute;opacity:.5;animation:floaty 9s ease-in-out infinite}
+.s1{width:90px;height:90px;border:3px solid #5f7bff;border-radius:50%;top:14%;left:10%}
+.s2{width:0;height:0;border-left:46px solid transparent;border-right:46px solid transparent;border-bottom:80px solid rgba(0,200,255,.4);top:62%;right:8%;animation-delay:-3s}
+.s3{width:70px;height:70px;background:rgba(255,95,158,.35);transform:rotate(18deg);bottom:16%;left:14%;animation-delay:-5s}
+.s4{width:54px;height:54px;border:3px solid #ffd35f;transform:rotate(30deg);top:24%;right:16%;animation-delay:-7s}
+@keyframes floaty{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-34px) rotate(14deg)}}
+.wd{display:inline-block;opacity:0;animation:wdIn .8s both}
+@keyframes wdIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<div class="tag">12 · 浮动几何</div>
+<section class="hero">
+<div class="bg"><div class="sp s1"></div><div class="sp s2"></div><div class="sp s3"></div><div class="sp s4"></div></div>
+<div class="content">
+<div class="kicker">设计 · 几何研究所</div>
+<h1 class="ttl"><span class="wd" style="animation-delay:.3s">秩序之中，</span><br><span class="wd" style="animation-delay:.5s">藏着惊喜</span></h1>
+<p class="sub">设计灵感库与配色工具，每天 5 分钟开眼。</p>
+<a class="cta" href="#">获取灵感</a>
+</div>
+</section>
+
+</body>
+</html>

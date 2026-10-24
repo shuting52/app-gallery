@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>24 · 月夜星星</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;background:#0b0e14;display:flex;justify-content:center;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;color:#fff;overflow-x:hidden}
+.tag{position:fixed;top:10px;left:12px;z-index:60;font-size:12px;letter-spacing:.08em;color:#9aa3b8;background:rgba(0,0,0,.4);padding:4px 10px;border-radius:99px}
+.hero{position:relative;width:min(430px,100vw);min-height:100vh;min-height:100svh;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.bg{position:absolute;inset:0;overflow:hidden}
+.content{position:relative;z-index:5;text-align:center;padding:0 30px;width:100%}
+.kicker{font-size:12px;letter-spacing:.4em;text-indent:.4em;color:#cfe0ff;margin-bottom:16px;animation:kickIn 1s .45s both}
+.ttl{font-size:33px;line-height:1.45;font-weight:800;margin-bottom:16px}
+.sub{font-size:14px;line-height:1.9;color:rgba(255,255,255,.75);margin-bottom:30px;animation:fadeUp .9s .6s both}
+.cta{display:inline-block;padding:14px 44px;border-radius:999px;font-size:15px;font-weight:700;color:#fff;text-decoration:none;background:linear-gradient(135deg,#3d5bff,#00c8ff);box-shadow:0 8px 30px rgba(80,120,255,.45);animation:fadeUp .9s .8s both;transition:transform .25s}
+.cta:active{transform:scale(.94)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+@keyframes kickIn{from{opacity:0}to{opacity:1}}
+@keyframes spin{to{transform:rotate(360deg)}}
+.bg{background:linear-gradient(#050914,#0d1b3d 65%,#14305e)}
+.moon{position:absolute;top:12%;right:12%;width:86px;height:86px;border-radius:50%;background:radial-gradient(circle at 38% 35%,#fffbe8,#f5e9c8 60%,#d9cba0);box-shadow:0 0 50px rgba(255,250,220,.55)}
+.st{position:absolute;width:3px;height:3px;border-radius:50%;background:#fff;animation:tw 3s ease-in-out infinite}
+@keyframes tw{50%{opacity:.1}}
+.hill{position:absolute;bottom:-40px;left:-10%;width:120%;height:200px;background:#060d18;border-radius:50% 50% 0 0}
+.ln{display:inline-block;opacity:0;animation:lnUp .9s both}
+@keyframes lnUp{from{opacity:0;transform:translateY(34px)}to{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<div class="tag">24 · 月夜星星</div>
+<section class="hero">
+<div class="bg"><div class="moon"></div><div class="hill"></div><i class="st" style="left:89%;top:60%;animation-delay:0.06s"></i><i class="st" style="left:63%;top:37%;animation-delay:2.60s"></i><i class="st" style="left:88%;top:31%;animation-delay:2.72s"></i><i class="st" style="left:13%;top:21%;animation-delay:0.85s"></i><i class="st" style="left:68%;top:32%;animation-delay:1.44s"></i><i class="st" style="left:31%;top:15%;animation-delay:0.99s"></i><i class="st" style="left:88%;top:26%;animation-delay:2.23s"></i><i class="st" style="left:8%;top:38%;animation-delay:0.84s"></i><i class="st" style="left:46%;top:5%;animation-delay:1.74s"></i><i class="st" style="left:70%;top:53%;animation-delay:2.85s"></i><i class="st" style="left:14%;top:33%;animation-delay:0.40s"></i><i class="st" style="left:28%;top:51%;animation-delay:1.63s"></i><i class="st" style="left:56%;top:17%;animation-delay:1.55s"></i><i class="st" style="left:89%;top:40%;animation-delay:1.27s"></i><i class="st" style="left:73%;top:7%;animation-delay:2.81s"></i><i class="st" style="left:93%;top:26%;animation-delay:1.49s"></i><i class="st" style="left:9%;top:27%;animation-delay:2.42s"></i><i class="st" style="left:53%;top:60%;animation-delay:1.39s"></i><i class="st" style="left:82%;top:50%;animation-delay:2.89s"></i><i class="st" style="left:73%;top:10%;animation-delay:2.75s"></i><i class="st" style="left:77%;top:9%;animation-delay:2.67s"></i><i class="st" style="left:35%;top:60%;animation-delay:0.74s"></i><i class="st" style="left:62%;top:37%;animation-delay:0.56s"></i><i class="st" style="left:69%;top:4%;animation-delay:2.80s"></i><i class="st" style="left:71%;top:25%;animation-delay:2.01s"></i><i class="st" style="left:24%;top:5%;animation-delay:0.17s"></i><i class="st" style="left:77%;top:41%;animation-delay:2.91s"></i><i class="st" style="left:86%;top:57%;animation-delay:1.02s"></i><i class="st" style="left:92%;top:12%;animation-delay:0.99s"></i><i class="st" style="left:52%;top:6%;animation-delay:0.23s"></i></div>
+<div class="content">
+<div class="kicker">露营 · 月下营地</div>
+<h1 class="ttl"><span class="ln" style="animation-delay:.3s">把家安在</span><br><span class="ln" style="animation-delay:.5s">星空下</span></h1>
+<p class="sub">露营地推荐与装备清单，新手也能轻松出发。</p>
+<a class="cta" href="#">找营地</a>
+</div>
+</section>
+
+</body>
+</html>

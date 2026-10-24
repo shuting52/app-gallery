@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>03 · 翻转卡片开关</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;display:flex;align-items:center;justify-content:center;background:#101528;font-family:system-ui,-apple-system,sans-serif}
+.corner{position:fixed;top:14px;left:16px;font-size:12px;color:#8b93b0;letter-spacing:1px;z-index:9}
+.demo{display:flex;flex-direction:column;align-items:center;gap:26px;padding:32px}
+.card{width:110px;height:64px;perspective:600px;cursor:pointer}
+.inner{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform .6s cubic-bezier(.4,.1,.2,1)}
+.card.on .inner{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;letter-spacing:3px}
+.front{background:#2a2f4a;color:#8b93b0;box-shadow:inset 0 0 0 2px #3d4468}
+.back{background:linear-gradient(135deg,#34c759,#1fa84a);color:#fff;transform:rotateY(180deg);box-shadow:0 6px 20px rgba(52,199,89,.35)}
+.tag{font-size:13px;color:#7c86a8}
+.hint{font-size:12px;color:#5b6488}
+</style>
+</head>
+<body>
+<div class="corner">03 · 翻转卡片开关</div>
+<div class="demo">
+  <div class="card" id="c" role="switch" aria-checked="false" tabindex="0">
+    <div class="inner">
+      <div class="face front">OFF</div>
+      <div class="face back">ON</div>
+    </div>
+  </div>
+  <div class="hint">点击卡片翻转切换</div>
+  <div class="tag">用途：飞行模式开关</div>
+</div>
+<script>
+var c=document.getElementById('c');
+function flip(){c.classList.toggle('on');c.setAttribute('aria-checked',c.classList.contains('on'));}
+c.addEventListener('click',flip);
+c.addEventListener('keydown',function(e){if(e.key===' '||e.key==='Enter'){e.preventDefault();flip();}});
+</script>
+</body>
+</html>

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="zh"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>21 · 卷帘升降开关</title>
+<style>*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{background:#0b0e14;color:#e8ecf4;font-family:system-ui,-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;min-height:100vh;overflow:hidden}
+.tag{position:fixed;top:12px;left:14px;font-size:12px;color:#7d8699;letter-spacing:2px}
+.stage{width:230px;height:280px;display:flex;align-items:center;justify-content:center;position:relative}
+.cap{font-size:13px;color:#98a1b3;letter-spacing:1px}
+.use{font-size:13px;color:#7d8699;border:1px solid rgba(255,255,255,.12);border-radius:999px;padding:6px 16px;background:rgba(255,255,255,.03)}
+.hid{position:absolute;opacity:0;pointer-events:none}
+.win{position:relative;width:190px;height:230px;border:10px solid #39415a;border-radius:14px;overflow:hidden;cursor:pointer;background:#0a0d15;display:block}
+.sun{position:absolute;inset:0;background:radial-gradient(circle at 50% 62%,#fff3c4 0%,#ffc95e 34%,#8a5416 78%,#3d2408 100%);opacity:.1;transition:opacity .9s;animation:sunPulse 3.2s ease-in-out infinite}
+@keyframes sunPulse{0%,100%{filter:brightness(1)}50%{filter:brightness(1.28)}}
+#sw:checked+.win .sun{opacity:1}
+.blind{position:absolute;left:0;right:0;top:0;height:100%;background:repeating-linear-gradient(180deg,#e6ebf5 0 13px,#b7bfce 13px 17px);transition:height 1s cubic-bezier(.65,0,.25,1)}
+#sw:checked+.win .blind{height:18px}
+.rod{position:absolute;left:0;right:0;bottom:0;height:18px;background:linear-gradient(180deg,#9aa3b8,#5f6678);border-radius:9px}
+.cord{position:absolute;right:16px;top:100%;width:3px;height:52px;background:#9aa3b8}
+.knob{position:absolute;right:11px;top:calc(100% + 52px);width:13px;height:13px;border-radius:50%;background:#c7cede}
+.st{font-size:14px;color:#dfe5f0;letter-spacing:1px}
+.st .a{display:none;color:#ffd98a}
+#sw:checked~.st .a{display:inline}
+#sw:checked~.st .b{display:none}</style></head>
+<body>
+<div class="tag">21 · 卷帘升降开关</div>
+<input type="checkbox" id="sw" class="hid">
+<label for="sw" class="win">
+<div class="sun"></div>
+<div class="blind"><div class="rod"></div><div class="cord"></div><div class="knob"></div></div>
+</label>
+<div class="st"><span class="a">卷帘升起 · 灯亮了</span><span class="b">卷帘落下 · 休息中</span></div>
+<p class="cap">点按窗户，拉动卷帘</p>
+<p class="use">用途：卧室夜灯开关</p>
+</body></html>

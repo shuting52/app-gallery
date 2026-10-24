@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>10 · iOS 拉伸滑动开关</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;display:flex;align-items:center;justify-content:center;background:#0f1220;font-family:system-ui,-apple-system,sans-serif}
+.corner{position:fixed;top:14px;left:16px;font-size:12px;color:#8b93b0;letter-spacing:1px;z-index:9}
+.demo{display:flex;flex-direction:column;align-items:center;gap:26px;padding:32px}
+.sw{cursor:pointer;display:block}
+.sw input{display:none}
+.track{width:96px;height:54px;border-radius:27px;background:#393f56;display:block;position:relative;transition:background .35s .1s;box-shadow:inset 0 2px 6px rgba(0,0,0,.3)}
+.knob{width:46px;height:46px;border-radius:23px;background:#fff;position:absolute;top:4px;left:4px;box-shadow:0 3px 10px rgba(0,0,0,.35);animation-fill-mode:forwards}
+.sw input:checked+.track{background:#34c759}
+.knob.go-on{animation:stretchOn .42s cubic-bezier(.4,0,.2,1)}
+.knob.go-off{animation:stretchOff .42s cubic-bezier(.4,0,.2,1)}
+@keyframes stretchOn{
+  0%{transform:translateX(0);width:46px;border-radius:23px}
+  45%{transform:translateX(6px);width:62px;border-radius:23px}
+  100%{transform:translateX(42px);width:46px;border-radius:23px}
+}
+@keyframes stretchOff{
+  0%{transform:translateX(42px);width:46px;border-radius:23px}
+  45%{transform:translateX(30px);width:62px;border-radius:23px}
+  100%{transform:translateX(0);width:46px;border-radius:23px}
+}
+.state{font-size:15px;color:#c9d1ea;min-height:22px;letter-spacing:2px}
+.tag{font-size:13px;color:#7c86a8}
+</style>
+</head>
+<body>
+<div class="corner">10 · iOS 拉伸滑动开关</div>
+<div class="demo">
+  <label class="sw"><input type="checkbox" id="t"><span class="track"><span class="knob" id="k"></span></span></label>
+  <div class="state" id="st">已关闭</div>
+  <div class="tag">用途：勿扰模式开关</div>
+</div>
+<script>
+var t=document.getElementById('t'),k=document.getElementById('k'),st=document.getElementById('st');
+t.addEventListener('change',function(){
+  st.textContent=t.checked?'已开启':'已关闭';
+  k.classList.remove('go-on','go-off');void k.offsetWidth;
+  k.classList.add(t.checked?'go-on':'go-off');
+});
+</script>
+</body>
+</html>

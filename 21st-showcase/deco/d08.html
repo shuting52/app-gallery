@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>08 · 角标弹跳</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#0e1420;color:#e9f0fa;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;overflow-x:hidden;padding:20px}
+.tag{position:fixed;top:12px;left:14px;font-size:12px;color:#93a7c4;letter-spacing:1px;z-index:5}
+.stage{width:100%;max-width:380px;height:320px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.desc{margin-top:6px;font-size:14px;color:#9db2cc;text-align:center;line-height:1.9;padding:0 24px;max-width:380px}
+.bell{position:relative;font-size:76px;line-height:1}
+.bell i{position:absolute;top:4px;right:0;min-width:28px;height:28px;padding:0 6px;background:#ff3b5c;color:#fff;font-size:15px;font-style:normal;font-weight:700;border-radius:14px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(255,59,92,.5);animation:bnc 1.5s ease-in-out infinite}
+@keyframes bnc{0%,100%{transform:translateY(0) scale(1)}30%{transform:translateY(-11px) scale(1.14)}50%{transform:translateY(0) scale(.94)}66%{transform:translateY(-5px) scale(1.05)}}
+</style>
+</head>
+<body>
+<div class="tag">08 · 角标弹跳</div>
+<div class="stage"><div class="bell">🔔<i>3</i></div></div>
+<p class="desc">红色角标蹦蹦跳跳，提醒你有新消息。</p>
+
+</body>
+</html>

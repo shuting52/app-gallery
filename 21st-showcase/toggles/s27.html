@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="zh"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>27 · 骰子翻滚开关</title>
+<style>*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{background:#0b0e14;color:#e8ecf4;font-family:system-ui,-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;min-height:100vh;overflow:hidden}
+.tag{position:fixed;top:12px;left:14px;font-size:12px;color:#7d8699;letter-spacing:2px}
+.cap{font-size:13px;color:#98a1b3;letter-spacing:1px}
+.use{font-size:13px;color:#7d8699;border:1px solid rgba(255,255,255,.12);border-radius:999px;padding:6px 16px;background:rgba(255,255,255,.03)}
+.hid{position:absolute;opacity:0;pointer-events:none}
+.dice{cursor:pointer;display:block;perspective:520px;padding:30px}
+.scene{width:84px;height:84px;position:relative}
+.cube{width:84px;height:84px;position:relative;transform-style:preserve-3d;transform:rotateY(180deg)}
+#sw:checked+.dice .cube{animation:rollOn 1.15s cubic-bezier(.3,.65,.35,1) forwards}
+#sw:not(:checked)+.dice .cube{animation:rollOff 1.15s cubic-bezier(.3,.65,.35,1) forwards}
+@keyframes rollOn{from{transform:rotateX(0) rotateY(180deg)}to{transform:rotateX(-720deg) rotateY(-720deg)}}
+@keyframes rollOff{from{transform:rotateX(0) rotateY(0)}to{transform:rotateX(720deg) rotateY(900deg)}}
+.f{position:absolute;inset:0;border-radius:14px;background:linear-gradient(145deg,#ffffff,#dbe2ef);display:grid;grid-template:repeat(3,1fr)/repeat(3,1fr);padding:15px;box-shadow:inset 0 0 0 2px rgba(0,0,0,.08)}
+.f i{width:11px;height:11px;border-radius:50%;background:#2b3350;place-self:center;box-shadow:inset 0 -1px 2px rgba(0,0,0,.4)}
+.f1{transform:translateZ(42px)}.f6{transform:rotateY(180deg) translateZ(42px)}
+.f2{transform:rotateX(90deg) translateZ(42px)}.f5{transform:rotateX(-90deg) translateZ(42px)}
+.f3{transform:rotateY(90deg) translateZ(42px)}.f4{transform:rotateY(-90deg) translateZ(42px)}
+.a11{grid-area:1/1}.a12{grid-area:1/2}.a13{grid-area:1/3}
+.a21{grid-area:2/1}.a22{grid-area:2/2}.a23{grid-area:2/3}
+.a31{grid-area:3/1}.a32{grid-area:3/2}.a33{grid-area:3/3}
+.shdw{width:100px;height:14px;margin:6px auto 0;border-radius:50%;background:rgba(0,0,0,.45);filter:blur(3px)}
+.st{font-size:14px;color:#dfe5f0;letter-spacing:1px}
+.st .a{display:none;color:#7cf5b8}
+#sw:checked~.st .a{display:inline}
+#sw:checked~.st .b{display:none}</style></head>
+<body>
+<div class="tag">27 · 骰子翻滚开关</div>
+<input type="checkbox" id="sw" class="hid">
+<label for="sw" class="dice">
+<div class="scene"><div class="cube">
+<div class="f f1"><i class="a22"></i></div>
+<div class="f f2"><i class="a11"></i><i class="a33"></i></div>
+<div class="f f3"><i class="a11"></i><i class="a22"></i><i class="a33"></i></div>
+<div class="f f4"><i class="a11"></i><i class="a13"></i><i class="a31"></i><i class="a33"></i></div>
+<div class="f f5"><i class="a11"></i><i class="a13"></i><i class="a22"></i><i class="a31"></i><i class="a33"></i></div>
+<div class="f f6"><i class="a11"></i><i class="a12"></i><i class="a13"></i><i class="a31"></i><i class="a32"></i><i class="a33"></i></div>
+</div></div>
+<div class="shdw"></div>
+</label>
+<div class="st"><span class="a">掷出 1 点 · 开奖进行中</span><span class="b">掷出 6 点 · 开奖已关闭</span></div>
+<p class="cap">点按骰子，翻滚定点</p>
+<p class="use">用途：抽奖开奖开关</p>
+</body></html>

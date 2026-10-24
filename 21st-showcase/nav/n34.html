@@ -1,0 +1,17 @@
+<!DOCTYPE html><html lang="zh"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>34 · 图标翻转导航</title><style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;background:#0d1220;color:#eef2fa;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:58px 14px 60px;overflow-x:hidden}
+.tag{position:fixed;top:12px;left:14px;font-size:12px;color:#7c86a0;letter-spacing:.08em;z-index:99}
+.stage{width:100%;max-width:398px;display:flex;flex-direction:column;gap:16px;align-items:center}
+.hint{font-size:12px;color:#7c86a0;text-align:center;line-height:1.7}
+button{font-family:inherit;border:0;background:none;color:inherit;cursor:pointer}
+.iflip{display:flex;width:100%;background:#141a2e;border-radius:18px;padding:10px 6px}
+.iflip .ni{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;color:#8b93a7;font-size:11px;padding:8px 0}
+.iflip .ic{font-size:24px;display:block;transform-style:preserve-3d}
+.iflip .ni.active{color:#fff}
+.iflip .ni.active .ic{animation:iconFlipY .7s ease}
+@keyframes iconFlipY{0%{transform:rotateY(0)}100%{transform:rotateY(360deg)}}</style></head><body>
+<div class="tag">34 · 图标翻转导航</div>
+<div class="stage"><nav class="iflip"><button class="ni active"><span class="ic">🏠</span><span class="lb">首页</span></button><button class="ni"><span class="ic">🔍</span><span class="lb">发现</span></button><button class="ni"><span class="ic">💬</span><span class="lb">消息</span></button><button class="ni"><span class="ic">👤</span><span class="lb">我的</span></button></nav><div class="hint">点击切换试试</div></div>
+<script>document.querySelectorAll('.ni').forEach(function(e){e.addEventListener('click',function(){document.querySelectorAll('.ni').forEach(function(x){x.classList.remove('active')});e.classList.add('active')})});</script></body></html>

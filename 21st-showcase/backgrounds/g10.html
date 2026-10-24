@@ -1,0 +1,25 @@
+<!DOCTYPE html><html lang="zh"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>10 · 彩带飘落</title><style>
+*{margin:0;box-sizing:border-box}html,body{height:100%}
+body{font-family:system-ui,-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:#070a12;color:#fff;overflow:hidden}
+canvas{position:fixed;inset:0;width:100%;height:100%}
+.tag{position:fixed;top:12px;left:12px;z-index:10;font-size:12px;color:rgba(255,255,255,.8);background:rgba(0,0,0,.38);padding:4px 10px;border-radius:99px;backdrop-filter:blur(4px);letter-spacing:1px}
+.center{position:fixed;inset:0;z-index:5;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 34px;pointer-events:none}
+.center::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(0,0,0,.5),rgba(0,0,0,.12) 65%,transparent 80%)}
+h1{position:relative;font-size:30px;letter-spacing:6px;margin-bottom:12px;text-shadow:0 2px 14px rgba(0,0,0,.7)}
+p{position:relative;font-size:13px;color:rgba(255,255,255,.82);line-height:1.9;text-shadow:0 1px 8px rgba(0,0,0,.7);max-width:300px}
+
+</style></head><body>
+<div class="tag">10 · 彩带飘落</div>
+<canvas id="v"></canvas>
+<div class="center"><h1>欢庆时刻</h1><p>节日营销背景 · 五彩纸屑纷飞</p></div>
+<script>
+const c=document.getElementById('v'),g=c.getContext('2d');let W,H;const R=(a,b)=>a+Math.random()*(b-a);function rs(){W=c.width=innerWidth;H=c.height=innerHeight}addEventListener('resize',rs);rs();
+const P=[],C=['#ff5f8f','#ffb84d','#4dc3ff','#7dff9a','#c58aff','#ff7a5f'];
+for(let i=0;i<70;i++)P.push({x:R(0,W),y:R(-H,0),w:R(6,12),h:R(4,7),s:R(1.5,4),a:R(0,6.3),va:R(.05,.15),c:C[i%6],sw:R(0,6.3)});
+(function f(t){g.fillStyle='#0b0b16';g.fillRect(0,0,W,H);
+for(const p of P){p.y+=p.s;p.a+=p.va;const x=p.x+Math.sin(t/500+p.sw)*22;if(p.y>H+20){p.y=-20;p.x=R(0,W)}
+g.save();g.translate(x,p.y);g.rotate(p.a);g.fillStyle=p.c;g.fillRect(-p.w/2,-p.h/2,p.w,p.h);g.restore()}
+requestAnimationFrame(f)})(0);
+</script></body></html>

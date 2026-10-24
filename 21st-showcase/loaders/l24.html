@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="zh"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>24 · 彩虹变色</title>
+<style>*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{background:#0b0e14;color:#e8ecf4;font-family:system-ui,-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:26px;min-height:100vh;overflow:hidden}
+.tag{position:fixed;top:12px;left:14px;font-size:12px;color:#7d8699;letter-spacing:2px}
+.stage{width:220px;height:180px;display:flex;align-items:center;justify-content:center}
+.cap{font-size:13px;color:#98a1b3;letter-spacing:1px}
+@keyframes spin{to{transform:rotate(360deg)}}.rb{width:70px;height:70px;border-radius:50%;background:conic-gradient(#f43f5e,#f59e0b,#84cc16,#06b6d4,#8b5cf6,#f43f5e);-webkit-mask:radial-gradient(farthest-side,transparent 64%,#000 65%);mask:radial-gradient(farthest-side,transparent 64%,#000 65%);animation:hue 3s linear infinite}@keyframes hue{to{filter:hue-rotate(360deg)}}</style></head>
+<body>
+<div class="tag">24 · 彩虹变色</div>
+<div class="stage"><div class="rb"></div></div>
+<p class="cap">彩虹正在换装…</p>
+
+</body></html>

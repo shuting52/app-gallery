@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>17 · 弹跳小球开关</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{min-height:100vh;display:flex;align-items:center;justify-content:center;background:#fdf3e7;font-family:system-ui,"PingFang SC","Microsoft YaHei",sans-serif;overflow-x:hidden}
+.t{position:fixed;top:14px;left:16px;font-size:13px;color:#b3a08a;letter-spacing:1px}
+.card{display:flex;flex-direction:column;align-items:center;gap:22px;padding:44px 40px}
+.sw{position:relative;width:150px;height:70px;cursor:pointer}
+.sw input{position:absolute;inset:0;opacity:0;margin:0;cursor:pointer;z-index:5}
+.track{position:absolute;left:0;right:0;top:50%;height:44px;margin-top:-22px;border-radius:22px;background:#eeddc6;box-shadow:inset 0 3px 8px rgba(170,130,80,.35);transition:background .4s}
+.sw input:checked~.track{background:#f3cfa5}
+.ball{position:absolute;left:10px;top:8px;width:54px;height:54px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff8ec,#f59e0b 45%,#b45309 90%);box-shadow:0 4px 12px rgba(180,110,30,.5)}
+.ball.goR{animation:hopR .62s ease-in forwards}
+.ball.goL{animation:hopL .62s ease-in forwards}
+@keyframes hopR{0%{transform:translate(0,0)}28%{transform:translate(26px,-20px)}52%{transform:translate(48px,0)}74%{transform:translate(66px,-11px)}100%{transform:translate(76px,0)}}
+@keyframes hopL{0%{transform:translate(76px,0)}28%{transform:translate(50px,-20px)}52%{transform:translate(28px,0)}74%{transform:translate(10px,-11px)}100%{transform:translate(0,0)}}
+.tag{font-size:14px;color:#7a6650;text-align:center;line-height:1.7}
+.tag b{color:#d97706;font-weight:600}
+</style>
+</head>
+<body>
+<div class="t">17 · 弹跳小球开关</div>
+<div class="card">
+<label class="sw">
+<input type="checkbox" id="ck" aria-label="弹跳小球开关">
+<span class="track"></span><span class="ball" id="ball"></span>
+</label>
+<div class="tag"><b>用途：弹跳小球趣味开关</b><br>小球一路弹跳着滚到另一端</div>
+</div>
+<script>
+(function(){
+var ck=document.getElementById('ck'),ball=document.getElementById('ball');
+ck.addEventListener('change',function(){
+ball.classList.remove('goR','goL');void ball.offsetWidth;
+ball.classList.add(ck.checked?'goR':'goL');
+});
+})();
+</script>
+</body>
+</html>

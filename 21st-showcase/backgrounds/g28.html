@@ -1,0 +1,25 @@
+<!DOCTYPE html><html lang="zh"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>28 · 齿轮旋转</title><style>
+*{margin:0;box-sizing:border-box}html,body{height:100%}
+body{font-family:system-ui,-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:#070a12;color:#fff;overflow:hidden}
+canvas{position:fixed;inset:0;width:100%;height:100%}
+.tag{position:fixed;top:12px;left:12px;z-index:10;font-size:12px;color:rgba(255,255,255,.8);background:rgba(0,0,0,.38);padding:4px 10px;border-radius:99px;backdrop-filter:blur(4px);letter-spacing:1px}
+.center{position:fixed;inset:0;z-index:5;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 34px;pointer-events:none}
+.center::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(0,0,0,.5),rgba(0,0,0,.12) 65%,transparent 80%)}
+h1{position:relative;font-size:30px;letter-spacing:6px;margin-bottom:12px;text-shadow:0 2px 14px rgba(0,0,0,.7)}
+p{position:relative;font-size:13px;color:rgba(255,255,255,.82);line-height:1.9;text-shadow:0 1px 8px rgba(0,0,0,.7);max-width:300px}
+
+</style></head><body>
+<div class="tag">28 · 齿轮旋转</div>
+<canvas id="v"></canvas>
+<div class="center"><h1>工业之美</h1><p>制造企业官网 · 齿轮咬合转动</p></div>
+<script>
+const c=document.getElementById('v'),g=c.getContext('2d');let W,H;const R=(a,b)=>a+Math.random()*(b-a);function rs(){W=c.width=innerWidth;H=c.height=innerHeight}addEventListener('resize',rs);rs();
+function gear(x,y,r,teeth,rot,col){g.save();g.translate(x,y);g.rotate(rot);g.fillStyle=col;
+for(let i=0;i<teeth;i++){g.rotate(Math.PI*2/teeth);g.fillRect(r*.82,-r*.09,r*.34,r*.18)}
+g.beginPath();g.arc(0,0,r,0,7);g.fill();g.fillStyle='#0d1117';g.beginPath();g.arc(0,0,r*.38,0,7);g.fill();g.restore()}
+let t=0;(function f(){t+=.008;g.fillStyle='#0d1117';g.fillRect(0,0,W,H);
+gear(W*.3,H*.4,74,10,t,'#2b3a4d');gear(W*.3+128,H*.4+52,52,8,-t*1.42+.3,'#3a4f66');gear(W*.68,H*.62,90,12,-t*.82,'#243040');
+requestAnimationFrame(f)})();
+</script></body></html>

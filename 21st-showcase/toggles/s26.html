@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="zh"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>26 · 天平倾斜开关</title>
+<style>*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{background:#0b0e14;color:#e8ecf4;font-family:system-ui,-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;min-height:100vh;overflow:hidden}
+.tag{position:fixed;top:12px;left:14px;font-size:12px;color:#7d8699;letter-spacing:2px}
+.cap{font-size:13px;color:#98a1b3;letter-spacing:1px}
+.use{font-size:13px;color:#7d8699;border:1px solid rgba(255,255,255,.12);border-radius:999px;padding:6px 16px;background:rgba(255,255,255,.03)}
+.hid{position:absolute;opacity:0;pointer-events:none}
+.scale{position:relative;width:250px;height:200px;cursor:pointer;display:block}
+.pole{position:absolute;left:50%;top:34px;bottom:14px;width:8px;margin-left:-4px;border-radius:4px;background:linear-gradient(180deg,#8a93a8,#5f6678)}
+.foot{position:absolute;left:50%;bottom:0;width:110px;margin-left:-55px;height:12px;border-radius:6px;background:#2b3350}
+.pivot{position:absolute;left:50%;top:28px;width:20px;height:20px;margin-left:-10px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#e8ecf4,#8a93a8);z-index:2}
+.beam{position:absolute;left:15px;top:32px;width:220px;height:8px;border-radius:4px;background:linear-gradient(180deg,#a8b2c8,#7c8496);transform:rotate(11deg);transform-origin:110px 4px;transition:transform .8s cubic-bezier(.34,1.4,.64,1)}
+#sw:checked+.scale .beam{transform:rotate(-11deg)}
+.tray{position:absolute;top:4px;width:36px;transform:rotate(-11deg);transform-origin:18px 0;transition:transform .8s cubic-bezier(.34,1.4,.64,1)}
+#sw:checked+.scale .tray{transform:rotate(11deg)}
+.tl{left:-18px}.tr{right:-18px}
+.str{display:block;width:2px;height:36px;background:#9aa3b8;margin:0 auto}
+.pan{display:block;width:36px;height:11px;border-radius:0 0 18px 18px;background:linear-gradient(180deg,#c7cede,#8a93a8)}
+.coin{position:absolute;top:28px;left:10px;width:16px;height:16px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#ffe9a8,#c9a227);opacity:.4;transition:opacity .4s}
+.c1{animation:none}
+.c2{opacity:1;animation:coinPulse 1.5s ease-in-out infinite}
+#sw:checked+.scale .c1{opacity:1;animation:coinPulse 1.5s ease-in-out infinite}
+#sw:checked+.scale .c2{opacity:.4;animation:none}
+@keyframes coinPulse{0%,100%{box-shadow:0 0 0 0 rgba(255,215,106,.0)}50%{box-shadow:0 0 12px 4px rgba(255,215,106,.75)}}
+.tag2{position:absolute;font-size:11px;color:#8a93a8;letter-spacing:1px}
+.tag2.l{left:0;top:6px}.tag2.r{right:0;top:6px}
+.st{font-size:14px;color:#dfe5f0;letter-spacing:1px}
+.st .a{display:none;color:#ffd98a}
+#sw:checked~.st .a{display:inline}
+#sw:checked~.st .b{display:none}</style></head>
+<body>
+<div class="tag">26 · 天平倾斜开关</div>
+<input type="checkbox" id="sw" class="hid">
+<label for="sw" class="scale">
+<span class="tag2 l">专注</span><span class="tag2 r">休闲</span>
+<div class="pole"></div><div class="foot"></div><div class="pivot"></div>
+<div class="beam">
+<div class="tray tl"><i class="str"></i><i class="pan"></i><i class="coin c1"></i></div>
+<div class="tray tr"><i class="str"></i><i class="pan"></i><i class="coin c2"></i></div>
+</div>
+</label>
+<div class="st"><span class="a">左盘下沉 · 专注模式</span><span class="b">右盘下沉 · 休闲模式</span></div>
+<p class="cap">点按天平，换一边下沉</p>
+<p class="use">用途：书房专注/休闲模式开关</p>
+</body></html>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>10 · 彩带飘落</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;background:#0b0e14;display:flex;justify-content:center;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;color:#fff;overflow-x:hidden}
+.tag{position:fixed;top:10px;left:12px;z-index:60;font-size:12px;letter-spacing:.08em;color:#9aa3b8;background:rgba(0,0,0,.4);padding:4px 10px;border-radius:99px}
+.hero{position:relative;width:min(430px,100vw);min-height:100vh;min-height:100svh;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.bg{position:absolute;inset:0;overflow:hidden}
+.content{position:relative;z-index:5;text-align:center;padding:0 30px;width:100%}
+.kicker{font-size:12px;letter-spacing:.4em;text-indent:.4em;color:#ffe9a8;margin-bottom:16px;animation:kickIn 1s .45s both}
+.ttl{font-size:33px;line-height:1.45;font-weight:800;margin-bottom:16px}
+.sub{font-size:14px;line-height:1.9;color:rgba(255,255,255,.75);margin-bottom:30px;animation:fadeUp .9s .6s both}
+.cta{display:inline-block;padding:14px 44px;border-radius:999px;font-size:15px;font-weight:700;color:#fff;text-decoration:none;background:linear-gradient(135deg,#ff5f9e,#ff8a3d);box-shadow:0 8px 30px rgba(255,95,158,.45);animation:fadeUp .9s .8s both;transition:transform .25s}
+.cta:active{transform:scale(.94)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+@keyframes kickIn{from{opacity:0}to{opacity:1}}
+@keyframes spin{to{transform:rotate(360deg)}}
+.cf{position:absolute;top:-30px;border-radius:2px;animation:cfall linear infinite}
+@keyframes cfall{0%{transform:translateY(0) rotate(0)}100%{transform:translateY(980px) rotate(720deg)}}
+.ttl{animation:bncIn 1s .3s both}
+@keyframes bncIn{0%{opacity:0;transform:translateY(-70px)}55%{opacity:1;transform:translateY(10px)}75%{transform:translateY(-7px)}100%{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<div class="tag">10 · 彩带飘落</div>
+<section class="hero">
+<div class="bg"><i class="cf" style="left:23%;background:#b45fff;animation-duration:4.42s;animation-delay:0.82s;width:6px;height:19px"></i><i class="cf" style="left:19%;background:#b45fff;animation-duration:3.54s;animation-delay:0.30s;width:7px;height:16px"></i><i class="cf" style="left:38%;background:#5fffb0;animation-duration:5.64s;animation-delay:4.83s;width:8px;height:14px"></i><i class="cf" style="left:19%;background:#b45fff;animation-duration:5.18s;animation-delay:1.39s;width:6px;height:18px"></i><i class="cf" style="left:38%;background:#ffb35f;animation-duration:5.94s;animation-delay:0.33s;width:9px;height:12px"></i><i class="cf" style="left:91%;background:#b45fff;animation-duration:5.47s;animation-delay:3.97s;width:10px;height:12px"></i><i class="cf" style="left:85%;background:#5fffb0;animation-duration:6.00s;animation-delay:3.86s;width:10px;height:17px"></i><i class="cf" style="left:45%;background:#ffb35f;animation-duration:3.85s;animation-delay:0.24s;width:10px;height:12px"></i><i class="cf" style="left:23%;background:#fff35f;animation-duration:6.29s;animation-delay:4.10s;width:7px;height:13px"></i><i class="cf" style="left:2%;background:#5fffb0;animation-duration:4.21s;animation-delay:2.37s;width:10px;height:18px"></i><i class="cf" style="left:70%;background:#5fffb0;animation-duration:4.86s;animation-delay:0.87s;width:9px;height:19px"></i><i class="cf" style="left:34%;background:#fff35f;animation-duration:5.37s;animation-delay:4.71s;width:6px;height:19px"></i><i class="cf" style="left:75%;background:#5fffb0;animation-duration:6.61s;animation-delay:2.72s;width:10px;height:18px"></i><i class="cf" style="left:69%;background:#b45fff;animation-duration:5.75s;animation-delay:3.98s;width:11px;height:19px"></i><i class="cf" style="left:70%;background:#ffb35f;animation-duration:6.84s;animation-delay:0.32s;width:7px;height:12px"></i><i class="cf" style="left:14%;background:#fff35f;animation-duration:3.85s;animation-delay:2.46s;width:6px;height:17px"></i><i class="cf" style="left:82%;background:#ffb35f;animation-duration:6.05s;animation-delay:3.39s;width:6px;height:15px"></i><i class="cf" style="left:32%;background:#ff5f9e;animation-duration:6.58s;animation-delay:1.16s;width:12px;height:19px"></i></div>
+<div class="content">
+<div class="kicker">音乐节 · 彩虹音浪</div>
+<h1 class="ttl">这个夏天，<br>一起跳进音浪</h1>
+<p class="sub">全国音乐节票务与拼车搭子，一键集结。</p>
+<a class="cta" href="#">抢早鸟票</a>
+</div>
+</section>
+
+</body>
+</html>

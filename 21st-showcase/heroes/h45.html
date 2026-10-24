@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>45 · DNA螺旋</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;background:#0b0e14;display:flex;justify-content:center;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;color:#fff;overflow-x:hidden}
+.tag{position:fixed;top:10px;left:12px;z-index:60;font-size:12px;letter-spacing:.08em;color:#9aa3b8;background:rgba(0,0,0,.4);padding:4px 10px;border-radius:99px}
+.hero{position:relative;width:min(430px,100vw);min-height:100vh;min-height:100svh;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.bg{position:absolute;inset:0;overflow:hidden}
+.content{position:relative;z-index:5;text-align:center;padding:0 30px;width:100%}
+.kicker{font-size:12px;letter-spacing:.4em;text-indent:.4em;color:#b8ffd9;margin-bottom:16px;animation:kickIn 1s .45s both}
+.ttl{font-size:33px;line-height:1.45;font-weight:800;margin-bottom:16px}
+.sub{font-size:14px;line-height:1.9;color:rgba(255,255,255,.75);margin-bottom:30px;animation:fadeUp .9s .6s both}
+.cta{display:inline-block;padding:14px 44px;border-radius:999px;font-size:15px;font-weight:700;color:#fff;text-decoration:none;background:linear-gradient(135deg,#00a35f,#00d0c8);box-shadow:0 8px 30px rgba(0,190,130,.45);animation:fadeUp .9s .8s both;transition:transform .25s}
+.cta:active{transform:scale(.94)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+@keyframes kickIn{from{opacity:0}to{opacity:1}}
+@keyframes spin{to{transform:rotate(360deg)}}
+.dn{position:absolute;left:50%;width:12px;height:12px;margin-left:-6px;border-radius:50%;background:#37ff9e;animation:dnaX 2.4s ease-in-out infinite}
+.d2{background:#5fb4ff;animation-delay:inherit;animation-name:dnaX2}
+@keyframes dnaX{0%,100%{transform:translateX(-70px) scale(.7);opacity:.5}50%{transform:translateX(70px) scale(1.15);opacity:1}}
+@keyframes dnaX2{0%,100%{transform:translateX(70px) scale(.7);opacity:.5}50%{transform:translateX(-70px) scale(1.15);opacity:1}}
+.hl,.hr{display:inline-block}
+.hl{animation:helixL 1s .3s both}.hr{animation:helixR 1s .45s both}
+@keyframes helixL{from{opacity:0;transform:translateX(-70px) rotate(-14deg)}to{opacity:1;transform:none}}
+@keyframes helixR{from{opacity:0;transform:translateX(70px) rotate(14deg)}to{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<div class="tag">45 · DNA螺旋</div>
+<section class="hero">
+<div class="bg"><i class="dn" style="top:40px;animation-delay:0.09s"></i><i class="dn d2" style="top:40px;animation-delay:0.09s"></i><i class="dn" style="top:76px;animation-delay:0.17s"></i><i class="dn d2" style="top:76px;animation-delay:0.17s"></i><i class="dn" style="top:112px;animation-delay:0.25s"></i><i class="dn d2" style="top:112px;animation-delay:0.25s"></i><i class="dn" style="top:148px;animation-delay:0.33s"></i><i class="dn d2" style="top:148px;animation-delay:0.33s"></i><i class="dn" style="top:184px;animation-delay:0.41s"></i><i class="dn d2" style="top:184px;animation-delay:0.41s"></i><i class="dn" style="top:220px;animation-delay:0.49s"></i><i class="dn d2" style="top:220px;animation-delay:0.49s"></i><i class="dn" style="top:256px;animation-delay:0.57s"></i><i class="dn d2" style="top:256px;animation-delay:0.57s"></i><i class="dn" style="top:292px;animation-delay:0.65s"></i><i class="dn d2" style="top:292px;animation-delay:0.65s"></i><i class="dn" style="top:328px;animation-delay:0.73s"></i><i class="dn d2" style="top:328px;animation-delay:0.73s"></i><i class="dn" style="top:364px;animation-delay:0.81s"></i><i class="dn d2" style="top:364px;animation-delay:0.81s"></i><i class="dn" style="top:400px;animation-delay:0.89s"></i><i class="dn d2" style="top:400px;animation-delay:0.89s"></i><i class="dn" style="top:436px;animation-delay:0.97s"></i><i class="dn d2" style="top:436px;animation-delay:0.97s"></i><i class="dn" style="top:472px;animation-delay:1.05s"></i><i class="dn d2" style="top:472px;animation-delay:1.05s"></i><i class="dn" style="top:508px;animation-delay:1.13s"></i><i class="dn d2" style="top:508px;animation-delay:1.13s"></i><i class="dn" style="top:544px;animation-delay:1.21s"></i><i class="dn d2" style="top:544px;animation-delay:1.21s"></i><i class="dn" style="top:580px;animation-delay:1.29s"></i><i class="dn d2" style="top:580px;animation-delay:1.29s"></i><i class="dn" style="top:616px;animation-delay:1.37s"></i><i class="dn d2" style="top:616px;animation-delay:1.37s"></i><i class="dn" style="top:652px;animation-delay:1.45s"></i><i class="dn d2" style="top:652px;animation-delay:1.45s"></i><i class="dn" style="top:688px;animation-delay:1.53s"></i><i class="dn d2" style="top:688px;animation-delay:1.53s"></i><i class="dn" style="top:724px;animation-delay:1.61s"></i><i class="dn d2" style="top:724px;animation-delay:1.61s"></i><i class="dn" style="top:760px;animation-delay:1.69s"></i><i class="dn d2" style="top:760px;animation-delay:1.69s"></i><i class="dn" style="top:796px;animation-delay:1.77s"></i><i class="dn d2" style="top:796px;animation-delay:1.77s"></i><i class="dn" style="top:832px;animation-delay:1.85s"></i><i class="dn d2" style="top:832px;animation-delay:1.85s"></i><i class="dn" style="top:868px;animation-delay:1.93s"></i><i class="dn d2" style="top:868px;animation-delay:1.93s"></i></div>
+<div class="content">
+<div class="kicker">健康 · 基因密码</div>
+<h1 class="ttl"><span class="hl">读懂身体</span><span class="hr">的说明书</span></h1>
+<p class="sub">健康管理与体检解读，科学养生指南。</p>
+<a class="cta" href="#">了解健康</a>
+</div>
+</section>
+
+</body>
+</html>

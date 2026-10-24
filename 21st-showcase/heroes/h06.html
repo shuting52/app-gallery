@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>06 · 雨滴下落</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;background:#0b0e14;display:flex;justify-content:center;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;color:#fff;overflow-x:hidden}
+.tag{position:fixed;top:10px;left:12px;z-index:60;font-size:12px;letter-spacing:.08em;color:#9aa3b8;background:rgba(0,0,0,.4);padding:4px 10px;border-radius:99px}
+.hero{position:relative;width:min(430px,100vw);min-height:100vh;min-height:100svh;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.bg{position:absolute;inset:0;overflow:hidden}
+.content{position:relative;z-index:5;text-align:center;padding:0 30px;width:100%}
+.kicker{font-size:12px;letter-spacing:.4em;text-indent:.4em;color:#a9c6ff;margin-bottom:16px;animation:kickIn 1s .45s both}
+.ttl{font-size:33px;line-height:1.45;font-weight:800;margin-bottom:16px}
+.sub{font-size:14px;line-height:1.9;color:rgba(255,255,255,.75);margin-bottom:30px;animation:fadeUp .9s .6s both}
+.cta{display:inline-block;padding:14px 44px;border-radius:999px;font-size:15px;font-weight:700;color:#fff;text-decoration:none;background:linear-gradient(135deg,#2f5bff,#7b5cff);box-shadow:0 8px 30px rgba(70,110,255,.45);animation:fadeUp .9s .8s both;transition:transform .25s}
+.cta:active{transform:scale(.94)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+@keyframes kickIn{from{opacity:0}to{opacity:1}}
+@keyframes spin{to{transform:rotate(360deg)}}
+.dp{position:absolute;top:-100px;width:2px;background:linear-gradient(transparent,#9fc0ff);border-radius:2px;animation:fall linear infinite}
+@keyframes fall{to{transform:translateY(1050px)}}
+.ttl{animation:slideL 1s .3s cubic-bezier(.2,.7,.2,1) both}
+@keyframes slideL{from{opacity:0;transform:translateX(-64px)}to{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<div class="tag">06 · 雨滴下落</div>
+<section class="hero">
+<div class="bg"><i class="dp" style="left:61%;height:79px;animation-duration:1.24s;animation-delay:0.25s"></i><i class="dp" style="left:88%;height:40px;animation-duration:1.20s;animation-delay:0.83s"></i><i class="dp" style="left:79%;height:45px;animation-duration:1.20s;animation-delay:1.69s"></i><i class="dp" style="left:91%;height:42px;animation-duration:1.56s;animation-delay:0.30s"></i><i class="dp" style="left:59%;height:86px;animation-duration:1.28s;animation-delay:0.30s"></i><i class="dp" style="left:8%;height:47px;animation-duration:1.02s;animation-delay:1.57s"></i><i class="dp" style="left:77%;height:44px;animation-duration:1.60s;animation-delay:0.69s"></i><i class="dp" style="left:15%;height:58px;animation-duration:1.08s;animation-delay:0.40s"></i><i class="dp" style="left:55%;height:45px;animation-duration:1.60s;animation-delay:1.64s"></i><i class="dp" style="left:52%;height:57px;animation-duration:1.21s;animation-delay:0.08s"></i><i class="dp" style="left:92%;height:40px;animation-duration:1.69s;animation-delay:0.10s"></i><i class="dp" style="left:50%;height:71px;animation-duration:1.03s;animation-delay:0.43s"></i><i class="dp" style="left:96%;height:47px;animation-duration:1.77s;animation-delay:0.01s"></i><i class="dp" style="left:76%;height:52px;animation-duration:1.71s;animation-delay:0.37s"></i><i class="dp" style="left:3%;height:45px;animation-duration:1.02s;animation-delay:1.65s"></i><i class="dp" style="left:66%;height:45px;animation-duration:1.42s;animation-delay:0.97s"></i></div>
+<div class="content">
+<div class="kicker">电影 · 雨夜影院</div>
+<h1 class="ttl">雨声里，<br>看一部好电影</h1>
+<p class="sub">文艺片单与雨夜氛围音，治愈每个潮湿夜晚。</p>
+<a class="cta" href="#">今晚看什么</a>
+</div>
+</section>
+
+</body>
+</html>

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>47 · 水流线条</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;background:#0b0e14;display:flex;justify-content:center;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;color:#fff;overflow-x:hidden}
+.tag{position:fixed;top:10px;left:12px;z-index:60;font-size:12px;letter-spacing:.08em;color:#9aa3b8;background:rgba(0,0,0,.4);padding:4px 10px;border-radius:99px}
+.hero{position:relative;width:min(430px,100vw);min-height:100vh;min-height:100svh;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.bg{position:absolute;inset:0;overflow:hidden}
+.content{position:relative;z-index:5;text-align:center;padding:0 30px;width:100%}
+.kicker{font-size:12px;letter-spacing:.4em;text-indent:.4em;color:#b8ecff;margin-bottom:16px;animation:kickIn 1s .45s both}
+.ttl{font-size:33px;line-height:1.45;font-weight:800;margin-bottom:16px}
+.sub{font-size:14px;line-height:1.9;color:rgba(255,255,255,.75);margin-bottom:30px;animation:fadeUp .9s .6s both}
+.cta{display:inline-block;padding:14px 44px;border-radius:999px;font-size:15px;font-weight:700;color:#fff;text-decoration:none;background:linear-gradient(135deg,#0090c8,#5fd6a8);box-shadow:0 8px 30px rgba(0,170,190,.45);animation:fadeUp .9s .8s both;transition:transform .25s}
+.cta:active{transform:scale(.94)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+@keyframes kickIn{from{opacity:0}to{opacity:1}}
+@keyframes spin{to{transform:rotate(360deg)}}
+.bg{background:linear-gradient(#041a14,#0a3d33)}
+.wl{position:absolute;left:-30%;width:160%;height:3px;border-radius:3px;background:linear-gradient(90deg,transparent,#5fe8c8,transparent);opacity:.6;animation:wlM 5s linear infinite}
+@keyframes wlM{from{transform:translateX(-12%)}to{transform:translateX(12%)}}
+.fl2{display:inline-block;opacity:0;animation:flowIn .7s both}
+@keyframes flowIn{from{opacity:0;transform:translateX(56px) translateY(10px)}to{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<div class="tag">47 · 水流线条</div>
+<section class="hero">
+<div class="bg"><div class="wl" style="top:18%;animation-duration:5s;animation-delay:0s"></div><div class="wl" style="top:34%;animation-duration:6.5s;animation-delay:-2s"></div><div class="wl" style="top:52%;animation-duration:5.5s;animation-delay:-3.5s"></div><div class="wl" style="top:68%;animation-duration:7s;animation-delay:-1s"></div><div class="wl" style="top:82%;animation-duration:6s;animation-delay:-4s"></div></div>
+<div class="content">
+<div class="kicker">茶饮 · 山泉茶饮</div>
+<h1 class="ttl"><span class="fl2" style="animation-delay:0.25s">一</span><span class="fl2" style="animation-delay:0.29s">杯</span><span class="fl2" style="animation-delay:0.34s">清</span><span class="fl2" style="animation-delay:0.39s">泉</span><span class="fl2" style="animation-delay:0.43s">的</span><br><span class="fl2" style="animation-delay:0.47s">味</span><span class="fl2" style="animation-delay:0.52s">道</span></h1>
+<p class="sub">新式茶饮配方与开店指南，创业好帮手。</p>
+<a class="cta" href="#">查看配方</a>
+</div>
+</section>
+
+</body>
+</html>

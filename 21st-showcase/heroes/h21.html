@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>21 · 呼吸光晕</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;background:#0b0e14;display:flex;justify-content:center;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;color:#fff;overflow-x:hidden}
+.tag{position:fixed;top:10px;left:12px;z-index:60;font-size:12px;letter-spacing:.08em;color:#9aa3b8;background:rgba(0,0,0,.4);padding:4px 10px;border-radius:99px}
+.hero{position:relative;width:min(430px,100vw);min-height:100vh;min-height:100svh;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.bg{position:absolute;inset:0;overflow:hidden}
+.content{position:relative;z-index:5;text-align:center;padding:0 30px;width:100%}
+.kicker{font-size:12px;letter-spacing:.4em;text-indent:.4em;color:#d9c9ff;margin-bottom:16px;animation:kickIn 1s .45s both}
+.ttl{font-size:33px;line-height:1.45;font-weight:800;margin-bottom:16px}
+.sub{font-size:14px;line-height:1.9;color:rgba(255,255,255,.75);margin-bottom:30px;animation:fadeUp .9s .6s both}
+.cta{display:inline-block;padding:14px 44px;border-radius:999px;font-size:15px;font-weight:700;color:#fff;text-decoration:none;background:linear-gradient(135deg,#7b5cff,#b48cff);box-shadow:0 8px 30px rgba(140,110,255,.45);animation:fadeUp .9s .8s both;transition:transform .25s}
+.cta:active{transform:scale(.94)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+@keyframes kickIn{from{opacity:0}to{opacity:1}}
+@keyframes spin{to{transform:rotate(360deg)}}
+.halo{position:absolute;top:46%;left:50%;width:430px;height:430px;transform:translate(-50%,-50%);background:radial-gradient(circle,rgba(150,120,255,.5),transparent 65%);animation:breathe 5.5s ease-in-out infinite}
+@keyframes breathe{0%,100%{transform:translate(-50%,-50%) scale(.85);opacity:.55}50%{transform:translate(-50%,-50%) scale(1.12);opacity:.95}}
+.ttl{animation:bIn 1.1s .3s both,bT 4.5s 1.6s ease-in-out infinite}
+@keyframes bIn{from{opacity:0;transform:scale(.82)}to{opacity:1;transform:scale(1)}}
+@keyframes bT{0%,100%{transform:scale(1)}50%{transform:scale(1.035)}}
+</style>
+</head>
+<body>
+<div class="tag">21 · 呼吸光晕</div>
+<section class="hero">
+<div class="bg"><div class="halo"></div></div>
+<div class="content">
+<div class="kicker">冥想 · 安住时刻</div>
+<h1 class="ttl">慢下来，<br>听见自己</h1>
+<p class="sub">正念冥想引导音频，睡前 10 分钟放空。</p>
+<a class="cta" href="#">今晚冥想</a>
+</div>
+</section>
+
+</body>
+</html>

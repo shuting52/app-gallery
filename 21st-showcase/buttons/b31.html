@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>31 · 电流按钮</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{min-height:100vh;background:#0e1116;color:#f1f5f9;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:system-ui,-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;overflow-x:hidden;padding:24px 16px}
+.tag{position:fixed;top:12px;left:14px;font-size:12px;color:#8b93a3;letter-spacing:.08em;z-index:50}
+.stage{position:relative;width:100%;max-width:430px;min-height:52vh;display:flex;align-items:center;justify-content:center}
+.btn{position:relative;border:0;cursor:pointer;font-size:17px;font-weight:700;color:#fff;padding:16px 42px;border-radius:14px;font-family:inherit;overflow:hidden;white-space:nowrap;-webkit-tap-highlight-color:transparent}
+.btn:active{filter:brightness(1.25)}
+.hint{margin-top:18px;color:#5b6474;font-size:13px;min-height:20px;text-align:center}
+.btn{background:#0f172a;border:1px solid #facc15;color:#fef08a;overflow:visible}
+.zap{position:absolute;left:6%;right:6%;top:-9px;height:14px;pointer-events:none}
+.zap polyline{stroke:#fde047;stroke-width:2;fill:none;animation:flick 1.6s steps(2) infinite}
+.btn:hover .zap polyline{animation-duration:.45s}
+@keyframes flick{0%,100%{opacity:1}50%{opacity:.15}80%{opacity:.75}}
+</style>
+</head>
+<body>
+<div class="tag">31 · 电流按钮</div>
+<div class="stage"><button class="btn">高压启动<svg class="zap" viewBox="0 0 200 14" preserveAspectRatio="none"><polyline points="0,10 25,4 45,12 70,3 95,11 120,4 145,12 170,5 200,10"/></svg></button></div>
+<p class="hint">点击按钮试试</p>
+<script>
+
+</script>
+</body>
+</html>

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>32 · 蝴蝶结摆动</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#0e1420;color:#e9f0fa;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;overflow-x:hidden;padding:20px}
+.tag{position:fixed;top:12px;left:14px;font-size:12px;color:#93a7c4;letter-spacing:1px;z-index:5}
+.stage{width:100%;max-width:380px;height:320px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.desc{margin-top:6px;font-size:14px;color:#9db2cc;text-align:center;line-height:1.9;padding:0 24px;max-width:380px}
+.bow{position:relative;width:160px;height:110px;animation:sway 2.3s ease-in-out infinite;transform-origin:top center}
+.bow .l,.bow .r{position:absolute;top:22px;width:64px;height:54px}
+.bow .l{left:10px;background:linear-gradient(135deg,#ff8fb3,#ff5f8f);border-radius:60% 10px 60% 10px;transform:rotate(-14deg)}
+.bow .r{right:10px;background:linear-gradient(225deg,#ff8fb3,#ff5f8f);border-radius:10px 60% 10px 60%;transform:rotate(14deg)}
+.bow b{position:absolute;top:34px;left:50%;width:32px;height:32px;margin-left:-16px;border-radius:50%;background:#e23b6e;box-shadow:0 4px 10px rgba(0,0,0,.35);z-index:2}
+@keyframes sway{0%,100%{transform:rotate(-7deg)}50%{transform:rotate(7deg)}}
+</style>
+</head>
+<body>
+<div class="tag">32 · 蝴蝶结摆动</div>
+<div class="stage"><div class="bow"><i class="l"></i><i class="r"></i><b></b></div></div>
+<p class="desc">蝴蝶结左右摇摆，像在点头。</p>
+
+</body>
+</html>
