@@ -1,1 +1,34 @@
-[{"file":"liquid-glass-button/demo.html","title":"Liquid Glass Button 复刻"},{"file":"icon-cloud/demo.html","title":"IconCloud 3D 图标球"}]
+[
+ {
+  "file": "liquid-glass-button/demo.html",
+  "title": "Liquid Glass Button 复刻"
+ },
+ {
+  "file": "icon-cloud/demo.html",
+  "title": "IconCloud 3D 图标球"
+ },
+ {
+  "file": "21st/spotlight-card.html",
+  "title": "Spotlight Card 跟随光斑"
+ },
+ {
+  "file": "21st/image-accordion.html",
+  "title": "图片手风琴"
+ },
+ {
+  "file": "21st/aurora-background.html",
+  "title": "极光背景"
+ },
+ {
+  "file": "21st/dock.html",
+  "title": "macOS 程序坞"
+ },
+ {
+  "file": "21st/text-rotate.html",
+  "title": "文字轮播"
+ },
+ {
+  "file": "21st/sparkles.html",
+  "title": "星空粒子"
+ }
+]
