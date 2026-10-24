@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Dock · 复刻自 21st.dev</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  html,body { height:100%; }
+  body {
+    font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+    background:radial-gradient(120% 90% at 50% 0%, #2b1a4d 0%, #150b2a 55%, #080514 100%);
+    color:#e8eef7; min-height:100vh; display:flex; flex-direction:column; align-items:center;
+    overflow:hidden; user-select:none;
+  }
+  header { margin-top:64px; text-align:center; padding:0 24px; }
+  header .tag {
+    display:inline-block; font-size:12px; color:#9fb3d1; border:1px solid rgba(159,179,209,.28);
+    border-radius:999px; padding:4px 12px; margin-bottom:14px; letter-spacing:.5px;
+    background:rgba(255,255,255,.04);
+  }
+  header h1 { font-size:30px; font-weight:800; letter-spacing:2px; }
+  header h1 .dot { color:#a78bfa; }
+  header p { margin-top:10px; font-size:13px; color:#8fa3c2; line-height:1.7; }
+  .stage { flex:1; width:100%; display:flex; align-items:flex-end; justify-content:center; padding-bottom:48px; }
+  .dock-wrap { display:flex; flex-direction:column; align-items:center; }
+  .tip {
+    margin-bottom:14px; font-size:12px; color:#cfe0f7; background:rgba(20,28,46,.85);
+    border:1px solid rgba(255,255,255,.14); border-radius:8px; padding:5px 12px;
+    opacity:0; transform:translateY(6px); transition:opacity .18s, transform .18s; pointer-events:none;
+    backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
+  }
+  .tip.show { opacity:1; transform:translateY(0); }
+  .dock {
+    display:flex; align-items:flex-end; gap:10px; padding:14px 16px;
+    max-width:calc(100vw - 24px);
+    background:rgba(255,255,255,.12);
+    -webkit-backdrop-filter:blur(22px) saturate(1.6); backdrop-filter:blur(22px) saturate(1.6);
+    border:1px solid rgba(255,255,255,.22); border-radius:26px;
+    box-shadow:0 18px 50px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.25);
+  }
+  .app { position:relative; display:flex; flex-direction:column; align-items:center; cursor:pointer;
+    transform-origin:bottom center; will-change:transform; }
+  .icon {
+    width:52px; height:52px; border-radius:14px; display:flex; align-items:center; justify-content:center;
+    font-size:28px; box-shadow:0 6px 16px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.35);
+    border:1px solid rgba(255,255,255,.2);
+  }
+  .dot-run {
+    width:5px; height:5px; border-radius:50%; background:rgba(255,255,255,.85); margin-top:5px;
+    box-shadow:0 0 6px rgba(255,255,255,.6);
+  }
+  .sep { width:1px; align-self:stretch; background:rgba(255,255,255,.25); margin:6px 2px; border-radius:1px; }
+  footer { padding-bottom:26px; font-size:11px; color:#5b6c88; }
+  @media (max-width:480px){
+    .dock{ gap:5px; padding:8px 10px; border-radius:18px; }
+    .icon{ width:32px; height:32px; font-size:18px; border-radius:9px; }
+    .sep{ margin:4px 1px; }
+    .dock{ gap:4px; padding:8px 10px; }
+    .icon{ width:28px; height:28px; font-size:16px; border-radius:8px; }
+  }
+</style>
+</head>
+<body>
+  <header>
+    <div class="tag">复刻自 21st.dev · Dock</div>
+    <h1>游戏程序坞<span class="dot">.</span></h1>
+    <p>主机、PC、手柄全开，今晚开黑<br>悬停放大，选一款上线</p>
+  </header>
+  <div class="stage">
+    <div class="dock-wrap">
+      <div class="tip" id="tip">游戏平台</div>
+      <div class="dock" id="dock">
+        <div class="app" data-label="游戏平台"><div class="icon" style="background:linear-gradient(135deg,#818cf8,#4338ca)">🎮</div><div class="dot-run"></div></div>
+        <div class="app" data-label="开放世界"><div class="icon" style="background:linear-gradient(135deg,#4ade80,#15803d)">🌍</div><div class="dot-run"></div></div>
+        <div class="app" data-label="射击"><div class="icon" style="background:linear-gradient(135deg,#f87171,#b91c1c)">🎯</div></div>
+        <div class="app" data-label="赛车"><div class="icon" style="background:linear-gradient(135deg,#fbbf24,#b45309)">🏎️</div></div>
+        <div class="sep"></div>
+        <div class="app" data-label="冒险"><div class="icon" style="background:linear-gradient(135deg,#38bdf8,#0369a1)">🗺️</div><div class="dot-run"></div></div>
+        <div class="app" data-label="卡牌"><div class="icon" style="background:linear-gradient(135deg,#f472b6,#be185d)">🃏</div></div>
+        <div class="app" data-label="电竞"><div class="icon" style="background:linear-gradient(135deg,#facc15,#a16207)">🏆</div><div class="dot-run"></div></div>
+        <div class="app" data-label="主机"><div class="icon" style="background:linear-gradient(135deg,#9ca3af,#4b5563)">🕹️</div></div>
+        <div class="sep"></div>
+        <div class="app" data-label="直播"><div class="icon" style="background:linear-gradient(135deg,#fb923c,#c2410c)">📺</div><div class="dot-run"></div></div>
+        <div class="app" data-label="攻略"><div class="icon" style="background:linear-gradient(135deg,#67e8f9,#0e7490)">📖</div></div>
+        <div class="app" data-label="手柄"><div class="icon" style="background:linear-gradient(135deg,#c4b5fd,#7c3aed)">🎲</div></div>
+        <div class="app" data-label="商城"><div class="icon" style="background:linear-gradient(135deg,#6ee7b7,#047857)">🛒</div></div>
+      </div>
+    </div>
+  </div>
+  <footer>纯手写 CSS · 零框架 · 零外部依赖</footer>
+<script>
+(function(){
+  var dock = document.getElementById('dock');
+  var tip  = document.getElementById('tip');
+  var apps = Array.prototype.slice.call(dock.querySelectorAll('.app'));
+  var MAX = 1.8, SIGMA = 62;
+  function gauss(d){ return Math.exp(-(d*d)/(2*SIGMA*SIGMA)); }
+  function render(mx){
+    apps.forEach(function(a){
+      var r = a.getBoundingClientRect();
+      var cx = r.left + r.width/2;
+      var d = Math.abs(mx - cx);
+      var s = 1 + (MAX-1) * gauss(d);
+      var lift = (s-1) * 34;
+      a.style.transform = 'scale(' + s.toFixed(3) + ') translateY(' + (-lift).toFixed(1) + 'px)';
+    });
+  }
+  function reset(){
+    apps.forEach(function(a){ a.style.transform = 'scale(1) translateY(0)'; });
+    tip.classList.remove('show');
+  }
+  dock.addEventListener('mousemove', function(e){ render(e.clientX); });
+  dock.addEventListener('mouseleave', reset);
+  dock.addEventListener('touchmove', function(e){
+    if(e.touches.length){ render(e.touches[0].clientX); }
+  }, {passive:true});
+  dock.addEventListener('touchend', reset);
+  apps.forEach(function(a){
+    a.addEventListener('mouseenter', function(){
+      tip.textContent = a.getAttribute('data-label');
+      tip.classList.add('show');
+    });
+  });
+  function adapt(){
+    if(apps.length > 1){
+      var r0 = apps[0].getBoundingClientRect(), r1 = apps[1].getBoundingClientRect();
+      SIGMA = Math.max(46, (r1.left - r0.left) * 0.85);
+    }
+  }
+  window.addEventListener('resize', adapt); adapt();
+})();
+</script>
+</body>
+</html>
