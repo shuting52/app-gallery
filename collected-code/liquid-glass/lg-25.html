@@ -1,0 +1,39 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>液态玻璃时间轴</title><style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;min-height:100vh;
+background:radial-gradient(120% 90% at 50% 0%,#1c2a44 0%,#0b1220 55%,#060a14 100%);
+color:#eef3fa;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.blob{position:absolute;border-radius:50%;filter:blur(60px);opacity:.75;animation:drift 9s ease-in-out infinite alternate}
+.b1{width:280px;height:280px;background:#5aa9ff;left:-60px;top:-40px}
+.b2{width:240px;height:240px;background:#ff9ecb;right:-50px;top:30%;animation-delay:-3s}
+.b3{width:220px;height:220px;background:#ffd166;left:30%;bottom:-70px;animation-delay:-6s}
+@keyframes drift{from{transform:translate(0,0) scale(1)}to{transform:translate(30px,24px) scale(1.12)}}
+.glass{position:relative;background:linear-gradient(135deg,rgba(255,255,255,.22),rgba(255,255,255,.08));
+-webkit-backdrop-filter:blur(22px) saturate(1.8);backdrop-filter:blur(22px) saturate(1.8);
+border:1px solid rgba(255,255,255,.38);border-radius:26px;
+box-shadow:0 18px 50px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.45),inset 0 -1px 0 rgba(255,255,255,.12)}
+.glass::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+background:linear-gradient(115deg,rgba(255,255,255,.28) 0%,rgba(255,255,255,0) 42%)}
+.tag{position:absolute;top:18px;left:18px;font-size:11px;color:#9fb3d1;letter-spacing:1px}
+h2{font-size:20px;margin-bottom:6px}p{font-size:13px;color:#c6d4e8;line-height:1.7}
+button{cursor:pointer}
+.tl{width:300px;padding:26px}
+.tlrow{display:flex;gap:14px;position:relative;padding-bottom:20px}
+.tlrow:last-child{padding-bottom:0}
+.tlrow::before{content:"";position:absolute;left:7px;top:20px;bottom:0;width:2px;background:rgba(255,255,255,.2)}
+.tlrow:last-child::before{display:none}
+.tlrow i{width:16px;height:16px;flex:none;border-radius:50%;background:rgba(255,255,255,.25);border:2px solid rgba(255,255,255,.5);margin-top:2px;z-index:1}
+.tlrow i.on{background:#4ade80;border-color:#4ade80;box-shadow:0 0 12px rgba(74,222,128,.7)}
+.tlrow i.now{background:#ffd166;border-color:#ffd166;box-shadow:0 0 14px rgba(255,209,102,.9);animation:blink 1.6s ease-in-out infinite}
+@keyframes blink{0%,100%{box-shadow:0 0 6px rgba(255,209,102,.5)}50%{box-shadow:0 0 20px rgba(255,209,102,1)}}
+.tlrow b{font-size:14px}.tlrow p{font-size:12px;margin-top:2px}</style></head><body>
+<div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
+<span class="tag">LIQUID GLASS · 复刻</span>
+<div class="glass tl"><h2>液态玻璃时间轴</h2>
+<div class="tlrow"><i class="on"></i><div><b>需求确认</b><p>10:00 · 已完成</p></div></div>
+<div class="tlrow"><i class="on"></i><div><b>设计稿交付</b><p>13:30 · 已完成</p></div></div>
+<div class="tlrow"><i class="now"></i><div><b>开发联调中</b><p>进行中 · 预计 18:00</p></div></div>
+<div class="tlrow"><i></i><div><b>上线发布</b><p>待开始</p></div></div></div>
+<script></script></body></html>

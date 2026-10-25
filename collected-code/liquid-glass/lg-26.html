@@ -1,0 +1,46 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>液态玻璃价格表</title><style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;min-height:100vh;
+background:radial-gradient(120% 90% at 50% 0%,#1c2a44 0%,#0b1220 55%,#060a14 100%);
+color:#eef3fa;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.blob{position:absolute;border-radius:50%;filter:blur(60px);opacity:.75;animation:drift 9s ease-in-out infinite alternate}
+.b1{width:280px;height:280px;background:#5aa9ff;left:-60px;top:-40px}
+.b2{width:240px;height:240px;background:#ff9ecb;right:-50px;top:30%;animation-delay:-3s}
+.b3{width:220px;height:220px;background:#ffd166;left:30%;bottom:-70px;animation-delay:-6s}
+@keyframes drift{from{transform:translate(0,0) scale(1)}to{transform:translate(30px,24px) scale(1.12)}}
+.glass{position:relative;background:linear-gradient(135deg,rgba(255,255,255,.22),rgba(255,255,255,.08));
+-webkit-backdrop-filter:blur(22px) saturate(1.8);backdrop-filter:blur(22px) saturate(1.8);
+border:1px solid rgba(255,255,255,.38);border-radius:26px;
+box-shadow:0 18px 50px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.45),inset 0 -1px 0 rgba(255,255,255,.12)}
+.glass::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+background:linear-gradient(115deg,rgba(255,255,255,.28) 0%,rgba(255,255,255,0) 42%)}
+.tag{position:absolute;top:18px;left:18px;font-size:11px;color:#9fb3d1;letter-spacing:1px}
+h2{font-size:20px;margin-bottom:6px}p{font-size:13px;color:#c6d4e8;line-height:1.7}
+button{cursor:pointer}
+.price{width:330px;padding:26px}
+.toggle{display:flex;gap:6px;justify-content:center;margin-top:14px}
+.toggle button{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.25);color:#c6d4e8;
+font-size:12px;padding:7px 14px;border-radius:99px}
+.toggle button.on{color:#fff;background:linear-gradient(135deg,#5aa9ff,#7b6cff)}
+.tiers{display:flex;gap:10px;margin-top:18px}
+.tiers>div{flex:1;text-align:center;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);
+border-radius:17px;padding:15px 6px;position:relative}
+.tiers .hot{background:linear-gradient(135deg,rgba(90,169,255,.35),rgba(255,158,203,.35));transform:scale(1.06);
+box-shadow:0 10px 26px rgba(90,120,255,.4)}
+.tiers .hot i{position:absolute;top:-10px;left:50%;transform:translateX(-50%);font-style:normal;font-size:10px;
+background:#ffd166;color:#5b3a00;font-weight:700;padding:2px 8px;border-radius:99px;white-space:nowrap}
+.tiers p{font-size:12px;color:#c6d4e8}.tiers b{font-size:22px;display:block;margin:8px 0}
+.tiers span{font-size:11px;color:#9fb3d1}</style></head><body>
+<div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
+<span class="tag">LIQUID GLASS · 复刻</span>
+<div class="glass price"><h2>液态玻璃价格表</h2>
+<div class="toggle"><button class="on" id="m">按月</button><button id="y">按年 −20%</button></div>
+<div class="tiers"><div><p>基础版</p><b>¥<span class="pv" data-m="0" data-y="0">0</span></b><span>免费开始</span></div>
+<div class="hot"><i>最受欢迎</i><p>专业版</p><b>¥<span class="pv" data-m="29" data-y="23">29</span></b><span>全部组件解锁</span></div>
+<div><p>团队版</p><b>¥<span class="pv" data-m="99" data-y="79">99</span></b><span>多人协作</span></div></div></div>
+<script>var m=document.getElementById('m'),y=document.getElementById('y');
+function set(year){m.classList.toggle('on',!year);y.classList.toggle('on',year);
+document.querySelectorAll('.pv').forEach(function(s){s.textContent=year?s.dataset.y:s.dataset.m;});}
+m.addEventListener('click',function(){set(false);});y.addEventListener('click',function(){set(true);});</script></body></html>

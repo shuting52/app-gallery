@@ -1,0 +1,50 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>液态玻璃视频播放器</title><style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;min-height:100vh;
+background:radial-gradient(120% 90% at 50% 0%,#1c2a44 0%,#0b1220 55%,#060a14 100%);
+color:#eef3fa;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.blob{position:absolute;border-radius:50%;filter:blur(60px);opacity:.75;animation:drift 9s ease-in-out infinite alternate}
+.b1{width:280px;height:280px;background:#5aa9ff;left:-60px;top:-40px}
+.b2{width:240px;height:240px;background:#ff9ecb;right:-50px;top:30%;animation-delay:-3s}
+.b3{width:220px;height:220px;background:#ffd166;left:30%;bottom:-70px;animation-delay:-6s}
+@keyframes drift{from{transform:translate(0,0) scale(1)}to{transform:translate(30px,24px) scale(1.12)}}
+.glass{position:relative;background:linear-gradient(135deg,rgba(255,255,255,.22),rgba(255,255,255,.08));
+-webkit-backdrop-filter:blur(22px) saturate(1.8);backdrop-filter:blur(22px) saturate(1.8);
+border:1px solid rgba(255,255,255,.38);border-radius:26px;
+box-shadow:0 18px 50px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.45),inset 0 -1px 0 rgba(255,255,255,.12)}
+.glass::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+background:linear-gradient(115deg,rgba(255,255,255,.28) 0%,rgba(255,255,255,0) 42%)}
+.tag{position:absolute;top:18px;left:18px;font-size:11px;color:#9fb3d1;letter-spacing:1px}
+h2{font-size:20px;margin-bottom:6px}p{font-size:13px;color:#c6d4e8;line-height:1.7}
+button{cursor:pointer}
+.vplayer{width:320px;padding:20px}
+.screen{height:150px;border-radius:18px;position:relative;overflow:hidden;display:flex;align-items:flex-end;
+background:linear-gradient(135deg,#1c2a44,#5a3a8a 55%,#ff6a8a);padding:14px}
+.screen::after{content:"";position:absolute;inset:0;background:radial-gradient(80px 80px at 78% 22%,rgba(255,209,102,.8),transparent 70%)}
+.vtag{position:absolute;top:12px;left:12px;font-size:11px;padding:4px 10px;border-radius:99px;background:rgba(0,0,0,.4)}
+.vtitle{font-size:14px;font-weight:700;position:relative;z-index:1}
+.vcenter{position:absolute;left:50%;top:42%;transform:translate(-50%,-50%);width:52px;height:52px;border-radius:50%;
+display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;z-index:1;
+background:rgba(255,255,255,.25);border:1px solid rgba(255,255,255,.5);
+-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+.vprog{position:relative;height:6px;border-radius:99px;background:rgba(255,255,255,.16);margin-top:16px}
+.vbar{height:100%;width:40%;border-radius:99px;background:linear-gradient(90deg,#5aa9ff,#ff9ecb)}
+.vthumb{position:absolute;top:50%;left:40%;width:14px;height:14px;border-radius:50%;background:#fff;
+transform:translate(-50%,-50%);box-shadow:0 2px 8px rgba(0,0,0,.5)}
+.vctl{display:flex;align-items:center;gap:10px;margin-top:14px}
+.vctl button{width:38px;height:38px;border-radius:50%;border:none;color:#fff;font-size:15px;background:linear-gradient(135deg,#5aa9ff,#7b6cff)}
+.vctl span{font-size:12px;color:#9fb3d1}.vctl .vright{margin-left:auto}</style></head><body>
+<div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
+<span class="tag">LIQUID GLASS · 复刻</span>
+<div class="glass vplayer"><div class="screen"><span class="vtag">▶ 预览</span><div class="vtitle">城市夜跑 · 30 秒混剪</div>
+<div class="vcenter" id="vcenter">▶</div></div>
+<div class="vprog"><div class="vbar" id="vbar"></div><div class="vthumb" id="vthumb"></div></div>
+<div class="vctl"><button id="vpp">⏸</button><span id="vt">00:12 / 00:30</span><span class="vright">1080P · 🔊</span></div></div>
+<script>var p=40,playing=true,vbar=document.getElementById('vbar'),vthumb=document.getElementById('vthumb'),
+vt=document.getElementById('vt'),vpp=document.getElementById('vpp'),vc=document.getElementById('vcenter');
+function toggle(){playing=!playing;vpp.textContent=playing?'⏸':'▶';vc.textContent=playing?'❚❚':'▶';}
+vpp.addEventListener('click',toggle);vc.addEventListener('click',toggle);
+setInterval(function(){if(!playing)return;p=(p+1.2)%101;vbar.style.width=p+'%';vthumb.style.left=p+'%';
+var s=Math.floor(p*0.3);vt.textContent='00:'+('0'+s).slice(-2)+' / 00:30';},300);</script></body></html>

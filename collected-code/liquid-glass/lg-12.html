@@ -1,0 +1,41 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>液态玻璃标签页</title><style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;min-height:100vh;
+background:radial-gradient(120% 90% at 50% 0%,#1c2a44 0%,#0b1220 55%,#060a14 100%);
+color:#eef3fa;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.blob{position:absolute;border-radius:50%;filter:blur(60px);opacity:.75;animation:drift 9s ease-in-out infinite alternate}
+.b1{width:280px;height:280px;background:#5aa9ff;left:-60px;top:-40px}
+.b2{width:240px;height:240px;background:#ff9ecb;right:-50px;top:30%;animation-delay:-3s}
+.b3{width:220px;height:220px;background:#ffd166;left:30%;bottom:-70px;animation-delay:-6s}
+@keyframes drift{from{transform:translate(0,0) scale(1)}to{transform:translate(30px,24px) scale(1.12)}}
+.glass{position:relative;background:linear-gradient(135deg,rgba(255,255,255,.22),rgba(255,255,255,.08));
+-webkit-backdrop-filter:blur(22px) saturate(1.8);backdrop-filter:blur(22px) saturate(1.8);
+border:1px solid rgba(255,255,255,.38);border-radius:26px;
+box-shadow:0 18px 50px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.45),inset 0 -1px 0 rgba(255,255,255,.12)}
+.glass::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+background:linear-gradient(115deg,rgba(255,255,255,.28) 0%,rgba(255,255,255,0) 42%)}
+.tag{position:absolute;top:18px;left:18px;font-size:11px;color:#9fb3d1;letter-spacing:1px}
+h2{font-size:20px;margin-bottom:6px}p{font-size:13px;color:#c6d4e8;line-height:1.7}
+button{cursor:pointer}
+.tabs{width:320px;padding:22px}
+.bar{position:relative;display:flex;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.22);border-radius:99px;padding:4px}
+.bar button{flex:1;position:relative;z-index:1;background:none;border:none;color:#c6d4e8;font-size:13px;padding:9px 0}
+.bar button.on{color:#fff}
+.pill{position:absolute;top:4px;bottom:4px;width:calc((100% - 8px)/3);border-radius:99px;left:4px;
+background:linear-gradient(135deg,#5aa9ff,#7b6cff);box-shadow:0 4px 14px rgba(90,120,255,.5);
+transition:left .4s cubic-bezier(.34,1.5,.64,1)}
+.pane{margin-top:18px}.pane b{font-size:15px}.pane p{font-size:12px;margin-top:6px}</style></head><body>
+<div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
+<span class="tag">LIQUID GLASS · 复刻</span>
+<div class="glass tabs"><div class="bar"><button class="on" data-t="概览">概览</button><button data-t="组件">组件</button><button data-t="设置">设置</button><span class="pill" id="pill"></span></div>
+<div class="pane" id="pane"><b>概览面板</b><p>玻璃标签页：指示 pill 以弹簧曲线滑到当前项，内容随之切换。</p></div></div>
+<script>var pane=document.getElementById('pane'),pill=document.getElementById('pill');
+var txt={概览:'玻璃标签页：指示 pill 以弹簧曲线滑到当前项，内容随之切换。',
+组件:'32 个玻璃组件，全部单文件、零依赖，开箱即用。',
+设置:'模糊 22px、饱和度 1.8、亮边 1px，参数一处可调。'};
+document.querySelectorAll('.bar button').forEach(function(b,i){b.addEventListener('click',function(){
+document.querySelectorAll('.bar button').forEach(function(o){o.classList.remove('on');});b.classList.add('on');
+pill.style.left='calc(4px + '+i+'*(100% - 8px)/3)';
+pane.innerHTML='<b>'+b.dataset.t+'面板</b><p>'+txt[b.dataset.t]+'</p>';});});</script></body></html>
