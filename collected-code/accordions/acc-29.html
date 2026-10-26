@@ -1,0 +1,35 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>手风琴 · 霓虹灯管</title><style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:#0a0018;color:#f2f4f8;
+min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:26px 14px}
+.head{text-align:center;margin-bottom:18px}
+.head .tag{display:inline-block;font-size:11px;letter-spacing:1px;padding:4px 12px;border-radius:99px;margin-bottom:10px}
+.head h1{font-size:21px;font-weight:800}
+.head p{font-size:12px;opacity:.65;margin-top:6px}
+.acc{display:flex;width:100%;max-width:430px;height:560px;gap:10px;}
+.item{position:relative;flex:1;border-radius:18px;overflow:hidden;cursor:pointer;min-width:0;min-height:0;
+transition:flex .6s cubic-bezier(.22,1,.36,1);border:1px solid rgba(255,255,255,.15);}
+.item.active{flex:3.5}
+.item .scene{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:52px;}
+.item::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(to top,rgba(0,0,0,.78) 0%,rgba(0,0,0,.25) 45%,rgba(0,0,0,.15) 100%);}
+.item .vt{position:absolute;z-index:2;left:0;right:0;bottom:22px;text-align:center;font-size:14px;font-weight:700;
+letter-spacing:5px;writing-mode:vertical-rl;text-orientation:upright;white-space:nowrap;transition:opacity .3s}
+.item.active .vt{opacity:0}
+.item .ct{position:absolute;left:0;right:0;bottom:0;z-index:2;padding:20px 18px;opacity:0;transform:translateY(14px);
+transition:opacity .45s ease .15s,transform .45s ease .15s}
+.item.active .ct{opacity:1;transform:none}
+.item .ct .num{font-size:11px;letter-spacing:3px;margin-bottom:7px}
+.item .ct h2{font-size:19px;font-weight:800;margin-bottom:6px}
+.item .ct p{font-size:12px;line-height:1.7;opacity:.85}
+.foot{margin-top:18px;font-size:11px;opacity:.45}
+.item.active{border-color:transparent;box-shadow:0 0 0 2px #00f0ff,0 0 30px rgba(0,240,255,.65),inset 0 0 22px rgba(0,240,255,.25);}.item .ct h2{color:#e8fbff;}.item:not(.active) .scene{font-size:26px;}</style></head><body>
+<div class="head"><div class="tag">图片手风琴 · 变体 29</div><h1>手风琴 · 霓虹灯管</h1><p>悬停或点按任意一条，展开查看完整画面</p></div>
+<div class="acc" id="acc"><div class="item active" style="background:linear-gradient(160deg,#f87171,#450a0a)"><div class="scene">🎸</div><div class="vt">摇滚现场</div><div class="ct"><div class="num">01 / 05</div><h2>摇滚现场</h2><p>失真吉他一响，全场都站起来。</p></div></div><div class="item" style="background:linear-gradient(160deg,#fbbf24,#451a03)"><div class="scene">🎷</div><div class="vt">爵士酒吧</div><div class="ct"><div class="num">02 / 05</div><h2>爵士酒吧</h2><p>萨克斯低吟，灯光是琥珀色的。</p></div></div><div class="item" style="background:linear-gradient(160deg,#c084fc,#3b0764)"><div class="scene">🎧</div><div class="vt">电子午夜</div><div class="ct"><div class="num">03 / 05</div><h2>电子午夜</h2><p>鼓点推着心跳，一路到天亮。</p></div></div><div class="item" style="background:linear-gradient(160deg,#fda4af,#500724)"><div class="scene">🎻</div><div class="vt">弦乐四重奏</div><div class="ct"><div class="num">04 / 05</div><h2>弦乐四重奏</h2><p>琴弓起落之间，时间慢了下来。</p></div></div><div class="item" style="background:linear-gradient(160deg,#86efac,#14532d)"><div class="scene">🥁</div><div class="vt">民谣弹唱</div><div class="ct"><div class="num">05 / 05</div><h2>民谣弹唱</h2><p>一把木吉他，唱尽人间来往。</p></div></div></div>
+<div class="foot">图片手风琴 · 悬停或点按展开</div>
+<script>
+var acc=document.getElementById('acc'),items=acc.querySelectorAll('.item'),cur=0;
+function act(i){items[cur].classList.remove('active');cur=i;items[cur].classList.add('active');}
+items.forEach(function(it,i){it.addEventListener('mouseenter',function(){act(i);});it.addEventListener('click',function(){act(i);});});
+</script></body></html>

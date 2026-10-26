@@ -1,0 +1,35 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>手风琴 · 模糊转清晰</title><style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:#0b0d12;color:#f2f4f8;
+min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:26px 14px}
+.head{text-align:center;margin-bottom:18px}
+.head .tag{display:inline-block;font-size:11px;letter-spacing:1px;padding:4px 12px;border-radius:99px;margin-bottom:10px}
+.head h1{font-size:21px;font-weight:800}
+.head p{font-size:12px;opacity:.65;margin-top:6px}
+.acc{display:flex;width:100%;max-width:430px;height:560px;gap:10px;}
+.item{position:relative;flex:1;border-radius:18px;overflow:hidden;cursor:pointer;min-width:0;min-height:0;
+transition:flex .6s cubic-bezier(.22,1,.36,1);filter:blur(0px);}
+.item.active{flex:3.5}
+.item .scene{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:52px;}
+.item::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(to top,rgba(0,0,0,.78) 0%,rgba(0,0,0,.25) 45%,rgba(0,0,0,.15) 100%);}
+.item .vt{position:absolute;z-index:2;left:0;right:0;bottom:22px;text-align:center;font-size:14px;font-weight:700;
+letter-spacing:5px;writing-mode:vertical-rl;text-orientation:upright;white-space:nowrap;transition:opacity .3s}
+.item.active .vt{opacity:0}
+.item .ct{position:absolute;left:0;right:0;bottom:0;z-index:2;padding:20px 18px;opacity:0;transform:translateY(14px);
+transition:opacity .45s ease .15s,transform .45s ease .15s}
+.item.active .ct{opacity:1;transform:none}
+.item .ct .num{font-size:11px;letter-spacing:3px;margin-bottom:7px}
+.item .ct h2{font-size:19px;font-weight:800;margin-bottom:6px}
+.item .ct p{font-size:12px;line-height:1.7;opacity:.85}
+.foot{margin-top:18px;font-size:11px;opacity:.45}
+.item .scene{filter:blur(6px);transition:filter .6s ease;}.item.active .scene{filter:blur(0);}.item{filter:none;}.item:not(.active) .scene{font-size:26px;}</style></head><body>
+<div class="head"><div class="tag">图片手风琴 · 变体 06</div><h1>手风琴 · 模糊转清晰</h1><p>悬停或点按任意一条，展开查看完整画面</p></div>
+<div class="acc" id="acc"><div class="item active" style="background:linear-gradient(160deg,#fbcfe8,#9d174d)"><div class="scene">🌸</div><div class="vt">春日樱花</div><div class="ct"><div class="num">01 / 04</div><h2>春日樱花</h2><p>花瓣落进酒杯，春天有了味道。</p></div></div><div class="item" style="background:linear-gradient(160deg,#38bdf8,#0c4a6e)"><div class="scene">🌊</div><div class="vt">盛夏海岸</div><div class="ct"><div class="num">02 / 04</div><h2>盛夏海岸</h2><p>蝉鸣、海浪，和一罐冰镇汽水。</p></div></div><div class="item" style="background:linear-gradient(160deg,#fb923c,#7f1d1d)"><div class="scene">🍁</div><div class="vt">秋日枫林</div><div class="ct"><div class="num">03 / 04</div><h2>秋日枫林</h2><p>一夜霜后，整座山都红了。</p></div></div><div class="item" style="background:linear-gradient(160deg,#e0f2fe,#334155)"><div class="scene">❄️</div><div class="vt">冬日初雪</div><div class="ct"><div class="num">04 / 04</div><h2>冬日初雪</h2><p>雪落无声，世界被按了静音。</p></div></div></div>
+<div class="foot">图片手风琴 · 悬停或点按展开</div>
+<script>
+var acc=document.getElementById('acc'),items=acc.querySelectorAll('.item'),cur=0;
+function act(i){items[cur].classList.remove('active');cur=i;items[cur].classList.add('active');}
+items.forEach(function(it,i){it.addEventListener('mouseenter',function(){act(i);});it.addEventListener('click',function(){act(i);});});
+</script></body></html>

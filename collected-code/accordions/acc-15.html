@@ -1,0 +1,35 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>手风琴 · 赛博朋克</title><style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:#05010f;color:#e8fbff;
+min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:26px 14px}
+.head{text-align:center;margin-bottom:18px}
+.head .tag{display:inline-block;font-size:11px;letter-spacing:1px;padding:4px 12px;border-radius:99px;margin-bottom:10px}
+.head h1{font-size:21px;font-weight:800}
+.head p{font-size:12px;opacity:.65;margin-top:6px}
+.acc{display:flex;width:100%;max-width:430px;height:560px;gap:10px;}
+.item{position:relative;flex:1;border-radius:18px;overflow:hidden;cursor:pointer;min-width:0;min-height:0;
+transition:flex .6s cubic-bezier(.22,1,.36,1);border:1px solid rgba(0,240,255,.35);}
+.item.active{flex:3.5}
+.item .scene{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:52px;}
+.item::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(to top,rgba(0,0,0,.78) 0%,rgba(0,0,0,.25) 45%,rgba(0,0,0,.15) 100%);}
+.item .vt{position:absolute;z-index:2;left:0;right:0;bottom:22px;text-align:center;font-size:14px;font-weight:700;
+letter-spacing:5px;writing-mode:vertical-rl;text-orientation:upright;white-space:nowrap;transition:opacity .3s}
+.item.active .vt{opacity:0}
+.item .ct{position:absolute;left:0;right:0;bottom:0;z-index:2;padding:20px 18px;opacity:0;transform:translateY(14px);
+transition:opacity .45s ease .15s,transform .45s ease .15s}
+.item.active .ct{opacity:1;transform:none}
+.item .ct .num{font-size:11px;letter-spacing:3px;margin-bottom:7px}
+.item .ct h2{font-size:19px;font-weight:800;margin-bottom:6px}
+.item .ct p{font-size:12px;line-height:1.7;opacity:.85}
+.foot{margin-top:18px;font-size:11px;opacity:.45}
+.item.active{border-color:#ff2d78;box-shadow:0 0 26px rgba(255,45,120,.5);}.item .ct h2{color:#00f0ff;text-shadow:0 0 12px rgba(0,240,255,.8);}.item .ct .num{color:#ff2d78;}.item:not(.active) .scene{font-size:26px;}</style></head><body>
+<div class="head"><div class="tag">图片手风琴 · 变体 15</div><h1>手风琴 · 赛博朋克</h1><p>悬停或点按任意一条，展开查看完整画面</p></div>
+<div class="acc" id="acc"><div class="item active" style="background:linear-gradient(160deg,#60a5fa,#172554)"><div class="scene">💻</div><div class="vt">极客工坊</div><div class="ct"><div class="num">01 / 05</div><h2>极客工坊</h2><p>键盘声是最好的白噪音。</p></div></div><div class="item" style="background:linear-gradient(160deg,#a5b4fc,#312e81)"><div class="scene">🤖</div><div class="vt">机器人伙伴</div><div class="ct"><div class="num">02 / 05</div><h2>机器人伙伴</h2><p>它学会的第一句话是：你好呀。</p></div></div><div class="item" style="background:linear-gradient(160deg,#818cf8,#1e1b4b)"><div class="scene">🚀</div><div class="vt">星际远航</div><div class="ct"><div class="num">03 / 05</div><h2>星际远航</h2><p>倒数三秒，奔向群星之间。</p></div></div><div class="item" style="background:linear-gradient(160deg,#2dd4bf,#134e4a)"><div class="scene">🧠</div><div class="vt">智能时代</div><div class="ct"><div class="num">04 / 05</div><h2>智能时代</h2><p>算法读懂情绪之前，先读懂你。</p></div></div><div class="item" style="background:linear-gradient(160deg,#f472b6,#500724)"><div class="scene">📡</div><div class="vt">信号塔林</div><div class="ct"><div class="num">05 / 05</div><h2>信号塔林</h2><p>电波无声，连接着整个世界。</p></div></div></div>
+<div class="foot">图片手风琴 · 悬停或点按展开</div>
+<script>
+var acc=document.getElementById('acc'),items=acc.querySelectorAll('.item'),cur=0;
+function act(i){items[cur].classList.remove('active');cur=i;items[cur].classList.add('active');}
+items.forEach(function(it,i){it.addEventListener('mouseenter',function(){act(i);});it.addEventListener('click',function(){act(i);});});
+</script></body></html>
