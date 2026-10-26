@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>深海下潜 · 创意手风琴</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:#010612;color:#e0f2fe;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:26px 14px}
+.head{text-align:center;margin-bottom:18px}
+.head .tag{display:inline-block;font-size:11px;letter-spacing:1px;padding:4px 12px;border-radius:99px;margin-bottom:10px;background:rgba(125,211,252,.12);border:1px solid rgba(125,211,252,.35);color:#7dd3fc}
+.head h1{font-size:21px;font-weight:800}
+.head p{font-size:12px;color:#5b7a99;margin-top:6px}
+.acc{display:flex;flex-direction:column;width:100%;max-width:430px;height:640px;gap:8px}
+.item{position:relative;flex:1;border-radius:18px;overflow:hidden;cursor:pointer;min-height:0;transition:flex .6s cubic-bezier(.22,1,.36,1)}
+.item.active{flex:3.5}
+.sea{position:absolute;inset:0}
+.s0{background:linear-gradient(180deg,#7dd3fc 0%,#38bdf8 60%,#0284c7 100%)}
+.s1{background:linear-gradient(180deg,#0284c7 0%,#0369a1 60%,#075985 100%)}
+.s2{background:linear-gradient(180deg,#075985 0%,#0c2d54 60%,#081a33 100%)}
+.s3{background:linear-gradient(180deg,#081a33 0%,#020617 70%,#000000 100%)}
+/* 海面光线：斜向透光带 */
+.ray{position:absolute;top:-10%;width:44px;height:130%;background:linear-gradient(180deg,rgba(255,255,255,.35),transparent);transform:skewX(-18deg);opacity:.5}
+.ray.r1{left:14%}.ray.r2{left:44%;opacity:.3}.ray.r3{left:70%;opacity:.4}
+/* 波浪面 */
+.wave{position:absolute;left:0;right:0;top:0;height:26px;background:radial-gradient(circle at 20px -6px,transparent 22px,#e0f2fe 23px);background-size:56px 26px;opacity:.8}
+/* 浮游生物光点：小圆点 + blur + 上浮 */
+.pk{position:absolute;bottom:-12px;width:7px;height:7px;border-radius:50%;background:#bae6fd;filter:blur(1px);box-shadow:0 0 12px 3px rgba(186,230,253,.8);opacity:0;animation:rise 7s ease-in infinite;animation-play-state:paused}
+.item.active .pk{animation-play-state:running}
+@keyframes rise{0%{transform:translateY(0) translateX(0);opacity:0}15%{opacity:.9}100%{transform:translateY(-340px) translateX(16px);opacity:0}}
+/* 水母：半圆伞 + 飘带 */
+.jelly{position:absolute;right:18%;top:26%;width:56px;z-index:2;animation:bob 4s ease-in-out infinite}
+.jelly .dome{width:56px;height:30px;border-radius:50% 50% 50% 50%/100% 100% 0 0;background:linear-gradient(180deg,rgba(244,114,182,.9),rgba(244,114,182,.35));box-shadow:0 0 22px rgba(244,114,182,.6)}
+.jelly .t{width:3px;height:34px;margin:2px auto 0;border-radius:99px;background:rgba(244,114,182,.6);transform-origin:top center;animation:sway 2.2s ease-in-out infinite alternate}
+.jelly .t:nth-child(3){animation-delay:.3s}.jelly .t:nth-child(4){animation-delay:.6s}
+@keyframes sway{from{transform:rotate(-7deg)}to{transform:rotate(7deg)}}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+/* 沉船剪影（海沟） */
+.wreck{position:absolute;left:8%;bottom:6%;width:120px;height:34px;background:#000;clip-path:polygon(0 40%,100% 20%,96% 100%,4% 100%);opacity:.6}
+.vt{position:absolute;z-index:3;left:16px;top:50%;transform:translateY(-50%);font-size:15px;font-weight:700;letter-spacing:3px;white-space:nowrap;text-shadow:0 2px 8px rgba(0,0,0,.5)}
+.item.active .vt{opacity:0}
+.depth{position:absolute;z-index:3;right:16px;top:50%;transform:translateY(-50%);font-size:12px;opacity:.8}
+.item.active .depth{opacity:0}
+.ct{position:absolute;left:0;right:0;bottom:0;z-index:3;padding:20px 18px;opacity:0;transform:translateY(14px);transition:opacity .45s ease .15s,transform .45s ease .15s;text-shadow:0 2px 10px rgba(0,0,0,.5)}
+.item.active .ct{opacity:1;transform:none}
+.ct .num{font-size:11px;letter-spacing:3px;color:#7dd3fc;margin-bottom:7px}
+.ct h2{font-size:20px;font-weight:800;margin-bottom:6px}
+.ct p{font-size:12px;line-height:1.7;opacity:.9}
+.foot{margin-top:18px;font-size:11px;color:#3a5a78}
+</style>
+</head>
+<body>
+<div class="head"><div class="tag">创意手风琴 · 纯 CSS 场景</div><h1>深海下潜</h1><p>越往下越暗，光点与水母只在深处出现</p></div>
+<div class="acc" id="acc">
+  <div class="item active">
+    <div class="sea s0"><div class="wave"></div><div class="ray r1"></div><div class="ray r2"></div><div class="ray r3"></div></div>
+    <div class="vt">海面</div><div class="depth">0 m</div>
+    <div class="ct"><div class="num">01 / 04 · 0 m</div><h2>海面</h2><p>阳光斜斜地穿进水里，波浪在头顶碎成一片亮斑。</p></div>
+  </div>
+  <div class="item">
+    <div class="sea s1"><div class="pk" style="left:18%;animation-delay:0s"></div><div class="pk" style="left:58%;animation-delay:2s"></div><div class="pk" style="left:80%;animation-delay:4s"></div></div>
+    <div class="vt">浅海</div><div class="depth">−200 m</div>
+    <div class="ct"><div class="num">02 / 04 · −200 m</div><h2>浅海</h2><p>光线开始变弱，浮游生物的光点一闪一闪往上飘。</p></div>
+  </div>
+  <div class="item">
+    <div class="sea s2"><div class="pk" style="left:12%;animation-delay:1s"></div><div class="pk" style="left:44%;animation-delay:3s"></div><div class="pk" style="left:70%;animation-delay:5s"></div>
+      <div class="jelly"><div class="dome"></div><div class="t"></div><div class="t"></div><div class="t"></div></div></div>
+    <div class="vt">深海</div><div class="depth">−1000 m</div>
+    <div class="ct"><div class="num">03 / 04 · −1000 m</div><h2>深海</h2><p>这里几乎没有阳光，水母提着粉色的灯，独自漂浮。</p></div>
+  </div>
+  <div class="item">
+    <div class="sea s3"><div class="pk" style="left:24%;animation-delay:.5s"></div><div class="pk" style="left:64%;animation-delay:2.5s"></div><div class="wreck"></div></div>
+    <div class="vt">海沟</div><div class="depth">−6000 m</div>
+    <div class="ct"><div class="num">04 / 04 · −6000 m</div><h2>海沟</h2><p>绝对的黑暗与寂静，只有沉船的剪影，和几点不肯熄灭的光。</p></div>
+  </div>
+</div>
+<div class="foot">悬停或点按，下潜到下一层</div>
+<script>
+var acc=document.getElementById('acc'),items=acc.querySelectorAll('.item'),cur=0;
+function act(i){items[cur].classList.remove('active');cur=i;items[cur].classList.add('active');}
+items.forEach(function(it,i){it.addEventListener('mouseenter',function(){act(i);});it.addEventListener('click',function(){act(i);});});
+</script>
+</body>
+</html>

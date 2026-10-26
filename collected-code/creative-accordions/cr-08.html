@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>塔罗牌阵 · 创意手风琴</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:#120a24;color:#f2f4f8;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:26px 14px}
+.head{text-align:center;margin-bottom:18px}
+.head .tag{display:inline-block;font-size:11px;letter-spacing:1px;padding:4px 12px;border-radius:99px;background:rgba(167,139,250,.15);border:1px solid rgba(167,139,250,.45);color:#c4b5fd;margin-bottom:10px}
+.head h1{font-size:22px;font-weight:800}
+.head p{font-size:12px;color:#8b93a5;margin-top:6px}
+.acc{display:flex;width:100%;max-width:430px;height:560px;gap:10px;perspective:1200px}
+.item{position:relative;flex:1;border-radius:16px;cursor:pointer;min-width:0;perspective:900px;transform-origin:bottom center;transition:flex .6s cubic-bezier(.22,1,.36,1),transform .45s ease}
+.item.active{flex:3.5}
+.acc:hover .item:nth-child(1){transform:rotate(-7deg)}
+.acc:hover .item:nth-child(2){transform:rotate(-2.5deg)}
+.acc:hover .item:nth-child(3){transform:rotate(2.5deg)}
+.acc:hover .item:nth-child(4){transform:rotate(7deg)}
+.acc:hover .item.active{transform:rotate(0)}
+.flip{position:absolute;inset:0;transform-style:preserve-3d;transition:transform .7s cubic-bezier(.3,.8,.3,1)}
+.item.active .flip{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;border-radius:16px;overflow:hidden;backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.face-front{background-color:#3b1d8f;background-image:repeating-linear-gradient(45deg,rgba(255,255,255,.14) 0 8px,transparent 8px 16px),repeating-linear-gradient(-45deg,rgba(255,255,255,.14) 0 8px,transparent 8px 16px);border:1px solid rgba(255,255,255,.25);box-shadow:inset 0 0 0 10px rgba(0,0,0,.25),inset 0 0 0 11px rgba(255,255,255,.25)}
+.face-front .gem{position:absolute;left:50%;top:44%;transform:translate(-50%,-50%) rotate(45deg);width:44px;height:44px;background:linear-gradient(135deg,#ffd166,#ff5a9c);box-shadow:0 0 22px rgba(255,209,102,.8)}
+.face-back{transform:rotateY(180deg);background:linear-gradient(180deg,#fdf3d7,#f3ddae);color:#3b2410;border:1px solid rgba(255,255,255,.6);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:18px 12px;text-align:center}
+.face-back .fig{position:relative;width:120px;height:130px;flex:none}
+.face-back h3{font-size:20px;font-weight:900;letter-spacing:2px}
+.face-back p{font-size:12px;line-height:1.7;color:#7a5a35}
+.face-back .no{font-size:11px;letter-spacing:3px;color:#b45309}
+.vt{position:absolute;z-index:3;left:0;right:0;bottom:20px;text-align:center;font-size:14px;font-weight:800;letter-spacing:4px;writing-mode:vertical-rl;text-orientation:upright;white-space:nowrap;transition:opacity .3s;text-shadow:0 2px 8px rgba(0,0,0,.6)}
+.item.active .vt{opacity:0}
+/* ---- 牌面图案（纯 CSS） ---- */
+.star-big{position:absolute;left:50%;top:8px;transform:translateX(-50%);width:104px;height:104px;background:#f5a623;clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);filter:drop-shadow(0 0 14px rgba(245,166,35,.8))}
+.star-sm{position:absolute;width:12px;height:12px;background:#f5a623;clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%)}
+.crescent{position:absolute;left:50%;top:6px;transform:translateX(-50%);width:84px;height:84px;border-radius:50%;box-shadow:20px 10px 0 0 #f5c542}
+.moon-dot{position:absolute;width:6px;height:6px;border-radius:50%;background:#3b2410;opacity:.5}
+.sun-rays{position:absolute;left:50%;top:2px;transform:translateX(-50%);width:118px;height:118px;border-radius:50%;background:repeating-conic-gradient(#f5a623 0 12deg,transparent 12deg 30deg);animation:spin 14s linear infinite}
+@keyframes spin{to{transform:translateX(-50%) rotate(360deg)}}
+.sun-core{position:absolute;left:50%;top:30px;transform:translateX(-50%);width:62px;height:62px;border-radius:50%;background:#ffb020;box-shadow:0 0 24px rgba(255,176,32,.9)}
+.tower{position:absolute;left:50%;bottom:0;transform:translateX(-50%);width:74px;height:108px;background:#8a7a68}
+.tower::before{content:"";position:absolute;left:0;right:0;top:-12px;height:12px;background:repeating-linear-gradient(90deg,#8a7a68 0 14px,transparent 14px 24px)}
+.tower .win{position:absolute;left:50%;top:26px;transform:translateX(-50%);width:18px;height:24px;background:#2b2118;border-radius:9px 9px 0 0}
+.tower .door{position:absolute;left:50%;bottom:0;transform:translateX(-50%);width:24px;height:36px;background:#2b2118;border-radius:12px 12px 0 0}
+.bolt{position:absolute;right:6px;top:0;width:26px;height:64px;background:#ffd166;clip-path:polygon(60% 0,20% 45%,45% 45%,10% 100%,80% 50%,55% 50%)}
+.foot{margin-top:18px;font-size:11px;color:#5b6373}
+</style>
+</head>
+<body>
+<div class="head"><div class="tag">创意手风琴 · CR-08</div><h1>塔罗牌阵</h1><p>悬停牌阵扇形散开，点一张牌翻面看牌意</p></div>
+<div class="acc" id="acc">
+  <div class="item active">
+    <div class="flip">
+      <div class="face face-front"><div class="gem"></div></div>
+      <div class="face face-back">
+        <div class="fig"><div class="star-big"></div><div class="star-sm" style="left:6px;top:70px"></div><div class="star-sm" style="right:8px;top:88px"></div></div>
+        <h3>星星</h3><p>希望与灵感。<br>愿望正在来的路上。</p><div class="no">XVII · THE STAR</div>
+      </div>
+    </div>
+    <div class="vt">星星</div>
+  </div>
+  <div class="item">
+    <div class="flip">
+      <div class="face face-front"><div class="gem"></div></div>
+      <div class="face face-back">
+        <div class="fig"><div class="crescent"></div><div class="moon-dot" style="left:18px;top:76px"></div><div class="moon-dot" style="right:20px;top:96px"></div></div>
+        <h3>月亮</h3><p>直觉与潜意识。<br>相信你心里那个声音。</p><div class="no">XVIII · THE MOON</div>
+      </div>
+    </div>
+    <div class="vt">月亮</div>
+  </div>
+  <div class="item">
+    <div class="flip">
+      <div class="face face-front"><div class="gem"></div></div>
+      <div class="face face-back">
+        <div class="fig"><div class="sun-rays"></div><div class="sun-core"></div></div>
+        <h3>太阳</h3><p>活力与喜悦。<br>今天适合去晒晒太阳。</p><div class="no">XIX · THE SUN</div>
+      </div>
+    </div>
+    <div class="vt">太阳</div>
+  </div>
+  <div class="item">
+    <div class="flip">
+      <div class="face face-front"><div class="gem"></div></div>
+      <div class="face face-back">
+        <div class="fig"><div class="tower"><div class="win"></div><div class="door"></div></div><div class="bolt"></div></div>
+        <h3>高塔</h3><p>转变与重建。<br>旧的倒下，新的才有地方长。</p><div class="no">XVI · THE TOWER</div>
+      </div>
+    </div>
+    <div class="vt">高塔</div>
+  </div>
+</div>
+<div class="foot">手风琴结构对标 №324 · 牌背重复渐变花纹 · 悬停扇形散开 · 点按 rotateY 翻面</div>
+<script>
+var acc=document.getElementById('acc'),items=acc.querySelectorAll('.item'),cur=0;
+function act(i){items[cur].classList.remove('active');cur=i;items[cur].classList.add('active');}
+items.forEach(function(it,i){
+  it.addEventListener('mouseenter',function(){act(i);});
+  it.addEventListener('click',function(){act(i);});
+});
+</script>
+</body>
+</html>

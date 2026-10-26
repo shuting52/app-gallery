@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>天气情绪 · 创意手风琴</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:#0b0d12;color:#f2f4f8;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:26px 14px}
+.head{text-align:center;margin-bottom:18px}
+.head .tag{display:inline-block;font-size:11px;letter-spacing:1px;padding:4px 12px;border-radius:99px;margin-bottom:10px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2)}
+.head h1{font-size:21px;font-weight:800}
+.head p{font-size:12px;color:#8b93a5;margin-top:6px}
+.acc{display:flex;width:100%;max-width:430px;height:560px;gap:10px}
+.item{position:relative;flex:1;border-radius:20px;overflow:hidden;cursor:pointer;min-width:0;transition:flex .6s cubic-bezier(.22,1,.36,1)}
+.item.active{flex:3.5}
+.sky{position:absolute;inset:0}
+.sunny{background:linear-gradient(180deg,#38bdf8 0%,#bae6fd 100%)}
+.rainy{background:linear-gradient(180deg,#475569 0%,#94a3b8 100%)}
+.snowy{background:linear-gradient(180deg,#cbd5e1 0%,#f1f5f9 100%)}
+.stormy{background:linear-gradient(180deg,#1e293b 0%,#0f172a 100%)}
+/* 晴：旋转光线太阳 */
+.wsun{position:absolute;left:50%;top:16%;width:84px;height:84px;margin-left:-42px}
+.wsun .rays{position:absolute;inset:0;border-radius:50%;background:repeating-conic-gradient(from 0deg,rgba(253,224,71,.9) 0deg 10deg,transparent 10deg 24deg);-webkit-mask:radial-gradient(circle,transparent 0 24px,#000 25px);mask:radial-gradient(circle,transparent 0 24px,#000 25px);animation:spin 16s linear infinite}
+.wsun .core{position:absolute;inset:20px;border-radius:50%;background:radial-gradient(circle at 40% 40%,#fef9c3,#facc15);box-shadow:0 0 30px 10px rgba(250,204,21,.65)}
+@keyframes spin{to{transform:rotate(360deg)}}
+/* 云：圆角拼合 */
+.cloud{position:absolute;left:50%;top:14%;width:96px;height:30px;margin-left:-48px;border-radius:999px;background:#f1f5f9;box-shadow:0 8px 20px rgba(0,0,0,.2)}
+.cloud::before,.cloud::after{content:"";position:absolute;background:#f1f5f9;border-radius:50%}
+.cloud::before{width:42px;height:42px;left:14px;top:-20px}
+.cloud::after{width:30px;height:30px;right:14px;top:-13px}
+.stormy .cloud{background:#334155}
+.stormy .cloud::before,.stormy .cloud::after{background:#334155}
+/* 雨丝 */
+.drop{position:absolute;top:26%;width:2px;height:30px;border-radius:99px;background:linear-gradient(180deg,transparent,#7dd3fc);transform:skewX(-14deg);opacity:0;animation:rain 1.1s linear infinite}
+@keyframes rain{0%{transform:translateY(0) skewX(-14deg);opacity:0}15%{opacity:1}100%{transform:translateY(340px) skewX(-14deg);opacity:0}}
+/* 雪点 */
+.flake{position:absolute;top:-12px;width:9px;height:9px;border-radius:50%;background:#fff;box-shadow:0 0 10px rgba(255,255,255,.95);opacity:0;animation:snowfall 7s ease-in-out infinite}
+@keyframes snowfall{0%{transform:translate(0,0);opacity:0}12%{opacity:1}50%{transform:translate(16px,280px)}100%{transform:translate(-10px,560px);opacity:.2}}
+/* 闪电：clip-path 折线 */
+.bolt{position:absolute;left:50%;top:24%;width:34px;height:74px;margin-left:-17px;background:#fde047;clip-path:polygon(55% 0,100% 0,45% 45%,70% 45%,20% 100%,38% 52%,10% 52%);filter:drop-shadow(0 0 14px rgba(253,224,71,.9));opacity:0}
+.item.active .bolt{animation:flash 3.4s linear infinite}
+@keyframes flash{0%,86%,100%{opacity:0}87%{opacity:1}89%{opacity:.1}91%{opacity:1}94%{opacity:0}}
+.flashbg{position:absolute;inset:0;background:#fef9c3;opacity:0;pointer-events:none}
+.item.active .flashbg{animation:flash 3.4s linear infinite}
+.vt{position:absolute;z-index:3;left:0;right:0;bottom:22px;text-align:center;font-size:15px;font-weight:700;letter-spacing:6px;writing-mode:vertical-rl;text-orientation:upright;white-space:nowrap;transition:opacity .3s;text-shadow:0 2px 8px rgba(0,0,0,.45)}
+.item.active .vt{opacity:0}
+.ct{position:absolute;left:0;right:0;bottom:0;z-index:3;padding:22px 18px;opacity:0;transform:translateY(14px);transition:opacity .45s ease .15s,transform .45s ease .15s;text-shadow:0 2px 10px rgba(0,0,0,.5)}
+.item.active .ct{opacity:1;transform:none}
+.ct .num{font-size:11px;letter-spacing:3px;color:#fde047;margin-bottom:7px}
+.ct h2{font-size:20px;font-weight:800;margin-bottom:6px}
+.ct p{font-size:12px;line-height:1.7;opacity:.92}
+.snowy .ct h2,.snowy .ct p,.snowy .ct .num{color:#334155;text-shadow:none}
+.snowy .ct .num{color:#0284c7}
+.foot{margin-top:18px;font-size:11px;color:#5b6373}
+</style>
+</head>
+<body>
+<div class="head"><div class="tag">创意手风琴 · 纯 CSS 场景</div><h1>天气情绪</h1><p>展开面板，天气就真的动起来</p></div>
+<div class="acc" id="acc">
+  <div class="item active">
+    <div class="sky sunny"><div class="wsun"><div class="rays"></div><div class="core"></div></div></div>
+    <div class="vt">晴</div>
+    <div class="ct"><div class="num">01 / 04 · 晴</div><h2>晴空万里</h2><p>太阳的光线一圈圈旋转，心情也跟着亮起来。</p></div>
+  </div>
+  <div class="item">
+    <div class="sky rainy"><div class="cloud"></div>
+      <span class="drop" style="left:20%;animation-delay:0s"></span>
+      <span class="drop" style="left:38%;animation-delay:.35s"></span>
+      <span class="drop" style="left:56%;animation-delay:.7s"></span>
+      <span class="drop" style="left:74%;animation-delay:.2s"></span>
+      <span class="drop" style="left:88%;animation-delay:.55s"></span></div>
+    <div class="vt">雨</div>
+    <div class="ct"><div class="num">02 / 04 · 雨</div><h2>绵绵细雨</h2><p>雨丝斜斜地落下来，云层低低的，适合听一首老歌。</p></div>
+  </div>
+  <div class="item">
+    <div class="sky snowy">
+      <span class="flake" style="left:16%;animation-delay:0s"></span>
+      <span class="flake" style="left:40%;animation-delay:1.4s"></span>
+      <span class="flake" style="left:64%;animation-delay:2.6s"></span>
+      <span class="flake" style="left:84%;animation-delay:3.8s"></span>
+      <span class="flake" style="left:28%;animation-delay:5s"></span></div>
+    <div class="vt">雪</div>
+    <div class="ct"><div class="num">03 / 04 · 雪</div><h2>初雪纷纷</h2><p>雪点打着旋儿往下飘，世界被盖上一层柔软的白。</p></div>
+  </div>
+  <div class="item">
+    <div class="sky stormy"><div class="cloud"></div><div class="flashbg"></div><div class="bolt"></div></div>
+    <div class="vt">雷</div>
+    <div class="ct"><div class="num">04 / 04 · 雷</div><h2>雷雨将至</h2><p>云层翻滚，闪电划破夜空，亮一下，又暗下去。</p></div>
+  </div>
+</div>
+<div class="foot">悬停或点按，切换一种天气</div>
+<script>
+var acc=document.getElementById('acc'),items=acc.querySelectorAll('.item'),cur=0;
+function act(i){items[cur].classList.remove('active');cur=i;items[cur].classList.add('active');}
+items.forEach(function(it,i){it.addEventListener('mouseenter',function(){act(i);});it.addEventListener('click',function(){act(i);});});
+</script>
+</body>
+</html>

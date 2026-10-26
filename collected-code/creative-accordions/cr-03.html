@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>四季列车 · 创意手风琴</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:#141210;color:#fdf8f0;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:26px 14px}
+.head{text-align:center;margin-bottom:18px}
+.head .tag{display:inline-block;font-size:11px;letter-spacing:1px;padding:4px 12px;border-radius:99px;margin-bottom:10px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2)}
+.head h1{font-size:21px;font-weight:800}
+.head p{font-size:12px;color:#9a8f80;margin-top:6px}
+.acc{display:flex;width:100%;max-width:430px;height:560px;gap:10px}
+.item{position:relative;flex:1;border-radius:20px;overflow:hidden;cursor:pointer;min-width:0;transition:flex .6s cubic-bezier(.22,1,.36,1);border:5px solid #4a3226;box-shadow:0 10px 26px rgba(0,0,0,.45)}
+.item.active{flex:3.5}
+/* 车窗：窗外景色 + 十字窗框 */
+.view{position:absolute;inset:0;overflow:hidden}
+.spring{background:linear-gradient(180deg,#a5d8ff 0%,#fbcfe8 70%,#f9a8d4 100%)}
+.summer{background:linear-gradient(180deg,#0284c7 0%,#7dd3fc 70%,#fef08a 100%)}
+.autumn{background:linear-gradient(180deg,#fdba74 0%,#fb923c 60%,#7c2d12 100%)}
+.winter{background:linear-gradient(180deg,#cbd5e1 0%,#e2e8f0 60%,#f8fafc 100%)}
+.frame{position:absolute;inset:0;z-index:4;pointer-events:none}
+.frame::before{content:"";position:absolute;left:0;right:0;top:50%;height:7px;margin-top:-3px;background:#4a3226}
+.frame::after{content:"";position:absolute;top:0;bottom:0;left:50%;width:7px;margin-left:-3px;background:#4a3226}
+.ground{position:absolute;left:0;right:0;bottom:0;height:26%;z-index:2}
+.spring .ground{background:#3f7a4e;clip-path:polygon(0 100%,0 55%,30% 30%,55% 55%,80% 35%,100% 55%,100% 100%)}
+.summer .ground{background:#2c6e3f;clip-path:polygon(0 100%,0 65%,25% 40%,50% 60%,75% 38%,100% 60%,100% 100%)}
+.autumn .ground{background:#5b2a12;clip-path:polygon(0 100%,0 60%,35% 35%,60% 58%,100% 40%,100% 100%)}
+.winter .ground{background:#ffffff;clip-path:polygon(0 100%,0 60%,20% 35%,45% 55%,70% 32%,100% 55%,100% 100%)}
+/* 飘落物：默认暂停，展开才飘 */
+.fall{position:absolute;top:-18px;z-index:3;animation-play-state:paused}
+.item.active .fall{animation-play-state:running}
+.petal{width:13px;height:16px;background:#f9a8d4;border-radius:65% 35% 60% 40%;animation:falldown 5s linear infinite}
+.leaf{width:14px;height:14px;background:#ea580c;transform:rotate(45deg);border-radius:3px;animation:falldown 6s linear infinite}
+.leaf2{background:#dc2626}
+.snow{width:8px;height:8px;background:#fff;border-radius:50%;box-shadow:0 0 8px rgba(255,255,255,.9);animation:fallsway 7s ease-in-out infinite}
+@keyframes falldown{0%{transform:translateY(0) rotate(0deg);opacity:0}12%{opacity:1}100%{transform:translateY(560px) rotate(340deg);opacity:.2}}
+@keyframes fallsway{0%{transform:translate(0,0);opacity:0}12%{opacity:1}50%{transform:translate(14px,280px)}100%{transform:translate(-8px,560px);opacity:.2}}
+/* 夏日太阳：旋转光线 */
+.suns{position:absolute;right:16%;top:12%;width:74px;height:74px;z-index:2}
+.suns .core{position:absolute;inset:16px;border-radius:50%;background:radial-gradient(circle at 40% 40%,#fef9c3,#facc15);box-shadow:0 0 24px 8px rgba(250,204,21,.6)}
+.suns .rays{position:absolute;inset:0;border-radius:50%;background:repeating-conic-gradient(from 0deg,rgba(250,204,21,.8) 0deg 10deg,transparent 10deg 24deg);-webkit-mask:radial-gradient(circle,transparent 0 22px,#000 23px);mask:radial-gradient(circle,transparent 0 22px,#000 23px);animation:spin 18s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.vt{position:absolute;z-index:5;left:0;right:0;bottom:22px;text-align:center;font-size:15px;font-weight:700;letter-spacing:6px;writing-mode:vertical-rl;text-orientation:upright;white-space:nowrap;transition:opacity .3s;text-shadow:0 2px 8px rgba(0,0,0,.5)}
+.item.active .vt{opacity:0}
+.ct{position:absolute;left:0;right:0;bottom:0;z-index:5;padding:40px 18px 20px;opacity:0;transform:translateY(14px);transition:opacity .45s ease .15s,transform .45s ease .15s;text-shadow:0 2px 10px rgba(0,0,0,.5);background:linear-gradient(180deg,transparent,rgba(0,0,0,.45))}
+.item.active .ct{opacity:1;transform:none}
+.ct .num{font-size:11px;letter-spacing:3px;color:#ffe08a;margin-bottom:7px}
+.ct h2{font-size:20px;font-weight:800;margin-bottom:6px}
+.ct p{font-size:12px;line-height:1.7;opacity:.92}
+.foot{margin-top:18px;font-size:11px;color:#6b5f52}
+</style>
+</head>
+<body>
+<div class="head"><div class="tag">创意手风琴 · 纯 CSS 场景</div><h1>四季列车</h1><p>展开车窗，窗外的花瓣、阳光、枫叶、雪花才会飘起来</p></div>
+<div class="acc" id="acc">
+  <div class="item active">
+    <div class="view spring">
+      <span class="fall petal" style="left:16%;animation-delay:0s"></span>
+      <span class="fall petal" style="left:48%;animation-delay:1.4s"></span>
+      <span class="fall petal" style="left:74%;animation-delay:2.6s"></span>
+      <span class="fall petal" style="left:30%;animation-delay:3.8s;background:#fbcfe8"></span>
+      <div class="ground"></div>
+    </div><div class="frame"></div>
+    <div class="vt">春</div>
+    <div class="ct"><div class="num">01 / 04 · 春</div><h2>春之窗</h2><p>列车穿过花海，粉色的花瓣追着车窗跑，一路落英缤纷。</p></div>
+  </div>
+  <div class="item">
+    <div class="view summer">
+      <div class="suns"><div class="rays"></div><div class="core"></div></div>
+      <div class="ground"></div>
+    </div><div class="frame"></div>
+    <div class="vt">夏</div>
+    <div class="ct"><div class="num">02 / 04 · 夏</div><h2>夏之窗</h2><p>阳光在窗外旋转，远山青翠，蝉鸣被列车抛在身后。</p></div>
+  </div>
+  <div class="item">
+    <div class="view autumn">
+      <span class="fall leaf" style="left:20%;animation-delay:.4s"></span>
+      <span class="fall leaf leaf2" style="left:52%;animation-delay:1.8s"></span>
+      <span class="fall leaf" style="left:76%;animation-delay:3s"></span>
+      <span class="fall leaf leaf2" style="left:36%;animation-delay:4.4s"></span>
+      <div class="ground"></div>
+    </div><div class="frame"></div>
+    <div class="vt">秋</div>
+    <div class="ct"><div class="num">03 / 04 · 秋</div><h2>秋之窗</h2><p>枫叶打着旋儿落下来，铺满窗外的山坡，金黄一片。</p></div>
+  </div>
+  <div class="item">
+    <div class="view winter">
+      <span class="fall snow" style="left:14%;animation-delay:0s"></span>
+      <span class="fall snow" style="left:38%;animation-delay:1.2s"></span>
+      <span class="fall snow" style="left:62%;animation-delay:2.4s"></span>
+      <span class="fall snow" style="left:84%;animation-delay:3.6s"></span>
+      <span class="fall snow" style="left:50%;animation-delay:4.8s"></span>
+      <div class="ground"></div>
+    </div><div class="frame"></div>
+    <div class="vt">冬</div>
+    <div class="ct"><div class="num">04 / 04 · 冬</div><h2>冬之窗</h2><p>雪花轻轻地飘，窗外一片洁白，车厢里却很暖和。</p></div>
+  </div>
+</div>
+<div class="foot">悬停或点按，打开下一扇车窗</div>
+<script>
+var acc=document.getElementById('acc'),items=acc.querySelectorAll('.item'),cur=0;
+function act(i){items[cur].classList.remove('active');cur=i;items[cur].classList.add('active');}
+items.forEach(function(it,i){it.addEventListener('mouseenter',function(){act(i);});it.addEventListener('click',function(){act(i);});});
+</script>
+</body>
+</html>

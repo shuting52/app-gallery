@@ -1,0 +1,56 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>极光</title><style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:#0b0d12;color:#f2f4f8;
+min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:26px 14px}
+.head{text-align:center;margin-bottom:18px}
+.head .tag{display:inline-block;font-size:11px;letter-spacing:1px;padding:4px 12px;border-radius:99px;
+background:rgba(138,180,255,.12);border:1px solid rgba(138,180,255,.35);color:#8ab4ff;margin-bottom:10px}
+.head h1{font-size:21px;font-weight:800}
+.head p{font-size:12px;color:#8b93a5;margin-top:6px}
+.acc{display:flex;width:100%;max-width:430px;height:560px;gap:10px}
+.item{position:relative;flex:1;border-radius:18px;overflow:hidden;cursor:pointer;min-width:0;
+transition:flex .6s cubic-bezier(.22,1,.36,1)}
+.item.active{flex:3.5}
+.sc{position:absolute;inset:0;overflow:hidden}
+.item::after{content:"";position:absolute;inset:0;pointer-events:none;
+background:linear-gradient(to top,rgba(0,0,0,.72) 0%,rgba(0,0,0,.15) 45%,rgba(0,0,0,.05) 100%)}
+.item .vt{position:absolute;left:0;right:0;bottom:24px;z-index:2;text-align:center;font-size:15px;font-weight:700;
+letter-spacing:6px;writing-mode:vertical-rl;text-orientation:upright;white-space:nowrap;transition:opacity .3s}
+.item.active .vt{opacity:0}
+.item .ct{position:absolute;left:0;right:0;bottom:0;z-index:2;padding:22px 20px;opacity:0;transform:translateY(14px);
+transition:opacity .45s ease .15s,transform .45s ease .15s}
+.item.active .ct{opacity:1;transform:none}
+.item .ct .num{font-size:11px;letter-spacing:3px;color:#ffd479;margin-bottom:8px}
+.item .ct h2{font-size:20px;font-weight:800;margin-bottom:7px}
+.item .ct p{font-size:13px;line-height:1.7;color:#c9d1e0}
+.foot{margin-top:18px;font-size:11px;color:#5b6373}
+
+.sky{position:absolute;inset:0;background:linear-gradient(180deg,#020617,#0f172a 60%,#1e1b4b)}
+.stars{position:absolute;inset:0;background-image:
+radial-gradient(1.5px 1.5px at 18% 22%,#fff,transparent),
+radial-gradient(1.5px 1.5px at 72% 14%,#fff,transparent),
+radial-gradient(1px 1px at 40% 34%,#fff,transparent),
+radial-gradient(1.5px 1.5px at 88% 30%,#fff,transparent),
+radial-gradient(1px 1px at 55% 12%,#fff,transparent),
+radial-gradient(1.5px 1.5px at 30% 8%,#fff,transparent)}
+.band{position:absolute;height:110px;border-radius:50%;filter:blur(16px);opacity:.5;
+transition:width .8s ease,left .8s ease,opacity .8s ease}
+.band-in{position:absolute;inset:0;border-radius:50%}
+.item.active .band{opacity:.95}
+@keyframes sway1{0%,100%{transform:rotate(-11deg) translateX(-4%)}50%{transform:rotate(-7deg) translateX(4%)}}
+@keyframes sway2{0%,100%{transform:rotate(-14deg) translateX(5%)}50%{transform:rotate(-9deg) translateX(-5%)}}
+@keyframes sway3{0%,100%{transform:rotate(-8deg) translateX(0)}50%{transform:rotate(-13deg) translateX(6%)}}
+
+.item.active .band{width:215%;left:-57%}
+</style></head><body>
+<div class="head"><div class="tag">创意手风琴 · cr-12</div><h1>极光</h1><p>四色极光在夜空里流动：展开时光带变亮变宽</p></div>
+<div class="acc" id="acc"><div class="item active"><div class="sc"><div class="sky"></div><div class="stars"></div><div class="band" style="top:16%;width:165%;left:-32%;"><div class="band-in" style="background:linear-gradient(90deg,transparent,#4ade80 30%,#bbf7d0 55%,transparent);animation:sway1 8s ease-in-out infinite"></div></div><div class="band" style="top:30%;width:165%;left:-32%;"><div class="band-in" style="background:linear-gradient(90deg,transparent,#4ade80 30%,#bbf7d0 55%,transparent);animation:sway2 12s ease-in-out infinite"></div></div><div class="band" style="top:44%;width:165%;left:-32%;"><div class="band-in" style="background:linear-gradient(90deg,transparent,#4ade80 30%,#bbf7d0 55%,transparent);animation:sway3 15s ease-in-out infinite"></div></div><div style="position:absolute;left:0;right:0;bottom:0;height:90px;background:linear-gradient(transparent,rgba(2,6,23,.9))"></div></div><div class="vt">绿极光</div><div class="ct"><div class="num">01 / 04</div><h2>绿极光</h2><p>最常见的极光，氧原子在高空被点亮。</p></div></div><div class="item"><div class="sc"><div class="sky"></div><div class="stars"></div><div class="band" style="top:16%;width:165%;left:-32%;"><div class="band-in" style="background:linear-gradient(90deg,transparent,#a78bfa 30%,#ddd6fe 55%,transparent);animation:sway1 8s ease-in-out infinite"></div></div><div class="band" style="top:30%;width:165%;left:-32%;"><div class="band-in" style="background:linear-gradient(90deg,transparent,#a78bfa 30%,#ddd6fe 55%,transparent);animation:sway2 12s ease-in-out infinite"></div></div><div class="band" style="top:44%;width:165%;left:-32%;"><div class="band-in" style="background:linear-gradient(90deg,transparent,#a78bfa 30%,#ddd6fe 55%,transparent);animation:sway3 15s ease-in-out infinite"></div></div><div style="position:absolute;left:0;right:0;bottom:0;height:90px;background:linear-gradient(transparent,rgba(2,6,23,.9))"></div></div><div class="vt">紫极光</div><div class="ct"><div class="num">02 / 04</div><h2>紫极光</h2><p>太阳风最强时，天空会翻出紫色。</p></div></div><div class="item"><div class="sc"><div class="sky"></div><div class="stars"></div><div class="band" style="top:16%;width:165%;left:-32%;"><div class="band-in" style="background:linear-gradient(90deg,transparent,#f472b6 30%,#fbcfe8 55%,transparent);animation:sway1 8s ease-in-out infinite"></div></div><div class="band" style="top:30%;width:165%;left:-32%;"><div class="band-in" style="background:linear-gradient(90deg,transparent,#f472b6 30%,#fbcfe8 55%,transparent);animation:sway2 12s ease-in-out infinite"></div></div><div class="band" style="top:44%;width:165%;left:-32%;"><div class="band-in" style="background:linear-gradient(90deg,transparent,#f472b6 30%,#fbcfe8 55%,transparent);animation:sway3 15s ease-in-out infinite"></div></div><div style="position:absolute;left:0;right:0;bottom:0;height:90px;background:linear-gradient(transparent,rgba(2,6,23,.9))"></div></div><div class="vt">粉极光</div><div class="ct"><div class="num">03 / 04</div><h2>粉极光</h2><p>罕见的粉色光带，像夜空里的霓虹。</p></div></div><div class="item"><div class="sc"><div class="sky"></div><div class="stars"></div><div class="band" style="top:16%;width:165%;left:-32%;"><div class="band-in" style="background:linear-gradient(90deg,transparent,#38bdf8 30%,#bae6fd 55%,transparent);animation:sway1 8s ease-in-out infinite"></div></div><div class="band" style="top:30%;width:165%;left:-32%;"><div class="band-in" style="background:linear-gradient(90deg,transparent,#38bdf8 30%,#bae6fd 55%,transparent);animation:sway2 12s ease-in-out infinite"></div></div><div class="band" style="top:44%;width:165%;left:-32%;"><div class="band-in" style="background:linear-gradient(90deg,transparent,#38bdf8 30%,#bae6fd 55%,transparent);animation:sway3 15s ease-in-out infinite"></div></div><div style="position:absolute;left:0;right:0;bottom:0;height:90px;background:linear-gradient(transparent,rgba(2,6,23,.9))"></div></div><div class="vt">蓝极光</div><div class="ct"><div class="num">04 / 04</div><h2>蓝极光</h2><p>蓝色极光贴着地平线，冷而安静。</p></div></div></div>
+<div class="foot">创意手风琴 · 悬停或点按展开</div>
+<script>
+var acc=document.getElementById('acc'),items=acc.querySelectorAll('.item'),cur=0;
+function act(i){items[cur].classList.remove('active');cur=i;items[cur].classList.add('active');}
+items.forEach(function(it,i){it.addEventListener('mouseenter',function(){act(i);});
+it.addEventListener('click',function(){act(i);});});
+</script></body></html>

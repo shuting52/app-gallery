@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>音阶阶梯 · 创意手风琴</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:#0e0a1e;color:#f2f4f8;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:26px 14px}
+.head{text-align:center;margin-bottom:16px}
+.head .tag{display:inline-block;font-size:11px;letter-spacing:1px;padding:4px 12px;border-radius:99px;background:rgba(167,139,250,.15);border:1px solid rgba(167,139,250,.4);color:#c4b5fd;margin-bottom:10px}
+.head h1{font-size:22px;font-weight:800}
+.head p{font-size:12px;color:#8b93a5;margin-top:6px}
+.playall{margin-bottom:16px;border:none;cursor:pointer;color:#fff;font-size:14px;font-weight:700;padding:12px 26px;border-radius:99px;background:linear-gradient(135deg,#7b6cff,#ff5a9c);box-shadow:0 8px 22px rgba(123,108,255,.5);transition:transform .15s}
+.playall:active{transform:scale(.95)}
+.acc{display:flex;width:100%;max-width:430px;height:540px;gap:10px}
+.item{position:relative;flex:1;border-radius:18px;overflow:hidden;cursor:pointer;min-width:0;transition:flex .6s cubic-bezier(.22,1,.36,1),box-shadow .3s}
+.item.active{flex:3.5;box-shadow:0 18px 40px rgba(0,0,0,.5)}
+.item::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.45),transparent 55%);pointer-events:none}
+.vt{position:absolute;z-index:2;left:0;right:0;top:16px;text-align:center;font-size:15px;font-weight:800;letter-spacing:4px;writing-mode:vertical-rl;text-orientation:upright;white-space:nowrap;transition:opacity .3s}
+.item.active .vt{opacity:0}
+.key{position:absolute;left:8px;right:8px;bottom:0;z-index:1;border-radius:12px 12px 0 0;background:linear-gradient(180deg,#ffffff,#d7e2f2);box-shadow:inset 0 -8px 0 rgba(0,0,0,.12),0 -4px 14px rgba(0,0,0,.25);transition:background .3s,box-shadow .3s}
+.item.active .key{background:linear-gradient(180deg,#fffbe6,#ffd166);box-shadow:0 0 34px rgba(255,209,102,.95),inset 0 -8px 0 rgba(0,0,0,.08)}
+.key i{display:block;text-align:center;font-style:normal;font-weight:800;color:#2b2b3a;padding-top:10px;font-size:13px}
+.ct{position:absolute;left:0;right:0;top:26px;z-index:2;text-align:center;padding:0 14px;opacity:0;transform:translateY(-12px);transition:opacity .45s ease .15s,transform .45s ease .15s}
+.item.active .ct{opacity:1;transform:none}
+.ct .num{font-size:11px;letter-spacing:3px;color:#ffd479;margin-bottom:8px}
+.ct h2{font-size:30px;font-weight:900}
+.ct p{font-size:12px;color:#d7dce8;margin-top:6px;line-height:1.7}
+.ct .hint{font-size:12px;color:#ffd479;margin-top:10px}
+.waves{position:absolute;left:50%;bottom:60px;z-index:2;width:0;height:0;pointer-events:none}
+.waves i{position:absolute;left:50%;top:50%;width:44px;height:44px;border-radius:50%;border:3px solid rgba(255,209,102,.9);transform:translate(-50%,-50%) scale(.4);opacity:0}
+.item.playing .waves i{animation:ping 1s ease-out infinite}
+.item.playing .waves i:nth-child(2){animation-delay:.3s}
+.item.playing .waves i:nth-child(3){animation-delay:.6s}
+@keyframes ping{0%{transform:translate(-50%,-50%) scale(.4);opacity:.95}100%{transform:translate(-50%,-50%) scale(2.6);opacity:0}}
+.foot{margin-top:18px;font-size:11px;color:#5b6373}
+</style>
+</head>
+<body>
+<div class="head"><div class="tag">创意手风琴 · CR-05</div><h1>音阶阶梯</h1><p>四级台阶就是四个音：点面板发声，点下面连起来弹一遍</p></div>
+<button class="playall" id="playall">▶ 播放音阶 Do – Mi – Sol – Do′</button>
+<div class="acc" id="acc">
+  <div class="item active" style="background:linear-gradient(160deg,#5aa9ff,#1e3a8a)" data-freq="261.63">
+    <div class="key" style="height:110px"><i>Do</i></div>
+    <div class="vt">Do</div>
+    <div class="ct"><div class="num">第 1 级 · STEP 01</div><h2>Do</h2><p>C4 · 261.6 Hz<br>第一级台阶，最低也最稳。</p><p class="hint">再点一次，听它发声</p></div>
+    <div class="waves"><i></i><i></i><i></i></div>
+  </div>
+  <div class="item" style="background:linear-gradient(160deg,#4ade80,#14532d)" data-freq="329.63">
+    <div class="key" style="height:150px"><i>Mi</i></div>
+    <div class="vt">Mi</div>
+    <div class="ct"><div class="num">第 2 级 · STEP 02</div><h2>Mi</h2><p>E4 · 329.6 Hz<br>往上一步，亮了一点。</p><p class="hint">再点一次，听它发声</p></div>
+    <div class="waves"><i></i><i></i><i></i></div>
+  </div>
+  <div class="item" style="background:linear-gradient(160deg,#fb923c,#7c2d12)" data-freq="392.00">
+    <div class="key" style="height:190px"><i>Sol</i></div>
+    <div class="vt">Sol</div>
+    <div class="ct"><div class="num">第 3 级 · STEP 03</div><h2>Sol</h2><p>G4 · 392.0 Hz<br>爬到第三级，视野已经开阔。</p><p class="hint">再点一次，听它发声</p></div>
+    <div class="waves"><i></i><i></i><i></i></div>
+  </div>
+  <div class="item" style="background:linear-gradient(160deg,#c084fc,#4c1d95)" data-freq="523.25">
+    <div class="key" style="height:230px"><i>Do′</i></div>
+    <div class="vt">Do′</div>
+    <div class="ct"><div class="num">第 4 级 · STEP 04</div><h2>Do′</h2><p>C5 · 523.3 Hz<br>高八度的 Do，台阶的顶端。</p><p class="hint">再点一次，听它发声</p></div>
+    <div class="waves"><i></i><i></i><i></i></div>
+  </div>
+</div>
+<div class="foot">手风琴结构对标 №324 · 发声用 WebAudio 正弦波</div>
+<script>
+var acc=document.getElementById('acc'),items=acc.querySelectorAll('.item'),cur=0,AC=null;
+function act(i){items[cur].classList.remove('active');cur=i;items[cur].classList.add('active');}
+items.forEach(function(it,i){
+  it.addEventListener('mouseenter',function(){act(i);});
+  it.addEventListener('click',function(){act(i);play(i);});
+});
+function tone(freq){
+  AC=AC||new (window.AudioContext||window.webkitAudioContext)();
+  if(AC.state==='suspended')AC.resume();
+  var o=AC.createOscillator(),g=AC.createGain(),t=AC.currentTime;
+  o.type='sine';o.frequency.value=freq;
+  g.gain.setValueAtTime(0.0001,t);
+  g.gain.exponentialRampToValueAtTime(0.25,t+0.02);
+  g.gain.exponentialRampToValueAtTime(0.0001,t+0.9);
+  o.connect(g);g.connect(AC.destination);o.start(t);o.stop(t+1);
+}
+function play(i){
+  tone(parseFloat(items[i].dataset.freq));
+  items[i].classList.add('playing');
+  setTimeout(function(){items[i].classList.remove('playing');},1100);
+}
+document.getElementById('playall').addEventListener('click',function(){
+  items.forEach(function(it,i){
+    setTimeout(function(){act(i);play(i);},i*750);
+  });
+});
+</script>
+</body>
+</html>

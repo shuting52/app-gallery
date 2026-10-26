@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>昼夜四章 · 创意手风琴</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:#0b0d12;color:#f2f4f8;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:26px 14px}
+.head{text-align:center;margin-bottom:18px}
+.head .tag{display:inline-block;font-size:11px;letter-spacing:1px;padding:4px 12px;border-radius:99px;margin-bottom:10px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2)}
+.head h1{font-size:21px;font-weight:800}
+.head p{font-size:12px;color:#8b93a5;margin-top:6px}
+.acc{display:flex;width:100%;max-width:430px;height:560px;gap:10px}
+.item{position:relative;flex:1;border-radius:20px;overflow:hidden;cursor:pointer;min-width:0;transition:flex .6s cubic-bezier(.22,1,.36,1)}
+.item.active{flex:3.5}
+.sky{position:absolute;inset:0}
+.dawn{background:linear-gradient(180deg,#6d6bd6 0%,#ff9a8c 48%,#ffd9a0 100%)}
+.noon{background:linear-gradient(180deg,#0284c7 0%,#38bdf8 55%,#bae6fd 100%)}
+.dusk{background:linear-gradient(180deg,#312e81 0%,#c2410c 55%,#fdba74 100%)}
+.night{background:linear-gradient(180deg,#020617 0%,#1e1b4b 70%,#312e81 100%)}
+/* 山形剪影：clip-path */
+.ridge{position:absolute;left:0;right:0;bottom:0;height:34%;clip-path:polygon(0 100%,0 62%,16% 38%,30% 60%,48% 28%,64% 58%,80% 40%,100% 62%,100% 100%)}
+.ridge.back{height:44%;opacity:.55;clip-path:polygon(0 100%,0 70%,22% 45%,40% 68%,58% 42%,76% 66%,100% 50%,100% 100%)}
+.dawn .ridge{background:#3b2a5e}.dawn .ridge.back{background:#6d5aa8}
+.noon .ridge{background:#0c3a2e}.noon .ridge.back{background:#166e5a}
+.dusk .ridge{background:#1c0f2e}.dusk .ridge.back{background:#4a1d52}
+.night .ridge{background:#01020a}.night .ridge.back{background:#0a1030}
+/* 太阳 / 月亮 */
+.sun{position:absolute;left:50%;width:54px;height:54px;margin-left:-27px;border-radius:50%;background:radial-gradient(circle at 40% 40%,#fff7cc,#ffd166 55%,#ff9a3d);box-shadow:0 0 30px 10px rgba(255,209,102,.55);bottom:30%;transition:bottom 1s ease}
+.item.active .sun{animation:arc 5s ease-in-out infinite alternate}
+@keyframes arc{0%{transform:translate(-46px,16px)}50%{transform:translate(0,-34px)}100%{transform:translate(46px,16px)}}
+.rays{position:absolute;left:50%;top:50%;width:110px;height:110px;margin:-55px 0 0 -55px;border-radius:50%;background:repeating-conic-gradient(from 0deg,rgba(255,209,102,.85) 0deg 8deg,transparent 8deg 20deg);-webkit-mask:radial-gradient(circle,transparent 0 34px,#000 35px);mask:radial-gradient(circle,transparent 0 34px,#000 35px);animation:spin 24s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.moon{position:absolute;left:50%;top:16%;width:46px;height:46px;margin-left:-23px;border-radius:50%;background:radial-gradient(circle at 38% 35%,#ffffff,#cbd5e1 70%,#94a3b8);box-shadow:0 0 26px 6px rgba(226,232,240,.4)}
+.moon::after{content:"";position:absolute;left:12px;top:18px;width:9px;height:9px;border-radius:50%;background:rgba(100,116,139,.5);box-shadow:14px -6px 0 -1px rgba(100,116,139,.4),6px 10px 0 -2px rgba(100,116,139,.35)}
+/* 云：圆角拼合 */
+.cloud{position:absolute;width:74px;height:22px;border-radius:999px;background:rgba(255,255,255,.85)}
+.cloud::before,.cloud::after{content:"";position:absolute;background:rgba(255,255,255,.85);border-radius:50%}
+.cloud::before{width:30px;height:30px;left:12px;top:-14px}
+.cloud::after{width:22px;height:22px;right:12px;top:-9px}
+.cloud.c1{top:14%;left:12%;opacity:.9;animation:drift 7s ease-in-out infinite alternate}
+.cloud.c2{top:24%;right:8%;opacity:.6;transform:scale(.7);animation:drift 9s ease-in-out infinite alternate-reverse}
+@keyframes drift{from{transform:translateX(0)}to{transform:translateX(14px)}}
+.night .cloud{background:rgba(148,163,184,.5)}
+.night .cloud::before,.night .cloud::after{background:rgba(148,163,184,.5)}
+/* 星星：box-shadow 点阵 */
+.stars{position:absolute;left:20%;top:12%;width:3px;height:3px;border-radius:50%;background:#fff;box-shadow:26px 18px 0 #fff,58px -4px 0 rgba(255,255,255,.8),90px 26px 0 #fff,120px 8px 0 rgba(255,255,255,.7),44px 48px 0 rgba(255,255,255,.6),100px 52px 0 #fff;animation:tw 2.6s ease-in-out infinite}
+@keyframes tw{0%,100%{opacity:.5}50%{opacity:1}}
+.vt{position:absolute;z-index:3;left:0;right:0;bottom:24px;text-align:center;font-size:15px;font-weight:700;letter-spacing:6px;writing-mode:vertical-rl;text-orientation:upright;white-space:nowrap;transition:opacity .3s;text-shadow:0 2px 8px rgba(0,0,0,.4)}
+.item.active .vt{opacity:0}
+.ct{position:absolute;left:0;right:0;bottom:0;z-index:3;padding:40px 18px 22px;opacity:0;transform:translateY(14px);transition:opacity .45s ease .15s,transform .45s ease .15s;text-shadow:0 2px 10px rgba(0,0,0,.45);background:linear-gradient(180deg,transparent,rgba(0,0,0,.38))}
+.item.active .ct{opacity:1;transform:none}
+.ct .num{font-size:11px;letter-spacing:3px;color:#ffd479;margin-bottom:7px}
+.ct h2{font-size:20px;font-weight:800;margin-bottom:6px}
+.ct p{font-size:12px;line-height:1.7;opacity:.9}
+.foot{margin-top:18px;font-size:11px;color:#5b6373}
+</style>
+</head>
+<body>
+<div class="head"><div class="tag">创意手风琴 · 纯 CSS 场景</div><h1>昼夜四章</h1><p>展开面板，太阳与月亮沿弧线升起落下</p></div>
+<div class="acc" id="acc">
+  <div class="item active">
+    <div class="sky dawn"><div class="cloud c1"></div><div class="ridge back"></div><div class="ridge"></div><div class="sun"></div></div>
+    <div class="vt">黎明</div>
+    <div class="ct"><div class="num">01 / 04 · 05:40</div><h2>黎明</h2><p>第一缕光越过山脊，云被染成蜜色，世界正在醒来。</p></div>
+  </div>
+  <div class="item">
+    <div class="sky noon"><div class="cloud c2"></div><div class="ridge back"></div><div class="ridge"></div><div class="sun" style="bottom:52%"><div class="rays"></div></div></div>
+    <div class="vt">正午</div>
+    <div class="ct"><div class="num">02 / 04 · 12:00</div><h2>正午</h2><p>太阳升到最高点，光线旋转着洒满山谷，影子缩到最短。</p></div>
+  </div>
+  <div class="item">
+    <div class="sky dusk"><div class="cloud c1"></div><div class="ridge back"></div><div class="ridge"></div><div class="sun" style="width:64px;height:64px;margin-left:-32px;background:radial-gradient(circle at 40% 40%,#ffedd5,#fb923c 60%,#ea580c)"></div></div>
+    <div class="vt">黄昏</div>
+    <div class="ct"><div class="num">03 / 04 · 18:20</div><h2>黄昏</h2><p>太阳沉向山后，天空从紫到橙层层晕开，归鸟划过天际。</p></div>
+  </div>
+  <div class="item">
+    <div class="sky night"><div class="stars"></div><div class="ridge back"></div><div class="ridge"></div><div class="moon"></div></div>
+    <div class="vt">午夜</div>
+    <div class="ct"><div class="num">04 / 04 · 00:00</div><h2>午夜</h2><p>月亮升起来，星星一颗接一颗亮起，山峦只剩剪影。</p></div>
+  </div>
+</div>
+<div class="foot">悬停或点按切换时辰</div>
+<script>
+var acc=document.getElementById('acc'),items=acc.querySelectorAll('.item'),cur=0;
+function act(i){items[cur].classList.remove('active');cur=i;items[cur].classList.add('active');}
+items.forEach(function(it,i){it.addEventListener('mouseenter',function(){act(i);});it.addEventListener('click',function(){act(i);});});
+</script>
+</body>
+</html>
